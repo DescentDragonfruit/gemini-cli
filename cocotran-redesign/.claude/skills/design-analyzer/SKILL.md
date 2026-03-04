@@ -1,70 +1,43 @@
 # Skill: /design-analyzer
 
-Analyze a design inspiration URL or screenshot. Extract design tokens, identify
-animation techniques, and produce a Kadence Blocks build plan.
+Analyze a design inspiration URL or screenshot.
+Extracts colors, fonts, layout, and animation techniques.
+Identifies what each animation is and whether it can be built with CSS/JS only.
 
-## How to invoke
+## How to use
 
-```
-/design-analyzer https://example.com
-/design-analyzer [paste screenshot]
-/design-analyzer https://example.com  ← I like the hero scroll animation, what is it?
-```
+Share a URL:
+> /design-analyzer https://example.com
 
-## What Claude outputs
+Share a screenshot (paste the image):
+> /design-analyzer — [paste screenshot]
 
-### 1. Design Tokens
-```
-COLORS
-  Primary:     #____  Secondary:  #____  Accent: #____
-  Background:  #____  Surface:    #____  Text:   #____
+Ask about a specific effect:
+> /design-analyzer https://example.com — what is that scroll animation on the hero? Can we build it?
 
-TYPOGRAPHY
-  Heading:  [font name]  [sizes]  [weights]  [letter-spacing]
-  Body:     [font name]  [size]   [weight]   [line-height]
+Compare to your current site:
+> /design-analyzer https://inspiration.com vs cocotran.com — what are the top 5 gaps?
 
-LAYOUT
-  Max width: ____px   Section padding: ____px   Column gap: ____px
-  Border radius: ____px   Shadow style: [none/soft/hard/colored]
+## What you get
 
-VISUAL STYLE
-  Button shape: [pill/rounded/square]   Border style: [none/thin/gradient]
-  Image style:  [full-bleed/masked/rounded]
-```
+**Design tokens** — ready to hand to /brand-apply:
+- Exact hex colors (primary, secondary, accent, background, text)
+- Font names, sizes, weights, letter-spacing, line-height
+- Layout: max-width, section padding, column gap, border-radius, shadow style
+- Button shape, image style, border style
 
-### 2. Animation Technique Identification
-For each animation effect spotted:
-```
-EFFECT: [name]
-  What it is:    [plain English — e.g. "clip-path wipe from left"]
-  CSS class:     fx-clip-left  (or custom — see /animation-builder)
-  Technique:     [CSS only / IntersectionObserver / scroll-linked rAF]
-  Feasibility:   [Easy / Medium / Complex]
-  Performance:   [Excellent / Good / Heavy]
-  Mobile impact: [works / disabled by default / use fx-mobile to enable]
-  Notes:         [caveats]
-```
+**Animation breakdown** — for each effect spotted:
+- What it's called (e.g. "clip-path wipe reveal", "character stagger", "scroll-linked scale")
+- Technique: CSS only / IntersectionObserver / scroll-linked rAF
+- Feasibility: Easy / Medium / Complex
+- Which fx-* class covers it (or whether /animation-builder needs to generate custom code)
+- Mobile behavior
 
-### 3. Kadence Blocks Build Plan
-Section-by-section guide:
-```
-SECTION 1 — Hero
-  Block: Kadence Row (full-width)
-    Settings: min-height 100vh, background image + overlay
-  Inner: Kadence Heading H1  → CSS classes: fx-slide-up
-         Kadence Heading H3  → CSS classes: fx-fade fx-delay-2
-         Kadence Button      → CSS classes: fx-fade fx-delay-3 fx-hover-lift
-SECTION 2 — ...
-```
+**Kadence block plan** — section by section:
+- Which blocks to use
+- Which settings to configure
+- Which fx-* classes to add
 
-### 4. Gap analysis vs. current site (when comparing)
-```
-GAP 1 (HIGH): [what's different] → [how to close it]
-GAP 2 (MED): ...
-GAP 3 (LOW): ...
-```
-
-## Skill notes
-- Always evaluate animation feasibility BEFORE building
-- Plugin supports 18+ entrance classes + scroll-linked effects — prefer native fx-* classes
-- Flag any effect that requires a library (GSAP, Three.js) — always suggest CSS/JS alternative
+**Gap analysis** (when comparing two sites):
+- Top 5 differences, prioritized by visual impact
+- Specific fix for each

@@ -1,249 +1,245 @@
-# Cocotran WordPress Redesign — Project Reference
+# Cocotran Website Redesign
 
-> **Two sites. One plugin. Wix-quality animations, zero page builder bloat.**
->
-> This file is your master reference for redesigning **cocotran.com** and
-> **cocotrantravel.com** using the `cocotran-scroll-fx` WordPress plugin.
-> Open this any time to remember the stack, the workflow, and how to use each skill.
+Two WordPress sites. Kadence theme + Kadence child theme + Kadence Blocks.
+Goal: modern, dynamic, interactive — Wix-quality animations using custom CSS/JS only.
 
 ---
 
-## 1. Project Overview
+## Sites
 
-| Site | Purpose | Status |
-|------|---------|--------|
-| **cocotran.com** | Translation / language services | Redesign in progress |
-| **cocotrantravel.com** | Travel experiences | Redesign in progress |
+| Site | Purpose |
+|------|---------|
+| cocotran.com | Translation / language services |
+| cocotrantravel.com | Travel experiences |
 
-Both sites share **one plugin** for all scroll effects and animations.
-Per-site design differences (colors, fonts) live in your Kadence child theme via CSS custom properties.
-
----
-
-## 2. Why a Plugin (Not a Child Theme)?
-
-| Child Theme | Plugin (cocotran-scroll-fx) |
-|---|---|
-| Tied to the active theme | Works with any theme — survives theme switches |
-| Must be re-applied if theme changes | Activate once, works forever |
-| CSS/JS mixed with design | Pure animation + interaction layer only |
-| Harder to share or reuse | One ZIP file → install on both sites |
-
-The plugin handles **all scroll effects and animations**.
-Your Kadence child theme handles **brand colors, fonts, and Kadence Block overrides**.
+Both use the same Kadence child theme. Per-site color differences are handled
+with CSS custom properties scoped to `body.site-travel`.
 
 ---
 
-## 3. Plugin Location
+## Brand Assets
 
-```
-cocotran-redesign/
-├── CLAUDE.md                          ← This file (project reference)
-├── .claude/skills/                    ← Claude Code skills (slash commands)
-│   ├── design-analyzer/SKILL.md
-│   ├── animation-builder/SKILL.md
-│   ├── screenshot-loop/SKILL.md
-│   ├── brand-apply/SKILL.md
-│   ├── kadence-blocks-guide/SKILL.md
-│   ├── woo-shop-styles/SKILL.md
-│   ├── a11y-check/SKILL.md
-│   └── perf-audit/SKILL.md
-├── plugin/
-│   └── cocotran-scroll-fx/           ← Upload this folder to WordPress
-│       ├── cocotran-scroll-fx.php    ← Plugin entry file
-│       ├── assets/
-│       │   ├── css/
-│       │   │   ├── tokens.css        ← Brand design tokens
-│       │   │   ├── scroll-fx.css     ← All scroll animation classes
-│       │   │   └── micro.css         ← Hover micro-interactions
-│       │   └── js/
-│       │       ├── engine.js         ← Main animation engine (IntersectionObserver + RAF)
-│       │       ├── parallax.js       ← Depth parallax + scroll-linked effects
-│       │       └── transitions.js    ← Page-to-page transitions
-└── screenshot-loop/
-    ├── capture.js                    ← Auto-screenshot script (needs Node.js)
-    └── package.json
-```
-
----
-
-## 4. Brand Assets
-
-> Fill these in, then run `/brand-apply` to generate tokens.css
+Fill these in before running `/brand-apply`.
 
 ### cocotran.com
 ```
-Primary Color:     #____________
-Secondary Color:   #____________
-Accent Color:      #____________
-Background:        #____________
-Text Color:        #____________
-Heading Font:      ____________  (Google Fonts name)
-Body Font:         ____________  (Google Fonts name)
+Primary:      #______
+Secondary:    #______
+Accent:       #______
+Background:   #______
+Text:         #______
+Heading font: ____________
+Body font:    ____________
 ```
 
 ### cocotrantravel.com
 ```
-Primary Color:     #____________
-Secondary Color:   #____________
-Accent Color:      #____________
-Background:        #____________
-Text Color:        #____________
-Heading Font:      ____________
-Body Font:         ____________
+Primary:      #______
+Secondary:    #______
+Accent:       #______
+Background:   #______
+Text:         #______
+Heading font: ____________
+Body font:    ____________
 ```
 
 ---
 
-## 5. Animation Class System (Wix-Style)
+## Tech Stack
 
-Add these classes to any Kadence Block via **Block → Advanced → Additional CSS class(es)**.
+- **CMS:** WordPress
+- **Theme:** Kadence (parent) + Kadence child theme (your existing one)
+- **Page builder:** Kadence Blocks (Gutenberg)
+- **Animations:** Custom CSS keyframes + vanilla JS (IntersectionObserver, requestAnimationFrame)
+- **No GSAP. No Elementor. No page-builder plugins.**
 
-### Entrance Animations (scroll-triggered)
-| Class | Effect | Wix Equivalent |
-|-------|--------|---------------|
-| `fx-fade` | Fade in | Fade |
-| `fx-slide-up` | Slide from below | Slide |
-| `fx-slide-down` | Slide from above | Slide |
-| `fx-slide-left` | Slide from right | Slide |
-| `fx-slide-right` | Slide from left | Slide |
-| `fx-zoom` | Scale up from 90% | Zoom |
-| `fx-zoom-out` | Scale down from 110% | Zoom Out |
-| `fx-bounce` | Spring entry with overshoot | Bounce |
-| `fx-glide` | Smooth diagonal glide | Glide |
-| `fx-flip-x` | Flip on horizontal axis | Flip |
-| `fx-flip-y` | Flip on vertical axis | Flip |
-| `fx-spin` | Rotate 360° into position | Spin |
-| `fx-unfold` | Perspective unfold reveal | Fold |
-| `fx-blur` | Blur to sharp on entry | — |
-| `fx-clip-left` | Clip-path wipe from left | — |
-| `fx-clip-right` | Clip-path wipe from right | — |
-| `fx-letters` | Letters animate in sequence | Text Reveal |
-| `fx-words` | Words animate in sequence | — |
-| `fx-count` | Number counts up on entry | — |
+---
 
-### Scroll-Linked Effects (tied to scroll position)
+## Animation Class System
+
+Apply these to any Kadence block via **Advanced → Additional CSS class(es)**.
+
+### Entrance animations (scroll-triggered)
 | Class | Effect |
 |-------|--------|
-| `fx-parallax-slow` | Background moves at 20% speed |
-| `fx-parallax-mid` | Background moves at 40% speed |
-| `fx-parallax-fast` | Background moves at 60% speed |
+| `fx-fade` | Fade in |
+| `fx-slide-up` | Slide from below |
+| `fx-slide-left` | Slide from right |
+| `fx-slide-right` | Slide from left |
+| `fx-zoom` | Scale up from 90% |
+| `fx-bounce` | Spring overshoot entry |
+| `fx-flip` | 3D perspective flip |
+| `fx-blur` | Blur-to-sharp reveal |
+| `fx-clip` | Clip-path wipe |
+| `fx-letters` | Characters stagger in one by one |
+| `fx-words` | Words stagger in |
+| `fx-stagger` | Direct children animate in sequence |
+| `fx-count` | Number counts up from zero |
+
+### Scroll-linked effects (tied to scroll position)
+| Class | Effect |
+|-------|--------|
+| `fx-parallax-slow` | Moves at 20% scroll speed (subtle depth) |
+| `fx-parallax-mid` | Moves at 40% scroll speed |
+| `fx-parallax-fast` | Moves at 65% scroll speed (dramatic) |
 | `fx-zoom-scroll` | Element scales as you scroll past |
-| `fx-rotate-scroll` | Element rotates as you scroll |
-| `fx-progress` | Width expands as you scroll down page |
+| `fx-rotate-scroll` | Element rotates with scroll |
 
-### Hover Micro-interactions (CSS only, no JS)
+### Hover micro-interactions (CSS only, no JS needed)
 | Class | Effect |
 |-------|--------|
-| `fx-hover-lift` | Rise + shadow |
-| `fx-hover-glow` | Accent glow |
+| `fx-hover-lift` | Rise + shadow on hover |
+| `fx-hover-glow` | Accent-colored glow |
 | `fx-hover-scale` | Subtle zoom |
-| `fx-hover-underline` | Slide-in underline |
-| `fx-hover-bg` | Background fills from left |
-| `fx-hover-tilt` | 3D perspective tilt |
+| `fx-hover-underline` | Animated underline slides in |
+| `fx-hover-tilt` | 3D perspective tilt follows mouse |
+| `fx-hover-zoom` | Image zooms inside its container |
 
 ### Modifiers (combine with any fx- class)
-| Modifier | Effect |
-|----------|--------|
-| `fx-delay-1` through `fx-delay-5` | Adds 100ms, 200ms, 300ms, 400ms, 500ms delay |
-| `fx-duration-fast` | 300ms animation |
-| `fx-duration-slow` | 900ms animation |
-| `fx-once` | Animate only first time (default) |
-| `fx-repeat` | Re-animate every time element enters viewport |
-| `fx-mobile` | Enable animation on mobile too (disabled by default) |
+| Class | Effect |
+|-------|--------|
+| `fx-delay-1` … `fx-delay-5` | 100ms / 200ms / 300ms / 500ms / 700ms delay |
+| `fx-fast` | 250ms duration |
+| `fx-slow` | 900ms duration |
+| `fx-repeat` | Re-animates every time element enters view |
+| `fx-mobile` | Force-enable on mobile (animations off by default on mobile) |
+
+**Example combinations:**
+```
+fx-slide-up fx-delay-2          → slides up, 200ms delay
+fx-zoom fx-slow fx-repeat       → slow zoom, replays each time
+fx-stagger fx-delay-1           → children stagger in, first one delayed 100ms
+fx-letters fx-fast              → fast character stagger
+```
 
 ---
 
-## 6. How to Install the Plugin
+## Child Theme File Map
 
-1. Download / zip the `plugin/cocotran-scroll-fx/` folder
-2. In WordPress admin → **Plugins → Add New → Upload Plugin**
-3. Upload the ZIP → Install → Activate
-4. The plugin is now active — add `fx-*` classes to any block
+Claude generates these files. You upload them to your existing Kadence child theme.
 
-Or via FTP:
-- Upload `plugin/cocotran-scroll-fx/` folder to `/wp-content/plugins/`
-- Activate in **Plugins → Installed Plugins**
+```
+wp-content/themes/your-kadence-child/
+├── style.css          ← already exists — do not touch
+├── functions.php      ← add the enqueue block below
+└── assets/
+    ├── css/
+    │   ├── tokens.css          ← brand colors, fonts, spacing (from /brand-apply)
+    │   ├── animations.css      ← all fx-* classes + keyframes (from /animation-builder)
+    │   └── components.css      ← hero, nav, card, CTA overrides (from /kadence-guide)
+    └── js/
+        ├── engine.js           ← IntersectionObserver scroll reveals
+        ├── parallax.js         ← scroll-linked parallax + zoom effects
+        └── transitions.js      ← page-to-page fade/slide transitions
+```
+
+**Rule:** Never modify Kadence parent theme files. Only work inside the child theme.
 
 ---
 
-## 7. How Claude Will Help You Design
+## How to Add Files to WordPress
 
-### What Claude CAN do
-- **Generate CSS + JS code** for any effect — you copy-paste into the plugin files
-- **Tell you exactly which Kadence Blocks to add** and every setting to configure
-- **Analyze any inspiration URL or screenshot** — extract colors, layout, animation techniques
-- **Run the screenshot loop** — compare your site to inspiration, output exact fixes
-- **Evaluate animation examples** before building — identify technique + feasibility
-- **Generate your full token file** from brand colors + fonts
+1. Go to your host's **File Manager** (or use FTP)
+2. Navigate to `/wp-content/themes/your-kadence-child/`
+3. Create `assets/css/` and `assets/js/` if they don't exist
+4. Upload the generated files into those folders
+5. Open `functions.php` and add this block:
 
-### What Claude CANNOT do
-- Log into your WordPress admin or click buttons for you
-- View your live site without a screenshot or URL
+```php
+function cocotran_enqueue() {
+    $v = '1.0.0'; // bump after every upload to force browser cache refresh
+    $u = get_stylesheet_directory_uri() . '/assets/';
 
-### The Design Workflow (from blank page)
+    wp_enqueue_style(  'coc-tokens',  $u . 'css/tokens.css',     [],              $v );
+    wp_enqueue_style(  'coc-anim',    $u . 'css/animations.css', ['coc-tokens'],  $v );
+    wp_enqueue_style(  'coc-comp',    $u . 'css/components.css', ['coc-anim'],    $v );
+    wp_enqueue_script( 'coc-engine',  $u . 'js/engine.js',       [], $v, true );
+    wp_enqueue_script( 'coc-para',    $u . 'js/parallax.js',     [], $v, true );
+    wp_enqueue_script( 'coc-trans',   $u . 'js/transitions.js',  [], $v, true );
+}
+add_action( 'wp_enqueue_scripts', 'cocotran_enqueue' );
+```
+
+6. **Every time you upload new CSS/JS files:** change `'1.0.0'` → `'1.0.1'` (or any new number). This forces all browsers to reload the new files instead of using a cached version.
+
+---
+
+## How Claude Helps You Design
+
+Claude **cannot** click in your WordPress admin or browser. But Claude will:
+
+- **Analyze any URL or screenshot** — extract exact colors, fonts, layout, animation techniques
+- **Generate all CSS and JS** — you copy-paste into your child theme files
+- **Give block-by-block build instructions** — exactly which Kadence blocks to add, every setting
+- **Run the screenshot loop** — compare your site to inspiration and output exact CSS fixes
+- **Evaluate animations before building** — share a URL, Claude identifies the technique and whether it's possible with CSS/JS only
+
+---
+
+## Workflow: From Blank Page to Finished Design
 
 ```
 1. Share inspiration URL or screenshot
-       ↓
-2. /design-analyzer → tokens + Kadence Blocks build plan
-       ↓
-3. /brand-apply → generate tokens.css with your brand
-       ↓
-4. Claude gives block-by-block instructions:
-   "Add a Kadence Row Block. Set min-height to 100vh.
-    Set background to image. Add Kadence Heading H1.
-    In Advanced → CSS Classes, type: fx-slide-up fx-delay-1"
-       ↓
+         ↓
+2. /design-analyzer
+   → extracts colors, fonts, layout, identifies animation techniques
+         ↓
+3. /brand-apply  (share your hex codes + font names)
+   → generates tokens.css → you upload it
+         ↓
+4. /kadence-guide  (describe the section you want to build)
+   → step-by-step block instructions:
+     "Step 1: Add Kadence Row Block. Set min-height to 100vh..."
+         ↓
 5. You build it in WordPress following the guide
-       ↓
-6. Paste a screenshot → /screenshot-loop
-       ↓
-7. Claude outputs: top 3 gaps + exact CSS fixes
-       ↓
-8. Apply → new screenshot → repeat until approved
+         ↓
+6. Take a screenshot → paste into chat → /screenshot-loop
+   → top 3 gaps + exact CSS fixes
+         ↓
+7. Apply fixes → new screenshot → repeat until approved ✓
+```
+
+## Workflow: Recreating a Specific Animation
+
+```
+1. Share the URL with the animation you like
+         ↓
+2. /design-analyzer  "What is that scroll animation on the hero?"
+   → identifies technique + evaluates if CSS/JS can do it
+         ↓
+3. /animation-builder  "Build it for my hero heading"
+   → generates CSS + JS code
+         ↓
+4. Paste into animations.css + engine.js → upload → test
 ```
 
 ---
 
-## 8. Skills Reference
+## Skills Reference
 
-| Skill | What It Does |
+| Skill | Invoke with |
 |-------|-------------|
-| `/design-analyzer` | Analyze URL/screenshot → design tokens + Kadence block plan |
-| `/brand-apply` | Brand colors + fonts → complete tokens.css |
-| `/animation-builder` | Generate CSS/JS for any custom animation effect |
-| `/kadence-blocks-guide` | Step-by-step Kadence block guide for any section |
-| `/screenshot-loop` | Screenshot → gap analysis → CSS fix → repeat |
-| `/woo-shop-styles` | WooCommerce shop page animations |
-| `/a11y-check` | Accessibility audit (prefers-reduced-motion, contrast, focus) |
-| `/perf-audit` | Performance audit (jank, layout triggers, passive listeners) |
+| Analyze inspiration URL or screenshot | `/design-analyzer` |
+| Apply brand colors + fonts → tokens.css | `/brand-apply` |
+| Build any animation effect | `/animation-builder` |
+| Step-by-step Kadence block guide | `/kadence-guide` |
+| Screenshot comparison + CSS fixes | `/screenshot-loop` |
+| WooCommerce shop animations | `/woo-styles` |
+| Accessibility audit | `/a11y-check` |
+| Performance audit | `/perf-audit` |
 
 ---
 
-## 9. Important Rules
+## Rules
 
-1. **Plugin handles animations** — don't add animation CSS to the child theme
-2. **Child theme handles brand** — colors, fonts, Kadence block overrides only
-3. **Bump the version** in `cocotran-scroll-fx.php` after every plugin file update
-4. **Test on staging** before applying to the live site
-5. **Always check mobile** — run `node screenshot-loop/capture.js --mobile`
-6. **Run `/a11y-check`** before any animation goes live
-7. **Use `var(--token-*)` tokens** everywhere — never hardcode hex values
-
----
-
-## 10. Recommended Next Steps
-
-- [ ] Fill in Brand Assets (Section 4)
-- [ ] Install the plugin on your staging site
-- [ ] Share an inspiration URL → run `/design-analyzer`
-- [ ] Run `/brand-apply` → upload generated `tokens.css`
-- [ ] Share animation examples you like → Claude evaluates + builds them
-- [ ] Build first page section using `/kadence-blocks-guide`
-- [ ] Run screenshot loop, iterate until approved
-- [ ] Run `/a11y-check` and `/perf-audit` before going live
+1. Never edit Kadence parent theme files — child theme only
+2. Bump the version number in `functions.php` after every file upload
+3. Test on staging before pushing to your live site
+4. Check mobile after every CSS change (Chrome DevTools → device toolbar)
+5. Run `/a11y-check` before any animation goes live
+6. Always use `var(--token-name)` for colors — never hardcode hex values in component CSS
 
 ---
 
-*Last updated: 2026-03-04 | cocotran-redesign project*
+*cocotran.com + cocotrantravel.com — Redesign Project*
+*Last updated: 2026-03-04*

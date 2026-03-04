@@ -1,72 +1,42 @@
 # Skill: /animation-builder
 
-Generate production-ready CSS + JS for any custom animation effect not already
-in the plugin's built-in `fx-*` class library.
+Generate production-ready CSS + JS for any animation effect.
+Covers effects not in the built-in fx-* class library,
+or custom variations of existing effects.
 
-## How to invoke
+## How to use
 
-```
-/animation-builder  ← describe what you saw and want
-  "I want the hero text to split into characters and each character
-   flies in from random directions with a slight rotation"
+Describe what you want:
+> /animation-builder — hero heading: each word slides up with a slight rotation, staggered
 
-/animation-builder
-  "Build a scroll-linked SVG path drawing effect for the decorative
-   line under my section heading"
+Share a URL with the effect you like:
+> /animation-builder — I like the text reveal on https://example.com — build it for my hero
 
-/animation-builder
-  "Build a Ken Burns effect — the hero background image slowly zooms
-   and pans while on screen"
+Request a specific advanced effect:
+> /animation-builder — horizontal scroll section: content scrolls sideways while page scrolls down
+> /animation-builder — SVG path draws itself as you scroll to it
+> /animation-builder — numbers count up with a slot-machine rolling effect
+> /animation-builder — Ken Burns: hero image slowly zooms + pans
 
-/animation-builder
-  "I saw a horizontal scroll section on [URL] — build that"
-```
+## What you get
 
-## What Claude outputs
+**CSS** — paste into `assets/css/animations.css`
+- Initial (hidden) state
+- Animated (visible) state
+- @keyframes if needed
+- prefers-reduced-motion block
+- Mobile behavior
 
-Always structured as:
+**JS** — paste into `assets/js/engine.js`
+- Function wrapped in IIFE
+- IntersectionObserver or rAF as appropriate
+- Passive scroll listeners
+- Call added inside the main init() function
 
-### CSS (paste into `plugin/cocotran-scroll-fx/assets/css/scroll-fx.css`)
-```css
-/* ANIMATION: [name] — [description] */
-.fx-custom-[name] { /* initial state */ }
-.fx-custom-[name].is-visible { /* animated state */ }
-@keyframes [name] { }
-@media (prefers-reduced-motion: reduce) { }
-@media (max-width: 767px) { }
-```
+**Step-by-step instructions** for applying it to a Kadence block.
 
-### JS (paste into `plugin/cocotran-scroll-fx/assets/js/engine.js`)
-```js
-/* ANIMATION: [name] */
-function init[Name]() { }
-```
-
-### How to apply
-```
-1. Paste CSS into scroll-fx.css
-2. Paste JS into engine.js (add call inside init() function)
-3. Bump version in cocotran-scroll-fx.php
-4. In WordPress: block → Advanced → CSS classes → fx-custom-[name]
-```
-
-## Advanced effect reference
-
-| Effect | What to ask for |
-|--------|----------------|
-| SVG stroke draw | "Draw the SVG path on scroll" |
-| Ken Burns | "Slow zoom + pan on hero background image" |
-| Magnetic cursor | "Button is attracted to mouse cursor" |
-| Text scramble | "Text randomizes then settles into final word" |
-| Scroll-linked clip | "Reveal image with clip-path tied to scroll position" |
-| Horizontal scroll | "Section scrolls horizontally while page scrolls vertically" |
-| Morph shapes | "SVG blob shape morphs between two shapes" |
-| Number ticker | "Stats counter with rolling number animation" |
-| Image sequence | "Images swap in sequence as you scroll (like Apple TV)" |
-| Split layout pin | "Left side sticks while right side scrolls through content" |
-
-## Skill notes
-- Always prefer CSS-only if the effect can be achieved without JS
-- Always wrap JS in an IIFE and use `{ passive: true }` on scroll listeners
-- Never use `top/left/width/height` in animations — always `transform/opacity/clip-path`
-- Always test mobile behavior — note if the effect should be disabled on mobile
+## Rules Claude follows
+- Only `transform` and `opacity` in animations — never width/height/top/left
+- Always `{ passive: true }` on scroll listeners
+- Always a prefers-reduced-motion fallback
+- Mobile: disabled by default unless fx-mobile is added
