@@ -1,0 +1,66 @@
+/* ============================================================
+   DESIGN TOKENS — Cocotran Brand
+   Run /brand-apply skill to generate these values from your brand.
+   ============================================================ */
+
+:root {
+  /* ── Colors (replace with your brand) ─── */
+  --c-primary:       #1A3C5E;
+  --c-primary-dk:    #122a43;
+  --c-primary-lt:    #2d5f8a;
+  --c-secondary:     #F4A261;
+  --c-accent:        #2EC4B6;
+  --c-bg:            #FAFAFA;
+  --c-surface:       #FFFFFF;
+  --c-border:        rgba(0,0,0,.09);
+  --c-text:          #1A1A2E;
+  --c-text-muted:    #6B7280;
+  --c-text-inv:      #FFFFFF;
+
+  /* ── Typography ──────────────────────── */
+  --f-head:  'Playfair Display', Georgia, serif;   /* replace */
+  --f-body:  'Inter', system-ui, sans-serif;        /* replace */
+
+  /* ── Spacing ─────────────────────────── */
+  --sp-xs:  .5rem;
+  --sp-sm:  1rem;
+  --sp-md:  2rem;
+  --sp-lg:  4rem;
+  --sp-xl:  8rem;
+
+  /* ── Radii ───────────────────────────── */
+  --r-sm:   4px;
+  --r-md:   8px;
+  --r-lg:  16px;
+  --r-pill: 9999px;
+
+  /* ── Shadows ─────────────────────────── */
+  --sh-sm:  0 2px  8px rgba(0,0,0,.08);
+  --sh-md:  0 6px 20px rgba(0,0,0,.10);
+  --sh-lg:  0 12px 40px rgba(0,0,0,.14);
+
+  /* ── Easing ──────────────────────────── */
+  --ease:         cubic-bezier(.4,0,.2,1);
+  --ease-spring:  cubic-bezier(.34,1.56,.64,1);
+  --ease-out:     cubic-bezier(0,0,.2,1);
+  --ease-bounce:  cubic-bezier(.68,-.55,.27,1.55);
+
+  /* ── Durations ───────────────────────── */
+  --dur-fast:   250ms;
+  --dur-base:   500ms;
+  --dur-slow:   800ms;
+  --dur-slower: 1100ms;
+
+  /* ── Z-index ─────────────────────────── */
+  --z-sticky:  200;
+  --z-modal:   300;
+}
+
+/* cocotrantravel.com overrides (body.site-travel) */
+body.site-travel {
+  --c-primary:    #2D6A4F;
+  --c-primary-dk: #1f4a37;
+  --c-primary-lt: #40876a;
+  --c-secondary:  #95D5B2;
+  --c-accent:     #FFB703;
+}

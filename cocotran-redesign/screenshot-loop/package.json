@@ -1,0 +1,14 @@
+{
+  "name": "cocotran-screenshot-loop",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "capture": "node capture.js",
+    "capture:mobile": "node capture.js --mobile",
+    "capture:full": "node capture.js --full-page",
+    "watch": "node capture.js --watch"
+  },
+  "dependencies": {
+    "puppeteer": "^22.0.0"
+  }
+}

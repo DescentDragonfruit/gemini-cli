@@ -1,0 +1,278 @@
+/* ============================================================
+   SCROLL FX — All entrance and scroll-linked animation classes
+   Wix-equivalent effects using pure CSS + vanilla JS.
+
+   HOW TO USE:
+   WordPress block editor → click block → Advanced tab
+   → Additional CSS class(es) → type class name(s) → Save
+
+   EXAMPLES:
+     fx-fade                        → simple fade in
+     fx-slide-up fx-delay-2         → slide up, 200ms delay
+     fx-zoom fx-duration-slow       → slow zoom entry
+     fx-letters                     → text characters stagger in
+     fx-parallax-mid                → mid-speed parallax background
+   ============================================================ */
+
+/* ── Pre-animation state (hidden) ─────────────────────────── */
+/* JS adds .is-visible when element enters viewport */
+
+[class*="fx-fade"],
+[class*="fx-slide"],
+[class*="fx-zoom"],
+[class*="fx-bounce"],
+[class*="fx-glide"],
+[class*="fx-flip"],
+[class*="fx-spin"],
+[class*="fx-unfold"],
+[class*="fx-blur"],
+[class*="fx-clip"],
+[class*="fx-words"] {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* ── Transition timing ────────────────────────────────────── */
+
+[class*="fx-"] {
+  transition-property: opacity, transform, clip-path, filter;
+  transition-duration: var(--dur-base);
+  transition-timing-function: var(--ease-out);
+}
+
+/* Duration modifiers */
+.fx-duration-fast  { transition-duration: var(--dur-fast)  !important; }
+.fx-duration-slow  { transition-duration: var(--dur-slow)  !important; }
+.fx-duration-slower{ transition-duration: var(--dur-slower)!important; }
+
+/* Delay modifiers */
+.fx-delay-1 { transition-delay:  100ms; }
+.fx-delay-2 { transition-delay:  200ms; }
+.fx-delay-3 { transition-delay:  300ms; }
+.fx-delay-4 { transition-delay:  500ms; }
+.fx-delay-5 { transition-delay:  700ms; }
+
+/* ── Entrance animations — initial (hidden) states ────────── */
+
+/* Fade */
+.fx-fade           { opacity: 0; }
+
+/* Slide */
+.fx-slide-up       { opacity: 0; transform: translateY(50px);  }
+.fx-slide-down     { opacity: 0; transform: translateY(-50px); }
+.fx-slide-left     { opacity: 0; transform: translateX(60px);  }
+.fx-slide-right    { opacity: 0; transform: translateX(-60px); }
+
+/* Zoom */
+.fx-zoom           { opacity: 0; transform: scale(.88);        }
+.fx-zoom-out       { opacity: 0; transform: scale(1.12);       }
+
+/* Bounce — spring easing applied via JS class swap */
+.fx-bounce         { opacity: 0; transform: translateY(60px);  }
+
+/* Glide — diagonal */
+.fx-glide          { opacity: 0; transform: translate(30px, 40px); }
+
+/* Flip */
+.fx-flip-x         { opacity: 0; transform: perspective(800px) rotateX(30deg);  }
+.fx-flip-y         { opacity: 0; transform: perspective(800px) rotateY(30deg);  }
+
+/* Spin */
+.fx-spin           { opacity: 0; transform: rotate(-45deg) scale(.8);           }
+
+/* Unfold (perspective fold) */
+.fx-unfold         { opacity: 0; transform: perspective(1000px) rotateX(-90deg);
+                     transform-origin: top center;                               }
+
+/* Blur to sharp */
+.fx-blur           { opacity: 0; filter: blur(16px); transform: scale(.98);     }
+
+/* Clip-path wipe */
+.fx-clip-left      { opacity: 1; clip-path: inset(0 100% 0 0);                  }
+.fx-clip-right     { opacity: 1; clip-path: inset(0 0 0 100%);                  }
+.fx-clip-up        { opacity: 1; clip-path: inset(100% 0 0 0);                  }
+
+/* ── Visible (animated-in) states ─────────────────────────── */
+
+.fx-fade.is-visible,
+.fx-slide-up.is-visible,
+.fx-slide-down.is-visible,
+.fx-slide-left.is-visible,
+.fx-slide-right.is-visible,
+.fx-zoom.is-visible,
+.fx-zoom-out.is-visible,
+.fx-glide.is-visible,
+.fx-flip-x.is-visible,
+.fx-flip-y.is-visible,
+.fx-spin.is-visible,
+.fx-unfold.is-visible,
+.fx-blur.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  will-change: auto;
+}
+
+.fx-bounce.is-visible {
+  opacity: 1;
+  transform: none;
+  transition-timing-function: var(--ease-bounce);
+  will-change: auto;
+}
+
+.fx-clip-left.is-visible,
+.fx-clip-right.is-visible,
+.fx-clip-up.is-visible {
+  clip-path: inset(0 0 0 0);
+  transition-timing-function: var(--ease-out);
+}
+
+/* ── Stagger: .fx-stagger wraps children that animate in sequence ── */
+/* JS applies stagger delays dynamically to direct children          */
+
+.fx-stagger > * {
+  opacity: 0;
+  transform: translateY(30px);
+  transition-property: opacity, transform;
+  transition-duration: var(--dur-base);
+  transition-timing-function: var(--ease-out);
+  will-change: transform, opacity;
+}
+.fx-stagger.is-visible > * {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* ── Text effects ─────────────────────────────────────────── */
+/* fx-letters and fx-words: JS wraps chars/words in <span>s and staggers them */
+
+.fx-letters .letter,
+.fx-words .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(30px);
+  transition-property: opacity, transform;
+  transition-duration: var(--dur-base);
+  transition-timing-function: var(--ease-out);
+}
+
+/* ── Counter animation ────────────────────────────────────── */
+/* JS counts up the number when element enters viewport */
+/* No initial hidden state — number is always visible, just starts at 0 */
+
+.fx-count {
+  will-change: contents;
+}
+
+/* ── Scroll-linked parallax ───────────────────────────────── */
+/* JS applies transform: translateY() in sync with scroll */
+
+.fx-parallax-slow,
+.fx-parallax-mid,
+.fx-parallax-fast {
+  will-change: transform;
+}
+
+/* ── Scroll-linked zoom ───────────────────────────────────── */
+.fx-zoom-scroll {
+  will-change: transform;
+  transform-origin: center center;
+}
+
+/* ── Scroll progress bar ──────────────────────────────────── */
+/* Fixed bar at top of page that fills as user scrolls */
+.fx-progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: var(--c-accent);
+  z-index: var(--z-modal);
+  transition: none; /* JS updates this directly */
+}
+
+/* ── Page transitions ─────────────────────────────────────── */
+@keyframes pageIn  { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+@keyframes pageOut { from { opacity:1; transform:none; } to { opacity:0; transform:translateY(-14px); } }
+
+body.csfx-entering { animation: pageIn  var(--dur-base) var(--ease-out) both; }
+body.csfx-leaving  { animation: pageOut var(--dur-fast) var(--ease)     both; }
+
+/* ── Sticky nav ───────────────────────────────────────────── */
+#masthead, .site-header, header.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  transition: padding var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              backdrop-filter var(--dur-fast) var(--ease);
+}
+.csfx-nav-scrolled #masthead,
+.csfx-nav-scrolled .site-header {
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 2px 24px rgba(0,0,0,.08);
+}
+
+/* ── Mobile — disable entrance animations by default ─────── */
+@media (max-width: 767px) {
+  [class*="fx-fade"]:not(.fx-mobile),
+  [class*="fx-slide"]:not(.fx-mobile),
+  [class*="fx-zoom"]:not(.fx-mobile),
+  [class*="fx-bounce"]:not(.fx-mobile),
+  [class*="fx-glide"]:not(.fx-mobile),
+  [class*="fx-flip"]:not(.fx-mobile),
+  [class*="fx-spin"]:not(.fx-mobile),
+  [class*="fx-unfold"]:not(.fx-mobile),
+  [class*="fx-blur"]:not(.fx-mobile),
+  [class*="fx-clip"]:not(.fx-mobile) {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+  .fx-stagger:not(.fx-mobile) > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .fx-parallax-slow,
+  .fx-parallax-mid,
+  .fx-parallax-fast,
+  .fx-zoom-scroll {
+    transform: none !important;
+    will-change: auto;
+  }
+}
+
+/* ── Accessibility ────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  /* Instantly show all hidden elements */
+  [class*="fx-"] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+  .fx-stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .fx-parallax-slow,
+  .fx-parallax-mid,
+  .fx-parallax-fast,
+  .fx-zoom-scroll { transform: none !important; }
+  body.csfx-entering,
+  body.csfx-leaving { animation: none !important; }
+}

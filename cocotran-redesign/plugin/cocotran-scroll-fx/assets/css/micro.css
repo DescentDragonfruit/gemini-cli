@@ -1,0 +1,124 @@
+/* ============================================================
+   MICRO-INTERACTIONS — Hover effects (CSS only, no JS)
+   Add these classes to cards, buttons, images, links, etc.
+   ============================================================ */
+
+/* ── Lift ─────────────────────────────────────────────────── */
+.fx-hover-lift {
+  transition: transform var(--dur-fast) var(--ease-spring),
+              box-shadow var(--dur-fast) var(--ease);
+}
+.fx-hover-lift:hover,
+.fx-hover-lift:focus-within {
+  transform: translateY(-7px);
+  box-shadow: var(--sh-lg);
+}
+
+/* ── Glow ─────────────────────────────────────────────────── */
+.fx-hover-glow {
+  transition: transform var(--dur-fast) var(--ease-spring),
+              box-shadow var(--dur-fast) var(--ease);
+}
+.fx-hover-glow:hover,
+.fx-hover-glow:focus-within {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 40px color-mix(in srgb, var(--c-accent) 40%, transparent);
+}
+
+/* ── Scale ────────────────────────────────────────────────── */
+.fx-hover-scale {
+  transition: transform var(--dur-fast) var(--ease-smooth);
+}
+.fx-hover-scale:hover,
+.fx-hover-scale:focus-within {
+  transform: scale(1.04);
+}
+
+/* ── Underline ────────────────────────────────────────────── */
+.fx-hover-underline {
+  position: relative;
+  display: inline-block;
+}
+.fx-hover-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0;
+  width: 0; height: 2px;
+  background: var(--c-accent);
+  border-radius: var(--r-pill);
+  transition: width var(--dur-base) var(--ease-out);
+}
+.fx-hover-underline:hover::after { width: 100%; }
+
+/* ── Background fill ──────────────────────────────────────── */
+.fx-hover-bg {
+  position: relative;
+  overflow: hidden;
+}
+.fx-hover-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--c-primary);
+  transform: translateX(-101%);
+  transition: transform var(--dur-base) var(--ease-out);
+  z-index: -1;
+}
+.fx-hover-bg:hover::before { transform: none; }
+
+/* ── 3D Tilt ──────────────────────────────────────────────── */
+/* JS in engine.js enhances this with mouse-tracking tilt */
+.fx-hover-tilt {
+  transition: transform var(--dur-fast) var(--ease-out);
+  transform-style: preserve-3d;
+}
+
+/* ── Image zoom on hover ──────────────────────────────────── */
+.fx-hover-zoom {
+  overflow: hidden;
+}
+.fx-hover-zoom img,
+.fx-hover-zoom .wp-block-image img {
+  transition: transform var(--dur-slow) var(--ease-out);
+  will-change: transform;
+}
+.fx-hover-zoom:hover img,
+.fx-hover-zoom:hover .wp-block-image img {
+  transform: scale(1.08);
+}
+
+/* ── Button pulse ─────────────────────────────────────────── */
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-accent) 60%, transparent); }
+  70%  { box-shadow: 0 0 0 12px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.fx-hover-pulse:hover {
+  animation: pulse-ring 1s var(--ease) infinite;
+}
+
+/* ── Accessible focus ─────────────────────────────────────── */
+:focus-visible {
+  outline: 3px solid var(--c-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* ── Touch — disable hover transforms on touch screens ────── */
+@media (hover: none) {
+  .fx-hover-lift:hover,
+  .fx-hover-glow:hover,
+  .fx-hover-scale:hover { transform: none; box-shadow: none; }
+  .fx-hover-zoom:hover img { transform: none; }
+  .fx-hover-bg::before   { display: none; }
+}
+
+/* ── Reduced motion ───────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .fx-hover-lift, .fx-hover-glow, .fx-hover-scale,
+  .fx-hover-bg, .fx-hover-tilt, .fx-hover-zoom img {
+    transition: none;
+  }
+  .fx-hover-pulse:hover { animation: none; }
+}
