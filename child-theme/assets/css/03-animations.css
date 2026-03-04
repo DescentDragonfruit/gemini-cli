@@ -1,0 +1,321 @@
+/* ============================================================
+   ANIMATIONS — Scroll reveals, parallax, hover effects, transitions
+   ============================================================
+   HOW TO APPLY:
+   In WordPress block editor → click block → Advanced tab
+   → "Additional CSS class(es)" → type class name → Save
+
+   ANIMATION CLASSES:
+     Scroll reveals:   .reveal .reveal-left .reveal-right .reveal-scale
+     Stagger:          .stagger-children
+     Parallax:         .parallax-slow .parallax-medium .parallax-fast
+     Hover (CSS only): .hover-lift .hover-glow .hover-scale .hover-underline
+     Page transition:  applied to body by page-transitions.js
+   ============================================================ */
+
+/* ── Keyframe Definitions ─────────────────────────────────── */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeLeft {
+  from { opacity: 0; transform: translateX(-60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pageFadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-12px); }
+}
+
+/* ── Scroll Reveal — Base States ─────────────────────────── */
+/* Elements start hidden; scroll-observer.js adds .is-visible */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity    var(--duration-slow) var(--ease-smooth),
+    transform  var(--duration-slow) var(--ease-smooth);
+  will-change: transform, opacity;
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition:
+    opacity    var(--duration-slow) var(--ease-smooth),
+    transform  var(--duration-slow) var(--ease-smooth);
+  will-change: transform, opacity;
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition:
+    opacity    var(--duration-slow) var(--ease-smooth),
+    transform  var(--duration-slow) var(--ease-smooth);
+  will-change: transform, opacity;
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.95);
+  transition:
+    opacity    var(--duration-slow) var(--ease-smooth),
+    transform  var(--duration-slow) var(--ease-smooth);
+  will-change: transform, opacity;
+}
+
+.reveal-fast {
+  opacity: 0;
+  transform: translateY(25px);
+  transition:
+    opacity    var(--duration-base) var(--ease-smooth),
+    transform  var(--duration-base) var(--ease-smooth);
+  will-change: transform, opacity;
+}
+
+/* ── Scroll Reveal — Visible States ─────────────────────── */
+/* Added by scroll-observer.js when element enters viewport */
+
+.reveal.is-visible,
+.reveal-left.is-visible,
+.reveal-right.is-visible,
+.reveal-scale.is-visible,
+.reveal-fast.is-visible {
+  opacity: 1;
+  transform: none;
+  will-change: auto; /* release GPU layer after animation */
+}
+
+/* ── Stagger Children ────────────────────────────────────── */
+/* Parent gets .stagger-children — direct children animate in sequence */
+/* scroll-observer.js applies stagger delays dynamically */
+
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity    var(--duration-slow) var(--ease-smooth),
+    transform  var(--duration-slow) var(--ease-smooth);
+  will-change: transform, opacity;
+}
+.stagger-children.is-visible > * {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Parallax ────────────────────────────────────────────── */
+/* Scroll speed is set via JS — CSS just enables GPU layer */
+
+.parallax-slow,
+.parallax-medium,
+.parallax-fast {
+  will-change: transform;
+  transform: translateY(0); /* baseline — JS overrides this */
+}
+
+/* ── Hover Micro-interactions (CSS only — no JS needed) ──── */
+
+/* Lift — element rises with shadow on hover */
+.hover-lift {
+  transition:
+    transform   var(--duration-fast) var(--ease-spring),
+    box-shadow  var(--duration-fast) var(--ease-smooth);
+}
+.hover-lift:hover,
+.hover-lift:focus-within {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Glow — accent-colored shadow appears on hover */
+.hover-glow {
+  transition:
+    transform   var(--duration-fast) var(--ease-spring),
+    box-shadow  var(--duration-fast) var(--ease-smooth);
+}
+.hover-glow:hover,
+.hover-glow:focus-within {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(46, 196, 182, 0.35); /* var(--color-accent) */
+}
+
+/* Scale — subtle zoom on hover */
+.hover-scale {
+  transition: transform var(--duration-fast) var(--ease-smooth);
+  will-change: transform;
+}
+.hover-scale:hover,
+.hover-scale:focus-within {
+  transform: scale(1.03);
+}
+
+/* Underline — animated underline slides in from left */
+.hover-underline {
+  position: relative;
+  display: inline-block;
+}
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-accent);
+  transition: width var(--duration-base) var(--ease-smooth);
+}
+.hover-underline:hover::after,
+.hover-underline:focus::after {
+  width: 100%;
+}
+
+/* Background slide — color fills in from left on hover */
+.hover-bg-slide {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+.hover-bg-slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-primary);
+  transform: translateX(-101%);
+  transition: transform var(--duration-base) var(--ease-smooth);
+  z-index: -1;
+}
+.hover-bg-slide:hover::before {
+  transform: translateX(0);
+}
+
+/* ── Page Transitions ────────────────────────────────────── */
+/* Applied by page-transitions.js to document.body */
+
+body.page-leaving {
+  animation: pageFadeOut var(--duration-base) var(--ease-in) forwards;
+}
+
+body.page-entering {
+  animation: pageFadeIn var(--duration-base) var(--ease-out) forwards;
+}
+
+/* ── Sticky Nav State ────────────────────────────────────── */
+/* .header-scrolled is added to body by scroll-observer.js */
+
+#masthead,
+.site-header,
+header.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  transition:
+    padding         var(--duration-fast) var(--ease-smooth),
+    background      var(--duration-fast) var(--ease-smooth),
+    box-shadow      var(--duration-fast) var(--ease-smooth),
+    backdrop-filter var(--duration-fast) var(--ease-smooth);
+}
+
+.header-scrolled #masthead,
+.header-scrolled .site-header,
+.header-scrolled header.site-header {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Accessibility — Reduced Motion ──────────────────────── */
+/* Users with prefers-reduced-motion see no animation at all */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Kill all transitions and animations globally */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Show reveal elements immediately (they start hidden) */
+  .reveal,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale,
+  .reveal-fast,
+  .stagger-children > * {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+    transition: none;
+  }
+
+  /* Remove parallax movement */
+  .parallax-slow,
+  .parallax-medium,
+  .parallax-fast {
+    transform: none !important;
+    will-change: auto;
+  }
+
+  /* Remove hover motion */
+  .hover-lift:hover,
+  .hover-glow:hover,
+  .hover-scale:hover {
+    transform: none;
+  }
+
+  /* Disable page transitions */
+  body.page-leaving,
+  body.page-entering {
+    animation: none;
+  }
+}
+
+/* ── Mobile — disable reveal animations by default ───────── */
+/* Reveal animations are OFF on mobile for performance.
+   Add class .animate-mobile to any element to enable them. */
+
+@media (max-width: 767px) {
+  .reveal:not(.animate-mobile),
+  .reveal-left:not(.animate-mobile),
+  .reveal-right:not(.animate-mobile),
+  .reveal-scale:not(.animate-mobile),
+  .reveal-fast:not(.animate-mobile) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .stagger-children:not(.animate-mobile) > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .parallax-slow,
+  .parallax-medium,
+  .parallax-fast {
+    transform: none !important;
+  }
+}
