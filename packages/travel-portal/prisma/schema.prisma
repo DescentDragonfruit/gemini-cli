@@ -1,0 +1,207 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Roles: ADMIN | CLIENT
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      String   @default("CLIENT")
+  client    Client?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Client {
+  id             String         @id @default(cuid())
+  userId         String         @unique
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName      String
+  lastName       String
+  phone          String?
+  passportNumber String?
+  passportExpiry DateTime?
+  nationality    String?
+  itinerary      Itinerary?
+  invoices       Invoice[]
+  notifications  Notification[]
+  timelineSteps  TimelineStep[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Itinerary {
+  id          String         @id @default(cuid())
+  clientId    String         @unique
+  client      Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  destination String?
+  startDate   DateTime
+  endDate     DateTime
+  days        ItineraryDay[]
+  flights     Flight[]
+  documents   Document[]
+  mapPoints   MapPoint[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model ItineraryDay {
+  id          String     @id @default(cuid())
+  itineraryId String
+  itinerary   Itinerary  @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  dayNumber   Int
+  date        DateTime
+  title       String
+  description String?
+  location    String?
+  activities  Activity[]
+  createdAt   DateTime   @default(now())
+}
+
+// type: SIGHTSEEING | DINING | TRANSPORT | ACCOMMODATION | EXCURSION | FREE_TIME
+model Activity {
+  id             String       @id @default(cuid())
+  itineraryDayId String
+  itineraryDay   ItineraryDay @relation(fields: [itineraryDayId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  time           String?
+  location       String?
+  lat            Float?
+  lng            Float?
+  type           String       @default("SIGHTSEEING")
+  createdAt      DateTime     @default(now())
+}
+
+model Flight {
+  id              String    @id @default(cuid())
+  itineraryId     String
+  itinerary       Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  flightNumber    String
+  icao24          String?
+  airline         String
+  origin          String
+  originCode      String
+  destination     String
+  destinationCode String
+  departureTime   DateTime
+  arrivalTime     DateTime
+  status          String?
+  actualDeparture DateTime?
+  actualArrival   DateTime?
+  terminal        String?
+  gate            String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model MapPoint {
+  id          String    @id @default(cuid())
+  itineraryId String
+  itinerary   Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  name        String
+  lat         Float
+  lng         Float
+  type        String    @default("activity")
+  dayNumber   Int?
+  description String?
+  createdAt   DateTime  @default(now())
+}
+
+// type: PASSPORT | VISA | INSURANCE | VACCINATION | FLIGHT_TICKET | HOTEL_BOOKING | OTHER
+// status: PENDING | SUBMITTED | APPROVED | REJECTED
+model Document {
+  id          String    @id @default(cuid())
+  itineraryId String
+  itinerary   Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  name        String
+  type        String    @default("OTHER")
+  required    Boolean   @default(true)
+  status      String    @default("PENDING")
+  notes       String?
+  fileUrl     String?
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// status: PENDING | PAID | OVERDUE | CANCELLED
+model Invoice {
+  id                    String        @id @default(cuid())
+  clientId              String
+  client                Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  invoiceNumber         String        @unique
+  amount                Float
+  currency              String        @default("USD")
+  status                String        @default("PENDING")
+  dueDate               DateTime
+  paidAt                DateTime?
+  stripePaymentIntentId String?
+  description           String?
+  items                 InvoiceItem[]
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  amount      Float
+  quantity    Int     @default(1)
+}
+
+model TimelineStep {
+  id          String    @id @default(cuid())
+  clientId    String
+  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  dueDate     DateTime
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// type: PAYMENT_DUE | DOCUMENT_REQUIRED | TRIP_REMINDER | GENERAL
+model Notification {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("GENERAL")
+  read      Boolean  @default(false)
+  emailSent Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model TravelGuide {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  icon      String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  category  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
