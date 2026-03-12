@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-inter: 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    @apply antialiased;
+  }
+}
+
+/* Leaflet overrides */
+.leaflet-container {
+  z-index: 0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+/* Prose overrides for travel guide */
+.prose h2 {
+  @apply text-xl font-bold text-gray-900 mt-8 mb-4;
+}
+.prose p {
+  @apply text-gray-700 mb-4 leading-relaxed;
+}
+.prose ul {
+  @apply list-disc pl-6 mb-4 text-gray-700;
+}
+.prose li {
+  @apply mb-2;
+}
