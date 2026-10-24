@@ -51,7 +51,7 @@ A rejected entry is reported, not fatal: the map stores whatever validated. If `
 
 ```
 POST https://cocotran.com/wp-json/coco-tran/v1/link-map
-Authorization: Basic base64(COCOTRAN_WP_USER:COCOTRAN_WP_APP_PASSWORD)
+Authorization: Basic base64(user:application_password)   # omitted in a cloud session: the Network secret injects it
 Content-Type: application/json
 
 {"entries":[ … ]}            ← or a bare JSON array

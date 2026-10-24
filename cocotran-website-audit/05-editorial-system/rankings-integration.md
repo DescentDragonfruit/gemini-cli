@@ -2,17 +2,25 @@
 
 The worker pulls per-URL performance weekly, writes it to each library record, computes `health`, and opens update jobs for decaying or stale pieces. It needs read access to both Google properties. Nothing is pasted into chat; everything goes in the cloud environment's secrets.
 
-## One-time setup (Coco, ~20 min)
+## One-time setup (Coco, ~15 min) — Network secrets
 
-1. **Google Cloud project** (any) → APIs & Services → enable **Google Search Console API** and **Google Analytics Data API**.
-2. **Service account** → create → Keys → add key (JSON) → download.
-3. **Search Console** → cocotran.com property → Settings → Users and permissions → add the service account's email as **Full** (read is enough: "Restricted" works for queries).
-4. **GA4** → Admin → Property access management → add the same email as **Viewer**. Note the numeric **Property ID**.
-5. **Cloud environment** (session title bar → environment menu → Edit) → Network secrets / environment variables:
-   - `GSC_SERVICE_ACCOUNT_JSON` = the whole JSON key file's contents
-   - `GSC_SITE_URL` = `sc-domain:cocotran.com` (or `https://cocotran.com/` if URL-prefix property)
-   - `GA4_PROPERTY_ID` = the numeric id
-6. Done. The Monday worker run picks them up.
+The cloud environment's **Network secrets** inject credentials at the proxy. The session never sees a password or key; it simply calls the host and the proxy adds the header. Open the environment (session title bar → environment name → Edit → Network secrets → Add) and create two secrets:
+
+1. **WordPress** — Secret type **Basic**. Username = the WP login name (Users → Profile → Username). Password = an Application Password; create it at `https://cocotran.com/wp-admin/authorize-application.php?app_name=studio-worker` (this page works even when the Profile form's Add button fails, because it does not use REST). Allowed websites: `cocotran.com`. Path prefixes: `/wp-json/`. On the multisite network the password is created once and works on all sites.
+2. **Google** — Secret type **GCP access token (with Service Account Key)**. Paste the whole service-account JSON key file. Allowed websites: `searchconsole.googleapis.com` and `analyticsdata.googleapis.com`. If the form asks for scopes: `https://www.googleapis.com/auth/webmasters.readonly https://www.googleapis.com/auth/analytics.readonly`. (If that type refuses Search Console, use **OAuth 2.0 JWT bearer** with token URL `https://oauth2.googleapis.com/token` and the same scopes.) Before this: Google Cloud → enable **Google Search Console API** + **Google Analytics Data API**; IAM → Service Accounts → create `studio-worker` → Keys → JSON; Search Console → Settings → Users → add its email (Full); GA4 → Admin → Property access management → add it as Viewer.
+3. **Not secret, so not a secret:** the Search Console property form and the GA4 Property ID live in the Studio Desk → Keywords → "Search Console & GA4" card (stored at `settings/analytics` = `{gsc_site_url, ga4_property_id}`). Defaults: `sc-domain:cocotran.com`; the property id is the nine-digit number at GA4 → Admin → Property details.
+
+Legacy fallback: plain environment variables `COCOTRAN_WP_USER` / `COCOTRAN_WP_APP_PASSWORD`, `GSC_SERVICE_ACCOUNT_JSON`, `GSC_SITE_URL`, `GA4_PROPERTY_ID` still work if a session has them.
+
+### How the worker detects credentials (never assume)
+
+```
+curl -s -o /dev/null -w '%{http_code}' https://cocotran.com/wp-json/wp/v2/users/me          # 200 → WordPress writes allowed (Route A), send NO Authorization header
+curl -s -o /dev/null -w '%{http_code}' https://searchconsole.googleapis.com/webmasters/v3/sites   # 200 → Google credentials present, send NO token
+```
+401/403 with no env-var fallback → Route C for WordPress, `skipped-no-credentials` for rankings. Python `requests` and `curl` both go through the proxy automatically; do not mint tokens or add auth headers when the probe returns 200 (a second Authorization header breaks the injected one).
+
+Endpoints: Search Console `POST https://searchconsole.googleapis.com/webmasters/v3/sites/{url-encoded site}/searchAnalytics/query`; GA4 `POST https://analyticsdata.googleapis.com/v1beta/properties/{id}:runReport`.
 
 ## What the worker pulls (weekly, Monday 7:51 Pacific)
 

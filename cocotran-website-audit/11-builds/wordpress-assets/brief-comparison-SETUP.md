@@ -98,7 +98,7 @@ Open `/brief/bora-bora-vs-maldives/?preview=true`: kicker, H1, short answer once
 
 ## Path B — REST + wp-cli (no browser)
 
-Env vars: `COCOTRAN_WP_USER`, `COCOTRAN_WP_APP_PASSWORD` (an Application Password for an admin user). Base `https://cocotran.com/wp-json`. Auth header `Authorization: Basic base64(user:app_password)`; curl's `-u` does that.
+Auth: in a Claude cloud session the environment's Network secret injects Basic auth for `cocotran.com/wp-json/` at the proxy — probe `GET /wp-json/wp/v2/users/me`; 200 means drop the `-u` flag below. Elsewhere, env vars `COCOTRAN_WP_USER`, `COCOTRAN_WP_APP_PASSWORD` (an Application Password for an admin user) with `-u`. Base `https://cocotran.com/wp-json`.
 
 ```bash
 WP=https://cocotran.com/wp-json

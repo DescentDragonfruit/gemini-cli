@@ -9,4 +9,4 @@ Nothing here is installed yet. Do it on staging first if you have one.
 5. **Rank Math titles**: run `resolve-ids.php --dry-run` then `--apply` per `11-builds/wordpress-assets/INSTALL.md`, or paste per page.
 6. **Delete all cache** (LiteSpeed) and **purge Cloudflare**.
 
-For the worker to do the WordPress builds itself: WP admin → Users → Profile → Application Passwords → "studio-worker", then add `COCOTRAN_WP_USER` and `COCOTRAN_WP_APP_PASSWORD` to the cloud environment's secrets.
+For the worker to do the WordPress builds itself: create an Application Password at `https://cocotran.com/wp-admin/authorize-application.php?app_name=studio-worker`, then add it to the cloud environment as a **Network secret** (type Basic, allowed website `cocotran.com`, path prefix `/wp-json/`). Steps in `05-editorial-system/rankings-integration.md` → One-time setup.
