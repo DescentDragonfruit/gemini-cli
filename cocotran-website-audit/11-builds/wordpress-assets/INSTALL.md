@@ -32,3 +32,6 @@ Live form: https://tally.so/r/Nqpavl · edit: https://tally.so/forms/Nqpavl/edit
 2. Add a **Custom HTML** block and paste `reader-question-embed.html`. It loads Tally only when the block scrolls into view and sends two hidden fields with each question: `page_url` (the page) and `piece` (the title).
 3. Publish the Element, open any Verdict, scroll to the bottom, send yourself a test question. It should arrive by email and appear in the Studio Desk → Reader questions → **Load questions** (the desk calls Tally with your login; allow it the first time).
 4. In the desk, **Answer this** prefills a new Answer piece from the question; **Queue for the worker** hands it to the scheduled worker.
+
+### Also on the Planning Room / subscribe page
+Add the same `reader-question-embed.html` block to the Planning Room sign-up page (Kadence Element display rule: Page → /subscribe/ and the Planning Room landing page) with the heading changed to "What should I write next?". Questions from paying-intent readers land in the same inbox and the Studio Desk → Reader questions.
