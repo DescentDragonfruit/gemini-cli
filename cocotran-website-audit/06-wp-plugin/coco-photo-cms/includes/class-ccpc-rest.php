@@ -228,19 +228,23 @@ class CCPC_Rest {
 			return rest_ensure_response( array( 'ok' => true ) );
 		}
 		$files = $req->get_file_params();
+		$name  = '';
 		if ( ! empty( $files['file']['tmp_name'] ) ) {
-			$tmp = $files['file']['tmp_name'];
+			$tmp  = $files['file']['tmp_name'];
+			$name = (string) ( $files['file']['name'] ?? '' );
 		} elseif ( $req->get_param( 'data_url' ) ) {
 			$decoded = self::decode_data_url( (string) $req->get_param( 'data_url' ) );
 			if ( is_wp_error( $decoded ) ) {
 				return $decoded;
 			}
-			$tmp = wp_tempnam( 'ccpc' ) . '.' . $decoded['ext'];
+			$base = wp_tempnam( 'ccpc' );
+			$tmp  = $base . '.' . $decoded['ext'];
 			file_put_contents( $tmp, $decoded['bytes'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			wp_delete_file( $base ); // wp_tempnam() created an empty placeholder we do not use.
 		} else {
 			return new WP_Error( 'ccpc_nofile', 'file or data_url required.', array( 'status' => 400 ) );
 		}
-		$r = CCPC_Replace::replace_everywhere( $id, $tmp );
+		$r = CCPC_Replace::replace_everywhere( $id, $tmp, $name );
 		if ( is_wp_error( $r ) ) {
 			$r->add_data( array( 'status' => 400 ) );
 			return $r;

@@ -68,16 +68,19 @@ class CCPC_Replace {
 	 * Overwrite the attachment's file in place and regenerate everything.
 	 *
 	 * @param int    $attachment_id ID.
-	 * @param string $tmp_path      Path to the new file (already validated image).
+	 * @param string $tmp_path      Path to the new file.
+	 * @param string $name          Original client filename (PHP upload temp files have no extension,
+	 *                              so the type/extension check needs the real name).
 	 * @return true|WP_Error
 	 */
-	public static function replace_everywhere( $attachment_id, $tmp_path ) {
+	public static function replace_everywhere( $attachment_id, $tmp_path, $name = '' ) {
 		$attachment_id = (int) $attachment_id;
 		$current       = get_attached_file( $attachment_id );
 		if ( ! $current || ! file_exists( $tmp_path ) ) {
 			return new WP_Error( 'ccpc_missing', 'File not found.' );
 		}
-		$check = wp_check_filetype_and_ext( $tmp_path, basename( $tmp_path ) );
+		$name  = $name ? sanitize_file_name( $name ) : basename( $tmp_path );
+		$check = wp_check_filetype_and_ext( $tmp_path, $name );
 		if ( empty( $check['type'] ) || 0 !== strpos( $check['type'], 'image/' ) ) {
 			return new WP_Error( 'ccpc_type', 'Not an image.' );
 		}
@@ -244,7 +247,7 @@ class CCPC_Replace {
 			wp_die( esc_html__( 'No file.', 'coco-photo-cms' ) );
 		}
 		$tmp = $_FILES['ccpc_file']['tmp_name']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-		$r   = self::replace_everywhere( $id, $tmp );
+		$r   = self::replace_everywhere( $id, $tmp, (string) $_FILES['ccpc_file']['name'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		if ( is_wp_error( $r ) ) {
 			wp_die( esc_html( $r->get_error_message() ) );
 		}
