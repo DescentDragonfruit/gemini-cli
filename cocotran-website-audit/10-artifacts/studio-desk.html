@@ -1,0 +1,494 @@
+<title>Coco Tran Studio Desk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: left rail of desks, one working column — a production board, not a form. */
+:root{
+  --bg:#FBFAF6; --fg:#15140F; --muted:#6F6B5F; --line:#DDD8CC; --panel:#F3F0E8; --accent:#3F5C3B; --accent-ink:#F6F8F2;
+  --ok:#2F6B3A; --warn:#9A6B12; --bad:#9B3A2E;
+  --display:'Fraunces',Georgia,'Times New Roman',serif; --body:'Figtree',system-ui,-apple-system,Segoe UI,sans-serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15140F;--fg:#EDE9DF;--muted:#A39E8F;--line:#36332B;--panel:#1E1C16;--accent:#9FC08F;--accent-ink:#15140F;--ok:#8FCB9A;--warn:#E0B35A;--bad:#E58C7C;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15140F;--fg:#EDE9DF;--muted:#A39E8F;--line:#36332B;--panel:#1E1C16;--accent:#9FC08F;--accent-ink:#15140F;--ok:#8FCB9A;--warn:#E0B35A;--bad:#E58C7C;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;padding-block:0 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;padding:22px 0 14px;border-bottom:1px solid var(--line)}
+header h1{font-family:var(--display);font-weight:500;font-size:28px;margin:0;text-wrap:balance}
+header .sub{color:var(--muted);font-size:13px}
+.status{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+.status b{font-weight:500;color:var(--fg)}
+.wrap{display:grid;grid-template-columns:190px minmax(0,1fr);gap:28px;margin-top:18px}
+@media (max-width:760px){.wrap{grid-template-columns:1fr;gap:12px}}
+nav{display:flex;flex-direction:column;gap:2px;position:sticky;top:12px;align-self:start}
+@media (max-width:760px){nav{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:6px}}
+nav button{all:unset;cursor:pointer;padding:8px 10px;border-radius:4px;color:var(--muted);font-size:14px;white-space:nowrap}
+nav button:hover{background:var(--panel);color:var(--fg)}
+nav button[aria-current="page"]{color:var(--fg);background:var(--panel);font-weight:600}
+nav button:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+nav .k{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:12px 10px 4px}
+main{min-width:0}
+section.desk{display:none}section.desk.on{display:block}
+h2{font-family:var(--display);font-weight:500;font-size:24px;margin:0 0 4px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:500;font-size:18px;margin:18px 0 6px}
+.lead{color:var(--muted);max-width:64ch;margin:0 0 18px}
+label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+textarea,input[type=text],input[type=date],select{width:100%;font:inherit;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 12px}
+textarea{min-height:140px;resize:vertical;line-height:1.5}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.btn{all:unset;cursor:pointer;background:var(--accent);color:var(--accent-ink);padding:9px 14px;border-radius:4px;font-weight:600;font-size:14px}
+.btn.alt{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn[disabled]{opacity:.5;cursor:default}
+.out{white-space:pre-wrap;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:14px;margin-top:14px;font-size:14px;min-height:60px;overflow-x:auto}
+.out:empty{display:none}
+.note{font-size:13px;color:var(--muted);margin-top:8px}
+.pill{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);margin-left:6px;vertical-align:middle}
+.pill.ok{color:var(--ok);border-color:currentColor}.pill.bad{color:var(--bad);border-color:currentColor}.pill.warn{color:var(--warn);border-color:currentColor}
+.cards{display:grid;gap:10px;margin-top:12px}
+.card{border:1px solid var(--line);border-radius:4px;padding:12px 14px;background:var(--panel)}
+.card h4{font-family:var(--display);font-weight:500;font-size:17px;margin:0 0 4px}
+.card .meta{font-family:var(--mono);font-size:11px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.num{font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:4px 14px;font-size:14px}
+.kv div:nth-child(odd){font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+@media (max-width:520px){.kv{grid-template-columns:1fr}}
+.quiet{display:none;border:1px dashed var(--line);border-radius:4px;padding:12px;margin-top:12px;color:var(--muted);font-size:13px}
+.copy{all:unset;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--accent);margin-left:8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.two>*{min-width:0}
+hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+.src{border:1px solid var(--line);border-radius:4px;padding:12px 14px;margin-top:12px}
+.src .meta{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.meet{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}
+.meet input{margin-top:4px;accent-color:var(--accent)}
+.piece{border-top:1px solid var(--line);margin-top:18px;padding-top:14px}
+.piece .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.piece h2.title{font-size:30px;margin:4px 0 8px}
+.piece .byline{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:12px}
+.piece .short{font-family:var(--display);font-size:18px;border-left:2px solid var(--accent);padding-left:12px;margin:0 0 14px;max-width:62ch}
+.piece .field{margin-top:14px}
+.piece .field .key{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.piece .field .body{max-width:66ch}
+.piece .field .body p{margin:6px 0}
+.steps{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:10px}
+.steps b{color:var(--fg);font-weight:500}
+@media (prefers-reduced-motion:no-preference){.btn{transition:opacity .15s}}
+</style>
+
+<header>
+  <h1>Coco Tran Studio Desk</h1>
+  <span class="sub">Context in · finished piece out · built in WordPress by the worker</span>
+  <span class="status"><span>Claude <b id="st-sample">…</b></span><span>Store <b id="st-db">…</b></span><span>Granola <b id="st-granola">…</b></span></span>
+</header>
+
+<div class="wrap">
+<nav aria-label="Desks">
+  <span class="k">Make</span>
+  <button data-desk="new" aria-current="page">New piece</button>
+  <button data-desk="queue">Queue</button>
+  <span class="k">Discoverability</span>
+  <button data-desk="cite">Citation tracker</button>
+  <button data-desk="bench">AI benchmark log</button>
+  <span class="k">Reference</span>
+  <button data-desk="rules">House rules</button>
+</nav>
+
+<main>
+
+<!-- ============ NEW PIECE ============ -->
+<section class="desk on" id="desk-new">
+  <h2>New piece</h2>
+  <p class="lead">Tell the desk what it is and hand over the context. It drafts the whole piece in your voice and pillar structure, writes the answerable opening into it, runs the ten gates and the voice pass on itself, and queues the result. The worker then does the search research, finalises title/meta/keyword, and builds the WordPress draft. You review and publish.</p>
+
+  <div class="two">
+    <div><label for="n-format">Pillar · format</label>
+      <select id="n-format">
+        <option value="verdict">The Property — The Verdict</option>
+        <option value="comparison">The Property — The Comparison</option>
+        <option value="primer">The Guide — The Primer</option>
+        <option value="rolodex">The Guide — The Rolodex</option>
+        <option value="roundup">The Guide — The Roundup</option>
+        <option value="route">The Brief — The Route</option>
+        <option value="dossier">The Brief — The Dossier</option>
+        <option value="shortlist">The Shortlist</option>
+        <option value="fieldnotes">The Dispatch — Field Notes From</option>
+        <option value="postcard">The Dispatch — Postcard From</option>
+        <option value="answer">The Dispatch — The Answer (one question)</option>
+        <option value="suggest">Not sure — suggest the format and the questions</option>
+      </select></div>
+    <div><label for="n-subject">Subject (property or destination)</label><input type="text" id="n-subject" placeholder="Singita Sabi Sand · or · Rio de Janeiro"></div>
+  </div>
+  <div class="two">
+    <div><label for="n-dest">Destination terms (continent · country · city)</label><input type="text" id="n-dest" placeholder="Africa · South Africa · Sabi Sand"></div>
+    <div><label for="n-basis">Visit basis (only you know this)</label><input type="text" id="n-basis" placeholder="Stayed Oct 2026 · Boulders Lodge, suite 4 · Hosted stay"></div>
+  </div>
+  <div class="two">
+    <div><label for="n-disclosure">Disclosure</label>
+      <select id="n-disclosure"><option>Paid stay</option><option>Hosted stay</option><option>Discounted stay</option><option>Site inspection (not a stay)</option><option>Advisor roundup (not a stay)</option><option>Trip I planned for clients</option><option>Trip I took</option></select></div>
+    <div><label for="n-photos">Photos (where they are — the worker attaches them)</label><input type="text" id="n-photos" placeholder="WP media 'singita-*' · or · Studio folder link"></div>
+  </div>
+
+  <h3>Context</h3>
+  <label for="n-notes">Your notes, dictation, or anything pasted (the draft uses only this, Granola and the studio links)</label>
+  <textarea id="n-notes" placeholder="What happened, what you noticed, who you met, what it cost, what missed…"></textarea>
+
+  <div class="src">
+    <div class="meta">GRANOLA · pull meeting notes straight in</div>
+    <div class="row"><input type="text" id="g-q" placeholder="Search meetings — e.g. Singita, Belmond, inspection" style="flex:1;min-width:200px"><button class="btn alt" id="g-search">Search</button><span class="note" id="g-note"></span></div>
+    <div id="g-list"></div>
+    <div class="row" id="g-pullrow" hidden><button class="btn alt" id="g-pull">Pull notes from selected</button></div>
+    <div id="g-pulled" class="cards"></div>
+    <div class="quiet" id="g-quiet">Granola isn't reachable in this view — add or reconnect it under claude.ai Settings → Connectors, or paste the notes above.</div>
+  </div>
+
+  <div class="src">
+    <div class="meta">STUDIO LINKS · the worker reads these</div>
+    <div class="two">
+      <div><label for="n-proposal">Proposal Studio — proposal / itinerary</label><input type="text" id="n-proposal" placeholder="Client or trip name as it appears in Proposal Studio"></div>
+      <div><label for="n-agency">Agency Studio — item</label><input type="text" id="n-agency" placeholder="Name of the Agency Studio item"></div>
+    </div>
+    <div class="note">Proposal Studio: https://claude.ai/artifact/AyNiCSZubZrjMar4rpyAY3 · Agency Studio: https://claude.ai/artifact/7VMcx1iKdmvdtq6KT6cgix. Name the record; the worker pulls it. Client names never go in the piece.</div>
+  </div>
+
+  <div class="row"><button class="btn" id="n-run">Make the piece</button><button class="btn alt" id="n-stop" disabled>Stop</button><button class="btn alt" id="n-queueonly">Just queue it for the worker</button><span class="note" id="n-note"></span></div>
+  <div class="steps" id="n-steps"></div>
+  <div class="out" id="n-stream"></div>
+  <div id="n-piece"></div>
+  <div class="quiet" id="n-quiet">Claude isn't available in this view, so the desk can't draft here. "Just queue it" still saves the context for the worker, which drafts, researches and builds.</div>
+</section>
+
+<!-- ============ QUEUE ============ -->
+<section class="desk" id="desk-queue">
+  <h2>Queue</h2>
+  <p class="lead">Every piece and where it is. <b>drafted</b> = the desk wrote it · <b>queued</b> = waiting for the worker to draft · <b>researched</b> = worker added search research and final SEO · <b>approved</b> = you said go · <b>built</b> = WordPress draft exists, link below · <b>needs-site</b> = the worker couldn't reach WordPress; the payload is in the repo for Cowork.</p>
+  <div class="tablewrap"><table id="q-table"><thead><tr><th>When</th><th>Piece</th><th>Format</th><th>Status</th><th></th></tr></thead><tbody></tbody></table></div>
+  <div id="q-detail"></div>
+  <div class="quiet" id="q-quiet">The shared store isn't available in this view.</div>
+</section>
+
+<!-- ============ CITATION TRACKER ============ -->
+<section class="desk" id="desk-cite">
+  <h2>Citation tracker</h2>
+  <p class="lead">Every pitch, request and mention. Weekly: check Source of Sources and HARO digests, scan #journorequest, answer two, log them here.</p>
+  <div class="two">
+    <div><label for="p-outlet">Outlet / journalist</label><input type="text" id="p-outlet"></div>
+    <div><label for="p-platform">Platform</label><select id="p-platform"><option>Source of Sources</option><option>HARO (Featured)</option><option>Qwoted</option><option>#journorequest</option><option>Direct pitch</option><option>Podcast</option><option>Hotel / GM</option><option>Other</option></select></div>
+  </div>
+  <label for="p-ask">What they asked / what you pitched</label><input type="text" id="p-ask">
+  <div class="two">
+    <div><label for="p-status">Status</label><select id="p-status"><option>Pitched</option><option>Replied</option><option>Published</option><option>Declined</option><option>No response</option></select></div>
+    <div><label for="p-link">Link (when live)</label><input type="text" id="p-link" placeholder="https://"></div>
+  </div>
+  <div class="row"><button class="btn" id="p-add">Add</button><span class="note" id="p-note"></span></div>
+  <div class="tablewrap"><table id="p-table"><thead><tr><th>Date</th><th>Outlet</th><th>Platform</th><th>Ask / pitch</th><th>Status</th><th>Link</th><th></th></tr></thead><tbody></tbody></table></div>
+  <div class="quiet" id="p-quiet">The shared store isn't available in this view.</div>
+</section>
+
+<!-- ============ BENCHMARK ============ -->
+<section class="desk" id="desk-bench">
+  <h2>AI benchmark log</h2>
+  <p class="lead">One row per run of the 20-question benchmark. The scheduled worker adds a row on the 1st and 15th.</p>
+  <div class="two">
+    <div><label for="b-date">Run date</label><input type="date" id="b-date"></div>
+    <div><label for="b-tool">Tool</label><select id="b-tool"><option>Web search proxy (Claude)</option><option>Google AI Overview</option><option>ChatGPT</option><option>Perplexity</option><option>Gemini</option><option>Claude</option></select></div>
+  </div>
+  <div class="two">
+    <div><label for="b-cited">Cited (of 20)</label><input type="text" id="b-cited" placeholder="0"></div>
+    <div><label for="b-correct">…with the correct article</label><input type="text" id="b-correct" placeholder="0"></div>
+  </div>
+  <label for="b-notes">Notes</label><input type="text" id="b-notes">
+  <div class="row"><button class="btn" id="b-add">Add run</button><span class="note" id="b-note"></span></div>
+  <div class="tablewrap"><table id="b-table"><thead><tr><th>Date</th><th>Tool</th><th>Cited</th><th>Correct</th><th>Notes</th><th></th></tr></thead><tbody></tbody></table></div>
+  <div class="quiet" id="b-quiet">The shared store isn't available in this view.</div>
+</section>
+
+<!-- ============ RULES ============ -->
+<section class="desk" id="desk-rules">
+  <h2>House rules</h2>
+  <p class="lead">What the desk and the worker draft against. Source: <code>05-editorial-system/publishing-checklist.md</code> and <code>08-skills/coco-editorial-standards</code>.</p>
+  <div class="out" id="rules-out"></div>
+</section>
+
+</main>
+</div>
+
+<script>
+// ---------- House rules ----------
+const VOICE = `COCO TRAN HOUSE VOICE
+- First person (I, Coco), speaking to "you". Never third-person detached, never a listicle or checklist.
+- Positive, happy and excited. Confident and authoritative but warm — never cold, clipped or matter-of-fact. Let sentences breathe; show delight in the place.
+- Told like she's telling a friend about it the day after: concrete over clever. What happened, what she noticed, what she ate, what it cost. Looser run-on rhythm is fine.
+- KILL any sentence that explains or comments on the sentence before it instead of giving the next concrete thing: "That's the point." "Which is the point." "[X] doesn't announce itself as a feature so much as it becomes [Y]." Any tidy aphorism wrapping up a paragraph.
+- Small asides in her voice are good: "honestly", "which I didn't realise until I saw it on my bill", "I have to shout out the breakfast captain".
+- Reframe negatives as charm or handle them lightly; keep the fact; never sour.
+- Private and escorted is the default recommendation (driver, private guide, chartered boat, first-entry access); the DIY option is a genuine secondary, framed as her recommendation when it truly is better.
+- Hotels top tier only; $800+/night floor on Properties. Preferred-partner perks phrased "my clients typically enjoy… wherever they apply".
+- Banned words: breathtaking, seamless, meticulously curated, world-class, stunning, wanderlust, elevated (adjective), 6-star, hidden gem, look no further, ultimate, must-see, nestled.
+- No italics (<em>) in body HTML. No mid-piece sales pitch; one Inquire line near the end where the format allows: <p><a class="button" href="https://cocotrantravel.com/contact" target="_blank" rel="noopener">Inquire about a private [trip]</a></p>
+- At least one named person, dish, designer, room number or detail only someone who was there would know. Anything not firsthand is attributed ("the hotel says"). Nothing invented; unknown facts are written [VERIFY: what] and never guessed. Client names never appear.
+- Photographer's eye once per piece (light, material, space).`;
+
+const GATES = [
+ ["Headline says what the story covers","Subject, place and format clear; SEO title ≤60; one H1; no (2026)/ultimate/BEST."],
+ ["Opening establishes destination, subject and value","First paragraph names the place and the thing; short answer present."],
+ ["Proofread","No doubled words, keyword chains, drafting notes, placeholders."],
+ ["Firsthand vs sourced is distinguishable","First person for what she saw; attribution for the rest; nothing invented."],
+ ["Changeable facts flagged","Prices, dates, hours, closures, rebrands, visas carry [VERIFY] unless in the notes."],
+ ["Photos, captions, alt","Her photos or credited; alt describes the frame; credit present."],
+ ["Related stories and hub linked","Also-in links; Primer↔Rolodex↔Route↔Property; hub."],
+ ["Author and dates","Byline Coco Tran; visited month-year; Updated only if changed."],
+ ["Disclosures","Paid/hosted; affiliate; CTT relationship; How-we-review link."],
+ ["Free value before the gate","Short answer + glance visible to non-members; gate not mid-sentence."]
+];
+
+// Field maps — the live ACF keys per format (typos are real). The worker verifies against a published example before writing.
+const FORMATS = {
+ verdict:{label:"The Verdict",cpt:"property",kicker:"The Verdict",fields:["overall","rate_from","the_location","the_story","the_rooms","the_food_&_beverage","the_wellness","what_missed_the_mark","good_to_know","dont_miss","last_thoughts"],selects:{the_vibe:"1–2 of: Grand & Historic, Old World Romance, Minimalist & Design-Forward, Wild & Remote, Barefoot Luxury, Urban Sophisticate, Wellness & Restorative, Heritage Estate, Rail & Transit Romance, Secluded & Private",best_for:"one of: Privacy, Honeymoons, Families, Groups, Wellness",booking_access:"one of: Direct, Virtuoso, Four Seasons Preferred Partner, Belmond Bellini Club, Marriott STARS/Luminous, Hyatt Privé",room_count:"number"},guide:"Overall 15–25 words plain; rate_from '$X,XXX/night'; the_location 150–200 words opening in the warm first-person recap MOMENT register; the_story 150–200 (founding, named architect/designer); the_rooms 200–250 (category/room number, materials, view, one surprise, the bathroom); the_food_&_beverage 180–220 (named restaurants, 2–3 dishes); the_wellness 150–200 (arrival sequence in order); what_missed_the_mark 60–100 (one honest specific flaw); good_to_know 80–120; dont_miss 80–120 (name a person/activity); last_thoughts 120–180 (the verdict: who it serves, who it doesn't, one judgment). No CTA in any field. 1,800–2,500 words total; shorter if the stay was short — never pad.",glance:["Setting","Best for","Standout","Consider","Stayed"]},
+ comparison:{label:"The Comparison",cpt:"property",kicker:"The Comparison",fields:["overall","the_short_answer","property_a","property_b","the_tradeoff","who_books_which","last_thoughts"],guide:"Two properties side by side. overall 15–25 words; the_short_answer which for whom; property_a / property_b 250–350 words each in first person; the_tradeoff the honest differences (beach, rooms, food, service, price); who_books_which; last_thoughts the judgment. Keys here are provisional — the worker maps to the Tradeoff template (Element 29436).",glance:["Choose A if","Choose B if","Price difference","Both share","Stayed"]},
+ primer:{label:"The Primer",cpt:"guide",kicker:"The Primer",fields:["tittle_word_1","tittle_2_longer_words_underneath","opening_note","best_season","getting_there","what_to_book_first","money_&_logistics","etiquette_&_the_unexpected","how_long_&_the_shape_of_a_first_trip","insider_faq","closing_paragraph"],guide:"PRIMES someone before the trip: context, feel, what to understand before they land — not a second Rolodex. tittle_word_1 = the place; tittle_2 ≤70 chars. Each section 120–220 words, <h3> headings inside the field. insider_faq = 4–6 Q&As (<h4> question, <p> answer) in the questions people actually ask AI. Keys after opening_note are provisional — the worker maps to the live Primer fields (Element 27517).",glance:["Best months","How long","Base yourself in","Book first","Last visit"]},
+ rolodex:{label:"The Rolodex",cpt:"guide",kicker:"The Rolodex",fields:["tittle_word_1","tittle_2_longer_words_underneath","quote_1_","opening_note","best_season","getting_there","where_to_stay","where_to_eat_&_drink","what_to_do","day_trips","rainy-day_fallback","where_to_shop","insider_faq","closing_paragraph"],guide:"The comprehensive guide to a place, eleven sections, arranged the way the city works (by neighbourhood). where_to_stay: top-tier only, with 'my clients typically enjoy…' perks where they apply. Each section 150–300 words with <h3> headings inside the field. insider_faq = 4–6 Q&As. closing_paragraph carries the Inquire line and a 'pair it with' to sibling pieces.",glance:["Base in","Stay","Book ahead","Don't miss","Last visit"]},
+ roundup:{label:"The Roundup",cpt:"guide",kicker:"The Roundup",fields:["tittle_word_1","tittle_2_longer_words_underneath","opening_note","where_to_eat_&_drink","what_to_do","where_to_shop","closing_paragraph"],guide:"A curated list on ONE theme in five displayed sections (opening_note → where_to_eat_&_drink → what_to_do → where_to_shop → closing_paragraph; use them as five sections whatever the theme, where_to_stay does not display). Each pick 60–120 words with a <h3> name, one line on who it's for.",glance:["Top pick","Second","Wildcard","Price band","Last visit"]},
+ route:{label:"The Route",cpt:"brief",kicker:"The Route",fields:["tittle_word_2","trip_lenght_in_nights","overall","opening_scene","the_ask","the_route","the_details_that_make_it_work","the_moment_that_almost_went_wrong","last_thoughts"],guide:"title is always 'The Route'; tittle_word_2 = subtitle e.g. 'Two Weeks in Japan'. opening_scene = a MOMENT in first person; the_ask = who the trip was for and what they wanted (no client names); the_route = <h4> per segment, nights, base, the one thing; the_details_that_make_it_work; the_moment_that_almost_went_wrong EMPTY unless the notes give a real story; last_thoughts = Inquire line + pair-with. trip_type only 'Honeymoon' or 'couple' else blank.",glance:["Nights","Who","Season","Stops","Transport"]},
+ dossier:{label:"The Dossier",cpt:"brief",kicker:"The Dossier",fields:["overall","destination_overview","location_","weather_&_best_time_to_go","getting_around","entry_requirements","currency_&_exchange","tipping_culture","local_customs_&_etiquette","health_&_safety","connectivity","language_&_key_phrases","emergency_contacts","what_to_pack","closing_note"],guide:"Dry practical reference, still warm. Post title '[Place]  —', tittle_word_2 'The dossier'. Every changeable fact (visa, currency, rules) carries [VERIFY] unless in the notes. closing_note (not last_thoughts) carries the Inquire line.",glance:["Visa","Money","Best months","Getting around","Safety note"]},
+ shortlist:{label:"The Shortlist",cpt:"shortlist",kicker:"The Shortlist",fields:["tittle_1","tittle_2","overall","opening_note","the_picks","the_one_most_people_miss","closing_note"],guide:"Curated mini guide, public. opening_note is PLAIN TEXT (no <p>). the_picks = each pick <h3> name · neighbourhood · price band, then 2–4 sentences, what to order/ask for, who it's for. the_one_most_people_miss = one pick with the story. closing_note = Inquire line.",glance:["Top pick","Second","Wildcard","Price band","Last visit"]},
+ fieldnotes:{label:"Field Notes From",cpt:"dispatch",kicker:"Field Notes From",fields:["title_1","tittle_2","dispatch_one_liner","what_id_do_differently","the_takeaway"],guide:"800–1,200 words, public. title_1/tittle_2 = headline across two lines; dispatch_one_liner = lede; what_id_do_differently = body part 1; the_takeaway = body part 2 ending with the Inquire line and pair-with.",glance:["Visited","Open hours or cost","Nearest station","Best light","Last visit"]},
+ postcard:{label:"Postcard From",cpt:"dispatch",kicker:"Postcard",fields:["tittle_2","dispatch_one_liner","the_takeaway"],guide:"400–600 words, public, one moment or place. title_1 is 'Postcard'; tittle_2 'From [Place]'; dispatch_one_liner = lede; the_takeaway = whole body.",glance:["Visited","Open hours or cost","Nearest station","Best light","Last visit"]},
+ answer:{label:"The Answer",cpt:"dispatch",kicker:"The Answer",fields:["title_1","tittle_2","dispatch_one_liner","what_id_do_differently","the_takeaway"],guide:"350–600 words, public, owns ONE question people ask AI. title_1/tittle_2 = the question split across two lines (verbatim as asked); dispatch_one_liner = THE SHORT ANSWER, 2–3 sentences that stand alone when quoted, naming the 1–3 choices and who each suits; what_id_do_differently = WHY (150–300 words, one firsthand detail) + 'If you're choosing' (A if / B if); the_takeaway = Go deeper (sibling pieces) + Inquire line.",glance:["Visited","Open hours or cost","Nearest station","Best light","Last visit"]}
+};
+
+function draftPrompt(fmtKey,ctx){
+ const f=FORMATS[fmtKey];
+ return `You are the Coco Tran studio desk. Write a complete ${f.label} (${f.cpt} CPT) about "${ctx.subject}" from the CONTEXT below and nothing else. Facts not in the context are written as [VERIFY: what is needed] — never invented.
+
+${VOICE}
+
+FORMAT RULES: ${f.guide}
+FIELDS, in order, as HTML (<p>, <h3>, <h4>, <strong> only — never <em>): ${f.fields.join(", ")}.${f.selects?" SELECT FIELDS (vocabulary only, not sentences): "+Object.entries(f.selects).map(([k,v])=>k+" = "+v).join("; ")+".":""}
+
+ALSO produce the answerable opening (goes above the first image): short_answer = 2–3 sentences, first person, standalone: what it is, where, what's distinctive, who it suits. glance = exactly these five rows: ${f.glance.join(" · ")} (value "(blank — Coco to fill)" where the context has no fact). Visit basis from Coco: "${ctx.basis||"not supplied"}" — use verbatim for the Stayed/Last visit row. Disclosure: "${ctx.disclosure}".
+
+And the SEO set: seo_title ≤60 chars (the subject + place in plain words; for The Answer the question itself), meta_description ≤155, h1 (the piece's name; for Verdict '[Hotel], [Place]: An Honest Review'-style only if it reads naturally, else the hotel name), slug, primary_query, 3–5 secondary_queries people type into Google or an AI, and links = the sibling pieces to link (Primer/Rolodex/Route/Property/Shortlist for this place; say "if it exists").
+
+Reply with only JSON:
+{"post_title":"the WordPress post title","kicker":"${f.kicker}","fields":{"<key>":"<html>",...},"selects":{...},"short_answer":"…","glance":[{"label":"…","value":"…"}],"seo":{"seo_title":"…","meta_description":"…","h1":"…","slug":"…","primary_query":"…","secondary_queries":["…"]},"links":["…"],"verify":["every [VERIFY] item, one line each"],"photos_needed":["what each image slot should show, from the notes"]}
+
+CONTEXT
+Destination terms: ${ctx.dest||"(not given)"}
+Notes from Coco:
+${ctx.notes||"(none)"}
+${ctx.granola?.length?"\nGranola meeting notes:\n"+ctx.granola.map(g=>`--- ${g.title} (${g.date}) ---\n${g.notes}`).join("\n"):""}
+${ctx.proposal?"\nProposal Studio record to be read by the worker: "+ctx.proposal:""}${ctx.agency?"\nAgency Studio record to be read by the worker: "+ctx.agency:""}`;
+}
+
+function deskPassPrompt(fmtKey,draft){
+ return `You are the Coco Tran pre-publication desk. Below is a drafted ${FORMATS[fmtKey].label} as JSON. Run it through the gates and the voice rules, FIX what can be fixed without new facts, and return the corrected JSON plus a report. Keep every fact and every verdict; keep [VERIFY] markers; never add facts.
+
+${VOICE}
+
+GATES: ${GATES.map((g,i)=>`${i+1}. ${g[0]} — ${g[1]}`).join(" ")}
+
+Voice pass: remove every sentence that explains the previous one; replace banned words; warm any cold or clipped verdict; convert third-person or list phrasing to first person to "you"; strip drafting notes and <em>; make sure one named specific detail exists; keep short_answer standalone and the seo_title ≤60 / meta ≤155.
+
+Reply with only JSON: {"draft": <the corrected draft JSON, same shape>, "report": {"gates":[{"n":1,"verdict":"PASS|FIXED|NEEDS COCO","note":"…"}], "voice_changes":[{"before":"…","after":"…"}], "needs_coco":["things only Coco can supply"]}}
+
+DRAFT:
+${JSON.stringify(draft)}`;
+}
+
+function suggestPrompt(ctx){
+ return `Coco Tran is a luxury travel advisor and film photographer who publishes The Verdict (hotel reviews), The Primer, The Rolodex, The Roundup (guides), The Route, The Dossier (briefs), The Shortlist, Field Notes / Postcards / The Answer (dispatches). Subject: "${ctx.subject}". Context from Coco:\n${ctx.notes||"(none)"}\n${ctx.granola?.length?ctx.granola.map(g=>g.title+": "+g.notes.slice(0,1500)).join("\n"):""}
+Decide which ONE format fits this material best and why (one line), then list 8 questions well-off travellers actually type into ChatGPT, Perplexity or Google about this subject (which/where/is/should/how/best; include two "A or B" comparisons and one "is it worth it"), each with the cluster and the format that should own it. Reply with only JSON: {"format_key":"verdict|comparison|primer|rolodex|roundup|route|dossier|shortlist|fieldnotes|postcard|answer","why":"…","questions":[{"q":"…","cluster":"…","format_key":"…"}]}`;
+}
+
+// ---------- runtime ----------
+let sample=null, db=null, mcp=null, uid=null, canWrite=false, granolaOk=false;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ls={get(k){try{return localStorage.getItem(k)||""}catch(e){return ""}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const ERR={not_granted:"Claude wasn't allowed for this page.",rate_limited:"Too many requests right now — try again in a minute.",refused:"Claude declined this input; change what it asks.",invalid_json:"Claude's reply couldn't be read as data — try again.",upstream_error:"Connection hiccup — try again.",prompt_too_large:"Too much context — trim the notes.",cancelled:""};
+const copyFor=e=>ERR[e?.code] ?? "Something went wrong — try again.";
+async function copyText(t,btn){try{await navigator.clipboard.writeText(t);if(btn){const o=btn.textContent;btn.textContent="Copied";setTimeout(()=>btn.textContent=o,1200)}}catch(e){const ta=document.createElement("textarea");ta.value=t;document.body.append(ta);ta.select();try{document.execCommand("copy")}catch(_){}ta.remove()}}
+const safeHtml=h=>String(h??"").replace(/<(?!\/?(p|h3|h4|strong|br|ul|ol|li|a)\b)[^>]*>/gi,"").replace(/on\w+="[^"]*"/gi,"");
+
+// tabs
+const navBtns=[...document.querySelectorAll("nav button")];
+function show(id){navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id));ls.set("desk",id)}
+navBtns.forEach(b=>b.addEventListener("click",()=>show(b.dataset.desk)));
+const h=(location.hash||"").slice(1);show(navBtns.some(b=>b.dataset.desk===h)?h:(ls.get("desk")||"new"));
+
+$("#rules-out").textContent=VOICE+"\n\nPUBLISHING GATES\n"+GATES.map((g,i)=>`${i+1}. ${g[0]}\n   ${g[1]}`).join("\n")+"\n\nFORMATS\n"+Object.values(FORMATS).map(f=>`${f.label} (${f.cpt}): ${f.guide}`).join("\n\n");
+
+["n-notes","n-subject","n-dest","n-basis","n-photos","n-proposal","n-agency"].forEach(id=>{const el=$("#"+id);el.value=ls.get(id);el.addEventListener("input",()=>ls.set(id,el.value))});
+
+// ---------- Granola ----------
+let pulled=[]; // [{id,title,date,notes}]
+function granolaErr(e){const m={server_not_connected:"Add Granola under claude.ai Settings → Connectors.",needs_reauth:"Reconnect Granola under Settings → Connectors.",not_in_manifest:"Granola isn't allowed for this page in this view.",approval_required:"Granola needs your approval — try again and allow it.",tool_error:"Granola reported an error: "+(e.message||"").slice(0,120)};return m[e?.code]||"Granola didn't answer — try again."}
+$("#g-search").onclick=async()=>{
+ if(!mcp){$("#g-note").textContent="Connectors aren't available in this view.";return}
+ const q=$("#g-q").value.trim(); $("#g-search").disabled=true; $("#g-note").textContent="Searching…"; $("#g-list").innerHTML="";
+ try{
+  const input=q?{keywords:[q],limit:12,max_participants:3}:{time_range:"last_30_days",limit:12,max_participants:3};
+  const r=await mcp.callTool("Granola","search_meetings",input,{cache:false});
+  const p=r.payload; const ms=Array.isArray(p?.meetings)?p.meetings:[];
+  if(!ms.length){$("#g-note").textContent="No meetings found.";return}
+  $("#g-list").innerHTML=ms.map(m=>`<label class="meet" style="margin:0;text-transform:none;letter-spacing:0;font:inherit;color:inherit"><input type="checkbox" value="${esc(m.id)}" data-title="${esc(m.title)}" data-date="${esc((m.meeting_at||m.created_at||"").slice(0,10))}"><span>${esc(m.title)} <span class="meta">${esc((m.meeting_at||m.created_at||"").slice(0,10))}</span></span></label>`).join("");
+  $("#g-pullrow").hidden=false; $("#g-note").textContent=ms.length+" found — tick the ones to pull.";
+ }catch(e){$("#g-note").textContent=granolaErr(e)}
+ finally{$("#g-search").disabled=false}
+};
+$("#g-pull").onclick=async()=>{
+ const sel=[...$("#g-list").querySelectorAll("input:checked")]; if(!sel.length){$("#g-note").textContent="Tick at least one meeting.";return}
+ $("#g-pull").disabled=true; $("#g-note").textContent="Pulling notes…";
+ try{
+  const r=await mcp.callTool("Granola","get_meetings",{meeting_ids:sel.slice(0,10).map(i=>i.value),max_participants:5},{cache:false});
+  const p=r.payload; const arr=Array.isArray(p?.meetings)?p.meetings:(Array.isArray(p)?p:[]);
+  const text=x=>{if(typeof x==="string")return x; if(!x)return ""; return [x.summary,x.notes,x.private_notes,x.ai_summary,x.content].filter(Boolean).map(v=>typeof v==="string"?v:JSON.stringify(v)).join("\n\n")};
+  if(!arr.length){ // unknown shape: keep the raw text so nothing is lost
+   const raw=(r.content||[]).filter(c=>c.type==="text").map(c=>c.text).join("\n");
+   sel.forEach(i=>pulled.push({id:i.value,title:i.dataset.title,date:i.dataset.date,notes:raw.slice(0,20000)}));
+  }else arr.forEach((m,ix)=>{const s=sel.find(i=>i.value===(m.id||m.meeting_id))||sel[ix]; pulled.push({id:m.id||m.meeting_id||s?.value,title:m.title||s?.dataset.title||"Meeting",date:(m.meeting_at||m.created_at||s?.dataset.date||"").slice(0,10),notes:text(m).slice(0,20000)})});
+  renderPulled(); $("#g-note").textContent="Pulled.";
+ }catch(e){$("#g-note").textContent=granolaErr(e)}
+ finally{$("#g-pull").disabled=false}
+};
+function renderPulled(){$("#g-pulled").innerHTML=pulled.map((g,i)=>`<div class="card"><div class="meta">${esc(g.date)} · ${esc(g.notes.length)} chars <button class="copy" data-i="${i}">remove</button></div><h4>${esc(g.title)}</h4><div style="font-size:13px;color:var(--muted);max-height:80px;overflow:hidden">${esc(g.notes.slice(0,400))}…</div></div>`).join("");$("#g-pulled").querySelectorAll(".copy").forEach(b=>b.onclick=()=>{pulled.splice(+b.dataset.i,1);renderPulled()})}
+
+// ---------- Make the piece ----------
+function collect(){return{format:$("#n-format").value,subject:$("#n-subject").value.trim(),dest:$("#n-dest").value.trim(),basis:$("#n-basis").value.trim(),disclosure:$("#n-disclosure").value,photos:$("#n-photos").value.trim(),notes:$("#n-notes").value.trim(),granola:pulled.map(g=>({id:g.id,title:g.title,date:g.date,notes:g.notes})),proposal:$("#n-proposal").value.trim(),agency:$("#n-agency").value.trim()}}
+function step(t){$("#n-steps").innerHTML+=(t?`<div>${t}</div>`:"")}
+let ctl=null;
+async function saveJob(job){
+ if(!db||!canWrite) return null;
+ const id=(job.seo?.slug||job.subject||"piece").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60)+"-"+Date.now().toString(36);
+ await db.doc("jobs/"+id).set({...job,id,createdAt:Date.now(),updatedAt:Date.now()});
+ return id;
+}
+$("#n-queueonly").onclick=async()=>{
+ const c=collect(); if(!c.subject){$("#n-note").textContent="Name the subject.";return}
+ if(!c.notes&&!c.granola.length&&!c.proposal&&!c.agency){$("#n-note").textContent="Give the worker some context first.";return}
+ try{const id=await saveJob({...c,status:"queued",title:c.subject}); $("#n-note").textContent=id?"Queued for the worker.":"Couldn't save — store not writable."}catch(e){$("#n-note").textContent="Couldn't save the job."}
+};
+$("#n-run").onclick=async()=>{
+ const c=collect(); if(!c.subject){$("#n-note").textContent="Name the subject.";return}
+ if(!c.notes&&!c.granola.length){$("#n-note").textContent="The desk needs notes or Granola to draft here. Studio links alone → use 'Just queue it'.";return}
+ if(!sample) return;
+ ctl=new AbortController(); $("#n-run").disabled=true; $("#n-stop").disabled=false; $("#n-stop").onclick=()=>ctl.abort();
+ $("#n-steps").innerHTML=""; $("#n-stream").textContent=""; $("#n-piece").innerHTML=""; $("#n-note").textContent="";
+ try{
+  let fmt=c.format;
+  if(fmt==="suggest"){
+   step("<b>1</b> choosing the format and finding the questions…");
+   const s=await sample.json(suggestPrompt(c),{signal:ctl.signal,cache:false});
+   fmt=FORMATS[s?.format_key]?s.format_key:"fieldnotes"; c.suggested=s;
+   step(`→ <b>${FORMATS[fmt].label}</b> — ${esc(s?.why||"")}`);
+   if(Array.isArray(s?.questions)) step("questions: "+s.questions.map(q=>esc(q.q)).join(" · "));
+  }
+  step(`<b>2</b> drafting the ${FORMATS[fmt].label} in Coco's voice, pillar structure, opening block and SEO set…`);
+  $("#n-stream").textContent="Thinking…";
+  const draft=await sample.json(draftPrompt(fmt,c),{signal:ctl.signal,cache:false,modelTier:"complex",onText:({text})=>{$("#n-stream").textContent=text.slice(-1500)}});
+  step("<b>3</b> running the ten gates and the voice pass on the draft…");
+  const pass=await sample.json(deskPassPrompt(fmt,draft),{signal:ctl.signal,cache:false,onText:({text})=>{$("#n-stream").textContent=text.slice(-1500)}});
+  $("#n-stream").textContent="";
+  const final=pass?.draft||draft, report=pass?.report||{};
+  const job={...c,format:fmt,status:"drafted",title:final.post_title||c.subject,draft:final,report,seo:final.seo||{}};
+  step("<b>4</b> saving to the queue for the worker (research + WordPress build)…");
+  let id=null; try{id=await saveJob(job)}catch(e){}
+  step(id?`saved as <b>${esc(id)}</b> — status drafted. Approve in the Queue when you're happy; the worker builds it in WordPress.`:"not saved (store not writable) — copy the JSON below.");
+  renderPiece($("#n-piece"),job,id);
+ }catch(e){$("#n-stream").textContent=e.text?e.text.slice(-800):""; if(e.code!=="cancelled") $("#n-note").textContent=copyFor(e); if(e.code==="not_granted"){sample=null;setStatus()}}
+ finally{$("#n-run").disabled=false;$("#n-stop").disabled=true}
+};
+
+function renderPiece(el,job,id){
+ const d=job.draft||{}, f=FORMATS[job.format]||FORMATS.fieldnotes, r=job.report||{};
+ const fields=d.fields||{}; const order=f.fields.filter(k=>fields[k]!=null).concat(Object.keys(fields).filter(k=>!f.fields.includes(k)));
+ const acf={...fields,...(d.selects||{}),short_answer:d.short_answer||"",visit_basis:job.basis||"",disclosure:job.disclosure||""};
+ (d.glance||[]).forEach((g,i)=>{acf["glance_"+(i+1)+"_label"]=g.label||"";acf["glance_"+(i+1)+"_value"]=g.value||""});
+ const payload={cpt:f.cpt,format:f.label,post_title:d.post_title,acf,rank_math:{title:d.seo?.seo_title,description:d.seo?.meta_description,focus_keyword:d.seo?.primary_query},slug:d.seo?.slug,destination_terms:job.dest,links:d.links||[],photos:job.photos,photos_needed:d.photos_needed||[],verify:d.verify||[]};
+ el.innerHTML=`<div class="piece">
+  <div class="kicker">${esc(d.kicker||f.kicker)} · ${esc(job.subject)}</div>
+  <h2 class="title">${esc(d.seo?.h1||d.post_title||job.subject)}</h2>
+  <div class="byline">Photos &amp; words by Coco Tran · ${esc(job.basis||"Visited (fill)")} · ${esc(job.disclosure)}</div>
+  <p class="short">${esc(d.short_answer||"")}</p>
+  <div class="kv">${(d.glance||[]).map(g=>`<div>${esc(g.label)}</div><div>${esc(g.value)}</div>`).join("")}</div>
+  ${order.map(k=>`<div class="field"><div class="key">${esc(k)}</div><div class="body">${safeHtml(fields[k])}</div></div>`).join("")}
+  <hr>
+  <div class="card"><div class="meta">SEO</div><div class="kv" style="margin-top:8px"><div>Title</div><div>${esc(d.seo?.seo_title)} <span class="pill ${(d.seo?.seo_title||"").length>60?"warn":"ok"}">${(d.seo?.seo_title||"").length}</span></div><div>Description</div><div>${esc(d.seo?.meta_description)} <span class="pill ${(d.seo?.meta_description||"").length>155?"warn":"ok"}">${(d.seo?.meta_description||"").length}</span></div><div>Slug</div><div>${esc(d.seo?.slug)}</div><div>Primary query</div><div>${esc(d.seo?.primary_query)}</div><div>Secondary</div><div>${(d.seo?.secondary_queries||[]).map(esc).join("<br>")}</div><div>Links</div><div>${(d.links||[]).map(esc).join("<br>")}</div></div></div>
+  ${(d.verify||[]).length?`<div class="card"><div class="meta">VERIFY BEFORE PUBLISH</div><ul style="margin:6px 0 0 18px">${d.verify.map(v=>`<li>${esc(v)}</li>`).join("")}</ul></div>`:""}
+  ${(r.needs_coco||[]).length?`<div class="card"><div class="meta">NEEDS COCO</div><ul style="margin:6px 0 0 18px">${r.needs_coco.map(v=>`<li>${esc(v)}</li>`).join("")}</ul></div>`:""}
+  ${(r.gates||[]).length?`<div class="card"><div class="meta">GATES</div>${r.gates.map(g=>`<div><span class="pill ${g.verdict==="PASS"?"ok":g.verdict==="FIXED"?"warn":"bad"}">${esc(g.verdict)}</span> ${g.n}. ${esc(GATES[(g.n||1)-1]?.[0]||"")} <span style="color:var(--muted)">— ${esc(g.note)}</span></div>`).join("")}</div>`:""}
+  ${(r.voice_changes||[]).length?`<div class="card"><div class="meta">VOICE PASS · ${r.voice_changes.length} changes</div>${r.voice_changes.slice(0,12).map(v=>`<div style="margin-top:6px"><span style="color:var(--muted);text-decoration:line-through">${esc(v.before)}</span><br>${esc(v.after)}</div>`).join("")}</div>`:""}
+  <div class="row">${id&&canWrite?`<button class="btn" data-approve="${esc(id)}">Approve → build in WordPress</button>`:""}<button class="btn alt" data-copy="payload">Copy WordPress payload</button><button class="btn alt" data-copy="text">Copy as text</button></div>
+ </div>`;
+ el.querySelector('[data-copy="payload"]').onclick=e=>copyText(JSON.stringify(payload,null,1),e.target);
+ el.querySelector('[data-copy="text"]').onclick=e=>copyText([d.post_title,"",d.short_answer,"",...(d.glance||[]).map(g=>g.label+": "+g.value),"",...order.map(k=>k.toUpperCase()+"\n"+String(fields[k]).replace(/<[^>]+>/g,"")),"",JSON.stringify(d.seo)].join("\n"),e.target);
+ const ab=el.querySelector("[data-approve]"); if(ab) ab.onclick=async()=>{ab.disabled=true;try{await db.doc("jobs/"+ab.dataset.approve).update({status:"approved",updatedAt:Date.now()});ab.textContent="Approved — the worker builds it next run"}catch(e){ab.disabled=false;$("#n-note").textContent="Couldn't update the job."}};
+}
+
+// ---------- Queue ----------
+let jobsCache=[];
+function renderQueue(snap){
+ jobsCache=snap.docs.map(d=>({id:d.id,...d.data()}));
+ const tb=$("#q-table tbody"); tb.innerHTML="";
+ jobsCache.forEach(j=>{const tr=document.createElement("tr");
+  tr.innerHTML=`<td class="num">${esc(new Date(j.updatedAt||j.createdAt||0).toISOString().slice(0,10))}</td><td>${esc(j.title||j.subject)}</td><td>${esc(FORMATS[j.format]?.label||j.format)}</td><td><span class="pill ${j.status==="built"?"ok":j.status==="needs-site"?"bad":""}">${esc(j.status)}</span>${j.preview_url?` <a href="${esc(j.preview_url)}" target="_blank" rel="noopener">preview</a>`:""}</td><td><button class="copy" data-open="${esc(j.id)}">open</button>${canWrite?` <button class="copy del" data-id="${esc(j.id)}">remove</button>`:""}</td>`;
+  tb.append(tr)});
+ tb.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{const j=jobsCache.find(x=>x.id===b.dataset.open); if(!j)return; if(j.draft) renderPiece($("#q-detail"),j,j.id); else $("#q-detail").innerHTML=`<div class="card"><div class="meta">${esc(j.status)}</div><h4>${esc(j.title||j.subject)}</h4><div class="note">${esc((j.notes||"").slice(0,600))}</div>${j.worker_notes?`<div class="note">${esc(j.worker_notes)}</div>`:""}</div>`; $("#q-detail").scrollIntoView({behavior:"smooth"})});
+ tb.querySelectorAll(".del").forEach(b=>b.onclick=async()=>{if(b.dataset.armed){try{await db.doc("jobs/"+b.dataset.id).delete()}catch(e){}}else{b.dataset.armed="1";b.textContent="confirm remove";setTimeout(()=>{b.dataset.armed="";b.textContent="remove"},3000)}});
+}
+
+// ---------- Citations & benchmark ----------
+function renderPitches(snap){
+ const tb=$("#p-table tbody"); tb.innerHTML="";
+ snap.docs.forEach(d=>{const r=d.data(); const tr=document.createElement("tr");
+  tr.innerHTML=`<td class="num">${esc(r.date)}</td><td>${esc(r.outlet)}</td><td>${esc(r.platform)}</td><td>${esc(r.ask)}</td><td><select data-id="${esc(d.id)}" class="pst" ${canWrite?"":"disabled"}>${["Pitched","Replied","Published","Declined","No response"].map(s=>`<option ${s===r.status?"selected":""}>${s}</option>`).join("")}</select></td><td>${r.link?`<a href="${esc(r.link)}" target="_blank" rel="noopener">link</a>`:""}</td><td>${canWrite?`<button class="copy del" data-id="${esc(d.id)}">remove</button>`:""}</td>`;
+  tb.append(tr)});
+ tb.querySelectorAll(".pst").forEach(s=>s.onchange=async()=>{try{await db.doc("pitches/"+s.dataset.id).update({status:s.value})}catch(e){$("#p-note").textContent="Couldn't save that change."}});
+ tb.querySelectorAll(".del").forEach(b=>b.onclick=async()=>{if(b.dataset.armed){try{await db.doc("pitches/"+b.dataset.id).delete()}catch(e){}}else{b.dataset.armed="1";b.textContent="confirm remove";setTimeout(()=>{b.dataset.armed="";b.textContent="remove"},3000)}});
+}
+function renderBench(snap){
+ const tb=$("#b-table tbody"); tb.innerHTML="";
+ snap.docs.forEach(d=>{const r=d.data(); const tr=document.createElement("tr");
+  tr.innerHTML=`<td class="num">${esc(r.date)}</td><td>${esc(r.tool)}</td><td class="num">${esc(String(r.cited??""))}/20</td><td class="num">${esc(String(r.correct??""))}</td><td>${esc(r.notes)}</td><td>${canWrite?`<button class="copy del" data-id="${esc(d.id)}">remove</button>`:""}</td>`;
+  tb.append(tr)});
+ tb.querySelectorAll(".del").forEach(b=>b.onclick=async()=>{if(b.dataset.armed){try{await db.doc("benchmarks/"+b.dataset.id).delete()}catch(e){}}else{b.dataset.armed="1";b.textContent="confirm remove";setTimeout(()=>{b.dataset.armed="";b.textContent="remove"},3000)}});
+}
+$("#p-add").onclick=async()=>{
+ if(!db||!canWrite){$("#p-note").textContent="You can't write to the store in this view.";return}
+ const outlet=$("#p-outlet").value.trim(), ask=$("#p-ask").value.trim(); if(!outlet&&!ask){$("#p-note").textContent="Add an outlet or what you pitched.";return}
+ $("#p-add").disabled=true;
+ try{await db.collection("pitches").add({date:new Date().toISOString().slice(0,10),outlet,platform:$("#p-platform").value,ask,status:$("#p-status").value,link:$("#p-link").value.trim(),createdAt:Date.now()});["p-outlet","p-ask","p-link"].forEach(i=>$("#"+i).value="");$("#p-note").textContent="Added."}
+ catch(e){$("#p-note").textContent=e.code==="quota_exceeded"?"The store is full — remove old rows.":"Couldn't add that row."}
+ finally{$("#p-add").disabled=false}
+};
+$("#b-add").onclick=async()=>{
+ if(!db||!canWrite){$("#b-note").textContent="You can't write to the store in this view.";return}
+ $("#b-add").disabled=true;
+ try{await db.collection("benchmarks").add({date:$("#b-date").value||new Date().toISOString().slice(0,10),tool:$("#b-tool").value,cited:Number($("#b-cited").value)||0,correct:Number($("#b-correct").value)||0,notes:$("#b-notes").value.trim(),createdAt:Date.now()});["b-cited","b-correct","b-notes"].forEach(i=>$("#"+i).value="");$("#b-note").textContent="Added."}
+ catch(e){$("#b-note").textContent="Couldn't add that run."}
+ finally{$("#b-add").disabled=false}
+};
+
+function setStatus(){
+ $("#st-sample").textContent=sample?"ready":"off"; $("#st-db").textContent=db?(canWrite?"shared · write":"shared · read"):"off"; $("#st-granola").textContent=granolaOk?"ready":(mcp?"ask":"off");
+ $("#n-quiet").style.display=sample?"none":"block"; $("#n-run").disabled=!sample;
+ $("#g-quiet").style.display=mcp?"none":"block"; $("#g-search").disabled=!mcp;
+ ["q","p","b"].forEach(k=>$("#"+k+"-quiet").style.display=db?"none":"block");
+}
+(async()=>{
+ setStatus();
+ const [s,d,u,m]=await Promise.all([claude.use("sample"),claude.use("db"),claude.use("user"),claude.use("mcp")]);
+ sample=s; db=d; mcp=m;
+ try{canWrite=!!(d&&u&&((await u.can("data.write"))??true))}catch(e){canWrite=!!d}
+ if(mcp){try{const l=await mcp.listTools("Granola");granolaOk=!!(l?.servers||[]).find(x=>x.server==="Granola"&&x.authStatus!=="needs_reauth")}catch(e){granolaOk=false}}
+ setStatus();
+ if(db){
+  try{db.collection("jobs").orderBy("updatedAt","desc").limit(100).onSnapshot(renderQueue,()=>{})}catch(e){}
+  try{db.collection("pitches").orderBy("createdAt","desc").limit(200).onSnapshot(renderPitches,()=>{})}catch(e){}
+  try{db.collection("benchmarks").orderBy("createdAt","desc").limit(100).onSnapshot(renderBench,()=>{})}catch(e){}
+ }
+})();
+</script>

@@ -44,7 +44,8 @@
 | `06-wp-plugin/coco-photo-cms/` | **WordPress plugin**: resize + WebP/AVIF on upload, descriptive filenames from Property/Place/Detail fields, required alt + credit, rename-with-301, replace everywhere or only-here, usages finder, ImageObject schema, REST intake for the artifact, bulk tools. `php -l` clean; not yet run on a live site — install on staging first. README inside. |
 | `07-ai-benchmark/` | `questions.md` (the fixed 20 + method) and dated run reports. Baseline 24 Oct: **0 of 20** cited. Re-runs on the 1st and 15th via the scheduled task. |
 | `08-skills/coco-editorial-standards/SKILL.md` | The standards as a skill — add to the Coco Tran Collective project so every drafting session follows them |
-| **Editorial Desk artifact** | https://claude.ai/artifact/NVykejaCwzyJDdN2G1NMQt — pre-publication desk, voice check, opening-block generator, answer finder, citation tracker, benchmark log |
+| **Studio Desk artifact (v2)** | https://claude.ai/artifact/NVykejaCwzyJDdN2G1NMQt — one pipeline: pillar + subject + context (paste, Granola pull, Proposal/Agency Studio names) → drafts the whole piece in Coco's voice and pillar structure with the opening block and SEO set, runs the gates and voice pass on itself, queues it. Source: `10-artifacts/studio-desk.html` |
+| `08-skills/studio-pipeline/SKILL.md` | The worker: picks up the queue, researches title/meta/H1/keyword against what ranks, reads Proposal/Agency Studio, verifies facts, builds the WordPress draft (Application Password, Cowork Chrome, or writes the payload to `09-studio-output/`). Runs 4×/day as the scheduled task "Coco Tran studio queue worker"; also runnable by asking any session to "run the studio queue". |
 
 ## How to apply
 
