@@ -210,6 +210,20 @@ Full list in `03-fixes/meta-title-rewrites.csv`.
 
 ---
 
+## I. Added 24 Oct (second pass) — AI-search visibility and the Cloudflare block (P0)
+
+### I1. Baseline benchmark: cocotran.com cited in 0 of 20 questions
+Full report: `07-ai-benchmark/2026-10-24-baseline.md`. 40 web searches (verbatim + keyword form for each of 20 questions): no cocotran.com URL surfaced once — including for "Who is Coco Tran travel advisor?", which was answered from virtuoso.com. Site-restricted searches show the pieces *are* indexed (often under old slugs), so this is a ranking/visibility problem, not an indexing one. Competitors that win repeatedly: luxurytraveldiary.com, tripadvisor, fodors.com forums, japlanease.com, santorinidave.com, thehotelguru.com, OTAs on hotel-name queries.
+
+### I2. Cloudflare challenge blocks automated fetchers
+Every WebFetch of cocotran.com during the benchmark (homepage, robots.txt, two articles) returned a "Please wait while your request is being verified" interstitial instead of the page. Direct curl from this container with bot UAs got 200, so it's an IP/behaviour rule (managed challenge on datacentre IPs, or "Bot Fight Mode"), not a UA rule. That is exactly the kind of fetcher ChatGPT, Perplexity and Claude use to read a page before citing it. **Fix:** Cloudflare → Security → Bots: turn off Bot Fight Mode / Super Bot Fight Mode for verified bots; Security → WAF: check custom/managed-challenge rules and skip them for Verified Bots and the AI crawlers (GPTBot, ClaudeBot, PerplexityBot, OAI-SearchBot, Google-Extended, Applebot); re-test with `curl -A "Mozilla/5.0 (compatible; OAI-SearchBot/1.0)"` from an external IP and the benchmark's WebFetch step.
+
+### I3. Old `(2026)` titles on 2–3-year-old posts, and a "2023" title
+Several old posts carry "(2026)" in the title but dates/content from 2023–24; one title still says "3 Week Japan Itinerary … 2023". Fresh-looking titles on stale content read as deceptive to raters. Covered by `03-fixes/meta-title-rewrites.csv`.
+
+### I4. Editorial-system gaps (now covered in `05-editorial-system/`)
+No methodology page; no answerable opening; no per-format structured-data rules; no formal pre-publication checklist; no AI question bank; no citation routine. All now written and the Editorial Desk artifact runs the checks.
+
 ## What's already good (keep)
 
 - First-hand specificity ("room 312", "half past six at Fushimi Inari") — exactly what quality raters and AI engines reward.

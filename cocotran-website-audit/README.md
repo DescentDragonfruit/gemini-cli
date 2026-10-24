@@ -29,6 +29,23 @@
 | `article-templates.md` | 3.x — AI-quotable structure for each content type (Verdict box, fact block, FAQ, dates) |
 | `destination-hub-spec.md` | 3.x — destination hub architecture, Kyoto as the worked example, hub map for all current destinations |
 
+## Added 24 Oct — second pass
+
+| Folder / file | What it is |
+|---|---|
+| `05-editorial-system/publishing-checklist.md` | The ten pre-publication gates, the structured-data checklist per page type, the prompt Claude runs every draft through, the voice tests |
+| `05-editorial-system/methodology-page.md` | Copy for `/how-we-review/` (link from every Property) |
+| `05-editorial-system/about-page-v2.md` | About page rewrite with the who / did-she-visit / when / why-trust signals, plus the rollout rule for article pages |
+| `05-editorial-system/eeat-rollout.md` | The answerable opening (Short answer · At a glance · byline · disclosure) designed for the site's typography, the ACF fields, one Kadence Element for all CPTs, the bulk-backfill procedure, and the go-forward workflow for Claude-assisted pieces |
+| `05-editorial-system/ai-faq-question-bank.md` | The 20 seed questions, which piece owns each, the gap, and "The Answer" quick-article format |
+| `05-editorial-system/citation-opportunities.md` | Verified (24 Oct 2026) status/cost of journalist-request services, travel-media channels, profile builders, podcast platforms, photo licensing; a weekly 60-minute routine; a pitch template; what not to do |
+| `05-editorial-system/90-day-plan.md` | Days 1–14 / 15–45 / 46–90 and the four outcome metrics with a baseline table |
+| `05-editorial-system/paywall-decision.md` | Free / Archive / Insider framework, recommended split, the qualifying questions — decision recorded once Coco answers |
+| `06-wp-plugin/coco-photo-cms/` | **WordPress plugin**: resize + WebP/AVIF on upload, descriptive filenames from Property/Place/Detail fields, required alt + credit, rename-with-301, replace everywhere or only-here, usages finder, ImageObject schema, REST intake for the artifact, bulk tools. `php -l` clean; not yet run on a live site — install on staging first. README inside. |
+| `07-ai-benchmark/` | `questions.md` (the fixed 20 + method) and dated run reports. Baseline 24 Oct: **0 of 20** cited. Re-runs on the 1st and 15th via the scheduled task. |
+| `08-skills/coco-editorial-standards/SKILL.md` | The standards as a skill — add to the Coco Tran Collective project so every drafting session follows them |
+| **Editorial Desk artifact** | https://claude.ai/artifact/NVykejaCwzyJDdN2G1NMQt — pre-publication desk, voice check, opening-block generator, answer finder, citation tracker, benchmark log |
+
 ## How to apply
 
 The site is not Jetpack-connected to the WordPress.com account this session could see, so changes couldn't be pushed from here. Two routes:

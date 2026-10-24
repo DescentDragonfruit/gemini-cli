@@ -1,0 +1,10 @@
+.ccpc-alt-warning { color: #b32d2e; margin: 4px 0; }
+.ccpc-alt-empty { border-color: #b32d2e !important; box-shadow: 0 0 0 1px #b32d2e; }
+.ccpc-rename-help { display: block; color: #646970; font-size: 12px; margin-top: 4px; }
+.ccpc-rename-input { margin-left: 6px; width: 260px; }
+.ccpc-msg { margin-left: 6px; color: #1d2327; }
+.ccpc-box h4 { margin: 12px 0 6px; }
+.ccpc-inline-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+.ccpc-usages-table .ccpc-swap-id { width: 110px; }
+.ccpc-settings .form-table th { width: 220px; }
+#ccpc-missing-alt-list { margin-top: 10px; }

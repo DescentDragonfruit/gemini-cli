@@ -68,6 +68,23 @@ Status key: `[ ]` not started · `[~]` drafted here, needs applying · `[x]` don
 - [ ] **5.1 For each of the 105 live old posts, pick one:** (a) respin into the new format with the respin-old-content skill, (b) rewrite the intro + title only (keep the body), or (c) 301 to its new-format sibling. Priority order: posts with Search Console impressions, then hotel reviews, then destination guides. `data/meta_inventory.csv` has the word counts; `meta-title-rewrites.csv` has the titles.
 - [ ] **5.2 Add "Also in [destination]" + hub links** to every old post kept.
 
+## Phase 1b — Added 24 Oct: the second-pass items (this week)
+
+- [ ] **1b.1 Unblock AI fetchers in Cloudflare.** Security → Bots (Bot Fight Mode off for verified bots) and WAF rules (skip challenge for Verified Bots + GPTBot/ClaudeBot/PerplexityBot/OAI-SearchBot). Re-test per `01-audit-findings.md` §I2. — *Coco, 15 min* ← **do first; nothing else in AI search works while this is on**
+- [~] **1b.2 Publish `/how-we-review/`.** `05-editorial-system/methodology-page.md`. Link from footer, About, every Property. — *Coco, 20 min*
+- [~] **1b.3 About page v2.** `05-editorial-system/about-page-v2.md` (fill the credentials). — *Coco, 30 min*
+- [~] **1b.4 Adopt the publishing checklist + structured-data checklist** for every piece: `05-editorial-system/publishing-checklist.md`; run drafts through the Editorial Desk artifact (https://claude.ai/artifact/NVykejaCwzyJDdN2G1NMQt). — *Coco + Claude, ongoing*
+- [~] **1b.5 Add the skill** `08-skills/coco-editorial-standards/SKILL.md` to the Coco Tran Collective project / synced skills so every session drafts to it. — *Coco, 5 min*
+
+## Phase 2b — Answerable opening + photo CMS (weeks 2–4)
+
+- [~] **2b.1 ACF "Answerable opening" field group + one Kadence Element** per `05-editorial-system/eeat-rollout.md` §1–2. — *Coco/Claude, 1–2 h*
+- [ ] **2b.2 Bulk backfill** Properties → Primers → Rolodexes → Routes (Claude drafts from existing fields; Coco approves in the Desk; REST writes). — *2–3 sessions*
+- [ ] **2b.3 Coco fills visited / basis / disclosure** for the 75 pieces (one sheet). — *Coco, afternoon*
+- [ ] **2b.4 Install Coco Photo CMS** (`06-wp-plugin/coco-photo-cms/`): settings, bulk WebP regenerate, alt sweep, redirect rule in LiteSpeed/.htaccess. Create an Application Password for the artifact intake. — *Coco/Host, 1 h*
+- [ ] **2b.5 Citation routine** running weekly per `05-editorial-system/citation-opportunities.md`; log in the Desk tracker. — *Coco, 60 min/week*
+- [ ] **2b.6 First four "The Answer" pieces** from `ai-faq-question-bank.md` (#1, 3, 13, 19). — *Coco + Claude*
+
 ## Phase 6 — Verify (after each phase)
 
 - [ ] Run `04-scripts/recheck.sh` — sitemap includes CPTs, feed 200, 404 returns 404, llms.txt 200, no "lorei", schema types show Article/Review, isAccessibleForFree present on gated pages.
@@ -75,6 +92,8 @@ Status key: `[ ]` not started · `[~]` drafted here, needs applying · `[x]` don
 - [ ] Rich Results Test on one Property (Review) and one Primer (Article + FAQ).
 - [ ] PageSpeed Insights mobile on homepage + one Property (when quota resets): LCP < 2.5 s, CLS < 0.1.
 - [ ] Four weeks later: compare clicks/impressions on the 118 redirected URLs' targets vs the month before.
+- [x] **AI benchmark** runs automatically on the 1st and 15th (scheduled task "Coco Tran AI-visibility benchmark", 8:47am Pacific): report to `07-ai-benchmark/`, row in the Desk's benchmark log, push notification with the summary. Baseline 24 Oct: 0/20. Ask for an ad-hoc run any time.
+- [ ] 90-day sequencing and the four outcome metrics: `05-editorial-system/90-day-plan.md`.
 
 ---
 
