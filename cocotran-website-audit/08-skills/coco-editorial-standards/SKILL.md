@@ -30,7 +30,8 @@ The narrative below the block is untouched: MOMENT opening, the fields in order,
 
 - Sounds like Coco telling you the day after, not a camera panning or a brochure.
 - No sentence that comments on the previous one ("That's the point." "…doesn't announce itself so much as…"). Give the next concrete thing instead.
-- Warm, positive, excited; let verdicts breathe. Never clipped ("Three nights. One shore.").
+- Warm, positive, excited; let verdicts breathe. Never clipped ("Three nights. One shore."). Never cold or matter-of-fact. This holds for everything written in Coco's name: pieces, site pages (About, How we review), emails to readers and GMs, captions, replies. Professional and on brand always; the warmth is the brand.
+- **Coco's own voice sheet wins.** Before drafting anything, read `voice/rules` in the Studio Desk store (ArtifactData get, url https://claude.ai/artifact/NVykejaCwzyJDdN2G1NMQt, collection `voice`, doc `rules`). If `text` is non-empty it replaces the house voice block; `voice/allow` lists phrasings never to flag. Mirror any change to `05-editorial-system/voice.md` and commit it.
 - First person to "you". Never listicle, never third-person detached.
 - Negatives reframed as charm or handled lightly; keep the fact.
 - Private/escorted default; top-tier hotels; $800+/night floor on Properties.

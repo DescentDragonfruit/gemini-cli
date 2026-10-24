@@ -1,3 +1,4 @@
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Coco Tran Studio Desk</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -38,13 +39,34 @@ a{color:var(--accent)}
 .hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:38px 0 14px;border-bottom:2px solid var(--fg)}
 .hero h1{font-family:var(--title);font-weight:400;font-size:clamp(44px,6vw,76px);line-height:.95;margin:0;letter-spacing:-.015em}
 .hero .issue{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding-bottom:10px;text-align:right}
+.mbar{display:none}
 @media (max-width:900px){
  .app{grid-template-columns:1fr}
- .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:2px;padding:12px 0;scrollbar-width:none}
- .side .brand,.side .k,.side .status{display:none}
- .side button{width:auto;white-space:nowrap;padding:8px 12px}
+ .mbar{display:flex;position:sticky;top:0;z-index:40;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--line)}
+ .mbar .mb-brand{font-family:var(--title);font-size:19px;line-height:1}
+ .mbar .mb-cur{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40%}
+ .mbar button{all:unset;cursor:pointer;border:1px solid var(--fg);border-radius:999px;padding:8px 14px;font:600 13px var(--body);background:var(--fg);color:var(--bg)}
+ .side{position:fixed;inset:0;z-index:60;height:auto;border:0;padding:14px 16px 28px;background:var(--bg);overflow-y:auto;transform:translateY(102%);transition:transform .22s ease;display:block}
+ .side.open{transform:none}
+ .side .brand{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 10px;border-bottom:1px solid var(--line);margin-bottom:6px}
+ .side .brand b{font-size:26px}
+ .side .k{font-size:11px;padding:18px 4px 6px;color:var(--muted)}
+ .side button{width:100%;box-sizing:border-box;padding:14px 14px;font-size:17px;border-radius:8px;margin:2px 0;border:1px solid var(--line);background:var(--bg2)}
+ .side button .ic{font-size:12px}
+ .side .status{display:flex;flex-direction:row;flex-wrap:wrap;gap:10px 14px;padding:16px 4px 0;margin-top:14px}
+ .side .close{display:block;margin:0 0 4px auto;width:auto;background:transparent;border:0;font:600 14px var(--body);color:var(--muted);padding:8px}
  .content{padding-left:0}
- .hero h1{font-size:44px}
+ .hero{padding-top:18px}.hero h1{font-size:40px}
+ .hero .date{display:none}
+ main{padding:0 14px}
+}
+@media (min-width:901px){.side .close{display:none}}
+@media (max-width:640px){
+ .cal{gap:3px}.cal .dh{font-size:9px;padding:2px}.day{min-height:58px;padding:4px;border-radius:4px;cursor:pointer}.day .dn{font-size:11px}
+ .day .ev{height:7px;padding:0;border-left:0;border-radius:3px;margin-top:3px;font-size:0;display:block}.day .ev img,.day .ev small{display:none}.day .add{display:none}
+ .day .ev.article{background:var(--accent)}.day .ev.social{background:var(--fg)}.day .ev.youtube{background:var(--warn)}.day .ev.plan{background:var(--muted);border:0}.day .ev.task{background:var(--bad)}.day .ev.trip{background:var(--line2)}
+ .planwrap{display:flex;flex-direction:column-reverse}.tray{position:static}
+ .legend{margin-left:0}
 }
 /* desks */
 section.desk:not(#desk-today) .deskhead h2{display:none}
@@ -262,8 +284,10 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
 @media (prefers-reduced-motion:no-preference){.btn{transition:opacity .15s}}
 </style>
 
+<div class="mbar"><span class="mb-brand">Studio Desk</span><span class="mb-cur" id="mb-cur">Today</span><button id="mb-menu" aria-controls="side" aria-expanded="false">Menu</button></div>
 <div class="app">
 <aside class="side" aria-label="Desks">
+  <button class="close" id="mb-close">Close ✕</button>
   <div class="brand">Coco Tran<b>Studio Desk</b></div>
   <span class="k">Today</span>
   <button data-desk="today" aria-current="page"><span class="ic">◆</span>Today</button>
@@ -559,6 +583,10 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
 <section class="desk" id="desk-rules">
   <div class="deskhead"><div><div class="eyebrow">Reference</div><h2>House rules</h2><p class="lead">What the desk and the worker draft against. Source: <code>05-editorial-system/</code> in the audit repo.</p></div></div>
   <div class="out" id="rules-out"></div>
+  <div class="fs"><div class="fsh"><span class="num">♪</span><span class="fst">The voice, in your words</span></div><p class="fsd">This sheet is what every draft, email, caption and page is written against. Change a line here and the desk uses it on the next piece; the worker reads it at the start of every run and keeps a copy in the repo. Keep it warm, excited and positive, and professional and on brand, in everything.</p>
+   <textarea id="v-rules" style="min-height:260px;font-family:var(--mono);font-size:12.5px;line-height:1.5"></textarea>
+   <div class="row"><button class="btn" id="v-save">Save the voice</button><button class="btn alt" id="v-reset">Reset to the house default</button><button class="btn alt" id="v-copy">Copy voice sheet</button><span class="note" id="v-note"></span></div>
+  </div>
   <div class="fs"><div class="fsh"><span class="num">✎</span><span class="fst">Calibrate against your own writing</span></div><p class="fsd">Paste a piece you love in your own voice. If the rules flag things you'd keep, mark them "that's me" — they become allowances and the desk stops correcting them. Do this every few weeks so the rules follow your writing, not the other way round.</p>
    <label for="cal-text">One of your own pieces</label><textarea id="cal-text" placeholder="Paste a favourite piece, as published."></textarea>
    <div class="row"><button class="btn" id="cal-run">Check my own writing</button><span class="note" id="cal-note"></span></div>
@@ -579,7 +607,7 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
 // ---------- House rules ----------
 const VOICE = `COCO TRAN HOUSE VOICE
 - First person (I, Coco), speaking to "you". Never third-person detached, never a listicle or checklist.
-- Positive, happy and excited. Confident and authoritative but warm — never cold, clipped or matter-of-fact. Let sentences breathe; show delight in the place.
+- Positive, happy and excited. Confident and authoritative but warm — never cold, clipped or matter-of-fact. Let sentences breathe; show delight in the place. This holds for EVERYTHING written in Coco's name: pieces, site pages (About, How we review), emails to readers and GMs, captions, replies. Professional and on brand always; warmth is the brand.
 - Told like she's telling a friend about it the day after: concrete over clever. What happened, what she noticed, what she ate, what it cost. Looser run-on rhythm is fine.
 - KILL any sentence that explains or comments on the sentence before it instead of giving the next concrete thing: "That's the point." "Which is the point." "[X] doesn't announce itself as a feature so much as it becomes [Y]." Any tidy aphorism wrapping up a paragraph.
 - Small asides in her voice are good: "honestly", "which I didn't realise until I saw it on my bill", "I have to shout out the breakfast captain".
@@ -592,7 +620,8 @@ const VOICE = `COCO TRAN HOUSE VOICE
 - Photographer's eye once per piece (light, material, space).`;
 
 let ALLOW=[]; // Coco's own phrasings the voice rules must never flag (stored in voice/allow)
-function voiceText(){return VOICE+(ALLOW.length?"\n- ALLOWED — these are Coco's own phrasings; never flag or rewrite them: "+ALLOW.map(a=>'"'+a+'"').join("; "):"")}
+let VOICE_RULES=""; // Coco's edited voice sheet (voice/rules); empty = house default
+function voiceText(){return (VOICE_RULES.trim()||VOICE)+(ALLOW.length?"\n- ALLOWED — these are Coco's own phrasings; never flag or rewrite them: "+ALLOW.map(a=>'"'+a+'"').join("; "):"")}
 
 const GATES = [
  ["Headline says what the story covers","Subject, place and format clear; SEO title ≤60; one H1; no (2026)/ultimate/BEST."],
@@ -777,7 +806,9 @@ const fmtLabel=k=>FORMATS[k]?.label||k||"";
 // tabs
 const navBtns=[...document.querySelectorAll(".side button")];
 const DESK_TITLES={plan:"Plan",questions:"Reader questions",today:"Today",new:"New piece",queue:"Queue",library:"Library",social:"Social",cite:"Citations",bench:"AI benchmark",process:"Process",rules:"House rules",playbooks:"Playbooks"};
-function show(id){navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id));const ht=$("#hero-title");if(ht)ht.textContent=DESK_TITLES[id]||id;ls.set("desk",id);window.scrollTo({top:0})}
+const sideEl=document.querySelector("aside.side"); function closeMenu(){if(sideEl)sideEl.classList.remove("open");const b=$("#mb-menu");if(b)b.setAttribute("aria-expanded","false")}
+if($("#mb-menu")){$("#mb-menu").onclick=()=>{sideEl.classList.add("open");$("#mb-menu").setAttribute("aria-expanded","true")}} if($("#mb-close")){$("#mb-close").onclick=closeMenu}
+function show(id){ try{const cur=$("#mb-cur");if(cur)cur.textContent=(DESK_TITLES[id]||id);closeMenu()}catch(e){}navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id));const ht=$("#hero-title");if(ht)ht.textContent=DESK_TITLES[id]||id;ls.set("desk",id);window.scrollTo({top:0})}
 navBtns.forEach(b=>b.addEventListener("click",()=>show(b.dataset.desk)));
 const h=(location.hash||"").slice(1);show(navBtns.some(b=>b.dataset.desk===h)?h:(ls.get("desk")||"today"));
 (function(){const d=new Date();const hr=d.getHours();$("#today-greet").textContent=(hr<12?"Good morning":hr<18?"Good afternoon":"Good evening")+", Coco";$("#hero-issue").textContent=d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+" · Coco Tran · cocotran.com"})();
@@ -1441,6 +1472,10 @@ function renderDue(){const td=today();const due=todos.filter(t=>!t.done&&t.due&&
  try{if(due.length&&"Notification" in window&&Notification.permission==="granted"&&ls.get("due-notified")!==td){new Notification("Studio Desk",{body:due.length+" to-do"+(due.length===1?"":"s")+" due: "+due.map(t=>t.text.slice(0,40)).join(" · ").slice(0,180)});ls.set("due-notified",td)}}catch(e){}}
 function openPanel(html){const p=$("#cal-panel");if(!p)return;p.innerHTML=`<div class="cal-panel">${html}</div>`;p.scrollIntoView({behavior:"smooth",block:"nearest"})}
 function closePanel(){const p=$("#cal-panel");if(p)p.innerHTML=""}
+function dayPanel(iso){const ev=planEvents().filter(e=>e.date===iso);const d=new Date(iso+"T12:00:00");
+ openPanel(`<h4>${d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</h4><div id="dp-list"></div><div class="row" style="gap:6px;margin-top:8px"><button class="btn" id="dp-add">+ Add to this day</button><button class="copy" id="dp-close">close</button></div>`);
+ const list=$("#dp-list"); if(!ev.length)list.innerHTML='<div class="note">Nothing planned.</div>'; ev.forEach(e=>{const el=evEl(e);el.style.fontSize="13px";el.style.height="auto";el.style.padding="6px 8px";el.style.marginTop="6px";list.append(el)});
+ $("#dp-add").onclick=()=>addPanel(iso); $("#dp-close").onclick=closePanel;}
 function addPanel(dateIso){openPanel(`<h4>Add to ${esc(dateIso)}</h4><label>Kind</label><select id="ap-kind"><option value="article">Article to write</option><option value="post">Post (Instagram / Pinterest)</option><option value="youtube">YouTube video</option><option value="todo">To-do with a reminder</option></select><label>Title</label><input type="text" id="ap-title" placeholder="Hoshinoya Kyoto Verdict · or · reel: the onsen question"><label>Date</label><input type="date" id="ap-date" value="${esc(dateIso)}"><div class="row" style="gap:6px"><button class="btn" id="ap-save">Add</button><button class="copy" id="ap-cancel">cancel</button></div>`);
  $("#ap-cancel").onclick=closePanel;
  $("#ap-save").onclick=async()=>{const kind=$("#ap-kind").value,title=$("#ap-title").value.trim(),date=$("#ap-date").value;if(!title||!date)return;if(!db||!canWrite)return;try{if(kind==="todo")await db.collection("todo").add({text:title,group:"Board",lane:"next",due:date,order:999,done:false,createdAt:Date.now()});else await db.collection("plan").add({kind,title,date,status:"planned",createdAt:Date.now(),updatedAt:Date.now()});closePanel()}catch(e){}}}
@@ -1449,7 +1484,7 @@ function planPanel(e){const p=e.p;const th=thumbFor(e);openPanel(`${th?`<img cla
  $("#pp-ics").onclick=()=>downloadIcs("plan-"+p.id+".ics",[{id:p.id,title:(p.kind==="article"?"Write: ":p.kind==="youtube"?"Film/edit: ":"Post: ")+p.title,date:$("#pp-date").value||p.date,time:"09:00",desc:p.notes||"",alarms:["-P1D","-PT0M"]}]);
  $("#pp-del").onclick=async()=>{try{await db.doc("plan/"+p.id).delete();closePanel()}catch(err){}};
  $("#pp-start").onclick=()=>{if(p.kind==="article"){$("#n-mode").value="new";syncMode();$("#n-subject").value=p.title;$("#n-target").value=p.date||"";$("#n-notes").value=p.notes||"";["n-subject","n-notes"].forEach(k=>ls.set(k,$("#"+k).value));renderGoalChips();show("new")}else{$("#s-type").value=p.kind==="youtube"?"youtube":"carousel";renderTemplateSelect();const r=lib.find(x=>(x.title||"").toLowerCase().includes(p.title.toLowerCase().slice(0,18)));if(r){$("#s-pick").value=r.id;$("#s-pick").dispatchEvent(new Event("change"))}else{$("#s-text").value=p.title+"\n"+(p.notes||"");socialSrc={title:p.title,url:"",libId:""}}show("social")}};}
-const cal={y:new Date().getFullYear(),m:new Date().getMonth(),view:ls.get("planView")||"month",ref:new Date()};
+const cal={y:new Date().getFullYear(),m:new Date().getMonth(),view:ls.get("planView")||(window.innerWidth<=640?"week":"month"),ref:new Date()};
 const MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
 function isoOf(d){const z=new Date(d);return new Date(z.getTime()-z.getTimezoneOffset()*60000).toISOString().slice(0,10)}
 function planEvents(){
@@ -1480,6 +1515,7 @@ function renderCalendar(){
   for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const iso=isoOf(d);const cell=document.createElement("div");cell.className="day"+(d.getMonth()!==cal.m?" other":"")+(iso===td?" today":"");cell.innerHTML=`<div class="dn">${d.getDate()}</div>${canWrite?`<button class="add" title="Add to this day" data-add="${iso}">+</button>`:""}`;
    ev.filter(e=>e.date===iso).forEach(e=>cell.append(evEl(e)));
    const ab=cell.querySelector("[data-add]"); if(ab) ab.onclick=ev2=>{ev2.stopPropagation();addPanel(iso)};
+   cell.onclick=ev2=>{if(ev2.target.closest(".ev")&&window.innerWidth>640)return;dayPanel(iso)};
    wireDrop(cell,iso); g.append(cell); if(i>=34&&d.getMonth()!==cal.m&&d.getDay()===0)break}
   const tray=$("#cal-tray"); tray.innerHTML="";
   const un=[].concat(socialCache.filter(k=>!k.scheduled_for&&k.status!=="posted").map(k=>({kind:"social",id:k.id,date:"",title:k.piece||k.hook||"post",sub:`${k.type||"kit"} · ${k.intent||""}`,k})),jobsCache.filter(j=>!j.target_date&&!["published","done"].includes(j.status)).map(j=>({kind:"article",id:j.id,date:"",title:j.title||j.subject,sub:`${fmtLabel(j.format)||""} · ${j.status}`,j})),plans.filter(p=>!p.date).map(p=>({kind:"plan",cls:"plan",id:p.id,date:"",title:p.title,sub:p.kind,p})));
@@ -1546,6 +1582,12 @@ $("#q-load").onclick=async()=>{
  finally{$("#q-load").disabled=false}
 };
 
+// ---------- Voice sheet (voice/rules) ----------
+function renderVoiceRules(){const ta=$("#v-rules");if(!ta||document.activeElement===ta)return;ta.value=VOICE_RULES.trim()||VOICE}
+$("#v-save").onclick=async()=>{const text=$("#v-rules").value.trim();if(!db||!canWrite){$("#v-note").textContent="Store not writable.";return}try{const ref=db.doc("voice/rules");const cur=await ref.get();if(cur.exists)await ref.update({text,updatedAt:Date.now(),updated_by:"desk"});else await ref.set({text,updatedAt:Date.now(),updated_by:"desk"});VOICE_RULES=text;$("#v-note").textContent="Saved. The next draft uses it; the worker picks it up on its next run."}catch(e){$("#v-note").textContent="Couldn't save."}};
+$("#v-reset").onclick=()=>{$("#v-rules").value=VOICE;$("#v-note").textContent="House default restored in the box — press Save to keep it."};
+$("#v-copy").onclick=e=>copyText(voiceText(),e.target);
+
 // ---------- Voice calibration (allowances live in voice/allow) ----------
 function renderAllow(){$("#cal-count").textContent=ALLOW.length;$("#cal-allow").innerHTML=ALLOW.length?ALLOW.map((a,i)=>`<div class="card"><div style="display:flex;gap:10px;align-items:flex-start"><div style="flex:1">${esc(a)}</div>${canWrite?`<button class="copy" data-rm="${i}">remove</button>`:""}</div></div>`).join(""):'<div class="note">None yet. Flags you mark "that\'s me" land here.</div>';$("#cal-allow").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>saveAllow(ALLOW.filter((_,j)=>j!==+b.dataset.rm)))}
 async function saveAllow(list){ALLOW=list;renderAllow();if(db&&canWrite){try{await db.doc("voice/allow").set({items:ALLOW,updatedAt:Date.now()})}catch(e){$("#cal-note").textContent="Couldn't save the allowances."}}}
@@ -1592,6 +1634,7 @@ function setStatus(){
   try{db.collection("inspections").limit(100).onSnapshot(sn=>{inspections=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderToday()}catch(e){}},()=>{})}catch(e){}
   try{db.collection("todo").limit(100).onSnapshot(sn=>{todos=sn.docs.map(x=>({id:x.id,...x.data()}));renderTodos()},()=>{})}catch(e){}
   try{db.collection("benchmarks").orderBy("createdAt","desc").limit(1).onSnapshot(renderBenchToday,()=>{})}catch(e){}
+  try{db.doc("voice/rules").onSnapshot(sn=>{const x=sn.exists?sn.data():null;VOICE_RULES=String(x?.text||"");renderVoiceRules()},()=>{})}catch(e){}
   try{db.doc("voice/allow").onSnapshot(sn=>{const x=sn.exists?sn.data():null;ALLOW=Array.isArray(x?.items)?x.items.map(String):[];renderAllow()},()=>{})}catch(e){}
   try{db.collection("jobs").orderBy("updatedAt","desc").limit(200).onSnapshot(renderQueue,()=>{})}catch(e){}
   try{db.collection("library").limit(1000).onSnapshot(snap=>{lib=snap.docs.map(x=>({id:x.id,...x.data()}));renderLib();try{renderToday();renderSuggest()}catch(e){}if(libSel){const r=lib.find(x=>x.id===libSel.id);if(r)libSel=r}},()=>{})}catch(e){}
