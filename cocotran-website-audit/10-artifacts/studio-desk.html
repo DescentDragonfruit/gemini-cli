@@ -133,7 +133,7 @@ h3{font-family:var(--display);font-weight:500;font-size:22px;margin:22px 0 8px;l
 .fs .fst{font-family:var(--display);font-size:19px;font-weight:500}
 .fs .fsd{font-size:13px;color:var(--muted);margin:0 0 6px 40px}
 label{display:block;font-family:var(--body);font-weight:500;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
-textarea,input[type=text],input[type=date],select{width:100%;font:inherit;font-size:16px;color:var(--fg);background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+textarea,input[type=text],input[type=search],input[type=date],select{width:100%;font:inherit;font-size:16px;color:var(--fg);background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
 textarea:focus,input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
 textarea{min-height:140px;resize:vertical;line-height:1.5}
 input::placeholder,textarea::placeholder{color:var(--faint)}
@@ -285,7 +285,7 @@ hr{border:0;border-top:1px solid var(--line);margin:22px 0}
 .bcard .g{font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
 .bcard .r{display:flex;gap:8px;margin-top:6px;font-size:11px;color:var(--muted);align-items:center}
 .lane.done .bcard{opacity:.6;text-decoration:line-through}
-.lane input[type=text]{width:100%;margin:4px 0 0;font-size:13px;padding:8px 10px}
+.lane input[type=text],input[type=search]{width:100%;margin:4px 0 0;font-size:13px;padding:8px 10px}
 tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
 .stat{display:inline-block;margin:0 22px 8px 0}.stat b{font-family:var(--display);font-size:26px;font-weight:400;display:block;line-height:1.1}
 .stats{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
@@ -298,7 +298,7 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
 .rail .count{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:14px}
 [hidden]{display:none!important}
 .libbar{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--bg);padding:10px 0 12px;border-bottom:1px solid var(--line);margin-bottom:14px}
-.libbar input[type=text]{flex:1;min-width:220px;font-size:17px;padding:12px 14px;margin:0}
+.libbar input[type=text],input[type=search]{flex:1;min-width:220px;font-size:17px;padding:12px 14px;margin:0}
 .views{display:flex;border:1px solid var(--line2);border-radius:999px;overflow:hidden;background:var(--bg2)}
 .views button{border:0;background:transparent;padding:9px 16px;font:500 13px var(--body);color:var(--muted);cursor:pointer}
 .views button[aria-selected=true]{background:var(--accent);color:var(--accent-ink)}
@@ -632,6 +632,12 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
 <section class="desk" id="desk-keywords">
   <div class="deskhead"><div><div class="eyebrow">Grow</div><h2>Keywords</h2><p class="lead">Reader first, then the words they type. Start from the decision a reader is making; the desk returns the query set, the questions people actually ask, how they'd ask an AI, the sub-questions the page must cover, Google's people-first check, and the title lock. Then the worker verifies it against live results.</p></div></div>
   <div id="kw-data"></div>
+  <div class="fs" id="kw-actfs" hidden><div class="fsh"><span class="num">Data</span><span class="fst">Act on the numbers</span></div>
+   <p class="lead" style="margin:0 0 10px">Every measured page, sorted by what a fix is worth. The move is chosen from the real queries, position, click-through and GA4 sessions. <b>Brief</b> writes the what-and-how from the data; <b>Rewrite now</b> queues the job with those notes and starts the worker; <b>Queue</b> parks it in priority order.</p>
+   <div class="row" style="margin-bottom:10px"><select id="kw-actfilter"><option value="">All moves</option><option value="push">Push to page one</option><option value="climb">Build it out to rank (page 3+)</option><option value="ctr">Fix the title and meta</option><option value="decay">Stop the decay</option><option value="expand">Expand: queries the page doesn't answer</option><option value="convert">Convert the traffic it has</option><option value="gap">Write new (content gap)</option><option value="retire">Retire or merge</option></select><input type="search" id="kw-actq" placeholder="Filter by title or query" style="max-width:280px"><span class="note" id="kw-actcount"></span></div>
+   <div id="kw-act"></div>
+  </div>
+  <div id="kw-brief"></div>
   <div class="fs" style="margin-top:0;border-top:0;padding-top:0"><div class="fsh"><span class="num">1</span><span class="fst">The decision</span></div>
    <div class="two">
     <div><label for="kw-topic">What is the reader deciding?</label><input type="text" id="kw-topic" placeholder="Bora Bora or the Maldives for a honeymoon from the US · or · is Hoshinoya Kyoto worth it"></div>
@@ -1713,6 +1719,9 @@ Formats available: verdict (hotel review), comparison (A vs B), shortlist/rolode
 Title lock shapes: Verdict "[Hotel] Review: Is It Worth It?"; Comparison "[A] vs [B]: Which Should You Choose?"; Shortlist "Where to Stay in [X]: …"; Guide "[Place] Travel Guide: Where to Stay, Eat and Explore"; Answer = the question itself.
 Existing cocotran.com pieces (titles · urls) that may already own queries or deserve a link:
 ${(src.lib||[]).map(r=>`- ${r.title} · ${r.url}${r.keyword?" · kw: "+r.keyword:""}`).join("\n")||"(none loaded)"}
+MEASURED (Search Console, last 28 days) for the closest existing pages — use these real queries and positions, they outrank any guess:
+${(src.measured||[]).map(m=>`- ${m.title}: pos ${m.position}, ${m.impressions} imp, ${m.clicks} clicks; queries: ${m.queries.join("; ")}`).join("\n")||"(no measured pages match)"}
+Search Console content gaps this week (queries with impressions and no page that answers them): ${(src.gaps||[]).map(g=>`${g.query} (${g.impressions})`).join("; ")||"none"}
 
 Reply with only JSON:
 {"decision":"one line","format":"<format key>","why_format":"…",
@@ -1764,11 +1773,11 @@ function renderKw(k,id){kwCurrent=k;kwCurrentId=id||null;const el=$("#kw-out");e
 }
 $("#kw-run").onclick=async()=>{const topic=$("#kw-topic").value.trim();if(!topic){$("#kw-note").textContent="Say what the reader is deciding.";return}if(!sample){$("#kw-note").textContent="Claude isn't available in this view.";return}
  const c=new AbortController();$("#kw-run").disabled=true;$("#kw-stop").disabled=false;$("#kw-stop").onclick=()=>c.abort();$("#kw-stream").textContent="Thinking…";$("#kw-out").innerHTML="";$("#kw-note").textContent="";
- try{const k=await sample.json(keywordPrompt({topic,format:$("#kw-format").value,dest:$("#kw-dest").value.trim(),angle:$("#kw-angle").value.trim(),lib:linkCandidates(topic+" "+$("#kw-dest").value,"",30)}),{signal:c.signal,cache:false,onText:({text})=>{$("#kw-stream").textContent=text.slice(-900)}});$("#kw-stream").textContent="";let id=null;if(db&&canWrite){try{const ref=await db.collection("keywords").add({...k,topic,source:"desk",createdAt:Date.now()});id=ref.id}catch(e){}}renderKw(k,id)}catch(e){$("#kw-stream").textContent="";if(e.code!=="cancelled")$("#kw-note").textContent=copyFor(e)}finally{$("#kw-run").disabled=false;$("#kw-stop").disabled=true}};
+ try{const k=await sample.json(keywordPrompt({topic,format:$("#kw-format").value,dest:$("#kw-dest").value.trim(),angle:$("#kw-angle").value.trim(),lib:linkCandidates(topic+" "+$("#kw-dest").value,"",30),measured:linkCandidates(topic+" "+$("#kw-dest").value,"",12).map(c=>lib.find(r=>r.id===c.id)).filter(r=>r&&r.rank&&r.rank.impressions28).map(r=>({title:r.title,position:(r.rank.position||0).toFixed(1),impressions:r.rank.impressions28,clicks:r.rank.clicks28||0,queries:(r.rank.queries||[]).map(qText).slice(0,8)})),gaps:((insightsLatest&&insightsLatest.content_gaps)||[]).slice(0,12)}),{signal:c.signal,cache:false,onText:({text})=>{$("#kw-stream").textContent=text.slice(-900)}});$("#kw-stream").textContent="";let id=null;if(db&&canWrite){try{const ref=await db.collection("keywords").add({...k,topic,source:"desk",createdAt:Date.now()});id=ref.id}catch(e){}}renderKw(k,id)}catch(e){$("#kw-stream").textContent="";if(e.code!=="cancelled")$("#kw-note").textContent=copyFor(e)}finally{$("#kw-run").disabled=false;$("#kw-stop").disabled=true}};
 function renderKwList(snap){kwCache=snap.docs.map(d=>({id:d.id,...d.data()}));const el=$("#kw-list");if(!el)return;el.innerHTML=kwCache.slice(0,24).map(k=>`<div class="card"><div class="meta">${esc(k.source==="search-console"?"FROM SEARCH CONSOLE":"DESK")} · ${esc(new Date(k.createdAt||0).toLocaleDateString("en-US",{month:"short",day:"numeric"}))}</div><h4 style="margin:6px 0 4px">${esc(k.primary?.query||k.primary||k.topic||"")}</h4><div class="note">${esc(k.decision||k.suggested_title||"")}${k.impressions?` · ${k.impressions} impressions/28d`:""}</div><div class="row"><button class="copy" data-kw="${esc(k.id)}">open</button>${k.source==="search-console"?`<button class="copy" data-kwr="${esc(k.id)}">research this</button>`:""}</div></div>`).join("")||'<div class="note">Nothing yet. Run the first research above.</div>';
  el.querySelectorAll("[data-kw]").forEach(b=>b.onclick=()=>{const k=kwCache.find(x=>x.id===b.dataset.kw);if(!k)return;if(k.primary?.query){renderKw(k,k.id);$("#kw-out").scrollIntoView({behavior:"smooth"})}else{$("#kw-topic").value=k.suggested_title||k.topic||"";$("#kw-topic").scrollIntoView({behavior:"smooth"})}});
  el.querySelectorAll("[data-kwr]").forEach(b=>b.onclick=()=>{const k=kwCache.find(x=>x.id===b.dataset.kwr);if(!k)return;$("#kw-topic").value=k.suggested_title||k.topic||k.primary||"";$("#kw-format").value=FORMATS[k.suggested_format]?k.suggested_format:"";$("#kw-run").click()});}
-function renderKwData(){const el=$("#kw-data");if(!el)return;const measured=lib.filter(r=>r.rank&&(r.rank.impressions28||r.rank.clicks28)).length;const ins=insightsLatest;
+function renderKwData(){try{renderAct()}catch(e){}const el=$("#kw-data");if(!el)return;const measured=lib.filter(r=>r.rank&&(r.rank.impressions28||r.rank.clicks28)).length;const ins=insightsLatest;
  const an=analyticsSettings||{};const setupCard=`<details class="card" style="margin-bottom:16px" ${(!measured&&!ins)?"open":""}><summary style="cursor:pointer"><span class="meta">SEARCH CONSOLE &amp; GA4 · ${(!measured&&!ins)?((an.ga4_property_id||an.gsc_verified_at)?"SET UP · WAITING FOR THE FIRST RUN":"NOT CONNECTED YET"):"SETTINGS"}</span></summary>
   <p style="margin:8px 0 6px">Credentials go in the cloud environment as <b>Network secrets</b> (session title bar → environment → Edit → Network secrets → Add). The proxy adds them to each request; nothing is pasted here or in chat.</p>
   <ol style="margin:0 0 8px 18px;line-height:1.6">
@@ -1782,6 +1791,108 @@ function renderKwData(){const el=$("#kw-data");if(!el)return;const measured=lib.
  const wireSave=()=>{const b=$("#an-save");if(!b)return;b.onclick=async()=>{const ga=$("#an-ga4").value.trim();if(ga&&!/^\d{6,12}$/.test(ga)){$("#an-note").textContent="The GA4 Property ID is digits only.";return}if(!db||!canWrite){$("#an-note").textContent="Store not writable.";return}try{await db.collection("settings").doc("analytics").set({gsc_site_url:$("#an-site").value,ga4_property_id:ga,updatedAt:Date.now()});$("#an-note").textContent="Saved. The next worker run reads it."}catch(e){$("#an-note").textContent="Couldn't save."}}};
  if(!measured&&!ins){el.innerHTML=setupCard;wireSave();return}
  el.innerHTML=setupCard+`<div class="card" style="margin-bottom:16px"><div class="meta">FROM SEARCH CONSOLE &amp; GA4 · ${ins?esc(ins.date):measured+" pieces measured"}</div>${ins?`<div class="two" style="margin-top:8px"><div><h4 style="margin:0 0 4px">Striking distance</h4>${(ins.striking_distance||[]).slice(0,5).map(x=>`<div class="note">· <b>${esc(x.query)}</b> — ${esc(x.title)} (pos ${x.position}, ${x.impressions} imp) → ${esc(x.fix||"")}</div>`).join("")||'<div class="note">none this week</div>'}</div><div><h4 style="margin:0 0 4px">Content gaps</h4>${(ins.content_gaps||[]).slice(0,5).map(x=>`<div class="note">· <b>${esc(x.query)}</b> (${x.impressions} imp) → ${esc(x.suggested_format||"")}: ${esc(x.suggested_title||"")}</div>`).join("")||'<div class="note">none this week</div>'}</div></div><div class="two"><div><h4 style="margin:8px 0 4px">AI tools cite</h4>${(ins.ai_cited||[]).slice(0,5).map(x=>`<div class="note">· ${esc(x.title)} — ${x.ai_sessions28} sessions</div>`).join("")||'<div class="note">no AI referrals yet</div>'}</div><div><h4 style="margin:8px 0 4px">Social sent readers</h4>${(ins.social||[]).map(x=>`<div class="note">· ${esc(x.source)} — ${x.sessions28} sessions</div>`).join("")||'<div class="note">no social sessions tagged yet</div>'}</div></div>${ins.marketing_move?`<div class="due" style="margin-top:10px"><b>Move of the week:</b> ${esc(ins.marketing_move.text)} <span class="note">— ${esc(ins.marketing_move.why||"")}</span></div>`:""}`:'<div class="note">Rankings on file; the first insights document arrives on Monday\'s run.</div>'}</div>`;wireSave()}
+// ---------- Act on the numbers: triage every measured page ----------
+const MOVE_LABEL={push:"Push to page one",climb:"Build it out to rank (page 3+ with demand)",ctr:"Fix the title and meta",decay:"Stop the decay",expand:"Expand for the queries it doesn't answer",convert:"Convert the traffic it has",gap:"Write new",retire:"Retire or merge"};
+const CTR_BENCH=p=>p<=1?0.28:p<=2?0.15:p<=3?0.11:p<=5?0.07:p<=10?0.035:p<=20?0.015:0.008;
+function qText(q){return typeof q==="string"?q:(q&&q.query)||""}
+function deent(t){return String(t||"").replace(/&#0?38;|&amp;/g,"&").replace(/&#8217;|&rsquo;/g,"’").replace(/&#8216;|&lsquo;/g,"‘").replace(/&#8220;|&ldquo;/g,"“").replace(/&#8221;|&rdquo;/g,"”").replace(/&#8211;|&ndash;/g,"–").replace(/&#8212;|&mdash;/g,"—")}
+function triage(r){const rk=r.rank;if(!rk||!(rk.impressions28||rk.clicks28))return null;
+ const imp=rk.impressions28||0,pos=rk.position||0,clicks=rk.clicks28||0,prev=rk.clicks_prev28??null,impPrev=rk.impressions_prev28??null,ctr=rk.ctr??(imp?clicks/imp:0),sess=rk.sessions28||0,eng=rk.engaged28||0,conv=(rk.conversions28||0)+(rk.inquiries28||0);
+ const qs=(rk.queries||[]).map(qText).filter(Boolean);const t=(r.title||"").toLowerCase();const titleWords=t.split(/[^a-z0-9]+/);
+ const body=((r.text||"")+" "+(r.seo_title||"")+" "+(r.meta_description||"")).toLowerCase();const STOP=["best","with","from","near","what","where","when","which","things","places","place","travel","trip","guide","review","reviews","hotel","hotels","restaurant","restaurants","luxury","mallorca","japan"];const unanswered=qs.filter(q=>{const w=q.toLowerCase().split(/[^a-z0-9\u00c0-\u024f]+/).filter(x=>x.length>3&&!STOP.includes(x));return w.length&&w.filter(x=>!t.includes(x)&&!body.includes(x)).length>=Math.ceil(w.length/2)}).slice(0,6);
+ const old=r.last_updated&&(Date.now()-new Date(r.last_updated).getTime())>365*864e5;
+ const m=[];
+ if(pos>=4&&pos<=20&&imp>=300)m.push({move:"push",worth:Math.round(imp*(CTR_BENCH(Math.max(1,pos-3))-ctr)),why:`position ${pos.toFixed(1)} on ${imp.toLocaleString()} impressions`});
+ if(pos<=12&&imp>=300&&ctr<CTR_BENCH(pos)*0.6)m.push({move:"ctr",worth:Math.round(imp*(CTR_BENCH(pos)-ctr)),why:`CTR ${(ctr*100).toFixed(1)}% where position ${pos.toFixed(1)} should earn ~${(CTR_BENCH(pos)*100).toFixed(0)}%`});
+ if(prev!=null&&prev>=20&&clicks<prev*0.75)m.push({move:"decay",worth:prev-clicks,why:`clicks ${prev} → ${clicks} in 28 days${impPrev?` · impressions ${impPrev.toLocaleString()} → ${imp.toLocaleString()}`:""}`});
+ if(pos>20&&imp>=1000)m.push({move:"climb",worth:Math.round(imp*0.02),why:`${imp.toLocaleString()} impressions at position ${pos.toFixed(1)}: real demand, the page isn't built for it yet`});
+ if(unanswered.length>=2&&imp>=200)m.push({move:"expand",worth:Math.min(Math.round(imp*0.05),Math.round(imp*0.008*unanswered.length)),why:`ranks for “${unanswered.slice(0,3).join("”, “")}” without a section on it`});
+ if(clicks>=60&&conv===0&&sess>=20)m.push({move:"convert",worth:Math.round(clicks*0.5),why:`${clicks} clicks, ${sess} sessions, no booking or inquiry recorded`});
+ if(imp<30&&clicks<3&&old&&(r.visible_words||0)<900)m.push({move:"retire",worth:1,why:`${imp} impressions, last updated ${r.last_updated}`});
+ if(!m.length)return null;m.sort((a,b)=>b.worth-a.worth);
+ return {r,rk,moves:m,top:m[0],qs,unanswered,ctr,pos,imp,clicks,prev,sess,eng,conv};}
+let triageCache=[];
+function renderAct(){const fs=$("#kw-actfs"),el=$("#kw-act");if(!el)return;
+ triageCache=lib.map(triage).filter(Boolean).sort((a,b)=>b.top.worth-a.top.worth);
+ const gaps=((insightsLatest&&insightsLatest.content_gaps)||[]).map(g=>({gap:g,top:{move:"gap",worth:Math.round((g.impressions||0)*0.1),why:`${(g.impressions||0).toLocaleString()} impressions land on ${g.landing_id||"another page"} for “${g.query}”`}}));
+ const all=triageCache.concat(gaps).sort((a,b)=>b.top.worth-a.top.worth);
+ if(!all.length){fs.hidden=true;return}fs.hidden=false;
+ const f=$("#kw-actfilter").value,q=($("#kw-actq").value||"").toLowerCase();
+ const rows=all.filter(x=>(!f||x.top.move===f||(x.moves||[]).some(mm=>mm.move===f))&&(!q||((x.r?x.r.title:x.gap.suggested_title)+" "+(x.qs||[x.gap&&x.gap.query]).join(" ")).toLowerCase().includes(q))).slice(0,60);
+ $("#kw-actcount").textContent=`${rows.length} of ${all.length}`;
+ el.innerHTML=rows.map((x,i)=>{if(x.gap){const g=x.gap;return `<div class="card" style="margin-bottom:10px"><div class="meta">${esc(MOVE_LABEL.gap)} · worth ~${x.top.worth} clicks/mo · ${esc(g.suggested_format||"")}</div><h4 style="margin:6px 0 2px">${esc(g.suggested_title||g.query)}</h4><div class="note">${esc(x.top.why)}</div><div class="row" style="margin-top:8px"><button class="btn" data-gapnew="${esc(g.query)}">Research &amp; write →</button></div></div>`}
+  const r=x.r,mv=x.moves.find(mm=>!f||mm.move===f)||x.top;const pill=mv.move==="retire"?"warn":mv.move==="decay"?"bad":"ok";
+  return `<div class="card" style="margin-bottom:10px"><div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap"><div style="flex:1;min-width:240px"><div class="meta"><span class="pill ${pill}">${esc(MOVE_LABEL[mv.move])}</span> · worth ~${mv.worth} clicks/mo · ${esc(r.format||r.pillar||"")}</div><h4 style="margin:6px 0 2px"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(deent(r.title))}</a></h4><div class="note">${esc(mv.why)}${x.moves.length>1?` · also: ${x.moves.filter(mm=>mm!==mv).map(mm=>MOVE_LABEL[mm.move].toLowerCase()).join(", ")}`:""}</div>
+   <div class="kv" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr));margin-top:8px;gap:4px 10px"><div><div class="meta">POSITION</div><b>${x.pos.toFixed(1)}</b></div><div><div class="meta">IMPRESSIONS</div><b>${x.imp.toLocaleString()}</b></div><div><div class="meta">CLICKS</div><b>${x.clicks}</b>${x.prev!=null?`<span class="note"> / ${x.prev}</span>`:""}</div><div><div class="meta">CTR</div><b>${(x.ctr*100).toFixed(1)}%</b></div><div><div class="meta">GA4 SESSIONS</div><b>${x.sess}</b>${x.eng?`<span class="note"> · ${x.eng} engaged</span>`:""}</div><div><div class="meta">BOOKINGS</div><b>${x.conv}</b></div></div>
+   ${x.qs.length?`<div class="note" style="margin-top:6px">Queries: ${x.qs.slice(0,8).map(q=>x.unanswered.includes(q)?`<b>${esc(q)}</b>`:esc(q)).join(" · ")}${x.unanswered.length?" <span class='pill warn'>bold = not answered on the page</span>":""}</div>`:""}</div></div>
+   <div class="row" style="margin-top:10px"><button class="btn alt" data-brief="${esc(r.id)}" data-move="${mv.move}">Brief: what and how to write</button><button class="btn" data-rewrite="${esc(r.id)}" data-move="${mv.move}">Rewrite now</button><button class="btn alt" data-queue="${esc(r.id)}" data-move="${mv.move}">Queue</button><span class="note" data-note="${esc(r.id)}"></span></div></div>`}).join("");
+ el.querySelectorAll("[data-brief]").forEach(b=>b.onclick=()=>dataBrief(b.dataset.brief,b.dataset.move));
+ el.querySelectorAll("[data-rewrite]").forEach(b=>b.onclick=()=>dataJob(b.dataset.rewrite,b.dataset.move,true,null,el.querySelector(`[data-note="${CSS.escape(b.dataset.rewrite)}"]`)));
+ el.querySelectorAll("[data-queue]").forEach(b=>b.onclick=()=>dataJob(b.dataset.queue,b.dataset.move,false,null,el.querySelector(`[data-note="${CSS.escape(b.dataset.queue)}"]`)));
+ el.querySelectorAll("[data-gapnew]").forEach(b=>b.onclick=()=>{const g=gaps.find(x=>x.gap.query===b.dataset.gapnew);if(!g)return;$("#kw-topic").value=g.gap.suggested_title||g.gap.query;$("#kw-format").value=FORMATS[g.gap.suggested_format]?g.gap.suggested_format:"";$("#kw-topic").scrollIntoView({behavior:"smooth",block:"center"});$("#kw-run").click()});}
+$("#kw-actfilter")&&($("#kw-actfilter").onchange=renderAct);$("#kw-actq")&&($("#kw-actq").oninput=renderAct);
+function dataNotes(x,move){const rk=x.rk;return `DATA (Search Console + GA4, 28 days to ${rk.pulled_at||"latest"})
+Move: ${MOVE_LABEL[move]} — ${x.moves.find(m=>m.move===move)?.why||""}
+Position ${x.pos.toFixed(1)} · ${x.imp.toLocaleString()} impressions (prev ${rk.impressions_prev28??"?"}) · ${x.clicks} clicks (prev ${x.prev??"?"}) · CTR ${(x.ctr*100).toFixed(1)}% vs ~${(CTR_BENCH(x.pos)*100).toFixed(0)}% expected · GA4 ${x.sess} sessions, ${x.eng} engaged, ${x.conv} bookings/inquiries · AI referrals ${rk.ai_sessions28||0} · social ${rk.social_sessions28||0}
+Queries it already ranks for: ${x.qs.join("; ")||"(none returned)"}
+Queries NOT answered on the page: ${x.unanswered.join("; ")||"none"}
+Visible words ${x.r.visible_words||"?"} · last updated ${x.r.last_updated||"?"} · health ${x.r.health||"?"}`}
+function briefPrompt(x,move){return `You are Coco Tran's search editor. Using ONLY the measured data below plus what you know about how Google and AI search choose results, write the rewrite brief for this cocotran.com page. Reader first: the goal is that the person typing these queries gets the answer in the first screen and keeps reading; ranking follows. Do not invent facts about the place; where a fact is needed, mark it [COCO VERIFIES].
+
+PAGE: ${x.r.title} · ${x.r.url} · format ${x.r.format||x.r.pillar||"?"}
+${dataNotes(x,move)}
+CURRENT TITLE/META: ${x.r.seo_title||"?"} / ${x.r.meta_description||"?"}
+FIRST 1200 CHARS OF THE PAGE: ${(x.r.text||"").slice(0,1200).replace(/\s+/g," ")}
+
+Google guidance that applies: a page wins (and gets cited by AI Overviews/AI Mode/Perplexity) when it answers the query and its sub-questions directly in the first screen, shows first-hand experience with specific detail, has a clear author and date, matches the dominant intent of the queries (a "menu" or "prices" query wants a list with numbers; a "review" query wants a verdict), and uses headings that mirror how people phrase the questions. Title tags are rewritten by Google when they don't match the query; CTR rises when the title states the answer or the number.
+
+Reply with only JSON:
+{"diagnosis":"two sentences: what the numbers say is wrong and why",
+ "intent":"what the main queries actually want (menu/prices, verdict, directions, comparison…)",
+ "target_queries":[{"query":"…","role":"primary|secondary","where":"title|h1|first screen|section|faq"}],
+ "title_lock":{"seo_title":"≤60 chars, states the answer or number","h1":"…","meta":"≤155 chars, first person, the answer","why":"…"},
+ "first_screen":"the exact opening 2–4 sentences to publish: the answer, one first-hand detail, one number",
+ "sections":[{"h2":"phrased like the query","answers":"which query","include":"what must be in it (numbers, names, a glance row, a photo)","length":"~words"}],
+ "glance_rows":[{"label":"…","value":"… or [COCO VERIFIES]"}],
+ "cuts":["what to remove or shorten and why"],
+ "internal_links":[{"anchor":"…","to":"a cocotran.com piece that fits"}],
+ "conversion":{"placement":"where the booking box / Planning Room line goes","line":"the one-sentence CTA in Coco's voice"},
+ "schema":"which structured data the page needs (Restaurant/Hotel/FAQ/Review) and the fields",
+ "social":{"hook":"first line of the carousel using the data","why_now":"…"},
+ "expected":{"position":"realistic target in 8 weeks","clicks_per_month":"estimate","confidence":"low|medium|high"},
+ "effort":"minutes for Coco | minutes for the worker",
+ "do_not":["things that would hurt: keyword stuffing, removing the first-hand detail, changing the URL…"]}`}
+let briefCache={};
+async function dataBrief(id,move){const x=triageCache.find(t=>t.r.id===id);if(!x)return;const el=$("#kw-brief");if(!sample){el.innerHTML='<div class="quiet">Claude isn\'t available in this view.</div>';return}
+ el.innerHTML=`<div class="piece"><div class="kicker">BRIEF · ${esc(MOVE_LABEL[move])}</div><h2 class="title" style="font-size:28px">${esc(deent(x.r.title))}</h2><div class="out" id="kw-briefstream">Reading the numbers…</div></div>`;el.scrollIntoView({behavior:"smooth",block:"start"});
+ try{const b=await sample.json(briefPrompt(x,move),{cache:true,onText:({text})=>{const o=$("#kw-briefstream");if(o)o.textContent=text.slice(-700)}});briefCache[id]=b;renderBrief(x,move,b)}catch(e){el.innerHTML=`<div class="quiet">${esc(copyFor(e))}</div>`}}
+function renderBrief(x,move,b){const el=$("#kw-brief");const kv=(o)=>Object.entries(o||{}).map(([k,v])=>`<div>${esc(k.replace(/_/g," "))}</div><div>${esc(String(v))}</div>`).join("");
+ el.innerHTML=`<div class="piece">
+  <div class="kicker">BRIEF · ${esc(MOVE_LABEL[move])} · ${esc(b.expected?.confidence||"")} confidence</div>
+  <h2 class="title" style="font-size:28px">${esc(deent(x.r.title))}</h2>
+  <div class="due"><b>Diagnosis:</b> ${esc(b.diagnosis||"")} <span class="note">Intent: ${esc(b.intent||"")}</span></div>
+  <div class="two">
+   <div class="card"><div class="meta">TITLE LOCK</div><div class="kv" style="grid-template-columns:70px 1fr;margin-top:6px"><div>Title</div><div>${esc(b.title_lock?.seo_title||"")} <span class="pill ${(b.title_lock?.seo_title||"").length>60?"warn":"ok"}">${(b.title_lock?.seo_title||"").length}</span></div><div>H1</div><div>${esc(b.title_lock?.h1||"")}</div><div>Meta</div><div>${esc(b.title_lock?.meta||"")}</div><div>Why</div><div class="note">${esc(b.title_lock?.why||"")}</div></div></div>
+   <div class="card"><div class="meta">TARGET QUERIES · WHERE THEY GO</div>${(b.target_queries||[]).map(q=>`<div style="padding:4px 0;border-bottom:1px solid var(--line)"><b>${esc(q.query)}</b> <span class="note">${esc(q.role)} → ${esc(q.where)}</span></div>`).join("")}</div>
+  </div>
+  <div class="card"><div class="meta">FIRST SCREEN · PUBLISH THIS OPENING</div><p style="margin:6px 0 0;font-size:17px">${esc(b.first_screen||"")}</p></div>
+  <div class="card"><div class="meta">SECTIONS, IN ORDER</div>${(b.sections||[]).map((s,i)=>`<div style="padding:6px 0;border-bottom:1px solid var(--line)"><b>${i+1}. ${esc(s.h2)}</b> <span class="note">answers “${esc(s.answers)}” · ${esc(s.length||"")}</span><div class="note">${esc(s.include||"")}</div></div>`).join("")}</div>
+  <div class="two">
+   <div class="card"><div class="meta">GLANCE ROWS · CUTS</div><div class="kv" style="grid-template-columns:120px 1fr">${(b.glance_rows||[]).map(g=>`<div>${esc(g.label)}</div><div>${esc(g.value)}</div>`).join("")}</div>${(b.cuts||[]).map(c=>`<div class="note">Cut: ${esc(c)}</div>`).join("")}</div>
+   <div class="card"><div class="meta">LINKS · CONVERSION · SCHEMA</div>${(b.internal_links||[]).map(l=>`<div class="note">Link “${esc(l.anchor)}” → ${esc(l.to)}</div>`).join("")}<div style="margin-top:6px"><b>${esc(b.conversion?.placement||"")}</b><div class="note">${esc(b.conversion?.line||"")}</div></div><div class="note" style="margin-top:6px">Schema: ${esc(b.schema||"")}</div></div>
+  </div>
+  <div class="card"><div class="meta">EXPECTED · EFFORT · SOCIAL</div><div class="kv" style="grid-template-columns:140px 1fr;margin-top:6px">${kv(b.expected)}<div>effort</div><div>${esc(b.effort||"")}</div><div>social hook</div><div>${esc(b.social?.hook||"")} <span class="note">${esc(b.social?.why_now||"")}</span></div></div>${(b.do_not||[]).length?`<div class="note" style="margin-top:6px">Do not: ${b.do_not.map(esc).join(" · ")}</div>`:""}</div>
+  <div class="row" style="margin-top:12px"><button class="btn" id="kw-brief-now">Rewrite now with this brief</button><button class="btn alt" id="kw-brief-queue">Queue with this brief</button><button class="btn alt" id="kw-brief-copy">Copy the brief</button><span class="note" id="kw-brief-note"></span></div>
+ </div>`;
+ $("#kw-brief-now").onclick=()=>dataJob(x.r.id,move,true,b,$("#kw-brief-note"));$("#kw-brief-queue").onclick=()=>dataJob(x.r.id,move,false,b,$("#kw-brief-note"));$("#kw-brief-copy").onclick=e=>copyText(dataNotes(x,move)+"\n\nBRIEF\n"+JSON.stringify(b,null,1),e.target);}
+async function dataJob(id,move,now,brief,note){const x=triageCache.find(t=>t.r.id===id);if(!x)return;if(!db||!canWrite){if(note)note.textContent="Store not writable.";return}
+ const r=x.r;const jid=`update-${r.id}-${new Date().toISOString().slice(0,10).replace(/-/g,"")}`;const existing=jobsCache.find(j=>j.id===jid||(j.library_id===r.id&&j.mode==="update"&&["queued","drafted","researched"].includes(j.status)));
+ const notes=dataNotes(x,move)+(brief?"\n\nBRIEF (from the data)\nTitle: "+(brief.title_lock?.seo_title||"")+"\nMeta: "+(brief.title_lock?.meta||"")+"\nFirst screen: "+(brief.first_screen||"")+"\nSections: "+(brief.sections||[]).map(s=>s.h2+" ["+s.answers+"]").join(" → ")+"\nCuts: "+(brief.cuts||[]).join("; ")+"\nConversion: "+(brief.conversion?.placement||"")+" — "+(brief.conversion?.line||"")+"\nSchema: "+(brief.schema||""):"");
+ const goal=move==="convert"?GOALS_UPDATE[4]:move==="retire"?GOALS_UPDATE[2]:move==="decay"?GOALS_UPDATE[3]:`Rank page one for “${(x.qs[0]||r.keyword||r.title)}”: answer it in the first screen, add the sections the queries ask for, keep every first-hand detail`;
+ const job={mode:"update",format:FORMATS[r.format]?r.format:"suggest",subject:r.title,title:r.title,source_url:r.url,library_id:r.id,reason:"data:"+move,proposed_fix:(brief?.diagnosis||x.moves.find(m=>m.move===move)?.why||""),goal,notes,target_queries:(brief?.target_queries||[]).map(q=>q.query).concat(x.qs).filter((v,i,a)=>v&&a.indexOf(v)===i).slice(0,12),rank_snapshot:{clicks28:x.clicks,clicks_prev28:x.prev,impressions28:x.imp,position:x.pos,ctr:x.ctr,sessions28:x.sess,conversions28:x.conv},brief:brief||null,priority:now?3:(move==="push"||move==="ctr"?2:1),status:"queued",createdAt:Date.now(),updatedAt:Date.now()};
+ try{if(existing){await db.collection("jobs").doc(existing.id).update({notes,brief:brief||existing.brief||null,goal,target_queries:job.target_queries,priority:Math.max(existing.priority||0,job.priority),reason:job.reason,updatedAt:Date.now()});if(note)note.textContent=now?"Already queued — updated with this data. Starting a worker…":"Already queued — updated with this data.";if(now)await kick(existing.id,r.title,note);return}
+  await db.collection("jobs").doc(jid).set(job);if(note)note.textContent=now?"Queued with the data. Starting a worker…":"Queued with the data. The worker takes it in priority order.";if(now)await kick(jid,r.title,note)}catch(e){if(note)note.textContent="Couldn't queue it."}}
+
 // UTM on social copy
 function utmUrl(u,k){try{if(!/cocotran\.com/.test(u)||/utm_/.test(u))return u;const src=/pinterest/i.test(k.platform||"")?"pinterest":/youtube/i.test(k.platform||"")?"youtube":/tiktok/i.test(k.platform||"")?"tiktok":"instagram";return u+(u.includes("?")?"&":"?")+"utm_source="+src+"&utm_medium=social&utm_campaign="+encodeURIComponent((k.id||k.piece||"post").toString().slice(0,40).replace(/\s+/g,"-").toLowerCase())}catch(e){return u}}
 
@@ -1801,7 +1912,7 @@ function renderDue(){const td=today();const due=todos.filter(t=>!t.done&&t.due&&
  ["#cal-due","#t-due"].forEach(id=>{const el=$(id);if(el)el.innerHTML=html});
  try{if(due.length&&"Notification" in window&&Notification.permission==="granted"&&ls.get("due-notified")!==td){new Notification("Studio Desk",{body:due.length+" to-do"+(due.length===1?"":"s")+" due: "+due.map(t=>t.text.slice(0,40)).join(" · ").slice(0,180)});ls.set("due-notified",td)}}catch(e){}}
 function openPanel(html){let m=$("#modal");if(!m){m=document.createElement("div");m.id="modal";m.className="modal";m.innerHTML='<div class="box" role="dialog" aria-modal="true"></div>';document.body.append(m);m.addEventListener("click",e=>{if(e.target===m)closePanel()});document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel()})}
- m.querySelector(".box").innerHTML=html; m.hidden=false; const f=m.querySelector("input[type=text],select,input[type=date]"); if(f) setTimeout(()=>f.focus(),30)}
+ m.querySelector(".box").innerHTML=html; m.hidden=false; const f=m.querySelector("input[type=text],input[type=search],select,input[type=date]"); if(f) setTimeout(()=>f.focus(),30)}
 function closePanel(){const m=$("#modal");if(m)m.hidden=true}
 function dayPanel(iso){const ev=planEvents().filter(e=>e.date===iso);const d=new Date(iso+"T12:00:00");
  openPanel(`<h4>${d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</h4><div id="dp-list"></div><div class="row" style="gap:6px;margin-top:8px"><button class="btn" id="dp-add">+ Add to this day</button><button class="copy" id="dp-close">close</button></div>`);
