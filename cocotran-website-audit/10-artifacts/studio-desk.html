@@ -1,6 +1,6 @@
 <title>Coco Tran Studio Desk</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Studio Desk — editorial layout: masthead, grouped section nav, numbered working sections,
    Library as filter rail + list + slide-over. Tokens first; everything derives from them. */
@@ -16,32 +16,44 @@
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 a{color:var(--accent)}
-/* masthead */
-.mast{max-width:var(--maxw);margin:0 auto;padding:22px 0 10px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:2px solid var(--fg)}
-.mast .brand{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
-.mast h1{font-family:var(--display);font-weight:300;font-size:40px;line-height:1;margin:4px 0 0;letter-spacing:-.01em}
-.mast h1 b{font-weight:600}
-.status{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;padding-bottom:6px}
-.status span::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--line2);margin-right:6px;vertical-align:middle}
+/* app shell: fixed rail + content column; Ivy Journal (local) → Newsreader for the big titles */
+:root{--title:"IvyJournal","Ivy Journal","IvyJournal Regular","Newsreader",var(--display);--rail:236px}
+.app{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:0;min-height:100vh}
+.side{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:26px 18px 20px 4px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.side .brand{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);padding:0 10px 14px}
+.side .brand b{display:block;font-family:var(--title);font-weight:400;font-size:22px;letter-spacing:0;text-transform:none;color:var(--fg);margin-top:4px;line-height:1}
+.side .k{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);padding:14px 10px 4px}
+.side button{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:5px;font-size:14.5px;color:var(--muted);width:calc(100% - 20px)}
+.side button .ic{width:18px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--faint)}
+.side button:hover{background:var(--panel);color:var(--fg)}
+.side button[aria-current="page"]{background:var(--fg);color:var(--bg)}
+.side button[aria-current="page"] .ic{color:var(--bg)}
+.side .status{margin-top:auto;flex-direction:column;gap:6px;padding:14px 10px 0;border-top:1px solid var(--line);font-size:10.5px}
+.status{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
+.status span::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--line2);margin-right:7px;vertical-align:middle}
 .status span.on::before{background:var(--ok)}
 .status b{font-weight:500;color:var(--fg)}
-/* section nav */
-.secnav{max-width:var(--maxw);margin:0 auto;display:flex;gap:0;align-items:stretch;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
-.secnav::-webkit-scrollbar{display:none}
-.secnav .grp{display:flex;align-items:stretch;gap:0;padding-right:18px;margin-right:18px;border-right:1px solid var(--line)}
-.secnav .grp:last-child{border-right:0}
-.secnav .k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);align-self:center;margin-right:10px;white-space:nowrap}
-.secnav button{all:unset;cursor:pointer;padding:12px 10px 10px;font-size:14px;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
-.secnav button:hover{color:var(--fg)}
-.secnav button[aria-current="page"]{color:var(--fg);font-weight:600;border-bottom-color:var(--accent)}
-.secnav button:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.content{min-width:0;padding:0 0 60px 44px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:38px 0 14px;border-bottom:2px solid var(--fg)}
+.hero h1{font-family:var(--title);font-weight:400;font-size:clamp(44px,6vw,76px);line-height:.95;margin:0;letter-spacing:-.015em}
+.hero .issue{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding-bottom:10px;text-align:right}
+@media (max-width:900px){
+ .app{grid-template-columns:1fr}
+ .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:2px;padding:12px 0;scrollbar-width:none}
+ .side .brand,.side .k,.side .status{display:none}
+ .side button{width:auto;white-space:nowrap;padding:8px 12px}
+ .content{padding-left:0}
+ .hero h1{font-size:44px}
+}
 /* desks */
+section.desk:not(#desk-today) .deskhead h2{display:none}
+section.desk:not(#desk-today) .deskhead .eyebrow{margin-bottom:6px}
 main{max-width:var(--maxw);margin:0 auto}
 section.desk{display:none;padding-top:26px}section.desk.on{display:block}
 .deskhead{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:end;margin-bottom:22px}
 @media (max-width:640px){.deskhead{grid-template-columns:1fr}}
 .deskhead .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
-h2{font-family:var(--display);font-weight:400;font-size:32px;line-height:1.1;margin:4px 0 6px;text-wrap:balance;letter-spacing:-.01em}
+h2{font-family:var(--title);font-weight:400;font-size:34px;line-height:1.1;margin:4px 0 6px;text-wrap:balance;letter-spacing:-.01em}
 h3{font-family:var(--display);font-weight:500;font-size:19px;margin:22px 0 8px}
 .lead{color:var(--muted);max-width:66ch;margin:0;font-size:15px}
 /* numbered working sections */
@@ -92,7 +104,7 @@ hr{border:0;border-top:1px solid var(--line);margin:22px 0}
 /* the rendered piece */
 .piece{border-top:2px solid var(--fg);margin-top:22px;padding-top:16px}
 .piece .kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
-.piece h2.title{font-size:34px;margin:6px 0 10px}
+.piece h2.title{font-size:36px;margin:6px 0 10px;font-family:var(--title)}
 .piece .byline{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px}
 .piece .short{font-family:var(--display);font-size:19px;line-height:1.4;border-left:2px solid var(--accent);padding-left:14px;margin:0 0 16px;max-width:62ch}
 .piece .field{margin-top:16px}
@@ -133,6 +145,23 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
 .scrim{position:fixed;inset:0;background:rgba(20,19,16,.25);z-index:19;display:none}
 .scrim.open{display:block}
 @media (prefers-reduced-motion:reduce){.drawer{transition:none}}
+/* today */
+.today{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,1fr);gap:28px;align-items:start}
+@media (max-width:980px){.today{grid-template-columns:1fr}}
+.todo-group{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);padding:16px 0 6px;border-bottom:1px solid var(--line)}
+.todo{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line);align-items:start;cursor:pointer}
+.todo:hover{background:var(--panel)}
+.todo input{margin-top:3px;accent-color:var(--accent);width:16px;height:16px}
+.todo .t{font-size:14.5px;line-height:1.45}
+.todo.done .t{color:var(--faint);text-decoration:line-through}
+.todo .min{font-family:var(--mono);font-size:10.5px;color:var(--muted);white-space:nowrap;padding-top:3px}
+.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin:8px 0 2px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.sidecard{border:1px solid var(--line);border-radius:var(--r);background:var(--bg2);padding:14px 16px;margin-bottom:14px}
+.sidecard .meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.sidecard .big{font-family:var(--title);font-size:30px;line-height:1;margin:2px 0 6px}
+.sidecard ul{margin:0;padding-left:18px;font-size:14px}
+.sidecard li{margin:4px 0}
 /* playbooks */
 .doc{max-width:72ch;margin-top:14px}
 .doc h2{font-size:24px;margin:24px 0 8px}.doc h3{font-size:18px;margin:20px 0 6px}.doc h4{font-family:var(--display);font-weight:500;font-size:15px;margin:14px 0 4px}
@@ -145,20 +174,53 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
 @media (prefers-reduced-motion:no-preference){.btn{transition:opacity .15s}}
 </style>
 
-<div class="mast">
-  <div><div class="brand">Coco Tran · cocotran.com</div><h1>Studio <b>Desk</b></h1></div>
+<div class="app">
+<aside class="side" aria-label="Desks">
+  <div class="brand">Coco Tran<b>Studio Desk</b></div>
+  <span class="k">Today</span>
+  <button data-desk="today" aria-current="page"><span class="ic">◆</span>Today</button>
+  <span class="k">Make</span>
+  <button data-desk="new"><span class="ic">01</span>New piece</button>
+  <button data-desk="queue"><span class="ic">02</span>Queue</button>
+  <span class="k">Keep</span>
+  <button data-desk="library"><span class="ic">03</span>Library</button>
+  <button data-desk="social"><span class="ic">04</span>Social</button>
+  <span class="k">Grow</span>
+  <button data-desk="cite"><span class="ic">05</span>Citations</button>
+  <button data-desk="bench"><span class="ic">06</span>AI benchmark</button>
+  <span class="k">Reference</span>
+  <button data-desk="process"><span class="ic">07</span>Process</button>
+  <button data-desk="rules"><span class="ic">08</span>House rules</button>
+  <button data-desk="playbooks"><span class="ic">09</span>Playbooks</button>
   <div class="status"><span id="st-sample-w">Claude <b id="st-sample">…</b></span><span id="st-db-w">Store <b id="st-db">…</b></span><span id="st-granola-w">Granola <b id="st-granola">…</b></span></div>
-</div>
-<nav class="secnav" aria-label="Desks">
-  <div class="grp"><span class="k">Make</span><button data-desk="new" aria-current="page">New piece</button><button data-desk="queue">Queue</button></div>
-  <div class="grp"><span class="k">Keep</span><button data-desk="library">Library</button><button data-desk="social">Social</button></div>
-  <div class="grp"><span class="k">Grow</span><button data-desk="cite">Citations</button><button data-desk="bench">AI benchmark</button></div>
-  <div class="grp"><span class="k">Reference</span><button data-desk="process">Process</button><button data-desk="rules">House rules</button><button data-desk="playbooks">Playbooks</button></div>
-</nav>
+</aside>
+<div class="content">
+<header class="hero"><h1 id="hero-title">Today</h1><div class="issue" id="hero-issue">Coco Tran · cocotran.com</div></header>
 <main>
+<!-- ============ TODAY ============ -->
+<section class="desk on" id="desk-today">
+  <div class="deskhead"><div><div class="eyebrow">Today</div><h2 id="today-greet">Good day, Coco</h2><p class="lead">What needs your hand to get everything live, what's waiting on your call, and what the desk has done lately. Tick an item and the Tuesday/Friday reminder stops nagging about it.</p></div></div>
+  <div class="today">
+   <div>
+    <div class="fs" style="margin-top:0"><div class="fsh"><span class="num">✓</span><span class="fst">Launch list</span><span class="note" id="todo-count" style="margin:0 0 0 auto"></span></div>
+     <div class="bar"><i id="todo-bar" style="width:0%"></i></div>
+     <div id="todo-list"></div>
+     <div class="quiet" id="todo-quiet">The shared store isn't available in this view.</div>
+    </div>
+   </div>
+   <div>
+    <div class="sidecard"><div class="meta">Needs your call</div><div class="big" id="t-needs">0</div><ul id="t-needs-list"></ul></div>
+    <div class="sidecard"><div class="meta">Queue</div><div id="t-queue" class="kv" style="grid-template-columns:110px 1fr"></div></div>
+    <div class="sidecard"><div class="meta">Library attention</div><div class="big" id="t-attn">0</div><div class="note">decaying or stale pieces · open the Library sorted "Needs attention first"</div></div>
+    <div class="sidecard"><div class="meta">AI benchmark</div><div class="big" id="t-bench">—</div><div class="note" id="t-bench-note">cited of 20 · last run</div></div>
+    <div class="sidecard"><div class="meta">Recently drafted</div><ul id="t-recent"></ul></div>
+   </div>
+  </div>
+</section>
+
 
 <!-- ============ NEW PIECE ============ -->
-<section class="desk on" id="desk-new">
+<section class="desk" id="desk-new">
   <div class="deskhead"><div><div class="eyebrow">Make</div><h2>New piece</h2><p class="lead">Tell the desk what it is and hand over the context. It drafts the whole piece in your voice and pillar structure, writes the answerable opening into it, runs the ten gates and the voice pass on itself, and queues the result. The worker then does the search research, finalises title/meta/keyword, and builds the WordPress draft. You review and publish.</p></div></div>
 
   <div class="fs"><div class="fsh"><span class="num">1</span><span class="fst">What it is</span></div><p class="fsd">Mode, pillar and subject. Visit basis and disclosure are the two things only you know.</p>
@@ -366,6 +428,8 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
 </section>
 
 </main>
+</div>
+</div>
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="l-drawer" aria-label="Piece detail"><button class="close" id="l-close">Close ✕</button><div id="l-detail"></div></aside>
 
@@ -559,10 +623,12 @@ const today=()=>new Date().toISOString().slice(0,10);
 const fmtLabel=k=>FORMATS[k]?.label||k||"";
 
 // tabs
-const navBtns=[...document.querySelectorAll(".secnav button")];
-function show(id){navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id));ls.set("desk",id)}
+const navBtns=[...document.querySelectorAll(".side button")];
+const DESK_TITLES={today:"Today",new:"New piece",queue:"Queue",library:"Library",social:"Social",cite:"Citations",bench:"AI benchmark",process:"Process",rules:"House rules",playbooks:"Playbooks"};
+function show(id){navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id));const ht=$("#hero-title");if(ht)ht.textContent=DESK_TITLES[id]||id;ls.set("desk",id);window.scrollTo({top:0})}
 navBtns.forEach(b=>b.addEventListener("click",()=>show(b.dataset.desk)));
-const h=(location.hash||"").slice(1);show(navBtns.some(b=>b.dataset.desk===h)?h:(ls.get("desk")||"new"));
+const h=(location.hash||"").slice(1);show(navBtns.some(b=>b.dataset.desk===h)?h:(ls.get("desk")||"today"));
+(function(){const d=new Date();const hr=d.getHours();$("#today-greet").textContent=(hr<12?"Good morning":hr<18?"Good afternoon":"Good evening")+", Coco";$("#hero-issue").textContent=d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+" · Coco Tran · cocotran.com"})();
 
 $("#rules-out").textContent=VOICE+"\n\nPUBLISHING GATES\n"+GATES.map((g,i)=>`${i+1}. ${g[0]}\n   ${g[1]}`).join("\n")+"\n\nTITLE PATTERNS\n"+Object.values(FORMATS).map(f=>`${f.label}: ${f.pattern}`).join("\n")+"\n\nFORMATS\n"+Object.values(FORMATS).map(f=>`${f.label} (${f.cpt}): ${f.guide}`).join("\n\n");
 $("#pr-process").textContent=PROCESS;
@@ -695,7 +761,7 @@ function renderQueue(snap){
  jobsCache.forEach(j=>{const tr=document.createElement("tr");
   tr.innerHTML=`<td class="num">${esc(new Date(j.updatedAt||j.createdAt||0).toISOString().slice(0,10))}</td><td>${esc(j.title||j.subject)}${j.reason?` <span class="pill warn">${esc(j.reason)}</span>`:""}</td><td>${esc(fmtLabel(j.format))}${j.mode==="update"?' <span class="pill warn">update</span>':""}</td><td><span class="pill ${j.status==="built"?"ok":(j.status==="needs-site"||j.status==="needs-coco")?"bad":""}">${esc(j.status)}</span>${j.preview_url?` <a href="${esc(j.preview_url)}" target="_blank" rel="noopener">preview</a>`:""}</td><td><button class="copy" data-open="${esc(j.id)}">open</button>${canWrite?` <button class="copy del" data-id="${esc(j.id)}">remove</button>`:""}</td>`;
   tb.append(tr)});
- renderProcessStats();
+ renderProcessStats(); try{renderToday()}catch(e){}
  tb.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{const j=jobsCache.find(x=>x.id===b.dataset.open); if(!j)return; if(j.draft) renderPiece($("#q-detail"),j,j.id); else $("#q-detail").innerHTML=`<div class="card"><div class="meta">${esc(j.status)}${j.reason?" · "+esc(j.reason):""}</div><h4>${esc(j.title||j.subject)}</h4>${j.source_url?`<div class="note"><a href="${esc(j.source_url)}" target="_blank" rel="noopener">${esc(j.source_url)}</a></div>`:""}<div class="note">${esc((j.missing||j.notes||"").slice(0,600))}</div>${j.proposed_fix?`<div class="note">Proposed fix: ${esc(j.proposed_fix)}</div>`:""}${j.worker_notes?`<div class="note">${esc(j.worker_notes)}</div>`:""}</div>`; $("#q-detail").scrollIntoView({behavior:"smooth"})});
  tb.querySelectorAll(".del").forEach(b=>b.onclick=async()=>{if(b.dataset.armed){try{await db.doc("jobs/"+b.dataset.id).delete()}catch(e){}}else{b.dataset.armed="1";b.textContent="confirm remove";setTimeout(()=>{b.dataset.armed="";b.textContent="remove"},3000)}});
 }
@@ -902,6 +968,28 @@ function renderPlaybook(){
 }
 (function(){const keys=Object.keys(DOCS);$("#pb-pick").innerHTML=keys.map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join("");$("#pb-pick").value=keys.includes(ls.get("pb-pick"))?ls.get("pb-pick"):keys[0];$("#pb-pick").addEventListener("change",renderPlaybook);$("#pb-q").addEventListener("input",renderPlaybook);if(keys.length)renderPlaybook()})();
 
+// ---------- Today ----------
+let todos=[];
+function renderTodos(){
+ const el=$("#todo-list"); el.innerHTML="";
+ const sorted=todos.slice().sort((a,b)=>(a.order||0)-(b.order||0)); let g=null;
+ sorted.forEach(t=>{if(t.group!==g){g=t.group;const h=document.createElement("div");h.className="todo-group";h.textContent=g||"";el.append(h)}
+  const row=document.createElement("label"); row.className="todo"+(t.done?" done":""); row.style.cssText="margin:0;text-transform:none;letter-spacing:0;font:inherit;color:inherit";
+  row.innerHTML=`<input type="checkbox" ${t.done?"checked":""} ${canWrite?"":"disabled"}><span class="t">${esc(t.text)}</span><span class="min">${t.minutes?esc(String(t.minutes))+" min":""}</span>`;
+  row.querySelector("input").onchange=async e=>{try{await db.doc("todo/"+t.id).update({done:e.target.checked,doneAt:e.target.checked?Date.now():null})}catch(err){e.target.checked=!e.target.checked}};
+  el.append(row)});
+ const done=todos.filter(t=>t.done).length; $("#todo-count").textContent=`${done} of ${todos.length} done`; $("#todo-bar").style.width=(todos.length?Math.round(done/todos.length*100):0)+"%";
+}
+function renderToday(){
+ const needs=jobsCache.filter(j=>j.status==="needs-coco"||j.status==="researched"); $("#t-needs").textContent=needs.length;
+ $("#t-needs-list").innerHTML=needs.slice(0,6).map(j=>`<li>${esc(j.title||j.subject)} <span class="pill">${esc(j.status)}</span></li>`).join("")||"<li class='note'>Nothing waiting on you.</li>";
+ const c=s=>jobsCache.filter(j=>j.status===s).length;
+ $("#t-queue").innerHTML=["queued","drafted","researched","approved","built","needs-site"].map(s=>`<div>${s}</div><div>${c(s)}</div>`).join("");
+ $("#t-attn").textContent=lib.filter(r=>r.health==="decaying"||r.health==="stale").length;
+ $("#t-recent").innerHTML=jobsCache.filter(j=>j.draft).slice(0,5).map(j=>`<li>${esc(j.title||j.subject)} <span class="note">${esc(fmtLabel(j.format))}</span></li>`).join("")||"<li class='note'>No drafts yet — make the first piece.</li>";
+}
+function renderBenchToday(snap){const d=snap.docs[0]?.data();if(d){$("#t-bench").textContent=`${d.cited??0} / 20`;$("#t-bench-note").textContent=`cited · ${d.date||""} · ${d.tool||""}`}}
+
 // ---------- Voice calibration (allowances live in voice/allow) ----------
 function renderAllow(){$("#cal-count").textContent=ALLOW.length;$("#cal-allow").innerHTML=ALLOW.length?ALLOW.map((a,i)=>`<div class="card"><div style="display:flex;gap:10px;align-items:flex-start"><div style="flex:1">${esc(a)}</div>${canWrite?`<button class="copy" data-rm="${i}">remove</button>`:""}</div></div>`).join(""):'<div class="note">None yet. Flags you mark "that\'s me" land here.</div>';$("#cal-allow").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>saveAllow(ALLOW.filter((_,j)=>j!==+b.dataset.rm)))}
 async function saveAllow(list){ALLOW=list;renderAllow();if(db&&canWrite){try{await db.doc("voice/allow").set({items:ALLOW,updatedAt:Date.now()})}catch(e){$("#cal-note").textContent="Couldn't save the allowances."}}}
@@ -929,7 +1017,7 @@ function setStatus(){
  $("#n-quiet").style.display=sample?"none":"block"; $("#n-run").disabled=!sample;
  $("#s-quiet").style.display=sample?"none":"block"; $("#s-run").disabled=!sample;
  $("#g-quiet").style.display=mcp?"none":"block"; $("#g-search").disabled=!mcp;
- ["q","p","b","l"].forEach(k=>$("#"+k+"-quiet").style.display=db?"none":"block");
+ ["q","p","b","l"].forEach(k=>$("#"+k+"-quiet").style.display=db?"none":"block"); $("#todo-quiet").style.display=db?"none":"block";
 }
 (async()=>{
  setStatus();
@@ -939,9 +1027,11 @@ function setStatus(){
  if(mcp){try{const l=await mcp.listTools("Granola");granolaOk=!!(l?.servers||[]).find(x=>x.server==="Granola"&&x.authStatus!=="needs_reauth")}catch(e){granolaOk=false}}
  setStatus();
  if(db){
+  try{db.collection("todo").limit(100).onSnapshot(sn=>{todos=sn.docs.map(x=>({id:x.id,...x.data()}));renderTodos()},()=>{})}catch(e){}
+  try{db.collection("benchmarks").orderBy("createdAt","desc").limit(1).onSnapshot(renderBenchToday,()=>{})}catch(e){}
   try{db.doc("voice/allow").onSnapshot(sn=>{const x=sn.exists?sn.data():null;ALLOW=Array.isArray(x?.items)?x.items.map(String):[];renderAllow()},()=>{})}catch(e){}
   try{db.collection("jobs").orderBy("updatedAt","desc").limit(200).onSnapshot(renderQueue,()=>{})}catch(e){}
-  try{db.collection("library").limit(1000).onSnapshot(snap=>{lib=snap.docs.map(x=>({id:x.id,...x.data()}));renderLib();if(libSel){const r=lib.find(x=>x.id===libSel.id);if(r)libSel=r}},()=>{})}catch(e){}
+  try{db.collection("library").limit(1000).onSnapshot(snap=>{lib=snap.docs.map(x=>({id:x.id,...x.data()}));renderLib();try{renderToday()}catch(e){}if(libSel){const r=lib.find(x=>x.id===libSel.id);if(r)libSel=r}},()=>{})}catch(e){}
   try{db.collection("social").orderBy("createdAt","desc").limit(100).onSnapshot(renderSocialList,()=>{})}catch(e){}
   try{db.collection("pitches").orderBy("createdAt","desc").limit(200).onSnapshot(renderPitches,()=>{})}catch(e){}
   try{db.collection("benchmarks").orderBy("createdAt","desc").limit(100).onSnapshot(renderBench,()=>{})}catch(e){}
