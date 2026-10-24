@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Coco Photo CMS
  * Plugin URI:  https://cocotran.com
- * Description: The photo layer WordPress doesn't have: compress and convert on upload, descriptive filenames, required alt text and credits, rename with redirects, replace an image everywhere or in one place, focal-point social crops with an export-only credit watermark, in-use delete guard, one-click resize, bulk optimise, front-end speed attributes, ImageObject schema, and a REST intake for images pushed from Claude artifacts.
- * Version:     1.1.0
+ * Description: The photo layer WordPress doesn't have: compress and convert on upload, descriptive filenames, required alt text and credits, rename with redirects, replace an image everywhere or in one place, focal-point social crops (generated automatically on publish) with an export-only credit watermark, in-use delete guard, one-click resize, bulk optimise, front-end speed attributes, ImageObject schema, and a REST intake + post-crops endpoints for Claude artifacts and the Canva hand-off.
+ * Version:     1.2.0
  * Author:      Coco Tran
  * License:     GPL-2.0-or-later
  * Text Domain: coco-photo-cms
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CCPC_VERSION', '1.1.0' );
+define( 'CCPC_VERSION', '1.2.0' );
 define( 'CCPC_FILE', __FILE__ );
 define( 'CCPC_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CCPC_URL', plugin_dir_url( __FILE__ ) );
@@ -62,6 +62,10 @@ function ccpc_default_settings() {
 		'speed_fetchpriority' => 1,
 		'speed_preload'       => 1,
 		'speed_sizes'         => 1,
+		// 1.2
+		'auto_crops_on_publish' => 1,
+		'auto_crops_refresh'    => 0,
+		'auto_crops_max'        => 6,
 	);
 }
 
@@ -132,6 +136,7 @@ require_once CCPC_DIR . 'includes/class-ccpc-crops.php';
 require_once CCPC_DIR . 'includes/class-ccpc-guard.php';
 require_once CCPC_DIR . 'includes/class-ccpc-optimise.php';
 require_once CCPC_DIR . 'includes/class-ccpc-speed.php';
+require_once CCPC_DIR . 'includes/class-ccpc-autocrops.php';
 
 /**
  * Find every place an attachment is used.
@@ -160,6 +165,7 @@ function ccpc_init() {
 	CCPC_Guard::init();
 	CCPC_Optimise::init();
 	CCPC_Speed::init();
+	CCPC_AutoCrops::init();
 }
 add_action( 'plugins_loaded', 'ccpc_init' );
 
@@ -170,6 +176,10 @@ register_activation_hook( __FILE__, function () {
 	if ( false === get_option( CCPC_REDIRECTS_OPTION, false ) ) {
 		add_option( CCPC_REDIRECTS_OPTION, array() );
 	}
+} );
+
+register_deactivation_hook( __FILE__, function () {
+	wp_unschedule_hook( 'ccpc_auto_crops' );
 } );
 
 /**
@@ -191,6 +201,7 @@ add_action( 'admin_enqueue_scripts', function ( $hook ) {
 			'altRequired' => __( 'Alt text is required before this image can be saved.', 'coco-photo-cms' ),
 			'working'     => __( 'Working…', 'coco-photo-cms' ),
 			'done'        => __( 'Done.', 'coco-photo-cms' ),
+			'confirmRegen' => __( 'Regenerate all four crops for this image (the cached files are replaced)?', 'coco-photo-cms' ),
 			'confirmResize' => __( 'Re-encode the full-size file and regenerate every size? The backed-up original (if any) is used as the source.', 'coco-photo-cms' ),
 		),
 	) );

@@ -102,3 +102,52 @@ Date: 2026-10-24. Plugin `coco-photo-cms` **1.1.0** copied into the same throwaw
 - The grid-view (modal) delete cannot display the guard notice (core AJAX `wp_die(0)`); the delete is refused and the notice appears on the next admin page load.
 - The focal click UI and the optimise progress bar were verified as rendered markup + their AJAX endpoints, not driven in a browser.
 - `wm_font` theme autodetect only looks for `.ttf`/`.otf` under `/fonts/` and `/assets/fonts/`; Kadence child themes with fonts elsewhere need the path typed in.
+
+## v1.2
+
+Date: 2026-10-24. Plugin `coco-photo-cms` **1.2.0** deployed with `deploy.sh` into the same throwaway WordPress 7.1.3 (SQLite, PHP 8.3.6, GD, no Imagick), `php -S 127.0.0.1:8089 -t wordpress router.php`. A rig-only mu-plugin registers a `property` CPT (`public`, `rewrite`, thumbnails) because the real site's CPT is not on the rig. Tested with wp-cli (`post`, `cron event`, `eval`), REST with Application Passwords (admin + a subscriber), the admin cookie session for the attachment and settings screens, and anonymous curl for the crop files. `debug.log` empty after every step (the only two lines seen all run were core's "Automatic updates starting/complete" from `wp_version_check`, not the plugin). Nothing left scheduled.
+
+| # | Feature | Result |
+|---|---------|--------|
+| 1 | Boot: 1.2.0, 3 new settings with defaults, 13 routes under `coco-photo-cms/v1` (+2) | PASS |
+| 2 | Auto crops on publish via WP-Cron (property with featured + 3 ACF-style metas) | PASS |
+| 3 | Never regenerate existing crops (mtimes), focal change re-cuts only that image | PASS |
+| 4 | `auto_crops_refresh` off/on, setting off → nothing, `DISABLE_WP_CRON` → synchronous | PASS |
+| 5 | `GET /post-crops/{id}`: shape, public URLs serve 200, `missing: true`, `generate=1` | PASS |
+| 6 | `GET /crops-for-url`: permalink, CPT permalink, query string, 404/400 cases | PASS |
+| 7 | Auth: anonymous 401, subscriber 403 on both routes and on `generate=1` | PASS |
+| 8 | Attachment screen "Crops: 4/4 · generated automatically when … · regenerate" | PASS |
+| 9 | Settings tab fields, "Last runs" log, tab-aware sanitize | PASS |
+
+**1.** `ccpc_get_settings()` → `auto_crops_on_publish 1, auto_crops_refresh 0, auto_crops_max 6`; routes `/post-crops/(?P<id>\d+)` and `/crops-for-url` registered. Five 1200×800 JPEGs imported (#27–31), later a sixth (#35).
+
+**2.** Property #32 created as draft with `_thumbnail_id=27`, `hero_image=28` + `_hero_image=field_…`, `image_1_left=29` + `_image_1_left=field_…`, `gallery_images=a:1:{i:0;i:30;}` and a decoy `room_count=31`. `collect_ids()` → `[27, 28, 29, 30]` (the decoy is excluded: non-image key), `targets()` → featured 27 + `[28, 29, 30]`. `wp post update 32 --post_status=publish` with `DISABLE_WP_CRON=false` → `wp cron event list` shows `ccpc_auto_crops  10 seconds  [32]`, nothing on disk yet. `wp cron event run ccpc_auto_crops` (2.5 s) → `uploads/ccpc-crops/{27,28,29,30}/{social_45,social_916,pin_23,og_191}-<key>.{jpg,webp}` = 32 files, no folder for #31; verified 1080×1920 and 1200×630 on disk. Log option: `post 32 (property) via cron: 4 images, 16 crops generated, 0 reused (2.53s)`. #27 got `_ccpc_crops_source {auto:true, source:cron, post_id:32, time, formats[4]}`, the post `_ccpc_auto_crops {time, ids[4], generated:16, reused:0}`. Event gone after the run.
+
+**3.** `run(32)` again → `generated 0, reused 16, 0.01 s`; `stat` of all 16 JPEGs before/after identical. `set_focal(28, 0.8, 0.3)` → `missing_formats(28)` lists all four (new key), `run(32)` → `4 generated, 12 reused`, #28's folder now holds only the new key's 8 files (old ones swept), #27/#29/#30 untouched.
+
+**4.** With `auto_crops_refresh=0`, `wp post update 32 --post_title=…` schedules nothing; with it on, the same save schedules `ccpc_auto_crops [32]`, which runs to `0 generated, 16 reused`. `auto_crops_on_publish=0`: post #33 (featured #31) published → no event, no `ccpc-crops/31`. Setting back on, `DISABLE_WP_CRON=true`: post #36 (featured #27 + a `core/image` block of #35) published from wp-cli → no event, and by the time the command returned `ccpc-crops/35` held 8 files; log `post 36 (post) via sync: 2 images, 4 crops generated, 4 reused (0.7s)` (#27's four reused).
+
+**5.** `GET /post-crops/32` (admin) → `post_id 32, post_type property, permalink http://127.0.0.1:8089/property/caruso-test-property/, generated_at 2026-10-24T19:21:44+00:00, featured {attachment_id 27, focal {0.5, 0.5, set:false}, auto:true, crops {social_45 {url …/ccpc-crops/27/social_45-41a46d6788.jpg, 1080, 1350} …}}, images [28 (focal set), 29, 30]`. All 16 JPEG `url`s and the WebP `webp` URLs fetched **without auth** → `200 image/jpeg` / `200 image/webp`. `GET /post-crops/33` (no crops yet) → `generated_at null`, all four formats `{url: null, width, height, missing: true}`, `images []`; `?generate=1` → `generated {generated:4, reused:0, errors:[]}`, four URLs, `auto:false` (REST-made, not auto-publish), 8 files on disk, log line `via rest`. `/post-crops/999` → `404 ccpc_post`.
+
+**6.** `crops-for-url?url=http://127.0.0.1:8089/property/caruso-test-property/` → post 32, 3 images, `resolved_url` echoed; `…/sync-publish-post/` → post 36, `images [35]`; the same URL with `?utm_source=x` still resolves (32); `/no-such-post/` → `404 ccpc_url_unresolved` with the URL in `data`; `ftp://x` → `400 ccpc_url`; no `url` → `400 rest_missing_callback_param`.
+
+**7.** Anonymous → `401` on both routes. Subscriber Application Password → `403 rest_forbidden` on `/post-crops/32`, `/crops-for-url` and `/post-crops/32?generate=1`.
+
+**8.** `post.php?post=27&action=edit` (cookie session) → `Crops: 4/4 · generated automatically when “Caruso test property” was published (October 24, 2026 7:20 pm) · regenerate` with the `ccpc-regen-crops` button (`data-force=1`, confirm dialog, reuses the `ccpc_make_crops` AJAX with `force=1`); #31 (REST-generated) shows `Crops: 4/4 · regenerate` without the auto-publish sentence.
+
+**9.** Exports & speed tab renders `auto_crops_on_publish` (checked), `auto_crops_max` (6, min 0 max 30), `auto_crops_refresh` (unchecked) and a read-only "Last runs" textarea with the log lines. `CCPC_Settings::sanitize({_tab: exports, auto_crops_max: 99})` → `max 30`, both checkboxes 0, General-tab values kept; `sanitize({_tab: general, …})` keeps `auto_crops_on_publish 1` and `auto_crops_max 6`.
+
+### Bugs found and fixed during the v1.2 run
+
+- None in the new code. Two design points settled while testing: (a) the run must not happen at `transition_post_status` time because the block editor and ACF write featured image / fields *after* `wp_insert_post()` — hence the 10 s cron delay and, with `DISABLE_WP_CRON`, a `shutdown`-hook run instead of an inline one; (b) `url_to_postid()` only resolves a CPT permalink when the CPT is registered with rewrite rules (the rig needed the mu-plugin and a `rewrite flush`).
+- Also changed: `register_deactivation_hook` unschedules `ccpc_auto_crops`; `uninstall.php` removes `ccpc_auto_crops_log` and the hook; deactivate/reactivate not re-run this round beyond `php -l`.
+
+`php -l` clean on all 17 PHP files; `admin.js` parses.
+
+### Not covered / known gaps (v1.2)
+
+- Publishing from the block editor / ACF UI itself was not driven (no browser); the REST and wp-cli publish paths fire the same `transition_post_status`, and the meta-after-insert ordering is handled by the delay, but a real ACF save was simulated with raw meta + `_field` keys.
+- Kadence gallery JSON in meta was exercised only through the `"id":N` regex on a string value, not with a real Kadence block saved by the editor.
+- The WP-Cron event was run with `wp cron event run`, not by a front-end request hitting `wp-cron.php`.
+- The regenerate button was verified as markup + its existing AJAX endpoint, not clicked in a browser.
+- `property`, `guide`, `brief`, `dispatch`, `shortlist` on the live site come from ACF/CPT UI; only `property` (rig CPT) and `post` were published here.

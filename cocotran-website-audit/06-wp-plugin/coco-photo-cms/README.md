@@ -1,4 +1,4 @@
-# Coco Photo CMS (1.1.0)
+# Coco Photo CMS (1.2.0)
 
 The photo layer WordPress is missing, built for cocotran.com (Kadence + ACF + Rank Math + LiteSpeed + Cloudflare). Plain PHP, no build step, no Composer.
 
@@ -22,6 +22,8 @@ What it does:
 | **1.1** Optimise all images: batched, resumable job with dry-run estimate, bytes before/after, WebP quality presets, optional progressive JPEG re-encode | Settings → Bulk |
 | **1.1** Speed set: `decoding=async`, lazy-loading with an eager budget, `fetchpriority=high` + `<link rel=preload>` for the LCP image, `sizes` sanity | front end, each a toggle |
 | **1.1** Media list shows social-crop status (n/4) and a focal-point dot | Media → Library (list view) |
+| **1.2** Social crops generated automatically on publish for the featured image + the images in the post's fields (ACF, Kadence galleries), as one WP-Cron event 10 s later; never regenerates what exists; attachment screen shows "Crops: 4/4 · generated automatically when … was published · regenerate" | Settings → Exports & speed → Auto crops on publish; attachment screen |
+| **1.2** Post-level crop endpoints with public URLs for the Studio Desk → Canva hand-off | `GET /post-crops/{post_id}`, `GET /crops-for-url?url=…` |
 
 ## Install
 
@@ -115,6 +117,8 @@ All routes (same auth; `upload_files` to read, `edit_post` on the attachment to 
 | `DELETE /media/{id}` (1.1) | `force=1` to override | `{deleted, id, usages_were}` or `409 ccpc_in_use` with `usages` |
 | `GET /optimise/estimate` (1.1) | `offset` (50 per page; `next` = null at the end) | `{count, processed, bytes, no_webp, over_cap, next}` |
 | `GET` / `POST` / `DELETE /optimise/job` (1.1) | POST: `{restart?: bool, reencode_jpeg?: bool}` runs one batch of 5 | job state `{offset, total, processed, before, after, resized, reencoded, started, finished, last[]}` |
+| `GET /post-crops/{post_id}` (1.2) | `generate=1` to generate missing crops inline; auth `edit_posts` | `{post_id, post_type, post_status, title, permalink, featured: {attachment_id, url, width, height, alt, credit, focal, auto, crops: {social_45: {url, webp, width, height, bytes} …}}, images: [same shape…], formats, generated_at, generated}`; a format that has not been generated is `{url: null, width, height, missing: true}` |
+| `GET /crops-for-url?url=<public post URL>` (1.2) | `generate=1` as above; auth `edit_posts` | same shape + `resolved_url`; `404 ccpc_url_unresolved` when `url_to_postid()` finds nothing, `400 ccpc_url` for a non-http(s) value |
 
 `DELETE /wp/v2/media/{id}` is also guarded (`409` with usages unless `ccpc_force=1`).
 
@@ -134,6 +138,14 @@ Open an image (Media → Library → Edit). The **Focal point** preview: click w
 **Export for social** buttons download the file (JPEG at the export quality, or WebP). Tick **Add credit watermark** to burn the credit line into that download; untick for a clean file. Both variants are cached under `uploads/ccpc-crops/<id>/` and reused until the focal point, the file (`_ccpc_version`), the quality settings or the watermark text change. "Generate all now" fills the cache; the Media list bulk action **Generate social crops** does the same for many images. Deleting the attachment removes its crop folder.
 
 **Watermark** (Settings → Exports & speed): text (default `© Coco Tran · cocotranstudio.com`), bottom-right/left, opacity, font size as % of the image width, and an optional absolute path to a `.ttf`/`.otf` on the server. No font is bundled: the default is the first font found in the theme's `/fonts/` (or `/assets/fonts/`) folder, else GD's built-in bitmap font (plain, ASCII-transliterated, always works). The watermark is applied **only** to exports requested with the watermark option; site images, sizes and WebP are never touched.
+
+## Auto crops on publish (1.2)
+
+Settings → Exports & speed → **Auto crops on publish** (on by default). When a `post`, `page`, `property`, `guide`, `brief`, `dispatch` or `shortlist` goes to `publish` (`transition_post_status`; filter `ccpc_auto_crops_post_types` to change the list), the plugin collects the featured image and every attachment ID referenced in the post's meta — single IDs or arrays under keys that look like an image field (`image|img|photo|gallery|hero|iamge|thumbnail|cover`), ACF arrays with `ID`, Kadence gallery JSON (`"id":123`) — then the content images (`wp-image-N`, block `"id":N`), and generates the four social crops (`social_45`, `social_916`, `pin_23`, `og_191`, JPEG + WebP) for the featured image and the first *N* others (**Images per post**, default 6). The focal point is used when set, centre otherwise. A crop that already exists for the image's current key is **never** regenerated (a new focal point or a replaced file changes the key, so only that image is cut again).
+
+It runs as a single WP-Cron event `ccpc_auto_crops` (args `[post_id]`) scheduled 10 seconds after publish, so the ACF / REST meta writes that follow `wp_insert_post()` are on disk first. WP-Cron fires on the next page view; `wp cron event run ccpc_auto_crops` runs it by hand. With `DISABLE_WP_CRON` set it instead runs synchronously at the end of the publishing request (filter `ccpc_auto_crops_sync` to override). **On update** (default off) also runs when an already-published post is saved, which fills crops for images added later. Each run writes one line to the `ccpc_auto_crops_log` option (last 50, shown under "Last runs" on the tab): `post 32 (property) via cron: 4 images, 16 crops generated, 0 reused (2.5s)`. The post gets `_ccpc_auto_crops` (time, ids, counts) and each attachment `_ccpc_crops_source` (which post, when), which the attachment screen reads for its "Crops: 4/4 · generated automatically when “…” was published · regenerate" line (regenerate forces all four).
+
+**Canva hand-off**: the Studio Desk calls `crops-for-url` with the live post URL, then Canva `upload-asset-from-url` on each `url` it gets back (they are plain public files under `uploads/ccpc-crops/<attachment>/`, no auth, no query string). Pass `generate=1` when the post was published seconds ago and a format is still `missing`.
 
 ## Delete guard (1.1)
 
@@ -181,6 +193,8 @@ On single posts the plugin emits one `ImageObject` per image for the featured im
 - **Watermark** with the bitmap fallback is ASCII only (`©` becomes `(c)`); set a TTF path for proper typography.
 - **Delete guard** cannot show its notice in the grid-view modal (core AJAX path); the delete is still refused.
 - **Speed set** eager/LCP decisions are made per request; on archives the budget covers the first *N* images of the page, not of each post. The LCP guess is the featured image, else the first content image.
+- **Auto crops** depend on WP-Cron (or the synchronous fallback with `DISABLE_WP_CRON`); on a page-cached site with no traffic the event waits for the next uncached request — call `post-crops/{id}?generate=1` or `wp cron event run ccpc_auto_crops` if the crops are needed immediately. Field images are found by meta key name; an image under a key that matches none of the patterns is picked up only if the value is an ACF array with `ID` or Kadence JSON.
+- **crops-for-url** uses `url_to_postid()`, which needs the post's rewrite rules to be registered on the request (custom post types must be registered with `public`/`rewrite`); it ignores query strings.
 - **Optimise all** re-encodes the full-size JPEG only (intermediate sizes are regenerated from it on a resize, otherwise left as-is).
 - Requires PHP 8.0+, WordPress 6.2+ (uses `wp_content_img_tag`); the speed set assumes 6.3+ for `wp_high_priority_element_flag()` (feature-detected).
 
@@ -202,6 +216,7 @@ includes/class-ccpc-crops.php       1.1 focal point, social crops, exports, bulk
 includes/class-ccpc-guard.php       1.1 in-use delete guard (admin flows + REST 409)
 includes/class-ccpc-optimise.php    1.1 resize one, optimise-all job, dry-run estimate
 includes/class-ccpc-speed.php       1.1 decoding/lazy/fetchpriority/preload/sizes
+includes/class-ccpc-autocrops.php   1.2 auto crops on publish (cron/sync), post-crops payloads, run log
 assets/admin.js, assets/admin.css
 uninstall.php
 ```

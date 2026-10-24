@@ -29,7 +29,7 @@ class CCPC_Settings {
 	 * values are carried over from the saved option (unchecked checkboxes are otherwise lost).
 	 */
 	const TAB_KEYS = array(
-		'exports' => array( 'export_jpeg_quality', 'wm_text', 'wm_position', 'wm_opacity', 'wm_size', 'wm_font', 'wm_default', 'delete_guard', 'speed_decoding', 'speed_lazy', 'speed_lazy_skip', 'speed_fetchpriority', 'speed_preload', 'speed_sizes' ),
+		'exports' => array( 'export_jpeg_quality', 'wm_text', 'wm_position', 'wm_opacity', 'wm_size', 'wm_font', 'wm_default', 'delete_guard', 'speed_decoding', 'speed_lazy', 'speed_lazy_skip', 'speed_fetchpriority', 'speed_preload', 'speed_sizes', 'auto_crops_on_publish', 'auto_crops_refresh', 'auto_crops_max' ),
 	);
 
 	public static function sanitize( $in ) {
@@ -62,7 +62,8 @@ class CCPC_Settings {
 		}
 		$out['wm_font']         = $font;
 		$out['speed_lazy_skip'] = max( 0, min( 10, (int) ( $in['speed_lazy_skip'] ?? $d['speed_lazy_skip'] ) ) );
-		foreach ( array( 'wm_default', 'delete_guard', 'speed_decoding', 'speed_lazy', 'speed_fetchpriority', 'speed_preload', 'speed_sizes' ) as $b ) {
+		$out['auto_crops_max']  = max( 0, min( 30, (int) ( $in['auto_crops_max'] ?? $d['auto_crops_max'] ) ) );
+		foreach ( array( 'wm_default', 'delete_guard', 'speed_decoding', 'speed_lazy', 'speed_fetchpriority', 'speed_preload', 'speed_sizes', 'auto_crops_on_publish', 'auto_crops_refresh' ) as $b ) {
 			$out[ $b ] = empty( $in[ $b ] ) ? 0 : 1;
 		}
 		return $out;
@@ -179,6 +180,17 @@ class CCPC_Settings {
 						<span class="description"><?php esc_html_e( 'Absolute path to a .ttf/.otf on the server. Default: the first font found in the theme\'s /fonts/ folder. Blank = GD\'s built-in bitmap font (plain but always works).', 'coco-photo-cms' ); ?> <?php echo function_exists( 'imagettftext' ) ? '' : '<strong>' . esc_html__( 'FreeType is not available: the bitmap font will be used.', 'coco-photo-cms' ) . '</strong>'; ?></span></p>
 						<p><label><input type="checkbox" name="<?php echo esc_attr( $f( 'wm_default' ) ); ?>" value="1" <?php checked( $s['wm_default'] ); ?>> <?php esc_html_e( 'Tick the watermark box by default on the attachment screen', 'coco-photo-cms' ); ?></label></p>
 					</td></tr>
+				</table>
+
+				<h2><?php esc_html_e( 'Auto crops on publish', 'coco-photo-cms' ); ?></h2>
+				<p class="description"><?php esc_html_e( 'When a post, page, property, guide, brief, dispatch or shortlist is published, the four social crops are generated for its featured image and the images in its fields (ACF image/gallery fields, Kadence galleries), around each image\'s focal point (centre when none is set). Runs as a single WP-Cron event 10 seconds after publish (at the end of the request when DISABLE_WP_CRON is set). Crops that already exist are never regenerated. The Studio Desk reads them from /wp-json/coco-photo-cms/v1/post-crops/{id} or /crops-for-url?url=… and hands the URLs to Canva.', 'coco-photo-cms' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr><th><?php esc_html_e( 'On publish', 'coco-photo-cms' ); ?></th><td><label><input type="checkbox" name="<?php echo esc_attr( $f( 'auto_crops_on_publish' ) ); ?>" value="1" <?php checked( $s['auto_crops_on_publish'] ); ?>> <?php esc_html_e( 'Generate the social crops automatically when a post is published', 'coco-photo-cms' ); ?></label></td></tr>
+					<tr><th><?php esc_html_e( 'Images per post', 'coco-photo-cms' ); ?></th><td><?php esc_html_e( 'The featured image plus the first', 'coco-photo-cms' ); ?> <input type="number" class="small-text" name="<?php echo esc_attr( $f( 'auto_crops_max' ) ); ?>" value="<?php echo (int) $s['auto_crops_max']; ?>" min="0" max="30"> <?php esc_html_e( 'other images (fields first, then content)', 'coco-photo-cms' ); ?></td></tr>
+					<tr><th><?php esc_html_e( 'On update', 'coco-photo-cms' ); ?></th><td><label><input type="checkbox" name="<?php echo esc_attr( $f( 'auto_crops_refresh' ) ); ?>" value="1" <?php checked( $s['auto_crops_refresh'] ); ?>> <?php esc_html_e( 'Also run when an already-published post is saved (fills crops for images added later; nothing is regenerated)', 'coco-photo-cms' ); ?></label></td></tr>
+					<?php $log = CCPC_AutoCrops::get_log(); if ( $log ) : ?>
+					<tr><th><?php esc_html_e( 'Last runs', 'coco-photo-cms' ); ?></th><td><textarea readonly rows="6" class="large-text code"><?php echo esc_textarea( implode( "\n", array_slice( $log, 0, 20 ) ) ); ?></textarea></td></tr>
+					<?php endif; ?>
 				</table>
 
 				<h2><?php esc_html_e( 'Delete guard', 'coco-photo-cms' ); ?></h2>

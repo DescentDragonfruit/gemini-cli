@@ -118,9 +118,10 @@
 	});
 
 	$(document).on('click', '.ccpc-make-crops', function () {
-		var $b = $(this), $msg = $b.siblings('.ccpc-crops-msg'), $wrap = $b.closest('.ccpc-social-right');
+		var $b = $(this), $msg = $b.siblings('.ccpc-crops-msg'), $wrap = $b.closest('.ccpc-social-right'), force = $b.data('force') ? 1 : 0;
+		if (force && !window.confirm(CCPC.i18n.confirmRegen)) { return; }
 		$b.prop('disabled', true); $msg.text(CCPC.i18n.working);
-		post('ccpc_make_crops', { id: $b.data('id'), watermark: $wrap.find('.ccpc-export-wm').is(':checked') ? 1 : 0, force: 0 }).done(function (r) {
+		post('ccpc_make_crops', { id: $b.data('id'), watermark: force ? 0 : ($wrap.find('.ccpc-export-wm').is(':checked') ? 1 : 0), force: force }).done(function (r) {
 			$b.prop('disabled', false);
 			if (!r.success) { $msg.text(r.data || 'Error'); return; }
 			var n = 0;
@@ -135,6 +136,7 @@
 				if (d.watermark) { $li.append(' (credit)'); }
 			});
 			$msg.text(CCPC.i18n.done + ' ' + n + ' crops cached.');
+			if (force) { $wrap.find('.ccpc-crops-line').contents().filter(function () { return this.nodeType === 3 && /Crops:/.test(this.nodeValue); }).first().each(function () { this.nodeValue = this.nodeValue.replace(/Crops: \d+\/\d+/, 'Crops: ' + n + '/' + n); }); }
 		}).fail(function () { $b.prop('disabled', false); $msg.text('Request failed'); });
 	});
 

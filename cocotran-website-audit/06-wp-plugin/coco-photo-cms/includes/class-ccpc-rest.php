@@ -120,6 +120,24 @@ class CCPC_Rest {
 				'permission_callback' => array( __CLASS__, 'can_manage' ),
 			),
 		) );
+		// 1.2: crops per post (featured + field images) for the Studio Desk → Canva hand-off.
+		register_rest_route( self::NS, '/post-crops/(?P<id>\d+)', array(
+			'methods'             => 'GET',
+			'callback'            => array( __CLASS__, 'post_crops' ),
+			'permission_callback' => array( __CLASS__, 'can_edit_posts' ),
+			'args'                => array(
+				'generate' => array( 'type' => 'boolean', 'default' => false ),
+			),
+		) );
+		register_rest_route( self::NS, '/crops-for-url', array(
+			'methods'             => 'GET',
+			'callback'            => array( __CLASS__, 'crops_for_url' ),
+			'permission_callback' => array( __CLASS__, 'can_edit_posts' ),
+			'args'                => array(
+				'url'      => array( 'type' => 'string', 'required' => true ),
+				'generate' => array( 'type' => 'boolean', 'default' => false ),
+			),
+		) );
 		register_rest_route( self::NS, '/settings', array(
 			'methods'             => 'GET',
 			'callback'            => function () {
@@ -141,6 +159,40 @@ class CCPC_Rest {
 
 	public static function can_manage() {
 		return current_user_can( 'manage_options' );
+	}
+
+	public static function can_edit_posts() {
+		return current_user_can( 'edit_posts' );
+	}
+
+	/* ---------- 1.2 routes ---------- */
+
+	/**
+	 * GET /post-crops/{post_id}[?generate=1] → featured + field images with public crop URLs.
+	 */
+	public static function post_crops( WP_REST_Request $req ) {
+		$r = CCPC_AutoCrops::describe_post( (int) $req['id'], (bool) $req->get_param( 'generate' ) );
+		return is_wp_error( $r ) ? $r : rest_ensure_response( $r );
+	}
+
+	/**
+	 * GET /crops-for-url?url=<public post URL>[&generate=1] → same shape, resolved with url_to_postid().
+	 */
+	public static function crops_for_url( WP_REST_Request $req ) {
+		$url = esc_url_raw( trim( (string) $req->get_param( 'url' ) ) );
+		if ( '' === $url || ! preg_match( '#^https?://#i', $url ) ) {
+			return new WP_Error( 'ccpc_url', 'url must be an absolute http(s) URL of a post on this site.', array( 'status' => 400 ) );
+		}
+		$post_id = url_to_postid( $url );
+		if ( ! $post_id ) {
+			return new WP_Error( 'ccpc_url_unresolved', 'No post found for that URL.', array( 'status' => 404, 'url' => $url ) );
+		}
+		$r = CCPC_AutoCrops::describe_post( $post_id, (bool) $req->get_param( 'generate' ) );
+		if ( is_wp_error( $r ) ) {
+			return $r;
+		}
+		$r['resolved_url'] = $url;
+		return rest_ensure_response( $r );
 	}
 
 	/* ---------- 1.1 routes ---------- */

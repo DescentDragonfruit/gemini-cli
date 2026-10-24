@@ -383,6 +383,24 @@ class CCPC_Crops {
 						<button type="button" class="button button-small ccpc-make-crops" data-id="<?php echo (int) $id; ?>"><?php esc_html_e( 'Generate all now (cache)', 'coco-photo-cms' ); ?></button>
 						<span class="ccpc-msg ccpc-crops-msg"></span>
 					</p>
+					<p class="ccpc-crops-line description">
+						<?php
+						list( $n_cached, $n_total ) = self::status( $id );
+						$src = get_post_meta( $id, CCPC_AutoCrops::META_SOURCE, true );
+						echo esc_html( sprintf( __( 'Crops: %1$d/%2$d', 'coco-photo-cms' ), $n_cached, $n_total ) );
+						if ( $n_cached && is_array( $src ) && ! empty( $src['auto'] ) && ! empty( $src['post_id'] ) ) {
+							$ptitle = get_the_title( (int) $src['post_id'] );
+							echo ' · ' . esc_html( sprintf(
+								/* translators: 1: post title 2: date */
+								__( 'generated automatically when “%1$s” was published (%2$s)', 'coco-photo-cms' ),
+								$ptitle ? $ptitle : '#' . (int) $src['post_id'],
+								! empty( $src['time'] ) ? wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), (int) $src['time'] ) : ''
+							) );
+						}
+						?>
+						· <button type="button" class="button-link ccpc-make-crops ccpc-regen-crops" data-id="<?php echo (int) $id; ?>" data-force="1"><?php esc_html_e( 'regenerate', 'coco-photo-cms' ); ?></button>
+						<span class="ccpc-msg ccpc-crops-msg"></span>
+					</p>
 					<ul class="ccpc-crops-status">
 						<?php foreach ( self::FORMATS as $key => $f ) : ?>
 							<li data-format="<?php echo esc_attr( $key ); ?>">

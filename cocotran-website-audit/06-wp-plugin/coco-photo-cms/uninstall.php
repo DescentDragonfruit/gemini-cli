@@ -11,3 +11,5 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 delete_option( 'ccpc_settings' );
 delete_option( 'ccpc_redirects' );
 delete_option( 'ccpc_optimise_job' );
+delete_option( 'ccpc_auto_crops_log' );
+wp_unschedule_hook( 'ccpc_auto_crops' );
