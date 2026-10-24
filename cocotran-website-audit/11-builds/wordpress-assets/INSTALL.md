@@ -35,3 +35,13 @@ Live form: https://tally.so/r/Nqpavl · edit: https://tally.so/forms/Nqpavl/edit
 
 ### Also on the Planning Room / subscribe page
 Add the same `reader-question-embed.html` block to the Planning Room sign-up page (Kadence Element display rule: Page → /subscribe/ and the Planning Room landing page) with the heading changed to "What should I write next?". Questions from paying-intent readers land in the same inbox and the Studio Desk → Reader questions.
+
+## The Comparison on the Brief CPT (added 24 Oct) — ≈25 minutes
+
+Place-vs-place comparisons (Bora Bora vs Maldives) are Briefs with the new `brief_format` term **The Comparison**. The wiring kit is three files plus a guide, all in this folder; nothing in it edits an existing template or post:
+
+- `brief-comparison-SETUP.md` — the steps, two paths (Cowork in Coco's Chrome, or REST + `wp eval-file`), the test build (`test-bora-bora-vs-maldives`), a 6-line checklist.
+- `brief-comparison-setup.php` — one idempotent script: creates the term, imports `acf-comparison-brief.json` (embedded copy inside, so Code Snippets works too), creates the Bora Bora / Maldives destination terms, prints the IDs. Re-runnable; no deletions.
+- `kadence-element-brief-comparison.html` — the Kadence Element (Code editor paste; hook `Single Content: Before`, priority 10, Show on Singular: Briefs + brief_format = The Comparison). Needs `booking-box-shortcode.php` (step 2) for its `[ctt_book]` block and sits under the Answerable opening (step 3) without duplicating it.
+
+Order: step 1–3 above first, then the kit. Comparisons are public: set `ct_gated = 0` on each one or `paywall-schema-snippet.php` marks the Brief as paywalled.
