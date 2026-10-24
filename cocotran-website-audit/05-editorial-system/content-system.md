@@ -64,3 +64,9 @@ Context (notes · Granola · Proposal/Agency Studio · live link for updates)
 ```
 
 No step is skipped; no piece goes live without a gate report on its job. The report, the research notes and the diff live on the job record, so "why did we write this" is always answerable.
+
+## Where a Comparison lives (decided 24 Oct 2026)
+
+- **Hotel vs hotel** → Property CPT, format *The Trade-Off* (kicker reads "The Comparison"). Both sides are bookable; the relationship fields point at the two Verdicts; the booking box sells the stay.
+- **Place vs place** (Bora Bora vs Maldives, Amalfi vs Puglia) → Brief CPT, `brief_format` term **The Comparison** (new), ACF group `acf-comparison-brief.json`. Same eight sections (set-up, location, stays, food, days, price difference, who books which, verdict), no relationship fields, Article schema, URL `/brief/…`. The booking box still appears through the `[ctt_book]` shortcode naming the hotel each side would book.
+- Rule for the worker: if either side is a destination, it is a Brief. Title lock is the same for both: `[A] vs [B]: Which Should You Choose?`

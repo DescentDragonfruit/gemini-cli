@@ -1,0 +1,242 @@
+[
+ {
+  "key": "group_ctt_comparison_brief",
+  "title": "Comparison (Brief · destination vs destination)",
+  "fields": [
+   {
+    "key": "field_ctt_cmp_short",
+    "label": "Short answer",
+    "name": "comparison_short_answer",
+    "type": "textarea",
+    "instructions": "2–3 sentences that stand alone. The reader could stop here.",
+    "required": 0,
+    "show_in_rest": 1,
+    "rows": 3,
+    "new_lines": ""
+   },
+   {
+    "key": "field_ctt_cmp_aname",
+    "label": "Side A",
+    "name": "side_a_name",
+    "type": "text",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1
+   },
+   {
+    "key": "field_ctt_cmp_bname",
+    "label": "Side B",
+    "name": "side_b_name",
+    "type": "text",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1
+   },
+   {
+    "key": "field_ctt_cmp_bfa",
+    "label": "Choose A if",
+    "name": "best_for_a",
+    "type": "text",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1
+   },
+   {
+    "key": "field_ctt_cmp_bfb",
+    "label": "Choose B if",
+    "name": "best_for_b",
+    "type": "text",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1
+   },
+   {
+    "key": "field_ctt_cmp_setup",
+    "label": "The set-up",
+    "name": "comparison_the_set_up",
+    "type": "wysiwyg",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "tabs": "all",
+    "toolbar": "basic",
+    "media_upload": 0
+   },
+   {
+    "key": "field_ctt_cmp_loc",
+    "label": "The location",
+    "name": "comparison_the_location",
+    "type": "wysiwyg",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "tabs": "all",
+    "toolbar": "basic",
+    "media_upload": 0
+   },
+   {
+    "key": "field_ctt_cmp_rooms",
+    "label": "The stays",
+    "name": "comparison_the_stays",
+    "type": "wysiwyg",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "tabs": "all",
+    "toolbar": "basic",
+    "media_upload": 0
+   },
+   {
+    "key": "field_ctt_cmp_food",
+    "label": "The food",
+    "name": "comparison_the_food",
+    "type": "wysiwyg",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "tabs": "all",
+    "toolbar": "basic",
+    "media_upload": 0
+   },
+   {
+    "key": "field_ctt_cmp_days",
+    "label": "The days",
+    "name": "comparison_the_days",
+    "type": "wysiwyg",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "tabs": "all",
+    "toolbar": "basic",
+    "media_upload": 0
+   },
+   {
+    "key": "field_ctt_cmp_price",
+    "label": "The price difference",
+    "name": "comparison_the_price_difference",
+    "type": "wysiwyg",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "tabs": "all",
+    "toolbar": "basic",
+    "media_upload": 0
+   },
+   {
+    "key": "field_ctt_cmp_who",
+    "label": "Who books which",
+    "name": "comparison_who_books_which",
+    "type": "wysiwyg",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "tabs": "all",
+    "toolbar": "basic",
+    "media_upload": 0
+   },
+   {
+    "key": "field_ctt_cmp_verdict",
+    "label": "The verdict",
+    "name": "comparison_the_verdict",
+    "type": "wysiwyg",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "tabs": "all",
+    "toolbar": "basic",
+    "media_upload": 0
+   },
+   {
+    "key": "field_ctt_cmp_book",
+    "label": "Booking note",
+    "name": "comparison_booking_note",
+    "type": "text",
+    "instructions": "One line for the booking box: perks that apply, the room to ask for.",
+    "required": 0,
+    "show_in_rest": 1
+   },
+   {
+    "key": "field_ctt_cmp_img1",
+    "label": "Image 1 (hero)",
+    "name": "comparison_image_1",
+    "type": "image",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "return_format": "id",
+    "preview_size": "medium",
+    "library": "all"
+   },
+   {
+    "key": "field_ctt_cmp_img2",
+    "label": "Image 2",
+    "name": "comparison_image_2",
+    "type": "image",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "return_format": "id",
+    "preview_size": "medium",
+    "library": "all"
+   },
+   {
+    "key": "field_ctt_cmp_img3",
+    "label": "Image 3",
+    "name": "comparison_image_3",
+    "type": "image",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "return_format": "id",
+    "preview_size": "medium",
+    "library": "all"
+   },
+   {
+    "key": "field_ctt_cmp_img4",
+    "label": "Image 4",
+    "name": "comparison_image_4",
+    "type": "image",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "return_format": "id",
+    "preview_size": "medium",
+    "library": "all"
+   },
+   {
+    "key": "field_ctt_cmp_img5",
+    "label": "Image 5",
+    "name": "comparison_image_5",
+    "type": "image",
+    "instructions": "",
+    "required": 0,
+    "show_in_rest": 1,
+    "return_format": "id",
+    "preview_size": "medium",
+    "library": "all"
+   }
+  ],
+  "location": [
+   [
+    {
+     "param": "post_type",
+     "operator": "==",
+     "value": "brief"
+    },
+    {
+     "param": "post_taxonomy",
+     "operator": "==",
+     "value": "brief_format:the-comparison"
+    }
+   ]
+  ],
+  "menu_order": 5,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "active": true,
+  "show_in_rest": 1,
+  "description": "Destination-vs-destination decisions (Bora Bora vs Maldives). Hotel-vs-hotel stays on the Property CPT as The Trade-Off."
+ }
+]
