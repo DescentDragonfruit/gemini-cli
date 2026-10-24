@@ -1,0 +1,184 @@
+<!-- Kadence Element: Brief — The Comparison (destination vs destination). Paste this whole file into the Code Editor of a new Kadence Element.
+     Renders a Brief whose brief_format term is "The Comparison" from the ACF group acf-comparison-brief.json (group_ctt_comparison_brief).
+     Order: kicker → H1 (post title) → short answer → Choose A if / Choose B if → The set-up → image 1 → The location → The stays → image 2
+            → The food → The days → image 3 → The price difference → image 4 → booking box [ctt_book] → Who books which → The verdict → image 5.
+     The Answerable-opening Element (priority 5, same hook) is NOT duplicated here; when it prints a short answer the one below hides itself.
+     Display: Singular: Briefs + taxonomy brief_format = The Comparison. Hook: Single Content: Before, priority 10. Details: brief-comparison-SETUP.md.
+     Bindings use Kadence Blocks Pro dynamic content (post|post_custom_field + acf_meta|<field>); images bind the five ACF image fields (return format ID)
+     through the Kadence Image block's dynamic source — confirm in a preview; if a figure stays empty, set those fields' Return Format to "Image URL".
+     Empty values are hidden by the base64 script in the last wp:html block (readable source: brief-comparison-SETUP.md, appendix). -->
+<!-- wp:group {"className":"ct-cmp","tagName":"article"} -->
+<article class="wp-block-group ct-cmp">
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpkick","htmlTag":"p","className":"ct-cmp-kicker"} -->
+<p class="kt-adv-heading_ctcmpkick wp-block-kadence-advancedheading ct-cmp-kicker" data-kb-block="kb-adv-heading_ctcmpkick">The Comparison</p>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmph1","htmlTag":"h1","className":"ct-cmp-title","kadenceDynamic":{"content":{"enable":true,"field":"post|post_title","para":"","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<h1 class="kt-adv-heading_ctcmph1 wp-block-kadence-advancedheading ct-cmp-title" data-kb-block="kb-adv-heading_ctcmph1"><span class="kb-inline-dynamic">dynamic text placeholder</span></h1>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpans","htmlTag":"p","className":"ct-cmp-answer","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_short_answer","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<p class="kt-adv-heading_ctcmpans wp-block-kadence-advancedheading ct-cmp-answer" data-kb-block="kb-adv-heading_ctcmpans"><span class="kb-inline-dynamic">dynamic text placeholder</span></p>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:group {"className":"ct-cmp-choose","tagName":"aside"} -->
+<aside class="wp-block-group ct-cmp-choose">
+<!-- wp:columns {"className":"ct-cmp-choose-cols"} -->
+<div class="wp-block-columns ct-cmp-choose-cols">
+<!-- wp:column {"className":"ct-cmp-side"} -->
+<div class="wp-block-column ct-cmp-side">
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpsna","htmlTag":"p","className":"ct-cmp-side-name","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|side_a_name","before":"Choose ","after":" if","fallback":"","shouldReplace":true}}} -->
+<p class="kt-adv-heading_ctcmpsna wp-block-kadence-advancedheading ct-cmp-side-name" data-kb-block="kb-adv-heading_ctcmpsna"><span class="kb-inline-dynamic">dynamic text placeholder</span></p>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpsva","htmlTag":"p","className":"ct-cmp-side-val","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|best_for_a","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<p class="kt-adv-heading_ctcmpsva wp-block-kadence-advancedheading ct-cmp-side-val" data-kb-block="kb-adv-heading_ctcmpsva"><span class="kb-inline-dynamic">dynamic text placeholder</span></p>
+<!-- /wp:kadence/advancedheading -->
+</div>
+<!-- /wp:column -->
+<!-- wp:column {"className":"ct-cmp-side"} -->
+<div class="wp-block-column ct-cmp-side">
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpsnb","htmlTag":"p","className":"ct-cmp-side-name","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|side_b_name","before":"Choose ","after":" if","fallback":"","shouldReplace":true}}} -->
+<p class="kt-adv-heading_ctcmpsnb wp-block-kadence-advancedheading ct-cmp-side-name" data-kb-block="kb-adv-heading_ctcmpsnb"><span class="kb-inline-dynamic">dynamic text placeholder</span></p>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpsvb","htmlTag":"p","className":"ct-cmp-side-val","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|best_for_b","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<p class="kt-adv-heading_ctcmpsvb wp-block-kadence-advancedheading ct-cmp-side-val" data-kb-block="kb-adv-heading_ctcmpsvb"><span class="kb-inline-dynamic">dynamic text placeholder</span></p>
+<!-- /wp:kadence/advancedheading -->
+</div>
+<!-- /wp:column -->
+</div>
+<!-- /wp:columns -->
+</aside>
+<!-- /wp:group -->
+<!-- wp:group {"className":"ct-cmp-sec ct-cmp-sec-1","tagName":"section"} -->
+<section class="wp-block-group ct-cmp-sec ct-cmp-sec-1">
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmph1","htmlTag":"h2","className":"ct-cmp-h2"} -->
+<h2 class="kt-adv-heading_ctcmph1 wp-block-kadence-advancedheading ct-cmp-h2" data-kb-block="kb-adv-heading_ctcmph1">The set-up</h2>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpb1","htmlTag":"div","className":"ct-cmp-body","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_the_set_up","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<div class="kt-adv-heading_ctcmpb1 wp-block-kadence-advancedheading ct-cmp-body" data-kb-block="kb-adv-heading_ctcmpb1"><span class="kb-inline-dynamic">dynamic text placeholder</span></div>
+<!-- /wp:kadence/advancedheading -->
+</section>
+<!-- /wp:group -->
+<!-- wp:kadence/image {"uniqueID":"_ctcmpimg1","className":"ct-cmp-fig","imgMaxWidth":1200,"align":"none","kadenceDynamic":{"url":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_image_1","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<figure class="wp-block-kadence-image kb-image_ctcmpimg1 ct-cmp-fig size-large"><img src="" alt="" class="kb-img"/></figure>
+<!-- /wp:kadence/image -->
+<!-- wp:group {"className":"ct-cmp-sec ct-cmp-sec-2","tagName":"section"} -->
+<section class="wp-block-group ct-cmp-sec ct-cmp-sec-2">
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmph2","htmlTag":"h2","className":"ct-cmp-h2"} -->
+<h2 class="kt-adv-heading_ctcmph2 wp-block-kadence-advancedheading ct-cmp-h2" data-kb-block="kb-adv-heading_ctcmph2">The location</h2>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpb2","htmlTag":"div","className":"ct-cmp-body","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_the_location","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<div class="kt-adv-heading_ctcmpb2 wp-block-kadence-advancedheading ct-cmp-body" data-kb-block="kb-adv-heading_ctcmpb2"><span class="kb-inline-dynamic">dynamic text placeholder</span></div>
+<!-- /wp:kadence/advancedheading -->
+</section>
+<!-- /wp:group -->
+<!-- wp:group {"className":"ct-cmp-sec ct-cmp-sec-3","tagName":"section"} -->
+<section class="wp-block-group ct-cmp-sec ct-cmp-sec-3">
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmph3","htmlTag":"h2","className":"ct-cmp-h2"} -->
+<h2 class="kt-adv-heading_ctcmph3 wp-block-kadence-advancedheading ct-cmp-h2" data-kb-block="kb-adv-heading_ctcmph3">The stays</h2>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpb3","htmlTag":"div","className":"ct-cmp-body","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_the_stays","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<div class="kt-adv-heading_ctcmpb3 wp-block-kadence-advancedheading ct-cmp-body" data-kb-block="kb-adv-heading_ctcmpb3"><span class="kb-inline-dynamic">dynamic text placeholder</span></div>
+<!-- /wp:kadence/advancedheading -->
+</section>
+<!-- /wp:group -->
+<!-- wp:kadence/image {"uniqueID":"_ctcmpimg2","className":"ct-cmp-fig","imgMaxWidth":1200,"align":"none","kadenceDynamic":{"url":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_image_2","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<figure class="wp-block-kadence-image kb-image_ctcmpimg2 ct-cmp-fig size-large"><img src="" alt="" class="kb-img"/></figure>
+<!-- /wp:kadence/image -->
+<!-- wp:group {"className":"ct-cmp-sec ct-cmp-sec-4","tagName":"section"} -->
+<section class="wp-block-group ct-cmp-sec ct-cmp-sec-4">
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmph4","htmlTag":"h2","className":"ct-cmp-h2"} -->
+<h2 class="kt-adv-heading_ctcmph4 wp-block-kadence-advancedheading ct-cmp-h2" data-kb-block="kb-adv-heading_ctcmph4">The food</h2>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpb4","htmlTag":"div","className":"ct-cmp-body","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_the_food","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<div class="kt-adv-heading_ctcmpb4 wp-block-kadence-advancedheading ct-cmp-body" data-kb-block="kb-adv-heading_ctcmpb4"><span class="kb-inline-dynamic">dynamic text placeholder</span></div>
+<!-- /wp:kadence/advancedheading -->
+</section>
+<!-- /wp:group -->
+<!-- wp:group {"className":"ct-cmp-sec ct-cmp-sec-5","tagName":"section"} -->
+<section class="wp-block-group ct-cmp-sec ct-cmp-sec-5">
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmph5","htmlTag":"h2","className":"ct-cmp-h2"} -->
+<h2 class="kt-adv-heading_ctcmph5 wp-block-kadence-advancedheading ct-cmp-h2" data-kb-block="kb-adv-heading_ctcmph5">The days</h2>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpb5","htmlTag":"div","className":"ct-cmp-body","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_the_days","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<div class="kt-adv-heading_ctcmpb5 wp-block-kadence-advancedheading ct-cmp-body" data-kb-block="kb-adv-heading_ctcmpb5"><span class="kb-inline-dynamic">dynamic text placeholder</span></div>
+<!-- /wp:kadence/advancedheading -->
+</section>
+<!-- /wp:group -->
+<!-- wp:kadence/image {"uniqueID":"_ctcmpimg3","className":"ct-cmp-fig","imgMaxWidth":1200,"align":"none","kadenceDynamic":{"url":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_image_3","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<figure class="wp-block-kadence-image kb-image_ctcmpimg3 ct-cmp-fig size-large"><img src="" alt="" class="kb-img"/></figure>
+<!-- /wp:kadence/image -->
+<!-- wp:group {"className":"ct-cmp-sec ct-cmp-sec-6","tagName":"section"} -->
+<section class="wp-block-group ct-cmp-sec ct-cmp-sec-6">
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmph6","htmlTag":"h2","className":"ct-cmp-h2"} -->
+<h2 class="kt-adv-heading_ctcmph6 wp-block-kadence-advancedheading ct-cmp-h2" data-kb-block="kb-adv-heading_ctcmph6">The price difference</h2>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpb6","htmlTag":"div","className":"ct-cmp-body","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_the_price_difference","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<div class="kt-adv-heading_ctcmpb6 wp-block-kadence-advancedheading ct-cmp-body" data-kb-block="kb-adv-heading_ctcmpb6"><span class="kb-inline-dynamic">dynamic text placeholder</span></div>
+<!-- /wp:kadence/advancedheading -->
+</section>
+<!-- /wp:group -->
+<!-- wp:kadence/image {"uniqueID":"_ctcmpimg4","className":"ct-cmp-fig","imgMaxWidth":1200,"align":"none","kadenceDynamic":{"url":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_image_4","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<figure class="wp-block-kadence-image kb-image_ctcmpimg4 ct-cmp-fig size-large"><img src="" alt="" class="kb-img"/></figure>
+<!-- /wp:kadence/image -->
+<!-- wp:group {"className":"ct-cmp-book"} -->
+<div class="wp-block-group ct-cmp-book">
+<!-- wp:shortcode -->
+[ctt_book hotel="" perks=""]
+<!-- /wp:shortcode -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpbn","htmlTag":"p","className":"ct-cmp-booknote","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_booking_note","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<p class="kt-adv-heading_ctcmpbn wp-block-kadence-advancedheading ct-cmp-booknote" data-kb-block="kb-adv-heading_ctcmpbn"><span class="kb-inline-dynamic">dynamic text placeholder</span></p>
+<!-- /wp:kadence/advancedheading -->
+</div>
+<!-- /wp:group -->
+<!-- wp:group {"className":"ct-cmp-sec ct-cmp-sec-7","tagName":"section"} -->
+<section class="wp-block-group ct-cmp-sec ct-cmp-sec-7">
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmph7","htmlTag":"h2","className":"ct-cmp-h2"} -->
+<h2 class="kt-adv-heading_ctcmph7 wp-block-kadence-advancedheading ct-cmp-h2" data-kb-block="kb-adv-heading_ctcmph7">Who books which</h2>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpb7","htmlTag":"div","className":"ct-cmp-body","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_who_books_which","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<div class="kt-adv-heading_ctcmpb7 wp-block-kadence-advancedheading ct-cmp-body" data-kb-block="kb-adv-heading_ctcmpb7"><span class="kb-inline-dynamic">dynamic text placeholder</span></div>
+<!-- /wp:kadence/advancedheading -->
+</section>
+<!-- /wp:group -->
+<!-- wp:group {"className":"ct-cmp-sec ct-cmp-sec-8","tagName":"section"} -->
+<section class="wp-block-group ct-cmp-sec ct-cmp-sec-8">
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmph8","htmlTag":"h2","className":"ct-cmp-h2"} -->
+<h2 class="kt-adv-heading_ctcmph8 wp-block-kadence-advancedheading ct-cmp-h2" data-kb-block="kb-adv-heading_ctcmph8">The verdict</h2>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_ctcmpb8","htmlTag":"div","className":"ct-cmp-body","kadenceDynamic":{"content":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_the_verdict","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<div class="kt-adv-heading_ctcmpb8 wp-block-kadence-advancedheading ct-cmp-body" data-kb-block="kb-adv-heading_ctcmpb8"><span class="kb-inline-dynamic">dynamic text placeholder</span></div>
+<!-- /wp:kadence/advancedheading -->
+</section>
+<!-- /wp:group -->
+<!-- wp:kadence/image {"uniqueID":"_ctcmpimg5","className":"ct-cmp-fig","imgMaxWidth":1200,"align":"none","kadenceDynamic":{"url":{"enable":true,"field":"post|post_custom_field","para":"acf_meta|comparison_image_5","before":"","after":"","fallback":"","shouldReplace":true}}} -->
+<figure class="wp-block-kadence-image kb-image_ctcmpimg5 ct-cmp-fig size-large"><img src="" alt="" class="kb-img"/></figure>
+<!-- /wp:kadence/image -->
+</article>
+<!-- /wp:group -->
+<!-- wp:html -->
+<style id="ct-cmp-css">/* The Comparison (Brief) — same tokens as the Answerable opening (.ct-ao); hairlines, one accent, no fills. */
+.ct-cmp{--ct-accent:var(--global-palette1,#8a6d3b);--ct-ink:var(--global-palette3,#1d1d1b);--ct-grey:var(--global-palette5,#6b6b66);--ct-hair:var(--global-palette7,#e3e0da);
+  max-width:var(--ct-ao-max,720px);margin:1.5rem auto 3rem;font-family:var(--global-body-font-family,Georgia,serif);color:var(--ct-ink);}
+.ct-cmp [hidden]{display:none!important}
+.ct-cmp .ct-cmp-kicker,.ct-cmp .ct-cmp-side-name,.ct-cmp .ct-cmp-booknote{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-caps:all-small-caps;letter-spacing:.08em;font-size:.78rem;line-height:1.5;color:var(--ct-grey);margin:0;}
+.ct-cmp .ct-cmp-kicker{margin:0 0 .5rem;}
+.ct-cmp .ct-cmp-title{margin:0 0 1.25rem;font-family:var(--global-heading-font-family,Georgia,serif);font-weight:400;font-size:clamp(1.9rem,4.5vw,2.75rem);line-height:1.12;letter-spacing:-.01em;}
+.ct-cmp .ct-cmp-answer{margin:0 0 1.75rem;padding:.15rem 0 .15rem 1.1rem;border-left:2px solid var(--ct-accent);font-family:var(--global-heading-font-family,var(--global-body-font-family,Georgia,serif));font-size:1.2rem;line-height:1.55;}
+.ct-cmp .ct-cmp-choose{margin:0 0 2.25rem;padding:1rem 0 .25rem;border-top:1px solid var(--ct-ink);border-bottom:1px solid var(--ct-hair);}
+.ct-cmp .ct-cmp-choose-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem 2rem;margin:0;}
+.ct-cmp .ct-cmp-side{margin:0;padding:0;}
+.ct-cmp .ct-cmp-side-name{margin:0 0 .35rem;}
+.ct-cmp .ct-cmp-side-val{margin:0 0 .75rem;font-size:1.05rem;line-height:1.5;}
+.ct-cmp .ct-cmp-sec{margin:0 0 2rem;}
+.ct-cmp .ct-cmp-h2{margin:0 0 .75rem;font-family:var(--global-heading-font-family,Georgia,serif);font-weight:400;font-size:1.55rem;line-height:1.25;}
+.ct-cmp .ct-cmp-body{font-size:1.05rem;line-height:1.65;}
+.ct-cmp .ct-cmp-body p{margin:0 0 1em;}
+.ct-cmp .ct-cmp-body h3,.ct-cmp .ct-cmp-body h4{font-family:var(--global-heading-font-family,Georgia,serif);font-weight:400;font-size:1.2rem;margin:1.25em 0 .4em;}
+.ct-cmp .ct-cmp-body em{font-style:normal;}
+.ct-cmp .ct-cmp-fig{margin:0 0 2.25rem;}
+.ct-cmp .ct-cmp-fig img{display:block;width:100%;height:auto;}
+.ct-cmp .ct-cmp-fig figcaption{margin:.5rem 0 0;font-size:.82rem;color:var(--ct-grey);}
+.ct-cmp .ct-cmp-book{margin:0 0 2.25rem;}
+.ct-cmp .ct-cmp-book .ctt-book{margin:0;}
+.ct-cmp .ct-cmp-booknote{margin:.6rem 0 0;font-variant-caps:normal;letter-spacing:.04em;font-size:.82rem;}
+@media (max-width:600px){.ct-cmp .ct-cmp-choose-cols{grid-template-columns:1fr;gap:.75rem 0;}.ct-cmp .ct-cmp-answer{font-size:1.1rem;}.ct-cmp .ct-cmp-h2{font-size:1.4rem;}}</style>
+<script id="ct-cmp-js">new Function(atob("KGZ1bmN0aW9uICgpIHsKICBmdW5jdGlvbiB0eHQoZWwpIHsgcmV0dXJuIChlbC50ZXh0Q29udGVudCB8fCAnJykucmVwbGFjZSgvwqAvZywgJyAnKS50cmltKCk7IH0KICBmdW5jdGlvbiBydW4oKSB7CiAgICBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCcuY3QtY21wJykuZm9yRWFjaChmdW5jdGlvbiAoYikgewogICAgICAvKiBzaG9ydCBhbnN3ZXI6IGhpZGUgd2hlbiBlbXB0eSwgb3Igd2hlbiB0aGUgQW5zd2VyYWJsZS1vcGVuaW5nIGVsZW1lbnQgYWxyZWFkeSBwcmludGVkIG9uZSBhYm92ZSAqLwogICAgICB2YXIgYW5zID0gYi5xdWVyeVNlbGVjdG9yKCcuY3QtY21wLWFuc3dlcicpOwogICAgICB2YXIgYW8gPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKCcuY3QtYW8gLmN0LWFvLWFuc3dlcicpOwogICAgICBpZiAoYW5zICYmICghdHh0KGFucykgfHwgKGFvICYmIHR4dChhbykpKSkgYW5zLmhpZGRlbiA9IHRydWU7CiAgICAgIC8qIENob29zZSBBIC8gQ2hvb3NlIEI6IGhpZGUgYSBzaWRlIHdpdGggbm8gbmFtZSBvciBubyByZWFzb247IGhpZGUgdGhlIGJsb2NrIHdoZW4gYm90aCBhcmUgZ29uZSAqLwogICAgICBiLnF1ZXJ5U2VsZWN0b3JBbGwoJy5jdC1jbXAtc2lkZScpLmZvckVhY2goZnVuY3Rpb24gKHMpIHsKICAgICAgICB2YXIgbiA9IHMucXVlcnlTZWxlY3RvcignLmN0LWNtcC1zaWRlLW5hbWUnKSwgdiA9IHMucXVlcnlTZWxlY3RvcignLmN0LWNtcC1zaWRlLXZhbCcpOwogICAgICAgIGlmICghbiB8fCAhdiB8fCAhdHh0KG4pIHx8ICF0eHQodikpIHMuaGlkZGVuID0gdHJ1ZTsKICAgICAgfSk7CiAgICAgIHZhciBjaCA9IGIucXVlcnlTZWxlY3RvcignLmN0LWNtcC1jaG9vc2UnKTsKICAgICAgaWYgKGNoICYmICFjaC5xdWVyeVNlbGVjdG9yKCcuY3QtY21wLXNpZGU6bm90KFtoaWRkZW5dKScpKSBjaC5oaWRkZW4gPSB0cnVlOwogICAgICAvKiBzZWN0aW9uczogaGlkZSB3aGVuIHRoZSBib2R5IGlzIGVtcHR5OyBkcm9wIGEgbGVhZGluZyBoMi9oMyB0aGF0IHJlcGVhdHMgdGhlIHNlY3Rpb24gbGFiZWwgKi8KICAgICAgYi5xdWVyeVNlbGVjdG9yQWxsKCcuY3QtY21wLXNlYycpLmZvckVhY2goZnVuY3Rpb24gKHMpIHsKICAgICAgICB2YXIgYm9keSA9IHMucXVlcnlTZWxlY3RvcignLmN0LWNtcC1ib2R5JyksIGggPSBzLnF1ZXJ5U2VsZWN0b3IoJy5jdC1jbXAtaDInKTsKICAgICAgICBpZiAoIWJvZHkgfHwgIXR4dChib2R5KSkgeyBzLmhpZGRlbiA9IHRydWU7IHJldHVybjsgfQogICAgICAgIHZhciBmaXJzdCA9IGJvZHkuZmlyc3RFbGVtZW50Q2hpbGQ7CiAgICAgICAgd2hpbGUgKGZpcnN0ICYmIGZpcnN0LmNsYXNzTGlzdCAmJiBmaXJzdC5jbGFzc0xpc3QuY29udGFpbnMoJ2tiLWlubGluZS1keW5hbWljJykpIGZpcnN0ID0gZmlyc3QuZmlyc3RFbGVtZW50Q2hpbGQ7CiAgICAgICAgaWYgKGZpcnN0ICYmIGggJiYgL15IWzItNF0kLy50ZXN0KGZpcnN0LnRhZ05hbWUpICYmIHR4dChmaXJzdCkudG9Mb3dlckNhc2UoKS5yZXBsYWNlKC9bXmEtel0vZywgJycpID09PSB0eHQoaCkudG9Mb3dlckNhc2UoKS5yZXBsYWNlKC9bXmEtel0vZywgJycpKSBmaXJzdC5yZW1vdmUoKTsKICAgICAgfSk7CiAgICAgIC8qIGZpZ3VyZXM6IGhpZGUgd2hlbiB0aGUgZHluYW1pYyBpbWFnZSByZXNvbHZlZCB0byBub3RoaW5nICovCiAgICAgIGIucXVlcnlTZWxlY3RvckFsbCgnLmN0LWNtcC1maWcnKS5mb3JFYWNoKGZ1bmN0aW9uIChmKSB7CiAgICAgICAgdmFyIGltZyA9IGYucXVlcnlTZWxlY3RvcignaW1nJyk7CiAgICAgICAgdmFyIHNyYyA9IGltZyA/IChpbWcuZ2V0QXR0cmlidXRlKCdzcmMnKSB8fCBpbWcuZ2V0QXR0cmlidXRlKCdkYXRhLXNyYycpIHx8ICcnKSA6ICcnOwogICAgICAgIGlmICghaW1nIHx8ICFzcmMgfHwgL14oI3xhYm91dDpibGFuaykvLnRlc3Qoc3JjKSB8fCAvcGxhY2Vob2xkZXIvaS50ZXN0KHNyYykpIGYuaGlkZGVuID0gdHJ1ZTsKICAgICAgfSk7CiAgICAgIC8qIGJvb2tpbmcgYm94OiBuYW1lIHRoZSB0d28gc3RheXMgZnJvbSB0aGUgc2lkZSBuYW1lcyB3aGVuIHRoZSBzaG9ydGNvZGUgcHJpbnRlZCAidGhpcyBob3RlbCIgKi8KICAgICAgdmFyIGJveCA9IGIucXVlcnlTZWxlY3RvcignLmN0LWNtcC1ib29rJyksIGVtID0gYm94ICYmIGJveC5xdWVyeVNlbGVjdG9yKCcuY3R0LWJvb2tfX3RpdGxlIGVtJyksIGJ0biA9IGJveCAmJiBib3gucXVlcnlTZWxlY3RvcignLmN0dC1ib29rX19idG4nKTsKICAgICAgdmFyIG5hbWVzID0gW107CiAgICAgIGIucXVlcnlTZWxlY3RvckFsbCgnLmN0LWNtcC1zaWRlOm5vdChbaGlkZGVuXSkgLmN0LWNtcC1zaWRlLW5hbWUnKS5mb3JFYWNoKGZ1bmN0aW9uIChuKSB7IHZhciB0ID0gdHh0KG4pLnJlcGxhY2UoL15DaG9vc2VccysvaSwgJycpLnJlcGxhY2UoL1xzK2lmJC9pLCAnJyk7IGlmICh0KSBuYW1lcy5wdXNoKHQpOyB9KTsKICAgICAgaWYgKGVtICYmIC9edGhpcyBob3RlbCQvaS50ZXN0KHR4dChlbSkpICYmIG5hbWVzLmxlbmd0aCkgewogICAgICAgIHZhciBsYWJlbCA9IG5hbWVzLmpvaW4oJyBvciAnKTsKICAgICAgICBlbS50ZXh0Q29udGVudCA9IGxhYmVsOwogICAgICAgIGlmIChidG4pIHsgdHJ5IHsgdmFyIHUgPSBuZXcgVVJMKGJ0bi5ocmVmLCBsb2NhdGlvbi5ocmVmKTsgdS5zZWFyY2hQYXJhbXMuc2V0KCdob3RlbCcsIGxhYmVsKTsgYnRuLmhyZWYgPSB1LnRvU3RyaW5nKCk7IH0gY2F0Y2ggKGUpIHt9IH0KICAgICAgfQogICAgICB2YXIgbm90ZSA9IGIucXVlcnlTZWxlY3RvcignLmN0LWNtcC1ib29rbm90ZScpOwogICAgICBpZiAobm90ZSAmJiAhdHh0KG5vdGUpKSBub3RlLmhpZGRlbiA9IHRydWU7CiAgICAgIGlmIChib3ggJiYgIWJveC5xdWVyeVNlbGVjdG9yKCcuY3R0LWJvb2snKSAmJiAhKG5vdGUgJiYgIW5vdGUuaGlkZGVuKSkgYm94LmhpZGRlbiA9IHRydWU7CiAgICAgIGIuY2xhc3NMaXN0LmFkZCgnY3QtY21wLXJlYWR5Jyk7CiAgICB9KTsKICB9CiAgaWYgKGRvY3VtZW50LnJlYWR5U3RhdGUgPT09ICdsb2FkaW5nJykgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIHJ1bik7IGVsc2UgcnVuKCk7Cn0pKCk7Cg=="))();</script>
+<!-- /wp:html -->
