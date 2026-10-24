@@ -217,6 +217,9 @@ class CCPC_Rest {
 	 * POST /replace/{id}: mode=everywhere (file|data_url) or mode=here (post_id, location, new_id).
 	 */
 	public static function replace( WP_REST_Request $req ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';  // wp_tempnam().
+		require_once ABSPATH . 'wp-admin/includes/image.php'; // wp_generate_attachment_metadata().
+
 		$id   = (int) $req['id'];
 		$mode = (string) $req->get_param( 'mode' );
 		if ( 'here' === $mode ) {
