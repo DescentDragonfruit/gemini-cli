@@ -784,8 +784,9 @@ function titleCheck(title,fmtKey){
 }
 
 // ---------- prompts ----------
+function linkCandidates(subject,dest,n){const words=String((subject||"")+" "+(dest||"")).toLowerCase().split(/[^a-z0-9]+/).filter(w=>w.length>3&&!["hotel","resort","with","from","best","guide","travel"].includes(w));if(!lib.length)return[];const score=r=>{const t=((r.title||"")+" "+(r.keyword||"")+" "+(r.url||"")).toLowerCase();let sc=words.reduce((a,w)=>a+(t.includes(w)?1:0),0);if(r.pillar==="Old blog post")sc-=.5;if(/\/(oceania|asia|europe|africa|americas)\//.test(r.url||"")&&!/\/(property|guide|brief|dispatch|shortlist)\//.test(r.url||""))sc+=1;return sc};return lib.map(r=>({r,sc:score(r)})).filter(x=>x.sc>0).sort((a,b)=>b.sc-a.sc).slice(0,n||24).map(x=>({title:x.r.title,url:x.r.url,keyword:x.r.keyword||"",pillar:x.r.pillar,id:x.r.id}))}
 function draftPrompt(fmtKey,ctx){
- const f=FORMATS[fmtKey];
+ const f=FORMATS[fmtKey]; ctx.linkMap=ctx.linkMap||linkCandidates(ctx.subject,ctx.dest,24);
  const task=ctx.mode==="update"
   ?`UPDATE an existing ${f.label} (${f.cpt} CPT) about "${ctx.subject}". The CURRENT ARTICLE is below; it is Coco's and already in her voice. Keep every fact, every firsthand moment and her sentences wherever they already pass the house rules; only (a) fix exactly what Coco says is missing or wrong, (b) restructure into the pillar fields if it isn't already, (c) add the answerable opening and the SEO set, (d) apply the voice rules where a sentence fails them. Do not shorten what she wrote to make room. Facts not in the article or the context are written as [VERIFY: what is needed] — never invented.`
   :`Write a complete ${f.label} (${f.cpt} CPT) about "${ctx.subject}" from the CONTEXT below and nothing else. Facts not in the context are written as [VERIFY: what is needed] — never invented.`;
@@ -802,7 +803,16 @@ ALSO produce the answerable opening (goes above the first image): short_answer =
 And the SEO set: seo_title ≤60 chars following the pattern "${f.pattern}" (subject + place in plain words), meta_description ≤155, h1 (the piece's name), slug, primary_query, 3–5 secondary_queries people type into Google, 3–5 ai_questions people ask ChatGPT/Perplexity that this piece answers, and links = the sibling pieces to link (say "if it exists" when unsure). Plus photos_needed: what each image slot should show, from the notes, with a suggested alt text each.
 
 Reply with only JSON:
-{"post_title":"…","kicker":"${f.kicker}","fields":{"<key>":"<html>",...},"selects":{...},"short_answer":"…","glance":[{"label":"…","value":"…"}],"seo":{"seo_title":"…","meta_description":"…","h1":"…","slug":"…","primary_query":"…","secondary_queries":["…"],"ai_questions":["…"]},"links":["…"],"verify":["every [VERIFY] item, one line each"],"photos_needed":[{"slot":"…","shows":"…","alt":"…"}]}
+{"post_title":"…","kicker":"${f.kicker}","fields":{"<key>":"<html>",...},"selects":{...},"short_answer":"…","glance":[{"label":"…","value":"…"}],"seo":{"seo_title":"…","meta_description":"…","h1":"…","slug":"…","primary_query":"…","secondary_queries":["…"],"ai_questions":["…"]},"links":[{"url":"…","role":"hub|sibling|property|guide|external-authority","anchor":"the words in the text that carry the link"}],"authority":{"sources":[{"claim":"…","source":"hotel site / official tourism / GM conversation / my stay","url":"…"}],"external_links":[{"url":"official site or tourism board","why":"…"}],"link_keyword":"the phrase other pieces should link to this one with","link_aliases":["hotel name","shorter forms"]},"verify":["every [VERIFY] item, one line each"],"photos_needed":[{"slot":"…","shows":"…","alt":"…"}]}
+
+AUTHORITY AND LINKING RULES
+- Link to at least 3 of the SITE PIECES below with natural anchors inside the body (never "click here"); the hub first, then siblings that answer the next question a planner has. Only URLs from that list — never invent a cocotran.com URL.
+- Link out to 2 authoritative sources that the reader can check (official hotel site, tourism board, museum, railway), one per claim that needs it. No affiliate or aggregator links.
+- Every number, date, opening year, chef or room count carries a source in "authority.sources" or a [VERIFY] marker.
+- Name the basis once in the text ("I stayed three nights in March; the hotel hosted two of them").
+
+SITE PIECES YOU MAY LINK (real URLs on cocotran.com):
+${(ctx.linkMap||[]).map(r=>`- ${r.title} — ${r.url}${r.keyword?" (kw: "+r.keyword+")":""}`).join("\n")||"(library not loaded — leave links for the worker)"}
 
 CONTEXT
 Destination terms: ${ctx.dest||"(not given)"}
@@ -1041,6 +1051,22 @@ $("#n-run").onclick=async()=>{
  finally{$("#n-run").disabled=false;$("#n-stop").disabled=true}
 };
 
+function mentionsOf(keyword,aliases,excludeId){const terms=[keyword].concat(aliases||[]).map(x=>String(x||"").toLowerCase().trim()).filter(x=>x.length>3);if(!terms.length)return[];return lib.filter(r=>r.id!==excludeId&&r.text&&terms.some(t=>r.text.toLowerCase().includes(t))).map(r=>({id:r.id,title:r.title,url:r.url,hits:terms.filter(t=>r.text.toLowerCase().includes(t)).length})).sort((a,b)=>b.hits-a.hits)}
+function authorityCard(job){
+ const d=job.draft||{}, a=d.authority||{}, seo=d.seo||{};
+ const kw=a.link_keyword||seo.primary_query||job.subject||""; const aliases=a.link_aliases||[]; const libId=job.library_id||(job.source_url||"").replace(/\/$/,"").split("/").pop();
+ const inbound=mentionsOf(kw,aliases,libId); const out=(d.links||[]).map(l=>typeof l==="string"?{url:l,role:"link"}:l);
+ const internal=out.filter(l=>/cocotran\.com/.test(l.url||"")), external=out.filter(l=>l.url&&!/cocotran\.com/.test(l.url)).concat(a.external_links||[]);
+ const sources=a.sources||[]; const verify=(d.verify||[]).length;
+ return `<div class="card"><div class="meta">AUTHORITY &amp; LINKS</div>
+  <div class="kv" style="margin-top:8px;grid-template-columns:170px 1fr">
+   <div>Link keyword</div><div><b>${esc(kw)}</b>${aliases.length?` <span class="note">+ ${aliases.map(esc).join(", ")}</span>`:""}<div class="note">What other pieces link to this one with. Goes into the site's link map when it's live.</div></div>
+   <div>Links out · site</div><div>${internal.length?internal.map(l=>`<div><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc((l.anchor||l.url).slice(0,70))}</a> <span class="note">${esc(l.role||"")}</span></div>`).join(""):'<span class="pill warn">none yet — needs 3</span>'}</div>
+   <div>Links out · authority</div><div>${external.length?external.map(l=>`<div><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc((l.why||l.anchor||l.url).slice(0,70))}</a></div>`).join(""):'<span class="pill warn">none yet — needs 2 official sources</span>'}</div>
+   <div>Will be linked from</div><div>${inbound.length?`<b>${inbound.length}</b> live pieces mention it: ${inbound.slice(0,6).map(r=>`<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title.slice(0,40))}</a>`).join(" · ")}${inbound.length>6?" · +"+(inbound.length-6):""}<div class="note">The autolink snippet turns the first mention in each into a link once the map is posted.</div>`:'<span class="note">No live piece mentions this phrase yet — the Pair-it-with block still shows it on same-destination pieces.</span>'}</div>
+   <div>Sources on file</div><div>${sources.length?`<b>${sources.length}</b> claims sourced`:'<span class="note">none recorded</span>'}${verify?` · <span class="pill warn">${verify} to verify</span>`:' · <span class="pill ok">nothing open</span>'}</div>
+  </div></div>`;
+}
 function seoChecklist(job){
  const d=job.draft||{}, seo=d.seo||{}, f=FORMATS[job.format]||{}; const c=job.seo_checks||{}; const tl=(job.report?.title_lock||titleCheck(seo.seo_title,job.format));
  const text=Object.values(d.fields||{}).join(" ").toLowerCase(); const kw=(seo.primary_query||"").toLowerCase();
@@ -1091,6 +1117,7 @@ function renderPiece(el,job,id){
   ${(r.voice_changes||[]).length?`<div class="card"><div class="meta">VOICE PASS · ${r.voice_changes.length} changes</div>${r.voice_changes.slice(0,12).map(v=>`<div style="margin-top:6px"><span style="color:var(--muted);text-decoration:line-through">${esc(v.before)}</span><br>${esc(v.after)}</div>`).join("")}</div>`:""}
   ${job.research?`<div class="card"><div class="meta">WORKER RESEARCH</div><div style="white-space:pre-wrap;font-size:13px">${esc(typeof job.research==="string"?job.research:JSON.stringify(job.research,null,1))}</div></div>`:""}
   ${job.worker_notes?`<div class="card"><div class="meta">WORKER NOTES</div><div style="white-space:pre-wrap;font-size:13px">${esc(job.worker_notes)}</div></div>`:""}
+  ${authorityCard(job)}
   ${seoChecklist(job)}
   ${runCard(job)}
   <div class="row">${id&&canWrite&&!["built","published"].includes(job.status)?`<button class="btn alt" data-now3="${esc(id)}">Work on it now</button>`:""}${id&&canWrite&&job.status!=="built"?`<button class="btn" data-approve="${esc(id)}">${job.status==="approved"?"Approved — waiting for the worker":"Approve → build in WordPress"}</button>`:""}<button class="btn alt" data-copy="payload">Copy WordPress payload</button><button class="btn alt" data-copy="text">Copy as text</button><button class="btn alt" data-social="1">Make social kit →</button></div>
@@ -1246,6 +1273,7 @@ function openLib(id){
   ${rk?`<div class="card"><div class="meta">RANKINGS · 28 days (pulled ${esc(rk.pulled_at||"")})</div><div class="kv" style="margin-top:8px"><div>Clicks</div><div>${esc(String(rk.clicks28??"—"))} <span class="note">prev ${esc(String(rk.clicks_prev??"—"))}</span></div><div>Impressions</div><div>${esc(String(rk.impressions28??"—"))} <span class="note">prev ${esc(String(rk.impressions_prev??"—"))}</span></div><div>Position</div><div>${esc(String(rk.position28??"—"))} <span class="note">prev ${esc(String(rk.position_prev??"—"))}</span></div><div>Top queries</div><div>${(rk.top_queries||[]).map(esc).join("<br>")}</div><div>GA4 sessions</div><div>${esc(String(rk.ga_sessions28??"—"))} · engaged ${esc(String(rk.ga_engaged28??"—"))}</div></div></div>`:'<div class="note">No rankings yet — the Monday run fills this once Search Console and GA4 credentials are in the environment (rankings-integration.md).</div>'}
   ${(r.ai_questions||[]).length?`<div class="card"><div class="meta">AI QUESTIONS IT ANSWERS</div>${r.ai_questions.map(q=>`<div>${esc(q)}</div>`).join("")}</div>`:""}
   <div id="d-sugg">${s.generated_at?renderSugg(s):""}</div>
+  ${(()=>{const kw=r.link?.keyword||r.keyword||"";const al=r.link?.aliases||[];const inb=kw?mentionsOf(kw,al,r.id):[];const sib=linkCandidates(r.title,"",7).filter(x=>x.id!==r.id);const outN=(r.text||"").match(/cocotran\.com\//g)?.length||0;return `<div class="card"><div class="meta">AUTHORITY &amp; LINKS</div><div class="kv" style="margin-top:8px;grid-template-columns:170px 1fr"><div>Link keyword</div><div><input type="text" id="d-linkkw" value="${esc(kw)}" placeholder="the phrase others link to this with" style="margin:0"><input type="text" id="d-linkal" value="${esc(al.join(", "))}" placeholder="aliases, comma-separated" style="margin:6px 0 0"><div class="row" style="gap:8px;margin-top:6px"><button class="btn alt" id="d-linksave">Save to link map</button><span class="note" id="d-linknote"></span></div></div><div>Linked from</div><div>${inb.length?`<b>${inb.length}</b> pieces mention it: ${inb.slice(0,6).map(x=>esc(x.title.slice(0,36))).join(" · ")}`:'<span class="note">no mentions yet</span>'}</div><div>Links out</div><div>${outN} internal links in the text${outN<3?' <span class="pill warn">under 3</span>':''}</div><div>Should link to</div><div>${sib.map(x=>`<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title.slice(0,44))}</a>`).join(" · ")||'<span class="note">—</span>'}</div></div></div>`})()}
   <div id="d-supplier">${r.pillar==="The Property"?supplierMatch(r.title.replace(/^the (verdict|property|comparison):?\s*/i,"")).map(sp=>supplierCard(sp)).join(""):""}</div>
  </div>`;
  wireGm($("#d-supplier"),r.title,r.text||"");
@@ -1258,6 +1286,7 @@ function openLib(id){
    if(canWrite){try{await db.doc("library/"+r.id).update({suggestions:sg,updatedAt:Date.now()})}catch(e){}}
   }catch(e){$("#d-note").textContent=copyFor(e)} finally{$("#d-improve").disabled=false}
  };
+ const lk=$("#d-linksave"); if(lk) lk.onclick=async()=>{if(!db||!canWrite){$("#d-linknote").textContent="Store not writable.";return}const keyword=$("#d-linkkw").value.trim(),aliases=$("#d-linkal").value.split(",").map(x=>x.trim()).filter(Boolean);try{await db.doc("library/"+r.id).update({link:{keyword,aliases,priority:r.category==="Commercial"?3:r.category==="Decision-support"?2:1,updated:Date.now()},updatedAt:Date.now()});$("#d-linknote").textContent="Saved. The worker posts the map to the site on its next run."}catch(e){$("#d-linknote").textContent="Couldn't save."}};
  const fx=$("#d-fixnow"); if(fx) fx.onclick=async()=>{
   if(!db||!canWrite){$("#d-note").textContent="Store not writable.";return}
   const o=oppScore(r); try{const ref=await db.collection("jobs").add({mode:"update",format:FORMATS[r.format]?r.format:"suggest",subject:r.title,title:r.title,source_url:r.url,library_id:r.id,reason:o.basis==="measured"?"data":"predicted",proposed_fix:o.why.join("; "),missing:(s.structure||[]).concat(s.seo||[]).slice(0,6).join(" · "),goal:GOALS_UPDATE[0],category:r.category||"",status:"queued",priority:Math.max(0,...jobsCache.map(x=>x.priority||0))+1,createdAt:Date.now(),updatedAt:Date.now()});$("#d-note").textContent="Update job queued at the top. Starting a worker…";await kick(ref.id,r.title,$("#d-note"))}catch(e){$("#d-note").textContent="Couldn't queue it."}

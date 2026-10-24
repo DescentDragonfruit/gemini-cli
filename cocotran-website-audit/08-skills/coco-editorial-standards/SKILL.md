@@ -53,3 +53,12 @@ Run every draft through Part 3 of `publishing-checklist.md` (or the Editorial De
 ## 7. After publish
 
 Redirects (Rank Math → Redirections → Add New, never the updateRedirection endpoint), trash old posts, clear cache, remind Coco to purge Cloudflare, run `04-scripts/recheck.sh` on the URL, add any new question the piece answers to the question bank and benchmark set.
+
+## 2b. Authority in every piece (added 24 Oct 2026)
+
+- **Basis stated once in the text**: stayed/visited, when, paid or hosted. The byline carries it too.
+- **Sources**: every number, date, opening year, chef, room count or price has a source the reader can check (hotel site, tourism board, museum, railway, the GM conversation, Coco's own bill) recorded in `draft.authority.sources[]`, or a `[VERIFY]` marker. Two external authority links per piece, one per claim, never affiliates or aggregators.
+- **Internal links**: at least three, with natural anchors, from the real link map only (the desk passes "SITE PIECES YOU MAY LINK"; the worker reads the `library` collection). Hub first, then the sibling that answers the planner's next question. Never a cocotran.com URL that isn't in the library.
+- **Link map**: every piece declares `authority.link_keyword` + `link_aliases` (what other pieces link to it with). On publish the worker writes `library/<id>.link` and POSTs the whole map to the site (`/coco-tran/v1/link-map`), so the autolink snippet links the first mention in every other piece and the Pair-it-with block shows same-destination siblings.
+- **Author block**: the site appends Coco's author line, counts and the Person schema; the piece never repeats a bio.
+
