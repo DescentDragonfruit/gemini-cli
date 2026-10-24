@@ -20,7 +20,22 @@ curl -s -o /dev/null -w '%{http_code}' https://searchconsole.googleapis.com/webm
 ```
 401/403 with no env-var fallback → Route C for WordPress, `skipped-no-credentials` for rankings. Python `requests` and `curl` both go through the proxy automatically; do not mint tokens or add auth headers when the probe returns 200 (a second Authorization header breaks the injected one).
 
-Endpoints: Search Console `POST https://searchconsole.googleapis.com/webmasters/v3/sites/{url-encoded site}/searchAnalytics/query`; GA4 `POST https://analyticsdata.googleapis.com/v1beta/properties/{id}:runReport`.
+Endpoints: GA4 `POST https://analyticsdata.googleapis.com/v1beta/properties/{id}:runReport`. Search Console: the property is the **URL-prefix** `https://cocotran.com/` (confirmed 24 Oct 2026 via `GET /webmasters/v3/sites`), and the proxy decodes `%2F` in request paths, so the normal `sites/https%3A%2F%2Fcocotran.com%2F/searchAnalytics/query` URL returns Google's HTML 404. **Always use the batch endpoint**, where the encoded site travels in the body (verified working):
+
+```
+POST https://searchconsole.googleapis.com/batch        Content-Type: multipart/mixed; boundary=b1
+
+--b1
+Content-Type: application/http
+Content-ID: <q1>
+
+POST /webmasters/v3/sites/https%3A%2F%2Fcocotran.com%2F/searchAnalytics/query HTTP/1.1
+Content-Type: application/json
+
+{"startDate":"YYYY-MM-DD","endDate":"YYYY-MM-DD","dimensions":["page"],"rowLimit":5000,"startRow":0}
+--b1--
+```
+Several parts per batch are fine (page / page+query / current + previous window). Parse each part's JSON after its blank line. `sites` list and anything without a site in the path can be called directly.
 
 ## What the worker pulls (weekly, Monday 7:51 Pacific)
 
