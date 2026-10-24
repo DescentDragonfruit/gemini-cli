@@ -16,7 +16,7 @@ class CCPC_Serve {
 		if ( ! ccpc_setting( 'serve_webp' ) || is_admin() ) {
 			return;
 		}
-		add_filter( 'wp_get_attachment_image_src', array( __CLASS__, 'image_src' ), 20, 2 );
+		add_filter( 'wp_get_attachment_image_attributes', array( __CLASS__, 'image_attributes' ), 20, 3 );
 		add_filter( 'wp_calculate_image_srcset', array( __CLASS__, 'srcset' ), 20, 5 );
 		add_filter( 'wp_content_img_tag', array( __CLASS__, 'content_img' ), 20, 3 );
 		add_action( 'send_headers', array( __CLASS__, 'vary_header' ) );
@@ -75,11 +75,17 @@ class CCPC_Serve {
 		return $uploads['baseurl'] . substr( $vpat, strlen( $uploads['basedir'] ) ) . $query;
 	}
 
-	public static function image_src( $image, $attachment_id ) {
-		if ( is_array( $image ) && ! empty( $image[0] ) ) {
-			$image[0] = self::swap_url( $image[0] );
+	/**
+	 * Swap the src of images built by wp_get_attachment_image() (featured images, galleries,
+	 * image blocks). This runs after core has built srcset/sizes from the original .jpg URL;
+	 * swapping earlier (on wp_get_attachment_image_src) made wp_calculate_image_srcset() fail
+	 * its src match and drop srcset entirely. The srcset URLs themselves are swapped in srcset().
+	 */
+	public static function image_attributes( $attr, $attachment, $size ) {
+		if ( is_array( $attr ) && ! empty( $attr['src'] ) ) {
+			$attr['src'] = self::swap_url( $attr['src'] );
 		}
-		return $image;
+		return $attr;
 	}
 
 	public static function srcset( $sources, $size_array, $image_src, $image_meta, $attachment_id ) {

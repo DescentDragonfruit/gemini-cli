@@ -1,0 +1,425 @@
+[
+  {
+    "key": "group_ct_answerable_opening",
+    "title": "Answerable opening",
+    "fields": [
+      {
+        "key": "field_ct_short_answer",
+        "label": "Short answer",
+        "name": "short_answer",
+        "aria-label": "",
+        "type": "textarea",
+        "instructions": "2–3 sentences, plain text, no HTML. Prose in Coco's voice: what it is, who should book it, who should skip it. This is what readers, Google and AI engines lift first.",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "allow_in_bindings": 0,
+        "maxlength": 420,
+        "rows": 3,
+        "placeholder": "Caruso is the Belmond on the cliff above Ravello, the quietest of the Amalfi grand hotels and the one with the pool everyone photographs. Book it for a slow couples' week above the coast; skip it if you want to walk to the beach.",
+        "new_lines": ""
+      },
+      {
+        "key": "field_ct_glance_message",
+        "label": "At a glance",
+        "name": "",
+        "aria-label": "",
+        "type": "message",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "",
+          "class": "",
+          "id": ""
+        },
+        "message": "Five rows. A row with an empty value is hidden on the page. Default labels are the Verdict set. Per format: Comparison = Choose A if · Choose B if · Price difference · Both share · Stayed | Primer = Best months · How long · Base yourself in · Book first · Last visit | Rolodex = Base in · Stay · Book ahead · Don't miss · Last visit | Route = Nights · Who · Season · Stops · Transport | Dossier = Visa · Money · Best months · Getting around · Safety note | Shortlist = Top pick · Second · Wildcard · Price band · Last visit | Postcard/Field Notes = one row only: Visited · Open hours/cost · Nearest station.",
+        "new_lines": "wpautop",
+        "esc_html": 0
+      },
+      {
+        "key": "field_ct_glance_1_label",
+        "label": "Row 1 label",
+        "name": "glance_1_label",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "30",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "Setting",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "Setting",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_glance_1_value",
+        "label": "Row 1 value",
+        "name": "glance_1_value",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "70",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "Ravello, 365 m above the coast · 1h30 from Naples",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_glance_2_label",
+        "label": "Row 2 label",
+        "name": "glance_2_label",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "30",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "Best for",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "Best for",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_glance_2_value",
+        "label": "Row 2 value",
+        "name": "glance_2_value",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "70",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "Couples, a slow week, privacy",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_glance_3_label",
+        "label": "Row 3 label",
+        "name": "glance_3_label",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "30",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "Standout",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "Standout",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_glance_3_value",
+        "label": "Row 3 value",
+        "name": "glance_3_value",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "70",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "The infinity pool and the Belvedere terrace",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_glance_4_label",
+        "label": "Row 4 label",
+        "name": "glance_4_label",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "30",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "Consider",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "Consider",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_glance_4_value",
+        "label": "Row 4 value",
+        "name": "glance_4_value",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "70",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "No beach; 20-min shuttle to Amalfi; June rates ~€1,400",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_glance_5_label",
+        "label": "Row 5 label",
+        "name": "glance_5_label",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "30",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "Stayed",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "Stayed",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_glance_5_value",
+        "label": "Row 5 value",
+        "name": "glance_5_value",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "70",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "June 2025 · Junior Suite 312 · Paid stay",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_visited",
+        "label": "Visited / stayed",
+        "name": "visited",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "Month and year of the stay or visit, e.g. \"June 2025\". Prints in the byline as \"Stayed June 2025\". Leave empty on advisor roundups.",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "33",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "June 2025",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_visit_basis",
+        "label": "Room / basis",
+        "name": "visit_basis",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "Room and how it was paid for, e.g. \"Junior Suite 312 · Paid stay\". Usually also the value of the Stayed row.",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "34",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "Junior Suite 312 · Paid stay",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_updated_on",
+        "label": "Updated",
+        "name": "updated_on",
+        "aria-label": "",
+        "type": "date_picker",
+        "instructions": "The date the facts were last checked. Prints as \"Updated 23 Oct 2026\" and becomes dateModified in the schema, so the visible date and the schema date can't drift.",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "33",
+          "class": "",
+          "id": ""
+        },
+        "display_format": "j M Y",
+        "return_format": "j M Y",
+        "first_day": 1,
+        "allow_in_bindings": 0
+      },
+      {
+        "key": "field_ct_disclosure",
+        "label": "Disclosure",
+        "name": "disclosure",
+        "aria-label": "",
+        "type": "select",
+        "instructions": "First words of the disclosure line under the block: \"Paid stay. Hotels here can be booked through Coco Tran Travel. How we review.\"",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "60",
+          "class": "",
+          "id": ""
+        },
+        "choices": {
+          "Paid stay": "Paid stay",
+          "Hosted stay": "Hosted stay",
+          "Discounted stay": "Discounted stay",
+          "Advisor roundup (not a stay)": "Advisor roundup (not a stay)",
+          "Trip I planned": "Trip I planned",
+          "Trip I took": "Trip I took"
+        },
+        "default_value": "",
+        "return_format": "value",
+        "multiple": 0,
+        "allow_null": 1,
+        "allow_in_bindings": 0,
+        "ui": 0,
+        "ajax": 0,
+        "placeholder": "",
+        "create_options": 0,
+        "save_options": 0
+      },
+      {
+        "key": "field_ct_advisor_roundup",
+        "label": "Not a stay?",
+        "name": "advisor_roundup",
+        "aria-label": "",
+        "type": "true_false",
+        "instructions": "Tick on advisor roundups. The byline then drops \"Stayed …\" and reads \"Advisor roundup\" instead.",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "40",
+          "class": "",
+          "id": ""
+        },
+        "message": "This piece is an advisor roundup, not a stay",
+        "default_value": 0,
+        "allow_in_bindings": 0,
+        "ui": 1,
+        "ui_on_text": "",
+        "ui_off_text": ""
+      }
+    ],
+    "location": [
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "property"
+        }
+      ],
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "guide"
+        }
+      ],
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "brief"
+        }
+      ],
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "dispatch"
+        }
+      ],
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "shortlist"
+        }
+      ],
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "post"
+        }
+      ]
+    ],
+    "menu_order": 0,
+    "position": "acf_after_title",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "The short answer + At a glance block rendered under the title on every piece by the Kadence Element \"Answerable opening\". See 05-editorial-system/eeat-rollout.md.",
+    "show_in_rest": 1
+  }
+]

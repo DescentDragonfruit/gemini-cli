@@ -73,6 +73,10 @@ class CCPC_Rename {
 		}
 		$all = $files + $variants;
 
+		// Find usages now, while content/meta still carry the old filename: the finder matches on
+		// the current file stem, so running it after the metadata update misses hand-typed URLs.
+		$usages = CCPC_Usages::find( $attachment_id );
+
 		// Physical renames (abort cleanly if any fails).
 		$done = array();
 		foreach ( $all as $o => $n ) {
@@ -127,7 +131,6 @@ class CCPC_Rename {
 			$map[ $base_url . $o ] = $base_url . $n;
 		}
 
-		$usages = CCPC_Usages::find( $attachment_id );
 		self::rewrite_references( $map, $usages );
 
 		if ( $register_redirect && $usages ) {
