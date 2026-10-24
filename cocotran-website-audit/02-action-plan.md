@@ -34,8 +34,17 @@ Status key: `[ ]` not started · `[~]` drafted here, needs applying · `[x]` don
 
 ## Phase 2 — Paywall strategy & AI-search readiness (weeks 2–3)
 
-- [ ] **2.1 Decide the gate per format** (recommendation in `01-audit-findings.md` §D): Primers free; Rolodex/Roundup long free lead; Verdict free summary box; Briefs gated with free "The ask" + TOC. — *Coco, decision*
-- [ ] **2.2 Implement the gate changes** in the membership plugin (per-post-type or per-post rule; move the "more" marker). — *Coco/Claude, 2–3 h across 49 pieces*
+- [x] **2.1 Gate decision made (24 Oct):** Guides + Properties fully free; Briefs gated after a long free lead with paywall markup; paid tier repositioned as The Planning Room; "book through me" is the main CTA. See `05-editorial-system/paywall-decision.md` + `conversion-strategy.md`.
+- [ ] **2.2 Implement:** untick the PMS plans on the Guide and Property Kadence Element templates (Coco — the auto-mode guardrail blocks Claude here); on the Route/Dossier templates move the `pms/content-restriction-start` block below The ask / The shape of the trip / TOC. — *Coco, 30 min*
+
+### 2c — Conversion (added 24 Oct; from `conversion-strategy.md`)
+- [ ] **2c.1 Booking box** ("Book [hotel] through Coco Tran Travel — same rate, plus perks") as a Kadence Element on every Property and under hotel mentions in Rolodexes/Shortlists; form posts to CTT with the hotel + piece as source. — *Coco/Claude, 1 h*
+- [ ] **2c.2 Rename The Archive → The Planning Room** on `/subscribe/`, the paywall box and the FAQ; add the trip-file deliverables and the members' Q&A to the tier copy. — *Coco, 30 min*
+- [ ] **2c.3 Publish one complete Route + trip file free** as the sample (Two Weeks in Japan is the obvious one). — *Coco + Claude*
+- [ ] **2c.4 Build the first trip file** for that Route (Google Maps list + day-by-day with booking links + what-to-book-first sheet). — *Claude drafts, Coco checks*
+- [ ] **2c.5 Welcome sequence** (5 emails, drafted in her voice from the table in `conversion-strategy.md`) automated in the newsletter tool. — *Claude drafts, Coco approves, 1 h setup*
+- [ ] **2c.6 Founding-member email** to the 200 with the 14-day price and the sample Route. — *within 30 days*
+- [ ] **2c.7 Track booking requests from the site** as their own inquiry source in the form + GA4. — *30 min*
 - [~] **2.3 Add paywall structured data** on every gated piece. `03-fixes/paywall-structured-data.md` (Rank Math custom schema or a 20-line snippet). — *Claude/Host, 1 h*
 - [~] **2.4 Apply the title/description rewrites.** `03-fixes/meta-title-rewrites.csv` — import via Rank Math → Import/Export (CSV) or paste per page. Check Search Console first for any page where the current title is already ranking for a query the new one drops. — *Coco/Claude, 2 h*
 - [~] **2.5 Drop `llms.txt` at the site root** (upload via file manager or a mu-plugin rewrite). — *Coco/Host, 5 min*

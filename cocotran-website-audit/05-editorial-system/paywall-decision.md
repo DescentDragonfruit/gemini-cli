@@ -31,4 +31,15 @@ Why this split: the Primer is the page that answers "what should I know before�
 6. Who is the paying member you actually want: the luxury DIY planner, or the future client? (The answer changes whether Archive should be cheap and wide or scarce and deep.)
 7. Appetite for a metered model (3 free gated pieces/month with email) as an alternative to hard gates?
 
-Decision and rationale get written here once answered.
+## Decision (24 Oct 2026, after Coco's answers)
+
+Coco's answers: bookings convert from the agency hub; cocotran.com exists to qualify leads, build trust and give DIY intel with an option to convert; **200 free readers, 0 paid**; the ideal payer is the luxury DIY traveller who will book hotels through her for the perks and pay for insider depth; gate mechanics: "whichever converts best long-term".
+
+**Decided:**
+1. **Guides and Properties go fully free** (template gate off for `guide` and `property`). The reporting is the marketing and the AI-citation layer.
+2. **Briefs stay gated** behind a long free lead (The ask + The shape of the trip + visible TOC) with paywall markup. The paid product is repositioned as **The Planning Room**: Routes/Dossiers as usable trip files + Private Intel + members' Q&A + early access. Same price.
+3. **"Book through me — same rate, plus perks" becomes the primary call to action** on every hotel piece, for everyone, not an Insider perk. Insider keeps the planning-fee credit, priority access and a short call.
+4. **A 5-email welcome sequence and a founding-member offer** to the existing 200 go out within 30 days; one complete Route + trip file is published free as the sample.
+5. Not doing: a meter, a hard gate on Guides, or chasing the $100 before the booking relationship exists.
+
+Full rationale, the email sequence and the 30-day plan: `conversion-strategy.md`. Plan items: `02-action-plan.md` 2.1–2.2 and 2c.
