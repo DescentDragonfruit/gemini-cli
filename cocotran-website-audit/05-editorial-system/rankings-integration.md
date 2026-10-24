@@ -38,3 +38,19 @@ Admin → Data display → Channel groups → create "AI referrals": referrer ma
 - `membership_start` — Planning Room / Insider checkout complete
 - `inquiry` — Coco Tran Travel contact from a site link
 - `newsletter_signup`
+
+## What the data turns into (added 24 Oct 2026)
+
+Once the three secrets exist, the Monday run writes an `insights` document per week (`insights/YYYY-MM-DD`) that the desk shows on Today and in Keywords:
+
+- **Striking distance**: pages at position 4–20 with ≥200 impressions → a title/meta/opening update, queued with the losing queries.
+- **Content gaps**: queries with impressions where the landing page is not about them (a Guide ranking for "is X worth it") → a new piece suggestion in the right format, added to `keywords` as "from Search Console".
+- **Won and lost**: top 10 gainers and losers by clicks, with the likely cause (new sibling, lost citation, seasonal).
+- **AI referrals**: sessions from the "AI referrals" channel group per page → which pieces AI tools cite; those get the Facts-checked refresh first.
+- **Social attribution**: GA4 sessions by `instagram.com` / `l.instagram.com` / `pinterest.com` / `youtube.com` referrers and by UTM (`utm_source=instagram&utm_medium=social&utm_campaign=<kit id>` on the link in bio and the booking box) → which posts sent readers and which readers booked (the `booking_request` and `inquiry` events carry `source_url`).
+- **Format scorecard**: clicks, Planning Room sign-ups and inquiries per format in the last 28 days → the format mix to write next month.
+
+Every suggestion is written as a job or a `keywords` record with the data attached, so the desk's "Marketing moves" and the Keywords desk show real numbers next to the prediction.
+
+### UTM rule for social
+The desk's "Copy for Instagram" appends `?utm_source=instagram&utm_medium=social&utm_campaign=<kit id>` to any cocotran.com URL in the caption; pins use `utm_source=pinterest`; YouTube descriptions `utm_source=youtube`. The link in bio points to the newest piece with its UTM. Change the link when the post goes up.
