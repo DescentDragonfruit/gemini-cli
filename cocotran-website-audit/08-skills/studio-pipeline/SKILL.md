@@ -13,6 +13,8 @@ Coco fills the Studio Desk (https://claude.ai/artifact/NVykejaCwzyJDdN2G1NMQt); 
 
 Nothing queued → say so in one line and stop.
 
+Jobs may also carry `uploads[]` ({id, url, name, size}) — photos Coco attached in the desk. They live in the artifact's asset store; see 4a.
+
 ## 1. Gather context the desk couldn't
 
 - **Proposal Studio** (`https://claude.ai/artifact/AyNiCSZubZrjMar4rpyAY3`) or **Agency Studio** (`https://claude.ai/artifact/7VMcx1iKdmvdtq6KT6cgix`) named in the job: `Artifact read` the artifact (the result saves the HTML to disk — grep it for `collection("` / `doc("` to learn its collection names), then `ArtifactData list/query` those collections and find the record whose name matches `job.proposal` / `job.agency`. Pull the itinerary (days, hotels, logistics, what was booked, what changed). **Client names, emails and prices paid by the client never enter the piece**; "a couple in their forties, first time in Japan" is as specific as it gets.
@@ -54,11 +56,18 @@ Route A — **REST with an Application Password** (preferred when `COCOTRAN_WP_U
 7. Verify: `GET /{cpt}/{slug}/?preview=true` renders (or `wp/v2/{cpt}/{id}?context=edit` shows the fields saved), no placeholder text, title fits.
 8. Write back: `status: "built"`, `preview_url`, `wp_id`, `worker_notes` (what was mapped, what's missing).
 
+### 4a. Photos attached in the desk (`job.uploads`)
+
+1. For each upload: `Artifact read` with `url` = the desk and `path` = the upload `id` (32 hex chars) — the file lands in the scratchpad.
+2. If the Coco Photo CMS plugin is installed, `POST /wp-json/coco-photo/v1/optimize` is not needed — upload through core `POST /wp/v2/media` (multipart, `Content-Disposition: attachment; filename="<slug>-<n>.jpg"`) with basic auth; the plugin converts to WebP, caps the long edge and writes the credit on upload. Without the plugin, convert to WebP (quality 82, long edge 2000) with Pillow first so the site never carries a 6 MB scan.
+3. Set `alt` from the draft's `photos_needed[n].shows` (or the upload name with dashes → spaces), `caption` only if the draft gives one, then assign the IDs to the format's image slots in order and the first one as featured.
+4. Write the media IDs back to the job as `media_ids[]` and to the library record as `photos_list[]` ({id, url, alt}).
+
 Route B — **Cowork with Coco's logged-in Chrome**: as respin-old-content describes (`wp.apiFetch` from a `/wp-admin/edit.php?post_type=guide` page, small calls, try/catch, never return raw HTML/URLs through the extension). Same steps.
 
 Route C — **no site access**: write the full payload to `cocotran-website-audit/09-studio-output/<slug>.json` (the Desk's "WordPress payload" shape), commit + push on `cocotran-website-audit`, set `status: "needs-site"` with `worker_notes` saying where the file is. Cowork pushes it next time.
 
-Never publish. Coco clicks Publish. After she reports it published: redirects if it replaces an old post (Rank Math → Redirections → Add New), cache + Cloudflare purge reminder, `recheck.sh` on the URL, add the piece's question to `ai-faq-question-bank.md`.
+Never publish. Coco clicks Publish, then presses **This is live ✓** on the job in the desk (Queue → open the piece → paste the live URL). That button sets the job `published`, upserts `library/<slug>` (text, keyword, SEO set, `last_updated`, photos), pre-fills the social kit and adds a cache/redirect to-do. The worker still does, on its next run, for every job that turned `published` since the last run: redirects if it replaces an old post (Rank Math → Redirections → Add New), cache + Cloudflare purge reminder, `recheck.sh` on the URL, add the piece's question to `ai-faq-question-bank.md`.
 
 ## 5. Research jobs (`type: "research"`)
 
@@ -69,6 +78,14 @@ Queued from the Library's "Request keyword research". For the record `library/<l
 - **After any piece is built or updated**: create/update `library/<slug>` with url, title, cpt, pillar, format, category (from the job or `CATEGORY_BY_FORMAT`), goal, keyword (= focus keyword), `secondary_keywords`, `ai_questions`, `last_updated` = today, `status: live` (or `draft` until Coco publishes), `health: ok`. For a respin, set the old record `status: "merged-into:<new id>"`.
 - **Monday rankings run** (scheduled "Coco Tran weekly rankings and library health", 7:51 Pacific): follow `rankings-integration.md`. Pull Search Console + GA4 (28d vs previous 28d) with a service-account JWT from `GSC_SERVICE_ACCOUNT_JSON`; map URL → `library` doc (id = last path segment; else query on `url`); write `rank{…, pulled_at}` and `health` per `content-system.md`; open at most 5 `mode: update` jobs with `reason` ∈ {decay, stale}, the losing/top queries and a `proposed_fix`; write `07-ai-benchmark/rankings-YYYY-MM-DD.md`; commit. Without credentials: write `runs/rankings-YYYY-MM-DD {status:"skipped-no-credentials"}` and stop.
 - **Social**: the desk makes kits (`social` collection); the worker doesn't post. If a job's piece was built, add `social_kit_made: false` to the library record so the desk shows it as pending.
+
+## 6b. Reader questions (Tally form `Nqpavl`)
+
+Readers ask through "Ask Coco about this place" (https://tally.so/r/Nqpavl, embedded under every Verdict/Guide with hidden fields `page_url` and `piece`). Each submission emails hello@cocotran.com. The desk's Reader questions desk lists them (`fetch_submissions`) and "Answer this" prefills an Answer piece; "Queue for the worker" writes a `jobs` doc with `reason: "reader-question"`. Treat those jobs like any `new` job in format `answer`, drafting only from Coco's published text on the subject (site-search it) and marking the rest `[VERIFY]`. Add each answered question to `05-editorial-system/ai-faq-question-bank.md`.
+
+## 6c. Suppliers (`suppliers` collection)
+
+Mirrored from Agency Studio's supplier CRM by `11-builds/suppliers-sync.md`. The desk matches a job's subject against `suppliers` and shows the contact + "Draft the GM email". When a Verdict job is `queued` and no supplier matches, say so in `worker_notes` so Coco can add the contact in Agency Studio; never invent a contact. Re-run the sync (same doc) whenever Agency Studio's records change.
 
 ## 7. Report
 

@@ -188,11 +188,12 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
   <span class="k">Grow</span>
   <button data-desk="cite"><span class="ic">05</span>Citations</button>
   <button data-desk="bench"><span class="ic">06</span>AI benchmark</button>
+  <button data-desk="questions"><span class="ic">07</span>Reader questions</button>
   <span class="k">Reference</span>
-  <button data-desk="process"><span class="ic">07</span>Process</button>
-  <button data-desk="rules"><span class="ic">08</span>House rules</button>
-  <button data-desk="playbooks"><span class="ic">09</span>Playbooks</button>
-  <div class="status"><span id="st-sample-w">Claude <b id="st-sample">…</b></span><span id="st-db-w">Store <b id="st-db">…</b></span><span id="st-granola-w">Granola <b id="st-granola">…</b></span></div>
+  <button data-desk="process"><span class="ic">08</span>Process</button>
+  <button data-desk="rules"><span class="ic">09</span>House rules</button>
+  <button data-desk="playbooks"><span class="ic">10</span>Playbooks</button>
+  <div class="status"><span id="st-sample-w">Claude <b id="st-sample">…</b></span><span id="st-db-w">Store <b id="st-db">…</b></span><span id="st-granola-w">Granola <b id="st-granola">…</b></span><span id="st-tally-w">Questions <b id="st-tally">…</b></span><span id="st-assets-w">Photos <b id="st-assets">…</b></span></div>
 </aside>
 <div class="content">
 <header class="hero"><h1 id="hero-title">Today</h1><div class="issue" id="hero-issue">Coco Tran · cocotran.com</div></header>
@@ -264,6 +265,7 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
     <div><label for="n-photos">Photos (where they are — the worker attaches them)</label><input type="text" id="n-photos" placeholder="WP media 'singita-*' · or · Studio folder link"></div>
   </div>
   <div class="two">
+    <div id="n-supplier" style="grid-column:1/-1"></div>
     <div><label for="n-category">Content category</label>
       <select id="n-category"><option value="">Decide from the format</option><option>Commercial</option><option>Decision-support</option><option>Informational</option><option>Specialist intel</option><option>Authority</option></select></div>
     <div><label for="n-goal">Goal of this piece (one line)</label><input type="text" id="n-goal" placeholder="Own 'is Singita worth it'; convert to a booking through CTT"></div>
@@ -281,6 +283,13 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
     <div class="row" id="g-pullrow" hidden><button class="btn alt" id="g-pull">Pull notes from selected</button></div>
     <div id="g-pulled" class="cards"></div>
     <div class="quiet" id="g-quiet">Granola isn't reachable in this view — add or reconnect it under claude.ai Settings → Connectors, or paste the notes above.</div>
+  </div>
+
+  <div class="src">
+    <div class="meta">PHOTOS · drop the film scans here; they travel with the job and the worker puts them in the post's image slots</div>
+    <div class="row"><input type="file" id="n-files" multiple accept="image/*" style="flex:1;min-width:220px"><span class="note" id="n-files-note">JPEG/PNG/WebP, up to 20 MB each. Nothing is sent to WordPress until you approve the piece.</span></div>
+    <div id="n-uploads" class="cards" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr))"></div>
+    <div class="quiet" id="n-files-quiet">Photo upload isn't available in this view (needs editor access to the desk).</div>
   </div>
 
   <div class="src">
@@ -356,6 +365,14 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
   <h3>Kits made</h3>
   <div class="tablewrap"><table id="s-table"><thead><tr><th>Date</th><th>Piece</th><th>Hook</th><th></th></tr></thead><tbody></tbody></table></div>
   <div class="quiet" id="s-quiet">Claude isn't available in this view.</div>
+</section>
+
+<!-- ============ READER QUESTIONS ============ -->
+<section class="desk" id="desk-questions">
+  <div class="deskhead"><div><div class="eyebrow">Grow</div><h2>Reader questions</h2><p class="lead">Questions readers ask on the site through the "Ask Coco about this place" form (Tally). Each one is emailed to you as it arrives; here they become Answer pieces in one click.</p></div></div>
+  <div class="row"><button class="btn" id="q-load">Load questions</button><span class="note" id="q-note"></span></div>
+  <div id="q-list" class="cards"></div>
+  <div class="quiet" id="q-quiet">Tally isn't reachable in this view — add it under claude.ai Settings → Connectors.</div>
 </section>
 
 <!-- ============ CITATION TRACKER ============ -->
@@ -611,7 +628,10 @@ ${(src.text||"").slice(0,14000)}`;
 }
 
 // ---------- runtime ----------
-let sample=null, db=null, mcp=null, canWrite=false, granolaOk=false;
+let sample=null, db=null, mcp=null, assets=null, canWrite=false, granolaOk=false, tallyOk=false;
+let uploads=[]; let suppliers=[];
+const TALLY_FORM_ID="Nqpavl";
+const DELIVERABLE_BY_FORMAT={verdict:"the exact room to ask for, and the perks if you book it through me",comparison:"my one-line pick for your dates",route:"the trip file (day-by-day + booking-order sheet)",dossier:"the packing and money sheet",rolodex:"my where-to-stay list for the neighbourhood you pick",roundup:"the saved map of every place",shortlist:"the shortlist as a saved map",primer:"the what-to-book-first list with lead times"};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ls={get(k){try{return localStorage.getItem(k)||""}catch(e){return ""}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
@@ -624,7 +644,7 @@ const fmtLabel=k=>FORMATS[k]?.label||k||"";
 
 // tabs
 const navBtns=[...document.querySelectorAll(".side button")];
-const DESK_TITLES={today:"Today",new:"New piece",queue:"Queue",library:"Library",social:"Social",cite:"Citations",bench:"AI benchmark",process:"Process",rules:"House rules",playbooks:"Playbooks"};
+const DESK_TITLES={questions:"Reader questions",today:"Today",new:"New piece",queue:"Queue",library:"Library",social:"Social",cite:"Citations",bench:"AI benchmark",process:"Process",rules:"House rules",playbooks:"Playbooks"};
 function show(id){navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id));const ht=$("#hero-title");if(ht)ht.textContent=DESK_TITLES[id]||id;ls.set("desk",id);window.scrollTo({top:0})}
 navBtns.forEach(b=>b.addEventListener("click",()=>show(b.dataset.desk)));
 const h=(location.hash||"").slice(1);show(navBtns.some(b=>b.dataset.desk===h)?h:(ls.get("desk")||"today"));
@@ -669,8 +689,35 @@ $("#g-pull").onclick=async()=>{
 };
 function renderPulled(){$("#g-pulled").innerHTML=pulled.map((g,i)=>`<div class="card"><div class="meta">${esc(g.date)} · ${esc(g.notes.length)} chars <button class="copy" data-i="${i}">remove</button></div><h4>${esc(g.title)}</h4><div style="font-size:13px;color:var(--muted);max-height:80px;overflow:hidden">${esc(g.notes.slice(0,400))}…</div></div>`).join("");$("#g-pulled").querySelectorAll(".copy").forEach(b=>b.onclick=()=>{pulled.splice(+b.dataset.i,1);renderPulled()})}
 
+// ---------- Photo intake (assets ride with the job) ----------
+function renderUploads(){$("#n-uploads").innerHTML=uploads.map((u,i)=>`<div class="card" style="padding:8px"><img src="${esc(u.url)}" alt="${esc(u.name)}" style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:3px"><div class="meta" style="margin-top:6px">${esc(u.name.slice(0,22))} · ${Math.round((u.size||0)/1024)} KB <button class="copy" data-i="${i}">remove</button></div></div>`).join("");$("#n-uploads").querySelectorAll(".copy").forEach(b=>b.onclick=()=>{uploads.splice(+b.dataset.i,1);renderUploads()})}
+$("#n-files").addEventListener("change",async e=>{
+ if(!assets){$("#n-files-note").textContent="Upload isn't available in this view.";return}
+ const files=[...e.target.files]; e.target.value="";
+ for(const f of files){ if(f.size>20*1024*1024){$("#n-files-note").textContent=f.name+" is over 20 MB — export smaller.";continue}
+  $("#n-files-note").textContent="Uploading "+f.name+"…";
+  try{const r=await assets.upload(f); uploads.push({id:r.id,url:r.url,name:f.name,size:r.sizeBytes,type:r.contentType}); renderUploads()}
+  catch(err){$("#n-files-note").textContent="Couldn't upload "+f.name+" ("+(err?.code||"error")+")."}
+ }
+ $("#n-files-note").textContent=uploads.length+" photo"+(uploads.length===1?"":"s")+" attached. They go to WordPress when you approve the piece.";
+});
+function supplierMatch(name){const n=(name||"").toLowerCase().replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(w=>w.length>3&&!["hotel","resort","belmond","four","seasons","the","lodge","camp"].includes(w));if(!n.length)return[];return suppliers.filter(sp=>{const h=(sp.name||"").toLowerCase();return n.filter(w=>h.includes(w)).length>=Math.min(2,n.length)}).slice(0,3)}
+function supplierCard(sp,ctx){return `<div class="card"><div class="meta">SUPPLIER · ${esc(sp.kind||"")} · ${esc(sp.destination||sp.country||"")}</div><h4>${esc(sp.name)}</h4><div class="kv" style="grid-template-columns:120px 1fr"><div>Contact</div><div>${esc(sp.contact_name||"—")}${sp.contact_role?" · "+esc(sp.contact_role):""}</div><div>Email</div><div>${esc(sp.email||"—")}</div><div>Programme</div><div>${esc(sp.programme||"—")}</div><div>Last contact</div><div>${esc(sp.last_contact||"—")}</div>${sp.notes?`<div>Notes</div><div>${esc(String(sp.notes).slice(0,240))}</div>`:""}</div><div class="row"><button class="btn alt" data-gm="${esc(sp.id)}">Draft the GM email</button></div><div class="out" data-gm-out="${esc(sp.id)}"></div></div>`}
+async function draftGm(sp,subject,notes,host){
+ if(!sample){host.textContent="Claude isn't available in this view.";return}
+ host.textContent="Thinking…";
+ try{const {text}=await sample(`Write the short email Coco Tran sends a hotel's GM or PR contact while preparing a feature. Warm, first person, confident, 4–6 questions max, each on its own numbered line, only asking what her own notes can't answer. Sign "Coco". No banned words (breathtaking, seamless, world-class, stunning). Subject line first.
+
+Property: ${subject}
+Contact: ${sp.contact_name||"(name)"} ${sp.contact_role?"("+sp.contact_role+")":""}
+What Coco already knows (don't ask these): ${(notes||"").slice(0,2000)||"(nothing yet — ask the six most useful: a founding/restoration detail guests rarely hear; what changed in the last 12–18 months; room counts by category and the one suite to point a first-timer to; the current chef and sourcing; the spa arrival sequence; what a preferred-partner booking unlocks here; the one thing regulars ask for.)"}`,{cache:false,onText:({text})=>{host.textContent=text}});host.textContent=text}
+ catch(e){host.textContent=copyFor(e)}
+}
+function wireGm(container,subject,notes){container.querySelectorAll("[data-gm]").forEach(b=>b.onclick=()=>{const sp=suppliers.find(x=>x.id===b.dataset.gm);const out=container.querySelector(`[data-gm-out="${b.dataset.gm}"]`);if(sp&&out)draftGm(sp,subject,notes,out)})}
+$("#n-subject").addEventListener("input",()=>{const m=supplierMatch($("#n-subject").value);const host=$("#n-supplier");host.innerHTML=m.length?m.map(sp=>supplierCard(sp)).join(""):"";wireGm(host,$("#n-subject").value,$("#n-notes").value)});
+
 // ---------- Make the piece ----------
-function collect(){return{mode:$("#n-mode").value,source_url:$("#n-url").value.trim(),missing:$("#n-missing").value.trim(),current:$("#n-current").value.trim(),format:$("#n-format").value,subject:$("#n-subject").value.trim(),dest:$("#n-dest").value.trim(),basis:$("#n-basis").value.trim(),disclosure:$("#n-disclosure").value,photos:$("#n-photos").value.trim(),category:$("#n-category").value,goal:$("#n-goal").value.trim(),notes:$("#n-notes").value.trim(),granola:pulled.map(g=>({id:g.id,title:g.title,date:g.date,notes:g.notes})),proposal:$("#n-proposal").value.trim(),agency:$("#n-agency").value.trim()}}
+function collect(){return{mode:$("#n-mode").value,source_url:$("#n-url").value.trim(),missing:$("#n-missing").value.trim(),current:$("#n-current").value.trim(),format:$("#n-format").value,subject:$("#n-subject").value.trim(),dest:$("#n-dest").value.trim(),basis:$("#n-basis").value.trim(),disclosure:$("#n-disclosure").value,photos:$("#n-photos").value.trim(),category:$("#n-category").value,goal:$("#n-goal").value.trim(),notes:$("#n-notes").value.trim(),granola:pulled.map(g=>({id:g.id,title:g.title,date:g.date,notes:g.notes})),uploads:uploads.map(u=>({id:u.id,url:u.url,name:u.name,size:u.size})),proposal:$("#n-proposal").value.trim(),agency:$("#n-agency").value.trim()}}
 function step(t){$("#n-steps").innerHTML+=(t?`<div>${t}</div>`:"")}
 let ctl=null;
 async function saveJob(job){
@@ -720,6 +767,23 @@ $("#n-run").onclick=async()=>{
  finally{$("#n-run").disabled=false;$("#n-stop").disabled=true}
 };
 
+function uploadsNote(job){const u=job.uploads||[];return u.length?`<div class="note">${u.length} photo${u.length===1?"":"s"} attached — the worker places them in the image slots when it builds.</div>`:""}
+async function markLive(job,id,url,btn){
+ if(!url||!/^https?:\/\//.test(url)){$("#n-note").textContent="Paste the live URL first.";btn.textContent="Needs the live URL";return}
+ btn.disabled=true; btn.textContent="Recording…";
+ const d=job.draft||{}, f=FORMATS[job.format]||{}; const slug=url.replace(/\/$/,"").split("/").pop().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60)||id;
+ try{
+  await db.doc("jobs/"+id).update({status:"published",live_url:url,publishedAt:Date.now(),updatedAt:Date.now()});
+  const ref=db.doc("library/"+slug); const cur=await ref.get(); const prev=cur.exists?cur.data():{};
+  await ref.set({...prev,id:slug,url,title:d.post_title||job.title||job.subject,cpt:f.cpt||prev.cpt||"",pillar:f.pillar||prev.pillar||"",format:job.format,category:job.category||prev.category||CATEGORY_BY_FORMAT[job.format]||"",goal:job.goal||prev.goal||"",keyword:d.seo?.primary_query||prev.keyword||"",secondary_keywords:d.seo?.secondary_queries||prev.secondary_keywords||[],ai_questions:d.seo?.ai_questions||prev.ai_questions||[],seo_title:d.seo?.seo_title||prev.seo_title||"",meta_description:d.seo?.meta_description||prev.meta_description||"",last_updated:today(),last_fact_check:today(),visited:job.basis||prev.visited||"",disclosure:job.disclosure||prev.disclosure||"",text:pieceText(job).slice(0,12000),photos_list:(job.uploads||[]).map(u=>({url:u.url,alt:u.name})),health:"ok",status:"live",social_kit_made:false,updatedAt:Date.now()});
+  if(job.mode==="update"&&job.source_url&&job.source_url.replace(/\/$/,"")!==url.replace(/\/$/,"")){const old=job.source_url.replace(/\/$/,"").split("/").pop();try{const o=db.doc("library/"+old);const os=await o.get();if(os.exists)await o.update({status:"merged-into:"+slug,updatedAt:Date.now()})}catch(e){}}
+  btn.textContent="Live ✓ — library updated";
+  const todoText=(job.mode==="update"&&job.source_url&&job.source_url.replace(/\/$/,"")!==url.replace(/\/$/,""))?`Add the 301 in Rank Math → Redirections: ${job.source_url} → ${url}; then purge cache + Cloudflare`:`Purge LiteSpeed + Cloudflare after publishing ${url}`;
+  try{await db.collection("todo").add({order:100,group:"After publish",text:todoText,minutes:5,done:false,createdAt:Date.now()})}catch(e){}
+  socialSrc={title:d.post_title||job.title,url,libId:slug}; $("#s-text").value=pieceText(job); ls.set("s-text",$("#s-text").value); $("#s-deliverable").value=DELIVERABLE_BY_FORMAT[job.format]||""; $("#s-photos").value=(d.photos_needed||[]).map(p=>p.shows||p.slot||p).join(" · ");
+  $("#n-note").textContent="Recorded as live. The social kit is pre-filled — open Social when you're ready.";
+ }catch(e){btn.disabled=false;btn.textContent="This is live ✓";$("#n-note").textContent="Couldn't record it: "+(e?.code||"error")}
+}
 function pieceText(job){const d=job.draft||{};const f=FORMATS[job.format]||{fields:[]};const fields=d.fields||{};const order=f.fields.filter(k=>fields[k]!=null).concat(Object.keys(fields).filter(k=>!f.fields.includes(k)));return [d.post_title,"",d.short_answer,"",...(d.glance||[]).map(g=>g.label+": "+g.value),"",...order.map(k=>k.toUpperCase()+"\n"+String(fields[k]).replace(/<[^>]+>/g,""))].join("\n")}
 
 function renderPiece(el,job,id){
@@ -746,7 +810,11 @@ function renderPiece(el,job,id){
   ${job.research?`<div class="card"><div class="meta">WORKER RESEARCH</div><div style="white-space:pre-wrap;font-size:13px">${esc(typeof job.research==="string"?job.research:JSON.stringify(job.research,null,1))}</div></div>`:""}
   ${job.worker_notes?`<div class="card"><div class="meta">WORKER NOTES</div><div style="white-space:pre-wrap;font-size:13px">${esc(job.worker_notes)}</div></div>`:""}
   <div class="row">${id&&canWrite&&job.status!=="built"?`<button class="btn" data-approve="${esc(id)}">${job.status==="approved"?"Approved — waiting for the worker":"Approve → build in WordPress"}</button>`:""}<button class="btn alt" data-copy="payload">Copy WordPress payload</button><button class="btn alt" data-copy="text">Copy as text</button><button class="btn alt" data-social="1">Make social kit →</button></div>
+  ${id&&canWrite&&job.status!=="published"?`<div class="row" style="margin-top:8px"><input type="text" id="live-url" placeholder="Live URL once published" value="${esc(job.live_url||job.preview_url||job.source_url||"")}" style="flex:1;min-width:240px"><button class="btn" data-live="${esc(id)}">This is live ✓</button></div>`:""}
+  ${job.status==="published"?`<div class="note">Published ${esc(new Date(job.publishedAt||0).toISOString().slice(0,10))} · <a href="${esc(job.live_url)}" target="_blank" rel="noopener">${esc(job.live_url)}</a></div>`:""}
+  ${uploadsNote(job)}
  </div>`;
+ const lb=el.querySelector("[data-live]"); if(lb) lb.onclick=()=>markLive(job,id,el.querySelector("#live-url").value.trim(),lb);
  el.querySelector('[data-copy="payload"]').onclick=e=>copyText(JSON.stringify(payload,null,1),e.target);
  el.querySelector('[data-copy="text"]').onclick=e=>copyText(pieceText(job),e.target);
  el.querySelector('[data-social]').onclick=()=>{$("#s-text").value=pieceText(job);ls.set("s-text",$("#s-text").value);$("#s-photos").value=(d.photos_needed||[]).map(p=>p.shows||p.slot||p).join(" · ");socialSrc={title:d.post_title,url:job.source_url||"",jobId:id};show("social");window.scrollTo({top:0,behavior:"smooth"})};
@@ -806,7 +874,9 @@ function openLib(id){
   ${rk?`<div class="card"><div class="meta">RANKINGS · 28 days (pulled ${esc(rk.pulled_at||"")})</div><div class="kv" style="margin-top:8px"><div>Clicks</div><div>${esc(String(rk.clicks28??"—"))} <span class="note">prev ${esc(String(rk.clicks_prev??"—"))}</span></div><div>Impressions</div><div>${esc(String(rk.impressions28??"—"))} <span class="note">prev ${esc(String(rk.impressions_prev??"—"))}</span></div><div>Position</div><div>${esc(String(rk.position28??"—"))} <span class="note">prev ${esc(String(rk.position_prev??"—"))}</span></div><div>Top queries</div><div>${(rk.top_queries||[]).map(esc).join("<br>")}</div><div>GA4 sessions</div><div>${esc(String(rk.ga_sessions28??"—"))} · engaged ${esc(String(rk.ga_engaged28??"—"))}</div></div></div>`:'<div class="note">No rankings yet — the Monday run fills this once Search Console and GA4 credentials are in the environment (rankings-integration.md).</div>'}
   ${(r.ai_questions||[]).length?`<div class="card"><div class="meta">AI QUESTIONS IT ANSWERS</div>${r.ai_questions.map(q=>`<div>${esc(q)}</div>`).join("")}</div>`:""}
   <div id="d-sugg">${s.generated_at?renderSugg(s):""}</div>
+  <div id="d-supplier">${r.pillar==="The Property"?supplierMatch(r.title.replace(/^the (verdict|property|comparison):?\s*/i,"")).map(sp=>supplierCard(sp)).join(""):""}</div>
  </div>`;
+ wireGm($("#d-supplier"),r.title,r.text||"");
  $("#l-drawer").classList.add("open"); $("#scrim").classList.add("open"); $("#l-drawer").scrollTop=0;
  const save=$("#d-save"); if(save) save.onclick=async()=>{try{await db.doc("library/"+r.id).update({category:$("#d-cat").value,keyword:$("#d-kw").value.trim(),goal:$("#d-goal").value.trim(),notes:$("#d-notes").value.trim(),updatedAt:Date.now()});$("#d-note").textContent="Saved."}catch(e){$("#d-note").textContent="Couldn't save."}};
  $("#d-improve").onclick=async()=>{
@@ -840,7 +910,13 @@ function renderSugg(s){
 
 // ---------- Social ----------
 let socialSrc={};
-$("#s-pick").addEventListener("change",()=>{const r=lib.find(x=>x.id===$("#s-pick").value); if(r){socialSrc={title:r.title,url:r.url,libId:r.id}; if(r.suggestions?.social_angle&&!$("#s-focus").value)$("#s-focus").value=r.suggestions.social_angle; $("#s-note").textContent=$("#s-text").value.trim()?"":"Paste the piece text below (the library holds the record, not the body)."}});
+$("#s-pick").addEventListener("change",()=>{const r=lib.find(x=>x.id===$("#s-pick").value); if(!r)return; socialSrc={title:r.title,url:r.url,libId:r.id};
+ if(r.text){$("#s-text").value=r.text;ls.set("s-text",r.text);$("#s-note").textContent="Filled from the library ("+r.text.length+" chars"+(r.text_truncated?", trimmed":"")+")."}
+ else{$("#s-note").textContent="The library hasn't pulled this piece's text yet — paste it below, or queue a text pull."; $("#s-note").innerHTML+=' <button class="copy" id="s-pull">queue text pull</button>'; const b=$("#s-pull"); if(b) b.onclick=async()=>{try{await db.collection("jobs").add({type:"research",mode:"research",status:"queued",title:r.title,subject:r.title,source_url:r.url,format:r.format,library_id:r.id,ask:"pull text + photos into the library record",createdAt:Date.now(),updatedAt:Date.now()});$("#s-note").textContent="Queued — the worker pulls it on its next run."}catch(e){$("#s-note").textContent="Couldn't queue it."}}}
+ if(Array.isArray(r.photos_list)&&r.photos_list.length){$("#s-photos").value=r.photos_list.map(p=>p.caption||p.alt||"").filter(Boolean).slice(0,8).join(" · ")}
+ if(r.suggestions?.social_angle)$("#s-focus").value=r.suggestions.social_angle;
+ if(!$("#s-deliverable").value)$("#s-deliverable").value=DELIVERABLE_BY_FORMAT[r.format]||"";
+});
 $("#s-run").onclick=async()=>{
  const text=$("#s-text").value.trim(); if(!text){$("#s-note").textContent="Paste the piece text or send one from the Queue / Library.";return}
  if(!sample) return;
@@ -990,6 +1066,24 @@ function renderToday(){
 }
 function renderBenchToday(snap){const d=snap.docs[0]?.data();if(d){$("#t-bench").textContent=`${d.cited??0} / 20`;$("#t-bench-note").textContent=`cited · ${d.date||""} · ${d.tool||""}`}}
 
+// ---------- Reader questions (Tally) ----------
+$("#q-load").onclick=async()=>{
+ if(!mcp){$("#q-note").textContent="Connectors aren't available in this view.";return}
+ if(TALLY_FORM_ID.startsWith("__")){$("#q-note").textContent="The form isn't wired yet.";return}
+ $("#q-load").disabled=true;$("#q-note").textContent="Loading…";
+ try{
+  const r=await mcp.callTool("Tally","fetch_submissions",{formId:TALLY_FORM_ID,limit:100,filter:{status:"completed"}},{cache:false});
+  const p=r.payload; const d=p?.data||p||{}; const subs=Array.isArray(d.submissions)?d.submissions:[]; const qmap={}; (d.questions||[]).forEach(q=>{qmap[q.id]=(q.label||q.type||"").toLowerCase()});
+  const rows=subs.map(x=>{const ans=x.responses||x.answers||[]; const flat={}; (Array.isArray(ans)?ans:Object.entries(ans).map(([k,v])=>({questionId:k,answer:v}))).forEach(a=>{const lab=(a.label||qmap[a.questionId||a.id]||a.questionId||"").toLowerCase(); const v=a.answer??a.value??""; if(v&&typeof v==="object"&&!Array.isArray(v)){Object.entries(v).forEach(([k,vv])=>{flat[k.toLowerCase()]=vv})} else flat[lab]=v}); const get=k=>{const key=Object.keys(flat).find(y=>y.includes(k));return key?String(flat[key]??""):""};return {id:x.id||x.submissionId,at:(x.submittedAt||x.createdAt||"").slice(0,10),q:get("want to know")||get("question")||JSON.stringify(flat).slice(0,300),name:get("name"),email:get("email"),page:get("page_url")||get("page")||get("url"),raw:x}});
+  if(!rows.length){$("#q-note").textContent="No questions yet.";$("#q-list").innerHTML="";return}
+  $("#q-list").innerHTML=rows.map((q,i)=>`<div class="card"><div class="meta">${esc(q.at)} · ${esc(q.name||"anonymous")}${q.page?` · <a href="${esc(String(q.page))}" target="_blank" rel="noopener">page</a>`:""}</div><div style="font-family:var(--display);font-size:17px">${esc(String(q.q))}</div><div class="row"><button class="btn alt" data-ans="${i}">Answer this →</button><button class="btn alt" data-qjob="${i}">Queue for the worker</button></div></div>`).join("");
+  $("#q-list").querySelectorAll("[data-ans]").forEach(b=>b.onclick=()=>{const q=rows[+b.dataset.ans];$("#n-mode").value="new";syncMode();$("#n-format").value="answer";$("#n-subject").value=String(q.q).slice(0,80);$("#n-notes").value=`READER QUESTION (${q.at}${q.name?", "+q.name:""}${q.page?", asked on "+q.page:""}):\n${q.q}\n\nMY ANSWER / NOTES:\n`;["n-subject","n-notes"].forEach(i=>ls.set(i,$("#"+i).value));show("new")});
+  $("#q-list").querySelectorAll("[data-qjob]").forEach(b=>b.onclick=async()=>{const q=rows[+b.dataset.qjob];try{await db.collection("jobs").add({mode:"new",format:"answer",subject:String(q.q).slice(0,120),title:String(q.q).slice(0,120),notes:`Reader question (${q.at}${q.page?", on "+q.page:""}): ${q.q}. Draft ONLY from Coco's published text on the subject; mark everything else [VERIFY].`,status:"queued",reason:"reader-question",createdAt:Date.now(),updatedAt:Date.now()});b.textContent="Queued"}catch(e){$("#q-note").textContent="Couldn't queue it."}});
+  $("#q-note").textContent=rows.length+" question"+(rows.length===1?"":"s")+".";
+ }catch(e){$("#q-note").textContent=({server_not_connected:"Add Tally under Settings → Connectors.",needs_reauth:"Reconnect Tally under Settings → Connectors.",not_in_manifest:"Tally isn't allowed for this page in this view."})[e?.code]||"Tally didn't answer ("+(e?.code||"error")+")."}
+ finally{$("#q-load").disabled=false}
+};
+
 // ---------- Voice calibration (allowances live in voice/allow) ----------
 function renderAllow(){$("#cal-count").textContent=ALLOW.length;$("#cal-allow").innerHTML=ALLOW.length?ALLOW.map((a,i)=>`<div class="card"><div style="display:flex;gap:10px;align-items:flex-start"><div style="flex:1">${esc(a)}</div>${canWrite?`<button class="copy" data-rm="${i}">remove</button>`:""}</div></div>`).join(""):'<div class="note">None yet. Flags you mark "that\'s me" land here.</div>';$("#cal-allow").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>saveAllow(ALLOW.filter((_,j)=>j!==+b.dataset.rm)))}
 async function saveAllow(list){ALLOW=list;renderAllow();if(db&&canWrite){try{await db.doc("voice/allow").set({items:ALLOW,updatedAt:Date.now()})}catch(e){$("#cal-note").textContent="Couldn't save the allowances."}}}
@@ -1013,20 +1107,22 @@ ${t.slice(0,12000)}`,{cache:false});
 
 function setStatus(){
  $("#st-sample").textContent=sample?"ready":"off"; $("#st-db").textContent=db?(canWrite?"shared · write":"shared · read"):"off"; $("#st-granola").textContent=granolaOk?"ready":(mcp?"ask":"off");
- $("#st-sample-w").classList.toggle("on",!!sample); $("#st-db-w").classList.toggle("on",!!db); $("#st-granola-w").classList.toggle("on",granolaOk);
+ $("#st-sample-w").classList.toggle("on",!!sample); $("#st-db-w").classList.toggle("on",!!db); $("#st-granola-w").classList.toggle("on",granolaOk); $("#st-tally").textContent=tallyOk?"ready":(mcp?"ask":"off"); $("#st-tally-w").classList.toggle("on",tallyOk); $("#st-assets").textContent=assets?"ready":"off"; $("#st-assets-w").classList.toggle("on",!!assets);
  $("#n-quiet").style.display=sample?"none":"block"; $("#n-run").disabled=!sample;
  $("#s-quiet").style.display=sample?"none":"block"; $("#s-run").disabled=!sample;
  $("#g-quiet").style.display=mcp?"none":"block"; $("#g-search").disabled=!mcp;
+ $("#q-quiet").style.display=mcp?"none":"block"; $("#n-files-quiet").style.display=assets?"none":"block"; $("#n-files").disabled=!assets;
  ["q","p","b","l"].forEach(k=>$("#"+k+"-quiet").style.display=db?"none":"block"); $("#todo-quiet").style.display=db?"none":"block";
 }
 (async()=>{
  setStatus();
- const [s,d,u,m]=await Promise.all([claude.use("sample"),claude.use("db"),claude.use("user"),claude.use("mcp")]);
- sample=s; db=d; mcp=m;
+ const [s,d,u,m,a]=await Promise.all([claude.use("sample"),claude.use("db"),claude.use("user"),claude.use("mcp"),claude.use("assets")]);
+ sample=s; db=d; mcp=m; assets=a;
  try{canWrite=!!(d&&u&&((await u.can("data.write"))??true))}catch(e){canWrite=!!d}
- if(mcp){try{const l=await mcp.listTools("Granola");granolaOk=!!(l?.servers||[]).find(x=>x.server==="Granola"&&x.authStatus!=="needs_reauth")}catch(e){granolaOk=false}}
+ if(mcp){try{const l=await mcp.listTools();const sv=l?.servers||[];granolaOk=!!sv.find(x=>x.server==="Granola"&&x.authStatus!=="needs_reauth");tallyOk=!!sv.find(x=>x.server==="Tally"&&x.authStatus!=="needs_reauth")}catch(e){granolaOk=false;tallyOk=false}}
  setStatus();
  if(db){
+  try{db.collection("suppliers").limit(500).onSnapshot(sn=>{suppliers=sn.docs.map(x=>({id:x.id,...x.data()}))},()=>{})}catch(e){}
   try{db.collection("todo").limit(100).onSnapshot(sn=>{todos=sn.docs.map(x=>({id:x.id,...x.data()}));renderTodos()},()=>{})}catch(e){}
   try{db.collection("benchmarks").orderBy("createdAt","desc").limit(1).onSnapshot(renderBenchToday,()=>{})}catch(e){}
   try{db.doc("voice/allow").onSnapshot(sn=>{const x=sn.exists?sn.data():null;ALLOW=Array.isArray(x?.items)?x.items.map(String):[];renderAllow()},()=>{})}catch(e){}

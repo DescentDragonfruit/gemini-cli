@@ -1,0 +1,35 @@
+<!-- Coco Tran — "Ask Coco about this place" (Tally form Nqpavl)
+     Kadence → Elements → Add New → type "Content Section", hook: after content (single), display: post types property + guide
+     (or paste into the Kadence Element already carrying the answerable opening, below the booking box). Paste as a Custom HTML block.
+     The hidden fields page_url and piece are filled from the page so each question arrives with its source.
+     Lazy: the Tally script loads only when the block scrolls into view, so it costs nothing on first paint. -->
+<section class="ct-ask" aria-labelledby="ct-ask-h">
+  <h2 id="ct-ask-h" class="ct-ask__h">Ask me about this place</h2>
+  <p class="ct-ask__p">The room to book, the season, whether it's worth it for your trip. I answer the good ones on the site and email you when I do.</p>
+  <div class="ct-ask__frame" id="ct-ask-frame"></div>
+</section>
+<style>
+.ct-ask{margin:3rem 0 2rem;padding:1.75rem 0 0;border-top:1px solid rgba(0,0,0,.12)}
+.ct-ask__h{font-size:1.5rem;margin:0 0 .4rem}
+.ct-ask__p{margin:0 0 1rem;max-width:40rem;opacity:.85}
+.ct-ask__frame iframe{width:100%;border:0;min-height:430px}
+</style>
+<script>
+(function(){
+  var host=document.getElementById('ct-ask-frame'); if(!host) return;
+  function mount(){
+    var q=new URLSearchParams({page_url:location.href.split('#')[0],piece:document.title.replace(/\s*[-|–].*$/,'').slice(0,120),alignLeft:'1',hideTitle:'1',transparentBackground:'1',dynamicHeight:'1'});
+    var f=document.createElement('iframe');
+    f.setAttribute('data-tally-src','https://tally.so/embed/Nqpavl?'+q.toString());
+    f.loading='lazy'; f.title='Ask Coco about this place'; f.height='430';
+    host.appendChild(f);
+    var s=document.createElement('script'); s.src='https://tally.so/widgets/embed.js'; s.async=true;
+    s.onload=function(){ if(window.Tally) window.Tally.loadEmbeds(); };
+    document.body.appendChild(s);
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){ if(es.some(function(e){return e.isIntersecting})){ io.disconnect(); mount(); } },{rootMargin:'400px'});
+    io.observe(host);
+  } else mount();
+})();
+</script>

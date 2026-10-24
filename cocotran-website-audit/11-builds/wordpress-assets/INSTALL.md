@@ -23,3 +23,12 @@ Everything in this folder is import-ready. Do it in this order; each step depend
 - `rank-math-title-import.csv` has 110 rows (5 source rows with no proposed title were skipped). `focus_keyword` is derived from the proposed title (the text before the first colon or dash) — skim it before `--apply`; it only affects Rank Math's on-page score, not output. `post_type` is a guess from the URL path and is corrected from WordPress by the resolver. Old-post URLs that have already been 301'd and trashed will come back as "Could not resolve" — that is expected; their replacements already carry their own Rank Math titles.
 - Pillar-structure §2 also wants Rank Math to read `primary_keyword` as the focus keyword. Not included here; it is a one-line `rank_math/frontend/focus_keyword`-style filter or a sync on `acf/save_post` — add once the Content system group is in use.
 - Edit Elements with string split/join, never regex (Kadence block comments break under regex replace).
+
+## Reader questions — "Ask Coco about this place" (Tally form Nqpavl)
+
+Live form: https://tally.so/r/Nqpavl · edit: https://tally.so/forms/Nqpavl/edit. Every submission is emailed to hello@cocotran.com (Tally's default notification; custom subject/body needs Tally Pro).
+
+1. Kadence → Elements → Add New → Content Section. Hook **After content** (single), display on post types **Property** and **Guide** (add Brief if you want it there too).
+2. Add a **Custom HTML** block and paste `reader-question-embed.html`. It loads Tally only when the block scrolls into view and sends two hidden fields with each question: `page_url` (the page) and `piece` (the title).
+3. Publish the Element, open any Verdict, scroll to the bottom, send yourself a test question. It should arrive by email and appear in the Studio Desk → Reader questions → **Load questions** (the desk calls Tally with your login; allow it the first time).
+4. In the desk, **Answer this** prefills a new Answer piece from the question; **Queue for the worker** hands it to the scheduled worker.
