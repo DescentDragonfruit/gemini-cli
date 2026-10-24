@@ -20,7 +20,30 @@ body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px
 a{color:var(--accent)}
 /* app shell: fixed rail + content column; Ivy Journal (local) → Newsreader for the big titles */
 :root{--title:"IvyJournal","Ivy Journal","IvyJournal Regular","Newsreader",var(--display);--rail:236px}
-.app{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:0;min-height:100vh}
+.app{display:block;min-height:100vh}
+aside.side,.mbar{display:none!important}
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;padding:14px 28px;background:var(--bg);border-bottom:1px solid var(--line)}
+.tb-brand{display:flex;flex-direction:column;line-height:1;margin-right:10px;min-width:0}
+.tb-brand b{font-family:var(--title);font-weight:400;font-size:30px;letter-spacing:-.01em;color:var(--fg)}
+.tb-brand span{font-family:var(--body);font-weight:500;font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.tb-nav{display:flex;gap:8px;flex-wrap:wrap;margin-left:12px}
+.tb-nav button,.tb-morebtn{all:unset;cursor:pointer;font:500 15px var(--body);color:var(--fg);background:var(--bg2);border:1px solid var(--line2);border-radius:999px;padding:11px 20px;white-space:nowrap}
+.tb-nav button:hover,.tb-morebtn:hover{border-color:var(--fg)}
+.tb-nav button[aria-current="page"]{background:var(--fg);color:var(--bg2);border-color:var(--fg)}
+.tb-more{position:relative;margin-left:auto}
+.tb-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:50;min-width:240px;background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:8px;box-shadow:0 18px 44px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:2px}
+.tb-menu button{all:unset;cursor:pointer;font:500 15px var(--body);color:var(--fg);padding:11px 14px;border-radius:10px}
+.tb-menu button:hover{background:var(--bg)}
+.tb-menu button[aria-current="page"]{background:var(--fg);color:var(--bg2)}
+.tb-menu .status{flex-direction:column;gap:6px;padding:10px 14px 6px;border-top:1px solid var(--line);margin-top:6px;font-size:11px}
+.tb-primary{all:unset;cursor:pointer;font:500 15px var(--body);background:var(--fg);color:var(--bg2);border-radius:999px;padding:12px 22px;white-space:nowrap}
+.wfbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(6,1fr);background:var(--bg);border-top:1px solid var(--line);padding:8px 24px calc(8px + env(safe-area-inset-bottom,0px))}
+.wfbar button{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px 8px;position:relative;color:var(--muted)}
+.wfbar button b{font-family:var(--display);font-weight:400;font-size:28px;line-height:1;color:var(--fg)}
+.wfbar button span{font:500 12px var(--body);letter-spacing:.16em;text-transform:uppercase}
+.wfbar button[aria-current="page"]{color:var(--fg)}
+.wfbar button[aria-current="page"]::before{content:"";position:absolute;left:14%;right:14%;top:-9px;border-top:3px solid var(--gold)}
+@media (max-width:900px){.topbar{padding:10px 14px;gap:8px}.tb-nav{display:none}.tb-brand b{font-size:24px}.tb-brand span{display:none}.tb-primary{padding:10px 16px;font-size:14px}.wfbar{padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}.wfbar button b{font-size:22px}.wfbar button span{font-size:10px;letter-spacing:.1em}}
 .side{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:26px 18px 20px 18px;background:var(--bg);color:var(--fg);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
 .side .brand{font-family:var(--body);font-weight:500;font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);padding:0 10px 14px}
 .side .brand b{display:block;font-family:var(--title);font-weight:400;font-size:26px;letter-spacing:0;text-transform:none;color:var(--fg);margin-top:6px;line-height:1}
@@ -36,11 +59,12 @@ a{color:var(--accent)}
 .status span::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--line2);margin-right:7px;vertical-align:middle}
 .status span.on::before{background:var(--ok)}
 .status b{font-weight:500;color:var(--fg)}
-.content{min-width:0;padding:0 24px 60px 48px}
-.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:38px 0 14px;border-bottom:1px solid var(--gold);position:relative}
+.content{min-width:0;padding:0 28px 140px 28px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:40px 0 18px;border-bottom:0;position:relative}
+.hero-k{font-family:var(--body);font-weight:500;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
 .hero::after{content:none}
-.hero h1{font-family:var(--title);font-weight:400;font-size:clamp(44px,6vw,76px);line-height:.95;margin:0;letter-spacing:-.015em}
-.hero .issue{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding-bottom:10px;text-align:right}
+.hero h1{font-family:var(--title);font-weight:400;font-size:clamp(46px,6.4vw,84px);line-height:.95;margin:0;letter-spacing:-.01em}
+.hero .issue{font-family:var(--body);font-weight:400;font-size:15px;color:var(--muted);padding-bottom:12px;text-align:right}
 .mbar{display:none}
 @media (max-width:900px){
  .app{grid-template-columns:1fr}
@@ -74,7 +98,7 @@ a{color:var(--accent)}
 }
 /* desks */
 section.desk:not(#desk-today) .deskhead h2{display:none}
-section.desk:not(#desk-today) .deskhead .eyebrow{margin-bottom:6px}
+section.desk:not(#desk-today) .deskhead .eyebrow{display:none}
 main{max-width:var(--maxw);margin:0 auto}
 section.desk{display:none;padding-top:26px}section.desk.on{display:block;animation:deskIn .38s cubic-bezier(.2,.7,.2,1)}
 @keyframes deskIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -82,17 +106,17 @@ section.desk{display:none;padding-top:26px}section.desk.on{display:block;animati
 .deskhead{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:end;margin-bottom:22px}
 @media (max-width:640px){.deskhead{grid-template-columns:1fr}}
 .deskhead .eyebrow{font-family:var(--body);font-weight:500;font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
-h2{font-family:var(--display);font-weight:500;font-size:36px;line-height:1.08;margin:4px 0 6px;text-wrap:balance;letter-spacing:-.005em}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(34px,4vw,52px);line-height:1.05;margin:4px 0 8px;text-wrap:balance;letter-spacing:-.005em}
 h3{font-family:var(--display);font-weight:500;font-size:22px;margin:22px 0 8px;letter-spacing:-.005em}
-.lead{color:var(--muted);max-width:62ch;margin:0;font-family:var(--serif);font-size:20px;line-height:1.45}
+.lead{color:var(--muted);max-width:62ch;margin:0;font-family:var(--body);font-size:16.5px;line-height:1.55}
 /* numbered working sections */
-.fs{border:1px solid var(--line);border-radius:var(--r);background:var(--bg2);padding:18px 20px 20px;margin-top:16px}
-.fs .fsh{display:flex;align-items:baseline;gap:12px;margin:0 0 6px}
-.fs .num{font-family:var(--display);font-size:22px;font-weight:400;color:var(--gold);min-width:30px}
+.fs{border:0;border-top:1px solid var(--line);border-radius:0;background:transparent;padding:26px 0 8px;margin-top:22px}
+.fs .fsh{display:flex;align-items:baseline;gap:14px;margin:0 0 8px}
+.fs .num{font-family:var(--body);font-weight:500;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);min-width:0}
 .fs .fst{font-family:var(--display);font-size:19px;font-weight:500}
 .fs .fsd{font-size:13px;color:var(--muted);margin:0 0 6px 40px}
-label{display:block;font-family:var(--body);font-weight:500;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
-textarea,input[type=text],input[type=date],select{width:100%;font:inherit;font-size:15.5px;color:var(--fg);background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+label{display:block;font-family:var(--body);font-weight:500;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+textarea,input[type=text],input[type=date],select{width:100%;font:inherit;font-size:16px;color:var(--fg);background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
 textarea:focus,input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
 textarea{min-height:140px;resize:vertical;line-height:1.5}
 input::placeholder,textarea::placeholder{color:var(--faint)}
@@ -328,7 +352,30 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
 @media (prefers-reduced-motion:no-preference){.btn{transition:opacity .15s}}
 </style>
 
-<div class="mbar"><span class="mb-brand">Studio Desk</span><span class="mb-cur" id="mb-cur">Today</span><button id="mb-menu" aria-controls="side" aria-expanded="false">Menu</button></div>
+<header class="topbar">
+  <div class="tb-brand"><b>Studio Desk</b><span>Coco Tran · cocotran.com</span></div>
+  <nav class="tb-nav" aria-label="Desks">
+    <button data-desk="today" aria-current="page">Today</button>
+    <button data-desk="new">New piece</button>
+    <button data-desk="queue">Queue</button>
+    <button data-desk="library">Library</button>
+    <button data-desk="social">Social</button>
+    <button data-desk="plan">Plan</button>
+  </nav>
+  <div class="tb-more">
+    <button class="tb-morebtn" id="tb-more" aria-expanded="false">More ▾</button>
+    <div class="tb-menu" id="tb-menu" hidden>
+      <button data-desk="cite">Citations</button>
+      <button data-desk="bench">AI benchmark</button>
+      <button data-desk="questions">Reader questions</button>
+      <button data-desk="process">Process</button>
+      <button data-desk="rules">House rules</button>
+      <button data-desk="playbooks">Playbooks</button>
+      <div class="status" id="tb-status"></div>
+    </div>
+  </div>
+  <button class="tb-primary" data-desk="new">+ New piece</button>
+</header>
 <div class="app">
 <aside class="side" aria-label="Desks">
   <button class="close" id="mb-close">Close ✕</button>
@@ -353,7 +400,7 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
   <div class="status"><span id="st-sample-w">Claude <b id="st-sample">…</b></span><span id="st-db-w">Store <b id="st-db">…</b></span><span id="st-granola-w">Granola <b id="st-granola">…</b></span><span id="st-tally-w">Questions <b id="st-tally">…</b></span><span id="st-assets-w">Photos <b id="st-assets">…</b></span></div>
 </aside>
 <div class="content">
-<header class="hero"><h1 id="hero-title">Today</h1><div class="issue" id="hero-issue">Coco Tran · cocotran.com</div></header>
+<header class="hero"><div><div class="hero-k" id="hero-k">I · Today</div><h1 id="hero-title">Today</h1></div><div class="issue" id="hero-issue">Coco Tran · cocotran.com</div></header>
 <main>
 <!-- ============ TODAY ============ -->
 <section class="desk on" id="desk-today">
@@ -644,6 +691,14 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
 </main>
 </div>
 </div>
+<nav class="wfbar" aria-label="Workflow">
+  <button data-desk="today"><b>I</b><span>Today</span></button>
+  <button data-desk="new"><b>II</b><span>Make</span></button>
+  <button data-desk="queue"><b>III</b><span>Queue</span></button>
+  <button data-desk="library"><b>IV</b><span>Library</span></button>
+  <button data-desk="social"><b>V</b><span>Social</span></button>
+  <button data-desk="plan"><b>VI</b><span>Plan</span></button>
+</nav>
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="l-drawer" aria-label="Piece detail"><button class="close" id="l-close">Close ✕</button><div id="l-detail"></div></aside>
 
@@ -848,12 +903,14 @@ const today=()=>new Date().toISOString().slice(0,10);
 const fmtLabel=k=>FORMATS[k]?.label||k||"";
 
 // tabs
-const navBtns=[...document.querySelectorAll(".side button")];
+const navBtns=[...document.querySelectorAll("[data-desk]")];
+const DESK_NUM={today:"I",new:"II",queue:"III",library:"IV",social:"V",plan:"VI",cite:"VII",bench:"VIII",questions:"IX",process:"X",rules:"XI",playbooks:"XII"};
+(function(){const mb=$("#tb-more"),mm=$("#tb-menu");if(mb&&mm){mb.onclick=e=>{e.stopPropagation();mm.hidden=!mm.hidden;mb.setAttribute("aria-expanded",String(!mm.hidden))};document.addEventListener("click",e=>{if(!mm.hidden&&!e.target.closest(".tb-more")){mm.hidden=true;mb.setAttribute("aria-expanded","false")}});const st=$("#tb-status"),old=document.querySelector("aside.side .status");if(st&&old){st.innerHTML=old.innerHTML;old.remove()}}})();
 const DESK_TITLES={plan:"Plan",questions:"Reader questions",today:"Today",new:"New piece",queue:"Queue",library:"Library",social:"Social",cite:"Citations",bench:"AI benchmark",process:"Process",rules:"House rules",playbooks:"Playbooks"};
 const sideEl=document.querySelector("aside.side"); function closeMenu(){if(sideEl)sideEl.classList.remove("open");const b=$("#mb-menu");if(b)b.setAttribute("aria-expanded","false")}
 if($("#mb-menu")){$("#mb-menu").onclick=()=>{sideEl.classList.add("open");$("#mb-menu").setAttribute("aria-expanded","true")}} if($("#mb-close")){$("#mb-close").onclick=closeMenu}
 const ROMAN={"1":"I","2":"II","3":"III","4":"IV","5":"V","6":"VI"}; document.querySelectorAll(".fs .num").forEach(n=>{if(ROMAN[n.textContent.trim()])n.textContent=ROMAN[n.textContent.trim()]});
-function show(id){ try{const cur=$("#mb-cur");if(cur)cur.textContent=(DESK_TITLES[id]||id);closeMenu()}catch(e){}navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id));const ht=$("#hero-title");if(ht)ht.textContent=DESK_TITLES[id]||id;ls.set("desk",id);window.scrollTo({top:0})}
+function show(id){ try{const hk=$("#hero-k");if(hk)hk.textContent=(DESK_NUM[id]||"")+" · "+(DESK_TITLES[id]||id);const mm=$("#tb-menu");if(mm)mm.hidden=true;closeMenu()}catch(e){}navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id));const ht=$("#hero-title");if(ht)ht.textContent=DESK_TITLES[id]||id;ls.set("desk",id);window.scrollTo({top:0})}
 navBtns.forEach(b=>b.addEventListener("click",()=>show(b.dataset.desk)));
 const h=(location.hash||"").slice(1);show(navBtns.some(b=>b.dataset.desk===h)?h:(ls.get("desk")||"today"));
 (function(){const d=new Date();const hr=d.getHours();$("#today-greet").textContent=(hr<12?"Good morning":hr<18?"Good afternoon":"Good evening")+", Coco";$("#hero-issue").textContent=d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+" · Coco Tran · cocotran.com"})();
