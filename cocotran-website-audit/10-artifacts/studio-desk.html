@@ -104,6 +104,18 @@ hr{border:0;border-top:1px solid var(--line);margin:22px 0}
   <p class="lead">Tell the desk what it is and hand over the context. It drafts the whole piece in your voice and pillar structure, writes the answerable opening into it, runs the ten gates and the voice pass on itself, and queues the result. The worker then does the search research, finalises title/meta/keyword, and builds the WordPress draft. You review and publish.</p>
 
   <div class="two">
+    <div><label for="n-mode">Mode</label>
+      <select id="n-mode"><option value="new">New piece</option><option value="update">Update or respin an existing piece</option></select></div>
+    <div id="n-urlwrap"><label for="n-url">Live link of the piece to update</label><input type="text" id="n-url" placeholder="https://cocotran.com/guide/tokyo-guide/"></div>
+  </div>
+  <div class="src" id="n-updatebox" hidden>
+    <div class="meta">UPDATE · the worker pulls the current fields from the live link; paste them below only if you want the desk to draft right now</div>
+    <label for="n-missing">What's missing or wrong (the desk fills exactly this, keeps everything else)</label>
+    <textarea id="n-missing" style="min-height:90px" placeholder="No short answer · insider FAQ is thin · add the ryokan night · prices are stale · needs the Inquire line…"></textarea>
+    <label for="n-current">Current article text (optional — paste from the page if you want an instant draft)</label>
+    <textarea id="n-current" placeholder="Paste the article as it reads today."></textarea>
+  </div>
+  <div class="two">
     <div><label for="n-format">Pillar · format</label>
       <select id="n-format">
         <option value="verdict">The Property — The Verdict</option>
@@ -261,7 +273,10 @@ const FORMATS = {
 
 function draftPrompt(fmtKey,ctx){
  const f=FORMATS[fmtKey];
- return `You are the Coco Tran studio desk. Write a complete ${f.label} (${f.cpt} CPT) about "${ctx.subject}" from the CONTEXT below and nothing else. Facts not in the context are written as [VERIFY: what is needed] — never invented.
+ const task=ctx.mode==="update"
+  ?`UPDATE an existing ${f.label} (${f.cpt} CPT) about "${ctx.subject}". The CURRENT ARTICLE is below; it is Coco's and already in her voice. Keep every fact, every firsthand moment and her sentences wherever they already pass the house rules; only (a) fix exactly what Coco says is missing or wrong, (b) restructure into the pillar fields if it isn't already, (c) add the answerable opening and the SEO set, (d) apply the voice rules where a sentence fails them. Do not shorten what she wrote to make room. Facts not in the article or the context are written as [VERIFY: what is needed] — never invented.`
+  :`Write a complete ${f.label} (${f.cpt} CPT) about "${ctx.subject}" from the CONTEXT below and nothing else. Facts not in the context are written as [VERIFY: what is needed] — never invented.`;
+ return `You are the Coco Tran studio desk. ${task}
 
 ${VOICE}
 
@@ -277,6 +292,7 @@ Reply with only JSON:
 
 CONTEXT
 Destination terms: ${ctx.dest||"(not given)"}
+${ctx.mode==="update"?`Live link: ${ctx.source_url||"(none)"}\nWhat Coco says is missing or wrong:\n${ctx.missing||"(nothing specified — restructure, add the opening block and SEO set, apply the voice rules)"}\n\nCURRENT ARTICLE:\n${ctx.current||"(not pasted — the worker will pull it from the live link)"}\n`:""}
 Notes from Coco:
 ${ctx.notes||"(none)"}
 ${ctx.granola?.length?"\nGranola meeting notes:\n"+ctx.granola.map(g=>`--- ${g.title} (${g.date}) ---\n${g.notes}`).join("\n"):""}
@@ -321,7 +337,9 @@ const h=(location.hash||"").slice(1);show(navBtns.some(b=>b.dataset.desk===h)?h:
 
 $("#rules-out").textContent=VOICE+"\n\nPUBLISHING GATES\n"+GATES.map((g,i)=>`${i+1}. ${g[0]}\n   ${g[1]}`).join("\n")+"\n\nFORMATS\n"+Object.values(FORMATS).map(f=>`${f.label} (${f.cpt}): ${f.guide}`).join("\n\n");
 
-["n-notes","n-subject","n-dest","n-basis","n-photos","n-proposal","n-agency"].forEach(id=>{const el=$("#"+id);el.value=ls.get(id);el.addEventListener("input",()=>ls.set(id,el.value))});
+["n-notes","n-subject","n-dest","n-basis","n-photos","n-proposal","n-agency","n-url","n-missing","n-current"].forEach(id=>{const el=$("#"+id);el.value=ls.get(id);el.addEventListener("input",()=>ls.set(id,el.value))});
+function syncMode(){const u=$("#n-mode").value==="update";$("#n-updatebox").hidden=!u;$("#n-urlwrap").style.visibility=u?"visible":"hidden";ls.set("n-mode",$("#n-mode").value)}
+$("#n-mode").value=ls.get("n-mode")||"new"; $("#n-mode").addEventListener("change",syncMode); syncMode();
 
 // ---------- Granola ----------
 let pulled=[]; // [{id,title,date,notes}]
@@ -357,7 +375,7 @@ $("#g-pull").onclick=async()=>{
 function renderPulled(){$("#g-pulled").innerHTML=pulled.map((g,i)=>`<div class="card"><div class="meta">${esc(g.date)} · ${esc(g.notes.length)} chars <button class="copy" data-i="${i}">remove</button></div><h4>${esc(g.title)}</h4><div style="font-size:13px;color:var(--muted);max-height:80px;overflow:hidden">${esc(g.notes.slice(0,400))}…</div></div>`).join("");$("#g-pulled").querySelectorAll(".copy").forEach(b=>b.onclick=()=>{pulled.splice(+b.dataset.i,1);renderPulled()})}
 
 // ---------- Make the piece ----------
-function collect(){return{format:$("#n-format").value,subject:$("#n-subject").value.trim(),dest:$("#n-dest").value.trim(),basis:$("#n-basis").value.trim(),disclosure:$("#n-disclosure").value,photos:$("#n-photos").value.trim(),notes:$("#n-notes").value.trim(),granola:pulled.map(g=>({id:g.id,title:g.title,date:g.date,notes:g.notes})),proposal:$("#n-proposal").value.trim(),agency:$("#n-agency").value.trim()}}
+function collect(){return{mode:$("#n-mode").value,source_url:$("#n-url").value.trim(),missing:$("#n-missing").value.trim(),current:$("#n-current").value.trim(),format:$("#n-format").value,subject:$("#n-subject").value.trim(),dest:$("#n-dest").value.trim(),basis:$("#n-basis").value.trim(),disclosure:$("#n-disclosure").value,photos:$("#n-photos").value.trim(),notes:$("#n-notes").value.trim(),granola:pulled.map(g=>({id:g.id,title:g.title,date:g.date,notes:g.notes})),proposal:$("#n-proposal").value.trim(),agency:$("#n-agency").value.trim()}}
 function step(t){$("#n-steps").innerHTML+=(t?`<div>${t}</div>`:"")}
 let ctl=null;
 async function saveJob(job){
@@ -368,12 +386,15 @@ async function saveJob(job){
 }
 $("#n-queueonly").onclick=async()=>{
  const c=collect(); if(!c.subject){$("#n-note").textContent="Name the subject.";return}
- if(!c.notes&&!c.granola.length&&!c.proposal&&!c.agency){$("#n-note").textContent="Give the worker some context first.";return}
+ if(c.mode==="update"&&!c.source_url){$("#n-note").textContent="Give the live link of the piece to update.";return}
+ if(c.mode!=="update"&&!c.notes&&!c.granola.length&&!c.proposal&&!c.agency){$("#n-note").textContent="Give the worker some context first.";return}
  try{const id=await saveJob({...c,status:"queued",title:c.subject}); $("#n-note").textContent=id?"Queued for the worker.":"Couldn't save — store not writable."}catch(e){$("#n-note").textContent="Couldn't save the job."}
 };
 $("#n-run").onclick=async()=>{
  const c=collect(); if(!c.subject){$("#n-note").textContent="Name the subject.";return}
- if(!c.notes&&!c.granola.length){$("#n-note").textContent="The desk needs notes or Granola to draft here. Studio links alone → use 'Just queue it'.";return}
+ if(c.mode==="update"&&!c.source_url){$("#n-note").textContent="Give the live link of the piece to update.";return}
+ if(c.mode==="update"&&!c.current){$("#n-note").textContent="To draft here, paste the current article. Or 'Just queue it' and the worker pulls it from the link.";return}
+ if(c.mode!=="update"&&!c.notes&&!c.granola.length){$("#n-note").textContent="The desk needs notes or Granola to draft here. Studio links alone → use 'Just queue it'.";return}
  if(!sample) return;
  ctl=new AbortController(); $("#n-run").disabled=true; $("#n-stop").disabled=false; $("#n-stop").onclick=()=>ctl.abort();
  $("#n-steps").innerHTML=""; $("#n-stream").textContent=""; $("#n-piece").innerHTML=""; $("#n-note").textContent="";
@@ -407,7 +428,7 @@ function renderPiece(el,job,id){
  const fields=d.fields||{}; const order=f.fields.filter(k=>fields[k]!=null).concat(Object.keys(fields).filter(k=>!f.fields.includes(k)));
  const acf={...fields,...(d.selects||{}),short_answer:d.short_answer||"",visit_basis:job.basis||"",disclosure:job.disclosure||""};
  (d.glance||[]).forEach((g,i)=>{acf["glance_"+(i+1)+"_label"]=g.label||"";acf["glance_"+(i+1)+"_value"]=g.value||""});
- const payload={cpt:f.cpt,format:f.label,post_title:d.post_title,acf,rank_math:{title:d.seo?.seo_title,description:d.seo?.meta_description,focus_keyword:d.seo?.primary_query},slug:d.seo?.slug,destination_terms:job.dest,links:d.links||[],photos:job.photos,photos_needed:d.photos_needed||[],verify:d.verify||[]};
+ const payload={mode:job.mode||"new",source_url:job.source_url||"",cpt:f.cpt,format:f.label,post_title:d.post_title,acf,rank_math:{title:d.seo?.seo_title,description:d.seo?.meta_description,focus_keyword:d.seo?.primary_query},slug:d.seo?.slug,destination_terms:job.dest,links:d.links||[],photos:job.photos,photos_needed:d.photos_needed||[],verify:d.verify||[]};
  el.innerHTML=`<div class="piece">
   <div class="kicker">${esc(d.kicker||f.kicker)} · ${esc(job.subject)}</div>
   <h2 class="title">${esc(d.seo?.h1||d.post_title||job.subject)}</h2>
@@ -434,7 +455,7 @@ function renderQueue(snap){
  jobsCache=snap.docs.map(d=>({id:d.id,...d.data()}));
  const tb=$("#q-table tbody"); tb.innerHTML="";
  jobsCache.forEach(j=>{const tr=document.createElement("tr");
-  tr.innerHTML=`<td class="num">${esc(new Date(j.updatedAt||j.createdAt||0).toISOString().slice(0,10))}</td><td>${esc(j.title||j.subject)}</td><td>${esc(FORMATS[j.format]?.label||j.format)}</td><td><span class="pill ${j.status==="built"?"ok":j.status==="needs-site"?"bad":""}">${esc(j.status)}</span>${j.preview_url?` <a href="${esc(j.preview_url)}" target="_blank" rel="noopener">preview</a>`:""}</td><td><button class="copy" data-open="${esc(j.id)}">open</button>${canWrite?` <button class="copy del" data-id="${esc(j.id)}">remove</button>`:""}</td>`;
+  tr.innerHTML=`<td class="num">${esc(new Date(j.updatedAt||j.createdAt||0).toISOString().slice(0,10))}</td><td>${esc(j.title||j.subject)}</td><td>${esc(FORMATS[j.format]?.label||j.format)}${j.mode==="update"?' <span class="pill warn">update</span>':""}</td><td><span class="pill ${j.status==="built"?"ok":j.status==="needs-site"?"bad":""}">${esc(j.status)}</span>${j.preview_url?` <a href="${esc(j.preview_url)}" target="_blank" rel="noopener">preview</a>`:""}</td><td><button class="copy" data-open="${esc(j.id)}">open</button>${canWrite?` <button class="copy del" data-id="${esc(j.id)}">remove</button>`:""}</td>`;
   tb.append(tr)});
  tb.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{const j=jobsCache.find(x=>x.id===b.dataset.open); if(!j)return; if(j.draft) renderPiece($("#q-detail"),j,j.id); else $("#q-detail").innerHTML=`<div class="card"><div class="meta">${esc(j.status)}</div><h4>${esc(j.title||j.subject)}</h4><div class="note">${esc((j.notes||"").slice(0,600))}</div>${j.worker_notes?`<div class="note">${esc(j.worker_notes)}</div>`:""}</div>`; $("#q-detail").scrollIntoView({behavior:"smooth"})});
  tb.querySelectorAll(".del").forEach(b=>b.onclick=async()=>{if(b.dataset.armed){try{await db.doc("jobs/"+b.dataset.id).delete()}catch(e){}}else{b.dataset.armed="1";b.textContent="confirm remove";setTimeout(()=>{b.dataset.armed="";b.textContent="remove"},3000)}});

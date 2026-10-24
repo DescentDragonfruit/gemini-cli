@@ -18,6 +18,15 @@ Nothing queued → say so in one line and stop.
 - **Proposal Studio** (`https://claude.ai/artifact/AyNiCSZubZrjMar4rpyAY3`) or **Agency Studio** (`https://claude.ai/artifact/7VMcx1iKdmvdtq6KT6cgix`) named in the job: `Artifact read` the artifact (the result saves the HTML to disk — grep it for `collection("` / `doc("` to learn its collection names), then `ArtifactData list/query` those collections and find the record whose name matches `job.proposal` / `job.agency`. Pull the itinerary (days, hotels, logistics, what was booked, what changed). **Client names, emails and prices paid by the client never enter the piece**; "a couple in their forties, first time in Japan" is as specific as it gets.
 - Granola notes are already in the job. If a job names a meeting but has no notes, and this session holds the Granola connector, `search_meetings` + `get_meetings` and add them.
 
+## 1b. Update / respin jobs (`mode: "update"`)
+
+The job carries `source_url`, `missing` (what Coco says is wrong or absent) and maybe `current` (pasted text). Pull the live piece yourself — no credentials needed for published posts:
+1. CPT from the path: `/property/` → `property`, `/guide/` → `guide`, `/brief/` → `brief`, `/dispatch/` → `dispatch`, `/shortlist/` → `shortlist`, anything else → `posts`. Slug = last path segment.
+2. `GET https://cocotran.com/wp-json/wp/v2/{cpt}?slug={slug}&_fields=id,link,title,acf,content,destinations` — `acf` holds every text field and image ID (confirmed 24 Oct: guide and property return full `acf`). For old `posts`, use `content.rendered`.
+3. Keep the real `id` (`wp_id`) and the existing image IDs; never touch image fields unless the job says so.
+4. Draft with the desk's update prompt: keep every fact, every firsthand moment and her sentences that already pass the rules; fix only `missing`; add the opening block + SEO; apply voice rules where a sentence fails. Store the pulled fields in `original` on the job so the diff is visible.
+5. Building an update (step 4 below) writes to the SAME post: `POST /wp/v2/{cpt}/{wp_id}` with only the changed `acf` keys + title/slug if changed. **A published post changes live the moment this runs** — so build only from `status: "approved"`, and say in `worker_notes` exactly which fields changed. Rank Math meta via `updateMeta` as usual. If Coco wants to see it before it goes live, Route C's payload file is the review copy.
+
 ## 2. Draft (status `queued` only)
 
 Use the Studio Desk's own prompt structure (format rules + field map + opening block + SEO set — copy from the artifact's `FORMATS` and `draftPrompt`, or from `coco-editorial-standards`), with the full context from step 1. Then run the gates/voice pass (`deskPassPrompt`). Write `draft`, `report`, `status: "drafted"`.
@@ -35,7 +44,7 @@ Coco approves in the Desk (status → `approved`). If a job is `researched` for 
 
 ## 4. Build in WordPress (status `approved` → `built`)
 
-Route A — **REST with an Application Password** (preferred when `COCOTRAN_WP_USER` / `COCOTRAN_WP_APP_PASSWORD` env vars exist in the environment):
+Route A — **REST with an Application Password** (preferred when `COCOTRAN_WP_USER` / `COCOTRAN_WP_APP_PASSWORD` env vars exist in the environment; auth header `Authorization: Basic base64(user:app_password)`; drafts and `context=edit` reads also need it):
 1. Confirm the live ACF keys: `GET https://cocotran.com/wp-json/wp/v2/{cpt}?per_page=1&_fields=acf` on a published example of the same format; map provisional keys (Primer, Comparison) to the real ones; drop keys that don't exist rather than guessing.
 2. Destination terms: `GET /wp/v2/destinations?search=<city>` for continent + country + city IDs (hierarchical — all three).
 3. Create the draft: `POST /wp/v2/{cpt}` with `{status:"draft", title, slug, destinations:[ids], acf:{…fields, …selects, format/dispatch_format/brief_format term where the format lives in a taxonomy — see respin-old-content for the term IDs (Field Notes 762, Postcard 760, Roundup 765, Rolodex 763, Dossier 758, Route 759)}}`. Send ACF text in 2–3 updates if large.
