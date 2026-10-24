@@ -1,0 +1,99 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://cocotran.com/#coco-tran",
+      "name": "Coco Tran",
+      "url": "https://cocotran.com/about/",
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://cocotran.com/wp-content/uploads/REPLACE-portrait.jpg",
+        "width": 1200,
+        "height": 1500
+      },
+      "jobTitle": "Luxury Travel Advisor and Film Photographer",
+      "description": "Founder of Coco Tran, a luxury travel publication; luxury travel advisor at Coco Tran Travel; film photographer at Coco Tran Studio. Reviews hotels, camps and lodges from first-hand stays.",
+      "worksFor": { "@id": "https://cocotran.com/#organization" },
+      "knowsAbout": [
+        "Luxury hotels",
+        "Boutique hotels",
+        "Luxury travel planning",
+        "Japan travel",
+        "Italy travel",
+        "Mallorca",
+        "Mexico City",
+        "Vietnam travel",
+        "French Riviera",
+        "Belmond",
+        "Four Seasons",
+        "Aman",
+        "Film photography"
+      ],
+      "sameAs": [
+        "https://www.instagram.com/cocotrantravelco",
+        "https://www.instagram.com/REPLACE-cocotranstudio-handle",
+        "https://www.youtube.com/@REPLACE-coco-tran-travel-handle",
+        "https://cocotrantravel.com",
+        "https://cocotranstudio.com",
+        "https://www.pinterest.com/REPLACE-if-any",
+        "https://www.linkedin.com/in/REPLACE-if-any"
+      ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://cocotran.com/#organization",
+      "name": "Coco Tran",
+      "alternateName": "Coco Tran — Travel Publication",
+      "url": "https://cocotran.com",
+      "logo": {
+        "@type": "ImageObject",
+        "@id": "https://cocotran.com/#logo",
+        "url": "https://cocotran.com/wp-content/uploads/2023/02/cropped-20230217_223435_0000.png",
+        "width": 600,
+        "height": 240
+      },
+      "founder": { "@id": "https://cocotran.com/#coco-tran" },
+      "description": "A luxury travel publication: first-hand hotel reviews, destination guides, routes and dispatches by travel advisor and film photographer Coco Tran.",
+      "publishingPrinciples": "https://cocotran.com/disclosures/",
+      "sameAs": [
+        "https://www.instagram.com/cocotrantravelco",
+        "https://www.youtube.com/@REPLACE-coco-tran-travel-handle"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "hello@cocotran.com",
+        "contactType": "editorial"
+      },
+      "subOrganization": [
+        {
+          "@type": "TravelAgency",
+          "name": "Coco Tran Travel",
+          "url": "https://cocotrantravel.com",
+          "founder": { "@id": "https://cocotran.com/#coco-tran" }
+        },
+        {
+          "@type": "Organization",
+          "name": "Coco Tran Studio",
+          "url": "https://cocotranstudio.com",
+          "description": "Film photography studio",
+          "founder": { "@id": "https://cocotran.com/#coco-tran" }
+        }
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://cocotran.com/#website",
+      "url": "https://cocotran.com",
+      "name": "Coco Tran",
+      "alternateName": "Coco Tran — Luxury Travel Publication",
+      "publisher": { "@id": "https://cocotran.com/#organization" },
+      "inLanguage": "en-US",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://cocotran.com/?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+}
