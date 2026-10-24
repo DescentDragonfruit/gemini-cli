@@ -60,6 +60,16 @@ Route C — **no site access**: write the full payload to `cocotran-website-audi
 
 Never publish. Coco clicks Publish. After she reports it published: redirects if it replaces an old post (Rank Math → Redirections → Add New), cache + Cloudflare purge reminder, `recheck.sh` on the URL, add the piece's question to `ai-faq-question-bank.md`.
 
-## 5. Report
+## 5. Research jobs (`type: "research"`)
+
+Queued from the Library's "Request keyword research". For the record `library/<library_id>`: WebSearch the title's subject 3–4 ways (the plain query, "is X worth it" / "A vs B", "where to stay in X", "X travel guide"), note what ranks (titles, shapes, competitors), the questions people ask (People-Also-Ask-style phrasing in results), and 2–3 AI-shaped questions this piece should own. Write back to the library record (pin `if_version`): `keyword`, `secondary_keywords[]`, `ai_questions[]`, `suggestions.seo[]` (title/meta/H1 per the title lock in `content-system.md`), `suggestions.generated_at`, `research_notes`. Mark the job `done`. If another live record already owns the keyword, set the job `needs-coco` naming the pair.
+
+## 6. Library upkeep and the weekly rankings run
+
+- **After any piece is built or updated**: create/update `library/<slug>` with url, title, cpt, pillar, format, category (from the job or `CATEGORY_BY_FORMAT`), goal, keyword (= focus keyword), `secondary_keywords`, `ai_questions`, `last_updated` = today, `status: live` (or `draft` until Coco publishes), `health: ok`. For a respin, set the old record `status: "merged-into:<new id>"`.
+- **Monday rankings run** (scheduled "Coco Tran weekly rankings and library health", 7:51 Pacific): follow `rankings-integration.md`. Pull Search Console + GA4 (28d vs previous 28d) with a service-account JWT from `GSC_SERVICE_ACCOUNT_JSON`; map URL → `library` doc (id = last path segment; else query on `url`); write `rank{…, pulled_at}` and `health` per `content-system.md`; open at most 5 `mode: update` jobs with `reason` ∈ {decay, stale}, the losing/top queries and a `proposed_fix`; write `07-ai-benchmark/rankings-YYYY-MM-DD.md`; commit. Without credentials: write `runs/rankings-YYYY-MM-DD {status:"skipped-no-credentials"}` and stop.
+- **Social**: the desk makes kits (`social` collection); the worker doesn't post. If a job's piece was built, add `social_kit_made: false` to the library record so the desk shows it as pending.
+
+## 7. Report
 
 One short message: pieces drafted / researched / built with preview links, anything `needs-coco` and why, VERIFY items left. Lead with corrections that matter to her business (a closure, a rebrand, a rule change found in research).

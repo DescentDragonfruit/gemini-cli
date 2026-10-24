@@ -50,7 +50,7 @@ textarea{min-height:140px;resize:vertical;line-height:1.5}
 table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
 th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
 th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
-td.num{font-variant-numeric:tabular-nums}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 .tablewrap{overflow-x:auto}
 .kv{display:grid;grid-template-columns:150px 1fr;gap:4px 14px;font-size:14px}
 .kv div:nth-child(odd){font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:3px}
@@ -59,6 +59,8 @@ td.num{font-variant-numeric:tabular-nums}
 .copy{all:unset;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--accent);margin-left:8px}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
 .two>*{min-width:0}
+.four{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.four>*{min-width:0}
 hr{border:0;border-top:1px solid var(--line);margin:22px 0}
 .src{border:1px solid var(--line);border-radius:4px;padding:12px 14px;margin-top:12px}
 .src .meta{font-family:var(--mono);font-size:11px;color:var(--muted)}
@@ -75,12 +77,18 @@ hr{border:0;border-top:1px solid var(--line);margin:22px 0}
 .piece .field .body p{margin:6px 0}
 .steps{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:10px}
 .steps b{color:var(--fg);font-weight:500}
+.slide{border:1px solid var(--line);border-radius:4px;padding:10px 12px;background:var(--bg)}
+.slide .n{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.slide .t{font-family:var(--display);font-size:16px;margin:2px 0}
+.slide .ph{font-size:12px;color:var(--muted)}
+tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
+.stat{display:inline-block;margin-right:16px}.stat b{font-family:var(--display);font-size:22px;font-weight:500;display:block}
 @media (prefers-reduced-motion:no-preference){.btn{transition:opacity .15s}}
 </style>
 
 <header>
   <h1>Coco Tran Studio Desk</h1>
-  <span class="sub">Context in · finished piece out · built in WordPress by the worker</span>
+  <span class="sub">Context in · finished piece out · library, rankings, social reuse</span>
   <span class="status"><span>Claude <b id="st-sample">…</b></span><span>Store <b id="st-db">…</b></span><span>Granola <b id="st-granola">…</b></span></span>
 </header>
 
@@ -89,10 +97,14 @@ hr{border:0;border-top:1px solid var(--line);margin:22px 0}
   <span class="k">Make</span>
   <button data-desk="new" aria-current="page">New piece</button>
   <button data-desk="queue">Queue</button>
+  <span class="k">Keep</span>
+  <button data-desk="library">Library</button>
+  <button data-desk="social">Social reuse</button>
   <span class="k">Discoverability</span>
   <button data-desk="cite">Citation tracker</button>
   <button data-desk="bench">AI benchmark log</button>
   <span class="k">Reference</span>
+  <button data-desk="process">Process &amp; title lock</button>
   <button data-desk="rules">House rules</button>
 </nav>
 
@@ -142,6 +154,11 @@ hr{border:0;border-top:1px solid var(--line);margin:22px 0}
       <select id="n-disclosure"><option>Paid stay</option><option>Hosted stay</option><option>Discounted stay</option><option>Site inspection (not a stay)</option><option>Advisor roundup (not a stay)</option><option>Trip I planned for clients</option><option>Trip I took</option></select></div>
     <div><label for="n-photos">Photos (where they are — the worker attaches them)</label><input type="text" id="n-photos" placeholder="WP media 'singita-*' · or · Studio folder link"></div>
   </div>
+  <div class="two">
+    <div><label for="n-category">Content category</label>
+      <select id="n-category"><option value="">Decide from the format</option><option>Commercial</option><option>Decision-support</option><option>Informational</option><option>Specialist intel</option><option>Authority</option></select></div>
+    <div><label for="n-goal">Goal of this piece (one line)</label><input type="text" id="n-goal" placeholder="Own 'is Singita worth it'; convert to a booking through CTT"></div>
+  </div>
 
   <h3>Context</h3>
   <label for="n-notes">Your notes, dictation, or anything pasted (the draft uses only this, Granola and the studio links)</label>
@@ -175,10 +192,55 @@ hr{border:0;border-top:1px solid var(--line);margin:22px 0}
 <!-- ============ QUEUE ============ -->
 <section class="desk" id="desk-queue">
   <h2>Queue</h2>
-  <p class="lead">Every piece and where it is. <b>drafted</b> = the desk wrote it · <b>queued</b> = waiting for the worker to draft · <b>researched</b> = worker added search research and final SEO · <b>approved</b> = you said go · <b>built</b> = WordPress draft exists, link below · <b>needs-site</b> = the worker couldn't reach WordPress; the payload is in the repo for Cowork.</p>
+  <p class="lead"><b>drafted</b> = the desk wrote it · <b>queued</b> = waiting for the worker · <b>researched</b> = worker added search research and final SEO · <b>approved</b> = you said go · <b>built</b> = WordPress draft exists · <b>needs-site</b> = payload is in the repo for Cowork · <b>needs-coco</b> = a duplicate or a fact only you can settle. Refresh jobs the rankings run opens carry a <b>reason</b>.</p>
   <div class="tablewrap"><table id="q-table"><thead><tr><th>When</th><th>Piece</th><th>Format</th><th>Status</th><th></th></tr></thead><tbody></tbody></table></div>
   <div id="q-detail"></div>
   <div class="quiet" id="q-quiet">The shared store isn't available in this view.</div>
+</section>
+
+<!-- ============ LIBRARY ============ -->
+<section class="desk" id="desk-library">
+  <h2>Library</h2>
+  <p class="lead">Every live URL: pillar, category, goal, keyword, last updated, rankings and health. Search and filter, open one to see what it should do next, ask for improvement ideas, send it for keyword research, refresh it, or make its social kit.</p>
+  <div id="l-stats"></div>
+  <div class="four">
+    <div><label for="l-q">Search</label><input type="text" id="l-q" placeholder="title · url · keyword"></div>
+    <div><label for="l-pillar">Pillar</label><select id="l-pillar"><option value="">All</option><option>The Property</option><option>The Guide</option><option>The Brief</option><option>The Shortlist</option><option>The Dispatch</option><option>Old blog post</option></select></div>
+    <div><label for="l-cat">Category</label><select id="l-cat"><option value="">All</option><option>Commercial</option><option>Decision-support</option><option>Informational</option><option>Specialist intel</option><option>Authority</option></select></div>
+    <div><label for="l-health">Health</label><select id="l-health"><option value="">All</option><option>ok</option><option>decaying</option><option>stale</option><option>thin</option><option>duplicate</option><option value="unset">not yet checked</option></select></div>
+  </div>
+  <div class="four">
+    <div><label for="l-from">Updated from</label><input type="date" id="l-from"></div>
+    <div><label for="l-to">Updated to</label><input type="date" id="l-to"></div>
+    <div><label for="l-sort">Sort</label><select id="l-sort"><option value="updated">Last updated ↓</option><option value="title">Title</option><option value="clicks">Clicks 28d ↓</option><option value="health">Health first</option></select></div>
+    <div><label>&nbsp;</label><button class="btn alt" id="l-clear">Clear filters</button></div>
+  </div>
+  <div class="tablewrap"><table id="l-table"><thead><tr><th>Title</th><th>Pillar · format</th><th>Category</th><th>Keyword</th><th>Updated</th><th>Clicks 28d</th><th>Health</th></tr></thead><tbody></tbody></table></div>
+  <div class="note" id="l-count"></div>
+  <div id="l-detail"></div>
+  <div class="quiet" id="l-quiet">The shared store isn't available in this view.</div>
+</section>
+
+<!-- ============ SOCIAL ============ -->
+<section class="desk" id="desk-social">
+  <h2>Social reuse</h2>
+  <p class="lead">One piece becomes a kit: a carousel built to be saved, a caption that starts a conversation, the hashtag set, the first comment, a DM keyword only when there's something real to send, the Coco Edit script, stories and a Pin. Built on the Content Spinner rules; nothing is posted from here.</p>
+  <div class="two">
+    <div><label for="s-pick">From the library</label><select id="s-pick"><option value="">Choose a piece…</option></select></div>
+    <div><label for="s-deliverable">What could you DM a reader? (leave blank if nothing concrete)</label><input type="text" id="s-deliverable" placeholder="the room number to ask for · the trip file · the shortlist PDF"></div>
+  </div>
+  <label for="s-text">Piece text (auto-filled from a drafted job when available; otherwise paste the article)</label>
+  <textarea id="s-text"></textarea>
+  <div class="two">
+    <div><label for="s-photos">Photos available (so slides can name them)</label><input type="text" id="s-photos" placeholder="pool at 7am · room 312 terrace · breakfast captain Marco · the Belvedere at dusk"></div>
+    <div><label for="s-focus">Angle to lead with (optional)</label><input type="text" id="s-focus" placeholder="the pool vs the beach decision"></div>
+  </div>
+  <div class="row"><button class="btn" id="s-run">Make the kit</button><button class="btn alt" id="s-stop" disabled>Stop</button><span class="note" id="s-note"></span></div>
+  <div class="out" id="s-stream"></div>
+  <div id="s-kit"></div>
+  <h3>Kits made</h3>
+  <div class="tablewrap"><table id="s-table"><thead><tr><th>Date</th><th>Piece</th><th>Hook</th><th></th></tr></thead><tbody></tbody></table></div>
+  <div class="quiet" id="s-quiet">Claude isn't available in this view.</div>
 </section>
 
 <!-- ============ CITATION TRACKER ============ -->
@@ -202,7 +264,7 @@ hr{border:0;border-top:1px solid var(--line);margin:22px 0}
 <!-- ============ BENCHMARK ============ -->
 <section class="desk" id="desk-bench">
   <h2>AI benchmark log</h2>
-  <p class="lead">One row per run of the 20-question benchmark. The scheduled worker adds a row on the 1st and 15th.</p>
+  <p class="lead">One row per run of the 20-question benchmark. The scheduled worker adds a row on the 1st and 15th; the Monday rankings run logs here too.</p>
   <div class="two">
     <div><label for="b-date">Run date</label><input type="date" id="b-date"></div>
     <div><label for="b-tool">Tool</label><select id="b-tool"><option>Web search proxy (Claude)</option><option>Google AI Overview</option><option>ChatGPT</option><option>Perplexity</option><option>Gemini</option><option>Claude</option></select></div>
@@ -217,10 +279,25 @@ hr{border:0;border-top:1px solid var(--line);margin:22px 0}
   <div class="quiet" id="b-quiet">The shared store isn't available in this view.</div>
 </section>
 
+<!-- ============ PROCESS ============ -->
+<section class="desk" id="desk-process">
+  <h2>Process &amp; title lock</h2>
+  <p class="lead">The editorial process as it runs, and the one title check every piece goes through. Nothing publishes without a gate report on its job.</p>
+  <div id="pr-stats"></div>
+  <div class="out" id="pr-process"></div>
+  <h3>Title check</h3>
+  <div class="two">
+    <div><label for="t-title">SEO title</label><input type="text" id="t-title" placeholder="Caruso, A Belmond Hotel, Ravello: An Honest Review"></div>
+    <div><label for="t-format">Format</label><select id="t-format"></select></div>
+  </div>
+  <div class="row"><button class="btn" id="t-run">Check</button><span class="note" id="t-note"></span></div>
+  <div id="t-out" class="cards"></div>
+</section>
+
 <!-- ============ RULES ============ -->
 <section class="desk" id="desk-rules">
   <h2>House rules</h2>
-  <p class="lead">What the desk and the worker draft against. Source: <code>05-editorial-system/publishing-checklist.md</code> and <code>08-skills/coco-editorial-standards</code>.</p>
+  <p class="lead">What the desk and the worker draft against. Source: <code>05-editorial-system/</code> in the audit repo.</p>
   <div class="out" id="rules-out"></div>
 </section>
 
@@ -238,7 +315,7 @@ const VOICE = `COCO TRAN HOUSE VOICE
 - Reframe negatives as charm or handle them lightly; keep the fact; never sour.
 - Private and escorted is the default recommendation (driver, private guide, chartered boat, first-entry access); the DIY option is a genuine secondary, framed as her recommendation when it truly is better.
 - Hotels top tier only; $800+/night floor on Properties. Preferred-partner perks phrased "my clients typically enjoy… wherever they apply".
-- Banned words: breathtaking, seamless, meticulously curated, world-class, stunning, wanderlust, elevated (adjective), 6-star, hidden gem, look no further, ultimate, must-see, nestled.
+- Banned words: breathtaking, seamless, meticulously curated, world-class, stunning, wanderlust, elevated (adjective), 6-star, hidden gem, look no further, ultimate, must-see, nestled, unforgettable, transformative journey, bucket list, dream destination, budget-friendly, affordable.
 - No italics (<em>) in body HTML. No mid-piece sales pitch; one Inquire line near the end where the format allows: <p><a class="button" href="https://cocotrantravel.com/contact" target="_blank" rel="noopener">Inquire about a private [trip]</a></p>
 - At least one named person, dish, designer, room number or detail only someone who was there would know. Anything not firsthand is attributed ("the hotel says"). Nothing invented; unknown facts are written [VERIFY: what] and never guessed. Client names never appear.
 - Photographer's eye once per piece (light, material, space).`;
@@ -256,21 +333,54 @@ const GATES = [
  ["Free value before the gate","Short answer + glance visible to non-members; gate not mid-sentence."]
 ];
 
-// Field maps — the live ACF keys per format (typos are real). The worker verifies against a published example before writing.
+const CATEGORY_BY_FORMAT={verdict:"Commercial",comparison:"Commercial",primer:"Informational",rolodex:"Decision-support",roundup:"Decision-support",route:"Informational",dossier:"Specialist intel",shortlist:"Decision-support",fieldnotes:"Authority",postcard:"Authority",answer:"Informational"};
+
 const FORMATS = {
- verdict:{label:"The Verdict",cpt:"property",kicker:"The Verdict",fields:["overall","rate_from","the_location","the_story","the_rooms","the_food_&_beverage","the_wellness","what_missed_the_mark","good_to_know","dont_miss","last_thoughts"],selects:{the_vibe:"1–2 of: Grand & Historic, Old World Romance, Minimalist & Design-Forward, Wild & Remote, Barefoot Luxury, Urban Sophisticate, Wellness & Restorative, Heritage Estate, Rail & Transit Romance, Secluded & Private",best_for:"one of: Privacy, Honeymoons, Families, Groups, Wellness",booking_access:"one of: Direct, Virtuoso, Four Seasons Preferred Partner, Belmond Bellini Club, Marriott STARS/Luminous, Hyatt Privé",room_count:"number"},guide:"Overall 15–25 words plain; rate_from '$X,XXX/night'; the_location 150–200 words opening in the warm first-person recap MOMENT register; the_story 150–200 (founding, named architect/designer); the_rooms 200–250 (category/room number, materials, view, one surprise, the bathroom); the_food_&_beverage 180–220 (named restaurants, 2–3 dishes); the_wellness 150–200 (arrival sequence in order); what_missed_the_mark 60–100 (one honest specific flaw); good_to_know 80–120; dont_miss 80–120 (name a person/activity); last_thoughts 120–180 (the verdict: who it serves, who it doesn't, one judgment). No CTA in any field. 1,800–2,500 words total; shorter if the stay was short — never pad.",glance:["Setting","Best for","Standout","Consider","Stayed"]},
- comparison:{label:"The Comparison",cpt:"property",kicker:"The Comparison",fields:["overall","the_short_answer","property_a","property_b","the_tradeoff","who_books_which","last_thoughts"],guide:"Two properties side by side. overall 15–25 words; the_short_answer which for whom; property_a / property_b 250–350 words each in first person; the_tradeoff the honest differences (beach, rooms, food, service, price); who_books_which; last_thoughts the judgment. Keys here are provisional — the worker maps to the Tradeoff template (Element 29436).",glance:["Choose A if","Choose B if","Price difference","Both share","Stayed"]},
- primer:{label:"The Primer",cpt:"guide",kicker:"The Primer",fields:["tittle_word_1","tittle_2_longer_words_underneath","opening_note","best_season","getting_there","what_to_book_first","money_&_logistics","etiquette_&_the_unexpected","how_long_&_the_shape_of_a_first_trip","insider_faq","closing_paragraph"],guide:"PRIMES someone before the trip: context, feel, what to understand before they land — not a second Rolodex. tittle_word_1 = the place; tittle_2 ≤70 chars. Each section 120–220 words, <h3> headings inside the field. insider_faq = 4–6 Q&As (<h4> question, <p> answer) in the questions people actually ask AI. Keys after opening_note are provisional — the worker maps to the live Primer fields (Element 27517).",glance:["Best months","How long","Base yourself in","Book first","Last visit"]},
- rolodex:{label:"The Rolodex",cpt:"guide",kicker:"The Rolodex",fields:["tittle_word_1","tittle_2_longer_words_underneath","quote_1_","opening_note","best_season","getting_there","where_to_stay","where_to_eat_&_drink","what_to_do","day_trips","rainy-day_fallback","where_to_shop","insider_faq","closing_paragraph"],guide:"The comprehensive guide to a place, eleven sections, arranged the way the city works (by neighbourhood). where_to_stay: top-tier only, with 'my clients typically enjoy…' perks where they apply. Each section 150–300 words with <h3> headings inside the field. insider_faq = 4–6 Q&As. closing_paragraph carries the Inquire line and a 'pair it with' to sibling pieces.",glance:["Base in","Stay","Book ahead","Don't miss","Last visit"]},
- roundup:{label:"The Roundup",cpt:"guide",kicker:"The Roundup",fields:["tittle_word_1","tittle_2_longer_words_underneath","opening_note","where_to_eat_&_drink","what_to_do","where_to_shop","closing_paragraph"],guide:"A curated list on ONE theme in five displayed sections (opening_note → where_to_eat_&_drink → what_to_do → where_to_shop → closing_paragraph; use them as five sections whatever the theme, where_to_stay does not display). Each pick 60–120 words with a <h3> name, one line on who it's for.",glance:["Top pick","Second","Wildcard","Price band","Last visit"]},
- route:{label:"The Route",cpt:"brief",kicker:"The Route",fields:["tittle_word_2","trip_lenght_in_nights","overall","opening_scene","the_ask","the_route","the_details_that_make_it_work","the_moment_that_almost_went_wrong","last_thoughts"],guide:"title is always 'The Route'; tittle_word_2 = subtitle e.g. 'Two Weeks in Japan'. opening_scene = a MOMENT in first person; the_ask = who the trip was for and what they wanted (no client names); the_route = <h4> per segment, nights, base, the one thing; the_details_that_make_it_work; the_moment_that_almost_went_wrong EMPTY unless the notes give a real story; last_thoughts = Inquire line + pair-with. trip_type only 'Honeymoon' or 'couple' else blank.",glance:["Nights","Who","Season","Stops","Transport"]},
- dossier:{label:"The Dossier",cpt:"brief",kicker:"The Dossier",fields:["overall","destination_overview","location_","weather_&_best_time_to_go","getting_around","entry_requirements","currency_&_exchange","tipping_culture","local_customs_&_etiquette","health_&_safety","connectivity","language_&_key_phrases","emergency_contacts","what_to_pack","closing_note"],guide:"Dry practical reference, still warm. Post title '[Place]  —', tittle_word_2 'The dossier'. Every changeable fact (visa, currency, rules) carries [VERIFY] unless in the notes. closing_note (not last_thoughts) carries the Inquire line.",glance:["Visa","Money","Best months","Getting around","Safety note"]},
- shortlist:{label:"The Shortlist",cpt:"shortlist",kicker:"The Shortlist",fields:["tittle_1","tittle_2","overall","opening_note","the_picks","the_one_most_people_miss","closing_note"],guide:"Curated mini guide, public. opening_note is PLAIN TEXT (no <p>). the_picks = each pick <h3> name · neighbourhood · price band, then 2–4 sentences, what to order/ask for, who it's for. the_one_most_people_miss = one pick with the story. closing_note = Inquire line.",glance:["Top pick","Second","Wildcard","Price band","Last visit"]},
- fieldnotes:{label:"Field Notes From",cpt:"dispatch",kicker:"Field Notes From",fields:["title_1","tittle_2","dispatch_one_liner","what_id_do_differently","the_takeaway"],guide:"800–1,200 words, public. title_1/tittle_2 = headline across two lines; dispatch_one_liner = lede; what_id_do_differently = body part 1; the_takeaway = body part 2 ending with the Inquire line and pair-with.",glance:["Visited","Open hours or cost","Nearest station","Best light","Last visit"]},
- postcard:{label:"Postcard From",cpt:"dispatch",kicker:"Postcard",fields:["tittle_2","dispatch_one_liner","the_takeaway"],guide:"400–600 words, public, one moment or place. title_1 is 'Postcard'; tittle_2 'From [Place]'; dispatch_one_liner = lede; the_takeaway = whole body.",glance:["Visited","Open hours or cost","Nearest station","Best light","Last visit"]},
- answer:{label:"The Answer",cpt:"dispatch",kicker:"The Answer",fields:["title_1","tittle_2","dispatch_one_liner","what_id_do_differently","the_takeaway"],guide:"350–600 words, public, owns ONE question people ask AI. title_1/tittle_2 = the question split across two lines (verbatim as asked); dispatch_one_liner = THE SHORT ANSWER, 2–3 sentences that stand alone when quoted, naming the 1–3 choices and who each suits; what_id_do_differently = WHY (150–300 words, one firsthand detail) + 'If you're choosing' (A if / B if); the_takeaway = Go deeper (sibling pieces) + Inquire line.",glance:["Visited","Open hours or cost","Nearest station","Best light","Last visit"]}
+ verdict:{label:"The Verdict",cpt:"property",pillar:"The Property",kicker:"The Verdict",pattern:"[Hotel], [Place]: An Honest Review  ·or·  [Hotel] Review: [the angle]",fields:["overall","rate_from","the_location","the_story","the_rooms","the_food_&_beverage","the_wellness","what_missed_the_mark","good_to_know","dont_miss","last_thoughts"],selects:{the_vibe:"1–2 of: Grand & Historic, Old World Romance, Minimalist & Design-Forward, Wild & Remote, Barefoot Luxury, Urban Sophisticate, Wellness & Restorative, Heritage Estate, Rail & Transit Romance, Secluded & Private",best_for:"one of: Privacy, Honeymoons, Families, Groups, Wellness",booking_access:"one of: Direct, Virtuoso, Four Seasons Preferred Partner, Belmond Bellini Club, Marriott STARS/Luminous, Hyatt Privé",room_count:"number"},guide:"Overall 15–25 words plain; rate_from '$X,XXX/night'; the_location 150–200 words opening in the warm first-person recap MOMENT register; the_story 150–200 (founding, named architect/designer); the_rooms 200–250 (category/room number, materials, view, one surprise, the bathroom); the_food_&_beverage 180–220 (named restaurants, 2–3 dishes); the_wellness 150–200 (arrival sequence in order); what_missed_the_mark 60–100 (one honest specific flaw); good_to_know 80–120; dont_miss 80–120 (name a person/activity); last_thoughts 120–180 (the verdict: who it serves, who it doesn't, one judgment). No CTA in any field. 1,800–2,500 words total; shorter if the stay was short — never pad.",glance:["Setting","Best for","Standout","Consider","Stayed"]},
+ comparison:{label:"The Comparison",cpt:"property",pillar:"The Property",kicker:"The Comparison",pattern:"[A] vs [B]: Which Should You Choose?",fields:["overall","the_short_answer","property_a","property_b","the_tradeoff","who_books_which","last_thoughts"],guide:"Two properties side by side. overall 15–25 words; the_short_answer which for whom; property_a / property_b 250–350 words each in first person; the_tradeoff the honest differences (beach, rooms, food, service, price); who_books_which; last_thoughts the judgment. Keys here are provisional — the worker maps to the Tradeoff template (Element 29436).",glance:["Choose A if","Choose B if","Price difference","Both share","Stayed"]},
+ primer:{label:"The Primer",cpt:"guide",pillar:"The Guide",kicker:"The Primer",pattern:"[Place] Travel Guide: What to Know Before You Book",fields:["tittle_word_1","tittle_2_longer_words_underneath","opening_note","best_season","getting_there","what_to_book_first","money_&_logistics","etiquette_&_the_unexpected","how_long_&_the_shape_of_a_first_trip","insider_faq","closing_paragraph"],guide:"PRIMES someone before the trip: context, feel, what to understand before they land — not a second Rolodex. tittle_word_1 = the place; tittle_2 ≤70 chars. Each section 120–220 words, <h3> headings inside the field. insider_faq = 4–6 Q&As (<h4> question, <p> answer) in the questions people actually ask AI. Keys after opening_note are provisional — the worker maps to the live Primer fields (Element 27517).",glance:["Best months","How long","Base yourself in","Book first","Last visit"]},
+ rolodex:{label:"The Rolodex",cpt:"guide",pillar:"The Guide",kicker:"The Rolodex",pattern:"[Place] Travel Guide: Where to Stay, Eat and Explore",fields:["tittle_word_1","tittle_2_longer_words_underneath","quote_1_","opening_note","best_season","getting_there","where_to_stay","where_to_eat_&_drink","what_to_do","day_trips","rainy-day_fallback","where_to_shop","insider_faq","closing_paragraph"],guide:"The comprehensive guide to a place, eleven sections, arranged the way the city works (by neighbourhood). where_to_stay: top-tier only, with 'my clients typically enjoy…' perks where they apply. Each section 150–300 words with <h3> headings inside the field. insider_faq = 4–6 Q&As. closing_paragraph carries the Inquire line and a 'pair it with' to sibling pieces.",glance:["Base in","Stay","Book ahead","Don't miss","Last visit"]},
+ roundup:{label:"The Roundup",cpt:"guide",pillar:"The Guide",kicker:"The Roundup",pattern:"Best [thing] in [Place]: An Advisor's Picks  ·or·  Where to Eat in [Place]: …",fields:["tittle_word_1","tittle_2_longer_words_underneath","opening_note","where_to_eat_&_drink","what_to_do","where_to_shop","closing_paragraph"],guide:"A curated list on ONE theme in five displayed sections (opening_note → where_to_eat_&_drink → what_to_do → where_to_shop → closing_paragraph; use them as five sections whatever the theme, where_to_stay does not display). Each pick 60–120 words with a <h3> name, one line on who it's for.",glance:["Top pick","Second","Wildcard","Price band","Last visit"]},
+ route:{label:"The Route",cpt:"brief",pillar:"The Brief",kicker:"The Route",pattern:"[N] Days in [Place]: A First-Time Itinerary  ·or·  Two Weeks in Japan: A Route That Works",fields:["tittle_word_2","trip_lenght_in_nights","overall","opening_scene","the_ask","the_route","the_details_that_make_it_work","the_moment_that_almost_went_wrong","last_thoughts"],guide:"title is always 'The Route'; tittle_word_2 = subtitle e.g. 'Two Weeks in Japan'. opening_scene = a MOMENT in first person; the_ask = who the trip was for and what they wanted (no client names); the_route = <h4> per segment, nights, base, the one thing; the_details_that_make_it_work; the_moment_that_almost_went_wrong EMPTY unless the notes give a real story; last_thoughts = Inquire line + pair-with. trip_type only 'Honeymoon' or 'couple' else blank.",glance:["Nights","Who","Season","Stops","Transport"]},
+ dossier:{label:"The Dossier",cpt:"brief",pillar:"The Brief",kicker:"The Dossier",pattern:"[Place] Travel Guide: The Dossier",fields:["overall","destination_overview","location_","weather_&_best_time_to_go","getting_around","entry_requirements","currency_&_exchange","tipping_culture","local_customs_&_etiquette","health_&_safety","connectivity","language_&_key_phrases","emergency_contacts","what_to_pack","closing_note"],guide:"Dry practical reference, still warm. Post title '[Place]  —', tittle_word_2 'The dossier'. Every changeable fact (visa, currency, rules) carries [VERIFY] unless in the notes. closing_note (not last_thoughts) carries the Inquire line.",glance:["Visa","Money","Best months","Getting around","Safety note"]},
+ shortlist:{label:"The Shortlist",cpt:"shortlist",pillar:"The Shortlist",kicker:"The Shortlist",pattern:"Best [thing] in [Place]: An Advisor's Shortlist",fields:["tittle_1","tittle_2","overall","opening_note","the_picks","the_one_most_people_miss","closing_note"],guide:"Curated mini guide, public. opening_note is PLAIN TEXT (no <p>). the_picks = each pick <h3> name · neighbourhood · price band, then 2–4 sentences, what to order/ask for, who it's for. the_one_most_people_miss = one pick with the story. closing_note = Inquire line.",glance:["Top pick","Second","Wildcard","Price band","Last visit"]},
+ fieldnotes:{label:"Field Notes From",cpt:"dispatch",pillar:"The Dispatch",kicker:"Field Notes From",pattern:"[Subject] at [Place]: [what it's about]",fields:["title_1","tittle_2","dispatch_one_liner","what_id_do_differently","the_takeaway"],guide:"800–1,200 words, public. title_1/tittle_2 = headline across two lines; dispatch_one_liner = lede; what_id_do_differently = body part 1; the_takeaway = body part 2 ending with the Inquire line and pair-with.",glance:["Visited","Open hours or cost","Nearest station","Best light","Last visit"]},
+ postcard:{label:"Postcard From",cpt:"dispatch",pillar:"The Dispatch",kicker:"Postcard",pattern:"[Subject] at [Place]: [the moment]",fields:["tittle_2","dispatch_one_liner","the_takeaway"],guide:"400–600 words, public, one moment or place. title_1 is 'Postcard'; tittle_2 'From [Place]'; dispatch_one_liner = lede; the_takeaway = whole body.",glance:["Visited","Open hours or cost","Nearest station","Best light","Last visit"]},
+ answer:{label:"The Answer",cpt:"dispatch",pillar:"The Dispatch",kicker:"The Answer",pattern:"the question, verbatim, ≤60 chars",fields:["title_1","tittle_2","dispatch_one_liner","what_id_do_differently","the_takeaway"],guide:"350–600 words, public, owns ONE question people ask AI. title_1/tittle_2 = the question split across two lines (verbatim as asked); dispatch_one_liner = THE SHORT ANSWER, 2–3 sentences that stand alone when quoted, naming the 1–3 choices and who each suits; what_id_do_differently = WHY (150–300 words, one firsthand detail) + 'If you're choosing' (A if / B if); the_takeaway = Go deeper (sibling pieces) + Inquire line.",glance:["Visited","Open hours or cost","Nearest station","Best light","Last visit"]}
 };
 
+const PROCESS=`Context (notes · Granola · Proposal/Agency Studio · live link for updates)
+ → Desk: format decision → draft in voice + pillar fields + opening block + SEO set
+ → Desk: gates + voice pass on itself → job "drafted"
+ → Worker: research (what ranks, AI questions) → fact pass (primary sources) → final SEO → "researched"
+ → Coco: approve in the Queue
+ → Worker: WordPress draft (or payload for Cowork) → "built" + preview
+ → Coco: publish
+ → Worker: library record · redirects if respin · question bank · benchmark set
+ → Desk: social kit (carousel · caption · hashtags · first comment · DM keyword · Coco Edit · stories · Pin)
+ → Monday: Search Console + GA4 → rank + health on every record → refresh jobs for decaying/stale pieces
+ → 1st & 15th: AI benchmark (20 fixed questions) → benchmark log`;
+
+// ---------- title check (deterministic) ----------
+const BANNED_TITLE=/\(\s?20\d\d\s?\)|\bULTIMATE\b|\bBEST\b|\bTOP\b|\bINCREDIBLE\b|\bAWESOME\b|look no further|must-see|\|\s*$|•|\s{2,}/;
+function titleCheck(title,fmtKey){
+ const f=FORMATS[fmtKey]||{}; const t=(title||"").trim(); const issues=[];
+ if(!t) return [{ok:false,msg:"Empty title."}];
+ issues.push({ok:t.length<=60,msg:`Length ${t.length} (≤60)`});
+ issues.push({ok:!BANNED_TITLE.test(t),msg:"No (20xx) / ULTIMATE / BEST / TOP caps / trailing | or • / double spaces"});
+ issues.push({ok:!/\b(breathtaking|seamless|stunning|wanderlust|hidden gem|bucket list|unforgettable)\b/i.test(t),msg:"No banned words"});
+ issues.push({ok:!/^(The (Verdict|Primer|Rolodex|Roundup|Route|Dossier|Shortlist|Comparison|Answer)|Postcard From|Field Notes From)\b/i.test(t),msg:"Kicker is not in the SEO title (it's the H1 kicker line)"});
+ if(fmtKey==="verdict") issues.push({ok:/review|honest|worth/i.test(t),msg:"Verdict title says review / honest / worth it"});
+ if(fmtKey==="comparison") issues.push({ok:/\bvs\.?\b|\bor\b/i.test(t)&&/\?$|which/i.test(t),msg:"Comparison title has 'vs' and asks which"});
+ if(fmtKey==="primer") issues.push({ok:/before you book|what to know|travel guide/i.test(t),msg:"Primer title says what to know / before you book"});
+ if(fmtKey==="rolodex") issues.push({ok:/where to stay|travel guide|eat/i.test(t),msg:"Rolodex title says where to stay / eat / explore"});
+ if(fmtKey==="route") issues.push({ok:/\b(days?|weeks?|nights?)\b.*\bin\b|itinerary|route/i.test(t),msg:"Route title has the length and the place"});
+ if(fmtKey==="answer") issues.push({ok:/\?$/.test(t),msg:"Answer title is the question, ending with ?"});
+ issues.push({ok:/[A-Z][a-z]/.test(t)&&!/\b[a-z]+(?:,|:)\s/.test(t.slice(0,1)),msg:"Proper nouns capitalised"});
+ return issues;
+}
+
+// ---------- prompts ----------
 function draftPrompt(fmtKey,ctx){
  const f=FORMATS[fmtKey];
  const task=ctx.mode==="update"
@@ -282,13 +392,14 @@ ${VOICE}
 
 FORMAT RULES: ${f.guide}
 FIELDS, in order, as HTML (<p>, <h3>, <h4>, <strong> only — never <em>): ${f.fields.join(", ")}.${f.selects?" SELECT FIELDS (vocabulary only, not sentences): "+Object.entries(f.selects).map(([k,v])=>k+" = "+v).join("; ")+".":""}
+GOAL of the piece (from Coco, or infer from the format): ${ctx.goal||"(infer)"}. Category: ${ctx.category||CATEGORY_BY_FORMAT[fmtKey]}.
 
 ALSO produce the answerable opening (goes above the first image): short_answer = 2–3 sentences, first person, standalone: what it is, where, what's distinctive, who it suits. glance = exactly these five rows: ${f.glance.join(" · ")} (value "(blank — Coco to fill)" where the context has no fact). Visit basis from Coco: "${ctx.basis||"not supplied"}" — use verbatim for the Stayed/Last visit row. Disclosure: "${ctx.disclosure}".
 
-And the SEO set: seo_title ≤60 chars (the subject + place in plain words; for The Answer the question itself), meta_description ≤155, h1 (the piece's name; for Verdict '[Hotel], [Place]: An Honest Review'-style only if it reads naturally, else the hotel name), slug, primary_query, 3–5 secondary_queries people type into Google or an AI, and links = the sibling pieces to link (Primer/Rolodex/Route/Property/Shortlist for this place; say "if it exists").
+And the SEO set: seo_title ≤60 chars following the pattern "${f.pattern}" (subject + place in plain words), meta_description ≤155, h1 (the piece's name), slug, primary_query, 3–5 secondary_queries people type into Google, 3–5 ai_questions people ask ChatGPT/Perplexity that this piece answers, and links = the sibling pieces to link (say "if it exists" when unsure). Plus photos_needed: what each image slot should show, from the notes, with a suggested alt text each.
 
 Reply with only JSON:
-{"post_title":"the WordPress post title","kicker":"${f.kicker}","fields":{"<key>":"<html>",...},"selects":{...},"short_answer":"…","glance":[{"label":"…","value":"…"}],"seo":{"seo_title":"…","meta_description":"…","h1":"…","slug":"…","primary_query":"…","secondary_queries":["…"]},"links":["…"],"verify":["every [VERIFY] item, one line each"],"photos_needed":["what each image slot should show, from the notes"]}
+{"post_title":"…","kicker":"${f.kicker}","fields":{"<key>":"<html>",...},"selects":{...},"short_answer":"…","glance":[{"label":"…","value":"…"}],"seo":{"seo_title":"…","meta_description":"…","h1":"…","slug":"…","primary_query":"…","secondary_queries":["…"],"ai_questions":["…"]},"links":["…"],"verify":["every [VERIFY] item, one line each"],"photos_needed":[{"slot":"…","shows":"…","alt":"…"}]}
 
 CONTEXT
 Destination terms: ${ctx.dest||"(not given)"}
@@ -305,6 +416,7 @@ function deskPassPrompt(fmtKey,draft){
 ${VOICE}
 
 GATES: ${GATES.map((g,i)=>`${i+1}. ${g[0]} — ${g[1]}`).join(" ")}
+TITLE LOCK: seo_title must follow "${FORMATS[fmtKey].pattern}", ≤60 chars, no (20xx)/ULTIMATE/BEST caps/trailing |, no kicker word, subject + place present.
 
 Voice pass: remove every sentence that explains the previous one; replace banned words; warm any cold or clipped verdict; convert third-person or list phrasing to first person to "you"; strip drafting notes and <em>; make sure one named specific detail exists; keep short_answer standalone and the seo_title ≤60 / meta ≤155.
 
@@ -319,8 +431,54 @@ function suggestPrompt(ctx){
 Decide which ONE format fits this material best and why (one line), then list 8 questions well-off travellers actually type into ChatGPT, Perplexity or Google about this subject (which/where/is/should/how/best; include two "A or B" comparisons and one "is it worth it"), each with the cluster and the format that should own it. Reply with only JSON: {"format_key":"verdict|comparison|primer|rolodex|roundup|route|dossier|shortlist|fieldnotes|postcard|answer","why":"…","questions":[{"q":"…","cluster":"…","format_key":"…"}]}`;
 }
 
+function improvePrompt(rec){
+ return `You are the Coco Tran content desk. For this live piece, give concrete improvement suggestions. Reply with only JSON:
+{"seo":["5–8 specific, actionable SEO changes: title/meta/H1/slug if the current ones break the title lock, headings to add with the subject+place, an FAQ to add with the questions people ask AI, internal links to sibling pieces (Primer/Rolodex/Route/Property/Shortlist of the same place), schema to confirm"],
+ "structure":["3–6 changes to make it quotable: short answer block, at-a-glance rows for this format, visited/updated line, disclosure line, booking box if a hotel is mentioned, where the gate should sit"],
+ "photos":["4–6 photographs that would carry this piece — specific frames in the brand's film style (light, time of day, the detail), each with a suggested alt text"],
+ "keywords":{"primary":"…","secondary":["3–5"],"ai_questions":["3–5 questions people ask AI that this piece should answer"]},
+ "title_check":{"proposed_seo_title":"≤60 chars following the pattern ${FORMATS[rec.format]?.pattern||"subject + place, plain words"}","proposed_meta":"≤155","proposed_h1":"…"},
+ "social_angle":"the one decision or number from this piece a carousel should lead with"}
+Keep every suggestion specific to THIS piece; no generic advice.
+
+PIECE
+Title: ${rec.title}
+URL: ${rec.url}
+Pillar/format: ${rec.pillar} · ${rec.format}
+Category: ${rec.category} · Goal: ${rec.goal||""}
+Current SEO title: ${rec.seo_title||""}
+Current meta: ${rec.meta_description||""}
+Visible words: ${rec.visible_words||"?"} · Gated: ${rec.paywalled?"yes":"no"} · Last updated: ${rec.last_updated||"?"}
+${rec.rank?`Rankings 28d: clicks ${rec.rank.clicks28}, impressions ${rec.rank.impressions28}, position ${rec.rank.position28}; top queries: ${(rec.rank.top_queries||[]).join(", ")}`:""}
+${rec.notes?"Notes: "+rec.notes:""}`;
+}
+
+function socialPrompt(src){
+ return `You are the Coco Tran social desk. Turn the PIECE into a social kit in Coco's voice (first person, warm, specific, no banned words: breathtaking, seamless, meticulously curated, world-class, stunning, wanderlust, unforgettable, transformative journey, bucket list, dream destination, hidden gem, budget-friendly, affordable). The insider detail is the spine; it never changes across formats. Built for SAVES and real comments, not likes.
+
+RULES
+- Carousel: 8–10 slides. Slide 1 = hook ≤12 words, a claim or a number, no hotel name. Slides 2–8 = one fact or one decision each, ≤25 words, in the order a planner needs them; specifics (room numbers, prices with month, times). Slide 9 = "the one most people miss". Slide 10 = takeaway + "save this for [trip]" + where the full piece lives. Each slide names the photo to use from PHOTOS (or describes the frame if none fits).
+- Caption: 3–5 sentences; first line stands alone; one real question at the end a traveller would answer. No hashtags in the caption. If hosted: "hosted by the property; opinions mine".
+- First comment: exactly 5 specific hashtags (never #wanderlust #travelgram #instatravel #luxurylifestyle #bucketlist) + the DM line if a DM keyword is used.
+- DM keyword: ONLY if DELIVERABLE is non-empty — one word in caps and the line "Comment WORD and I'll send you …". Otherwise null.
+- Coco Edit script: 80–95 words exactly: Hook (curiosity gap) → Reveal (price + location) → Insider intel → Takeaway → "Follow for more intel on luxury travel." Plus on-screen hook text and a 3-item b-roll list.
+- Stories: 3–5 frames (hook → facts → poll or question sticker → link sticker).
+- Pinterest: title ≤100 chars (the search phrase), description 2 sentences with the keyword, board name.
+- Tags: the property's account (if known, else "[property handle]"), the destination board, @cocotranstudio for the photos; partner if hosted.
+- Alt text for each photo named, describing the actual frame.
+Reply with only JSON:
+{"hook":"…","carousel":[{"n":1,"text":"…","photo":"…"}],"caption":"…","first_comment":"…","hashtags":["#…"],"dm_keyword":null|{"word":"…","line":"…"},"coco_edit":{"script":"…","on_screen":"…","broll":["…"]},"stories":[{"frame":1,"text":"…","sticker":"…"}],"pinterest":{"title":"…","description":"…","board":"…"},"tags":["…"],"alt":[{"photo":"…","alt":"…"}],"posting_notes":"2 lines: best day/time from the cadence (Reel day 1, carousel day 3, Short day 7) and the one engagement move"}
+
+PIECE: ${src.title||""} (${src.url||""})
+LEAD ANGLE: ${src.focus||"(choose the strongest decision or number)"}
+DELIVERABLE: ${src.deliverable||""}
+PHOTOS: ${src.photos||"(none named — describe frames)"}
+TEXT:
+${(src.text||"").slice(0,14000)}`;
+}
+
 // ---------- runtime ----------
-let sample=null, db=null, mcp=null, uid=null, canWrite=false, granolaOk=false;
+let sample=null, db=null, mcp=null, canWrite=false, granolaOk=false;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ls={get(k){try{return localStorage.getItem(k)||""}catch(e){return ""}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
@@ -328,6 +486,8 @@ const ERR={not_granted:"Claude wasn't allowed for this page.",rate_limited:"Too 
 const copyFor=e=>ERR[e?.code] ?? "Something went wrong — try again.";
 async function copyText(t,btn){try{await navigator.clipboard.writeText(t);if(btn){const o=btn.textContent;btn.textContent="Copied";setTimeout(()=>btn.textContent=o,1200)}}catch(e){const ta=document.createElement("textarea");ta.value=t;document.body.append(ta);ta.select();try{document.execCommand("copy")}catch(_){}ta.remove()}}
 const safeHtml=h=>String(h??"").replace(/<(?!\/?(p|h3|h4|strong|br|ul|ol|li|a)\b)[^>]*>/gi,"").replace(/on\w+="[^"]*"/gi,"");
+const today=()=>new Date().toISOString().slice(0,10);
+const fmtLabel=k=>FORMATS[k]?.label||k||"";
 
 // tabs
 const navBtns=[...document.querySelectorAll("nav button")];
@@ -335,14 +495,16 @@ function show(id){navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.des
 navBtns.forEach(b=>b.addEventListener("click",()=>show(b.dataset.desk)));
 const h=(location.hash||"").slice(1);show(navBtns.some(b=>b.dataset.desk===h)?h:(ls.get("desk")||"new"));
 
-$("#rules-out").textContent=VOICE+"\n\nPUBLISHING GATES\n"+GATES.map((g,i)=>`${i+1}. ${g[0]}\n   ${g[1]}`).join("\n")+"\n\nFORMATS\n"+Object.values(FORMATS).map(f=>`${f.label} (${f.cpt}): ${f.guide}`).join("\n\n");
+$("#rules-out").textContent=VOICE+"\n\nPUBLISHING GATES\n"+GATES.map((g,i)=>`${i+1}. ${g[0]}\n   ${g[1]}`).join("\n")+"\n\nTITLE PATTERNS\n"+Object.values(FORMATS).map(f=>`${f.label}: ${f.pattern}`).join("\n")+"\n\nFORMATS\n"+Object.values(FORMATS).map(f=>`${f.label} (${f.cpt}): ${f.guide}`).join("\n\n");
+$("#pr-process").textContent=PROCESS;
+$("#t-format").innerHTML=Object.entries(FORMATS).map(([k,f])=>`<option value="${k}">${esc(f.label)}</option>`).join("");
 
-["n-notes","n-subject","n-dest","n-basis","n-photos","n-proposal","n-agency","n-url","n-missing","n-current"].forEach(id=>{const el=$("#"+id);el.value=ls.get(id);el.addEventListener("input",()=>ls.set(id,el.value))});
+["n-notes","n-subject","n-dest","n-basis","n-photos","n-proposal","n-agency","n-url","n-missing","n-current","n-goal","s-text","s-photos","s-deliverable","s-focus"].forEach(id=>{const el=$("#"+id);el.value=ls.get(id);el.addEventListener("input",()=>ls.set(id,el.value))});
 function syncMode(){const u=$("#n-mode").value==="update";$("#n-updatebox").hidden=!u;$("#n-urlwrap").style.visibility=u?"visible":"hidden";ls.set("n-mode",$("#n-mode").value)}
 $("#n-mode").value=ls.get("n-mode")||"new"; $("#n-mode").addEventListener("change",syncMode); syncMode();
 
 // ---------- Granola ----------
-let pulled=[]; // [{id,title,date,notes}]
+let pulled=[];
 function granolaErr(e){const m={server_not_connected:"Add Granola under claude.ai Settings → Connectors.",needs_reauth:"Reconnect Granola under Settings → Connectors.",not_in_manifest:"Granola isn't allowed for this page in this view.",approval_required:"Granola needs your approval — try again and allow it.",tool_error:"Granola reported an error: "+(e.message||"").slice(0,120)};return m[e?.code]||"Granola didn't answer — try again."}
 $("#g-search").onclick=async()=>{
  if(!mcp){$("#g-note").textContent="Connectors aren't available in this view.";return}
@@ -364,10 +526,8 @@ $("#g-pull").onclick=async()=>{
   const r=await mcp.callTool("Granola","get_meetings",{meeting_ids:sel.slice(0,10).map(i=>i.value),max_participants:5},{cache:false});
   const p=r.payload; const arr=Array.isArray(p?.meetings)?p.meetings:(Array.isArray(p)?p:[]);
   const text=x=>{if(typeof x==="string")return x; if(!x)return ""; return [x.summary,x.notes,x.private_notes,x.ai_summary,x.content].filter(Boolean).map(v=>typeof v==="string"?v:JSON.stringify(v)).join("\n\n")};
-  if(!arr.length){ // unknown shape: keep the raw text so nothing is lost
-   const raw=(r.content||[]).filter(c=>c.type==="text").map(c=>c.text).join("\n");
-   sel.forEach(i=>pulled.push({id:i.value,title:i.dataset.title,date:i.dataset.date,notes:raw.slice(0,20000)}));
-  }else arr.forEach((m,ix)=>{const s=sel.find(i=>i.value===(m.id||m.meeting_id))||sel[ix]; pulled.push({id:m.id||m.meeting_id||s?.value,title:m.title||s?.dataset.title||"Meeting",date:(m.meeting_at||m.created_at||s?.dataset.date||"").slice(0,10),notes:text(m).slice(0,20000)})});
+  if(!arr.length){const raw=(r.content||[]).filter(c=>c.type==="text").map(c=>c.text).join("\n");sel.forEach(i=>pulled.push({id:i.value,title:i.dataset.title,date:i.dataset.date,notes:raw.slice(0,20000)}))}
+  else arr.forEach((m,ix)=>{const s=sel.find(i=>i.value===(m.id||m.meeting_id))||sel[ix]; pulled.push({id:m.id||m.meeting_id||s?.value,title:m.title||s?.dataset.title||"Meeting",date:(m.meeting_at||m.created_at||s?.dataset.date||"").slice(0,10),notes:text(m).slice(0,20000)})});
   renderPulled(); $("#g-note").textContent="Pulled.";
  }catch(e){$("#g-note").textContent=granolaErr(e)}
  finally{$("#g-pull").disabled=false}
@@ -375,7 +535,7 @@ $("#g-pull").onclick=async()=>{
 function renderPulled(){$("#g-pulled").innerHTML=pulled.map((g,i)=>`<div class="card"><div class="meta">${esc(g.date)} · ${esc(g.notes.length)} chars <button class="copy" data-i="${i}">remove</button></div><h4>${esc(g.title)}</h4><div style="font-size:13px;color:var(--muted);max-height:80px;overflow:hidden">${esc(g.notes.slice(0,400))}…</div></div>`).join("");$("#g-pulled").querySelectorAll(".copy").forEach(b=>b.onclick=()=>{pulled.splice(+b.dataset.i,1);renderPulled()})}
 
 // ---------- Make the piece ----------
-function collect(){return{mode:$("#n-mode").value,source_url:$("#n-url").value.trim(),missing:$("#n-missing").value.trim(),current:$("#n-current").value.trim(),format:$("#n-format").value,subject:$("#n-subject").value.trim(),dest:$("#n-dest").value.trim(),basis:$("#n-basis").value.trim(),disclosure:$("#n-disclosure").value,photos:$("#n-photos").value.trim(),notes:$("#n-notes").value.trim(),granola:pulled.map(g=>({id:g.id,title:g.title,date:g.date,notes:g.notes})),proposal:$("#n-proposal").value.trim(),agency:$("#n-agency").value.trim()}}
+function collect(){return{mode:$("#n-mode").value,source_url:$("#n-url").value.trim(),missing:$("#n-missing").value.trim(),current:$("#n-current").value.trim(),format:$("#n-format").value,subject:$("#n-subject").value.trim(),dest:$("#n-dest").value.trim(),basis:$("#n-basis").value.trim(),disclosure:$("#n-disclosure").value,photos:$("#n-photos").value.trim(),category:$("#n-category").value,goal:$("#n-goal").value.trim(),notes:$("#n-notes").value.trim(),granola:pulled.map(g=>({id:g.id,title:g.title,date:g.date,notes:g.notes})),proposal:$("#n-proposal").value.trim(),agency:$("#n-agency").value.trim()}}
 function step(t){$("#n-steps").innerHTML+=(t?`<div>${t}</div>`:"")}
 let ctl=null;
 async function saveJob(job){
@@ -388,7 +548,7 @@ $("#n-queueonly").onclick=async()=>{
  const c=collect(); if(!c.subject){$("#n-note").textContent="Name the subject.";return}
  if(c.mode==="update"&&!c.source_url){$("#n-note").textContent="Give the live link of the piece to update.";return}
  if(c.mode!=="update"&&!c.notes&&!c.granola.length&&!c.proposal&&!c.agency){$("#n-note").textContent="Give the worker some context first.";return}
- try{const id=await saveJob({...c,status:"queued",title:c.subject}); $("#n-note").textContent=id?"Queued for the worker.":"Couldn't save — store not writable."}catch(e){$("#n-note").textContent="Couldn't save the job."}
+ try{const id=await saveJob({...c,status:"queued",title:c.subject,category:c.category||CATEGORY_BY_FORMAT[c.format]||""}); $("#n-note").textContent=id?"Queued for the worker.":"Couldn't save — store not writable."}catch(e){$("#n-note").textContent="Couldn't save the job."}
 };
 $("#n-run").onclick=async()=>{
  const c=collect(); if(!c.subject){$("#n-note").textContent="Name the subject.";return}
@@ -407,13 +567,15 @@ $("#n-run").onclick=async()=>{
    step(`→ <b>${FORMATS[fmt].label}</b> — ${esc(s?.why||"")}`);
    if(Array.isArray(s?.questions)) step("questions: "+s.questions.map(q=>esc(q.q)).join(" · "));
   }
+  c.category=c.category||CATEGORY_BY_FORMAT[fmt]||"";
   step(`<b>2</b> drafting the ${FORMATS[fmt].label} in Coco's voice, pillar structure, opening block and SEO set…`);
   $("#n-stream").textContent="Thinking…";
   const draft=await sample.json(draftPrompt(fmt,c),{signal:ctl.signal,cache:false,modelTier:"complex",onText:({text})=>{$("#n-stream").textContent=text.slice(-1500)}});
-  step("<b>3</b> running the ten gates and the voice pass on the draft…");
+  step("<b>3</b> running the ten gates, the title lock and the voice pass on the draft…");
   const pass=await sample.json(deskPassPrompt(fmt,draft),{signal:ctl.signal,cache:false,onText:({text})=>{$("#n-stream").textContent=text.slice(-1500)}});
   $("#n-stream").textContent="";
   const final=pass?.draft||draft, report=pass?.report||{};
+  report.title_lock=titleCheck(final.seo?.seo_title,fmt);
   const job={...c,format:fmt,status:"drafted",title:final.post_title||c.subject,draft:final,report,seo:final.seo||{}};
   step("<b>4</b> saving to the queue for the worker (research + WordPress build)…");
   let id=null; try{id=await saveJob(job)}catch(e){}
@@ -423,30 +585,37 @@ $("#n-run").onclick=async()=>{
  finally{$("#n-run").disabled=false;$("#n-stop").disabled=true}
 };
 
+function pieceText(job){const d=job.draft||{};const f=FORMATS[job.format]||{fields:[]};const fields=d.fields||{};const order=f.fields.filter(k=>fields[k]!=null).concat(Object.keys(fields).filter(k=>!f.fields.includes(k)));return [d.post_title,"",d.short_answer,"",...(d.glance||[]).map(g=>g.label+": "+g.value),"",...order.map(k=>k.toUpperCase()+"\n"+String(fields[k]).replace(/<[^>]+>/g,""))].join("\n")}
+
 function renderPiece(el,job,id){
  const d=job.draft||{}, f=FORMATS[job.format]||FORMATS.fieldnotes, r=job.report||{};
  const fields=d.fields||{}; const order=f.fields.filter(k=>fields[k]!=null).concat(Object.keys(fields).filter(k=>!f.fields.includes(k)));
- const acf={...fields,...(d.selects||{}),short_answer:d.short_answer||"",visit_basis:job.basis||"",disclosure:job.disclosure||""};
+ const acf={...fields,...(d.selects||{}),short_answer:d.short_answer||"",visit_basis:job.basis||"",disclosure:job.disclosure||"",content_category:job.category||"",content_goal:job.goal||"",primary_keyword:d.seo?.primary_query||""};
  (d.glance||[]).forEach((g,i)=>{acf["glance_"+(i+1)+"_label"]=g.label||"";acf["glance_"+(i+1)+"_value"]=g.value||""});
  const payload={mode:job.mode||"new",source_url:job.source_url||"",cpt:f.cpt,format:f.label,post_title:d.post_title,acf,rank_math:{title:d.seo?.seo_title,description:d.seo?.meta_description,focus_keyword:d.seo?.primary_query},slug:d.seo?.slug,destination_terms:job.dest,links:d.links||[],photos:job.photos,photos_needed:d.photos_needed||[],verify:d.verify||[]};
+ const tl=r.title_lock||titleCheck(d.seo?.seo_title,job.format);
  el.innerHTML=`<div class="piece">
-  <div class="kicker">${esc(d.kicker||f.kicker)} · ${esc(job.subject)}</div>
+  <div class="kicker">${esc(d.kicker||f.kicker)} · ${esc(job.subject)} · ${esc(job.category||"")}</div>
   <h2 class="title">${esc(d.seo?.h1||d.post_title||job.subject)}</h2>
   <div class="byline">Photos &amp; words by Coco Tran · ${esc(job.basis||"Visited (fill)")} · ${esc(job.disclosure)}</div>
   <p class="short">${esc(d.short_answer||"")}</p>
   <div class="kv">${(d.glance||[]).map(g=>`<div>${esc(g.label)}</div><div>${esc(g.value)}</div>`).join("")}</div>
   ${order.map(k=>`<div class="field"><div class="key">${esc(k)}</div><div class="body">${safeHtml(fields[k])}</div></div>`).join("")}
   <hr>
-  <div class="card"><div class="meta">SEO</div><div class="kv" style="margin-top:8px"><div>Title</div><div>${esc(d.seo?.seo_title)} <span class="pill ${(d.seo?.seo_title||"").length>60?"warn":"ok"}">${(d.seo?.seo_title||"").length}</span></div><div>Description</div><div>${esc(d.seo?.meta_description)} <span class="pill ${(d.seo?.meta_description||"").length>155?"warn":"ok"}">${(d.seo?.meta_description||"").length}</span></div><div>Slug</div><div>${esc(d.seo?.slug)}</div><div>Primary query</div><div>${esc(d.seo?.primary_query)}</div><div>Secondary</div><div>${(d.seo?.secondary_queries||[]).map(esc).join("<br>")}</div><div>Links</div><div>${(d.links||[]).map(esc).join("<br>")}</div></div></div>
+  <div class="card"><div class="meta">SEO · title lock ${tl.every(x=>x.ok)?'<span class="pill ok">pass</span>':'<span class="pill warn">'+tl.filter(x=>!x.ok).length+' to fix</span>'}</div><div class="kv" style="margin-top:8px"><div>Title</div><div>${esc(d.seo?.seo_title)} <span class="pill ${(d.seo?.seo_title||"").length>60?"warn":"ok"}">${(d.seo?.seo_title||"").length}</span><div class="note">${tl.filter(x=>!x.ok).map(x=>esc(x.msg)).join(" · ")}</div></div><div>Description</div><div>${esc(d.seo?.meta_description)} <span class="pill ${(d.seo?.meta_description||"").length>155?"warn":"ok"}">${(d.seo?.meta_description||"").length}</span></div><div>Slug</div><div>${esc(d.seo?.slug)}</div><div>Primary query</div><div>${esc(d.seo?.primary_query)}</div><div>Secondary</div><div>${(d.seo?.secondary_queries||[]).map(esc).join("<br>")}</div><div>AI questions</div><div>${(d.seo?.ai_questions||[]).map(esc).join("<br>")}</div><div>Links</div><div>${(d.links||[]).map(esc).join("<br>")}</div></div></div>
+  ${(d.photos_needed||[]).length?`<div class="card"><div class="meta">PHOTOS NEEDED</div>${d.photos_needed.map(p=>`<div style="margin-top:6px"><strong>${esc(p.slot||p)}</strong> — ${esc(p.shows||"")}<div class="note">alt: ${esc(p.alt||"")}</div></div>`).join("")}</div>`:""}
   ${(d.verify||[]).length?`<div class="card"><div class="meta">VERIFY BEFORE PUBLISH</div><ul style="margin:6px 0 0 18px">${d.verify.map(v=>`<li>${esc(v)}</li>`).join("")}</ul></div>`:""}
   ${(r.needs_coco||[]).length?`<div class="card"><div class="meta">NEEDS COCO</div><ul style="margin:6px 0 0 18px">${r.needs_coco.map(v=>`<li>${esc(v)}</li>`).join("")}</ul></div>`:""}
   ${(r.gates||[]).length?`<div class="card"><div class="meta">GATES</div>${r.gates.map(g=>`<div><span class="pill ${g.verdict==="PASS"?"ok":g.verdict==="FIXED"?"warn":"bad"}">${esc(g.verdict)}</span> ${g.n}. ${esc(GATES[(g.n||1)-1]?.[0]||"")} <span style="color:var(--muted)">— ${esc(g.note)}</span></div>`).join("")}</div>`:""}
   ${(r.voice_changes||[]).length?`<div class="card"><div class="meta">VOICE PASS · ${r.voice_changes.length} changes</div>${r.voice_changes.slice(0,12).map(v=>`<div style="margin-top:6px"><span style="color:var(--muted);text-decoration:line-through">${esc(v.before)}</span><br>${esc(v.after)}</div>`).join("")}</div>`:""}
-  <div class="row">${id&&canWrite?`<button class="btn" data-approve="${esc(id)}">Approve → build in WordPress</button>`:""}<button class="btn alt" data-copy="payload">Copy WordPress payload</button><button class="btn alt" data-copy="text">Copy as text</button></div>
+  ${job.research?`<div class="card"><div class="meta">WORKER RESEARCH</div><div style="white-space:pre-wrap;font-size:13px">${esc(typeof job.research==="string"?job.research:JSON.stringify(job.research,null,1))}</div></div>`:""}
+  ${job.worker_notes?`<div class="card"><div class="meta">WORKER NOTES</div><div style="white-space:pre-wrap;font-size:13px">${esc(job.worker_notes)}</div></div>`:""}
+  <div class="row">${id&&canWrite&&job.status!=="built"?`<button class="btn" data-approve="${esc(id)}">${job.status==="approved"?"Approved — waiting for the worker":"Approve → build in WordPress"}</button>`:""}<button class="btn alt" data-copy="payload">Copy WordPress payload</button><button class="btn alt" data-copy="text">Copy as text</button><button class="btn alt" data-social="1">Make social kit →</button></div>
  </div>`;
  el.querySelector('[data-copy="payload"]').onclick=e=>copyText(JSON.stringify(payload,null,1),e.target);
- el.querySelector('[data-copy="text"]').onclick=e=>copyText([d.post_title,"",d.short_answer,"",...(d.glance||[]).map(g=>g.label+": "+g.value),"",...order.map(k=>k.toUpperCase()+"\n"+String(fields[k]).replace(/<[^>]+>/g,"")),"",JSON.stringify(d.seo)].join("\n"),e.target);
- const ab=el.querySelector("[data-approve]"); if(ab) ab.onclick=async()=>{ab.disabled=true;try{await db.doc("jobs/"+ab.dataset.approve).update({status:"approved",updatedAt:Date.now()});ab.textContent="Approved — the worker builds it next run"}catch(e){ab.disabled=false;$("#n-note").textContent="Couldn't update the job."}};
+ el.querySelector('[data-copy="text"]').onclick=e=>copyText(pieceText(job),e.target);
+ el.querySelector('[data-social]').onclick=()=>{$("#s-text").value=pieceText(job);ls.set("s-text",$("#s-text").value);$("#s-photos").value=(d.photos_needed||[]).map(p=>p.shows||p.slot||p).join(" · ");socialSrc={title:d.post_title,url:job.source_url||"",jobId:id};show("social");window.scrollTo({top:0,behavior:"smooth"})};
+ const ab=el.querySelector("[data-approve]"); if(ab&&job.status!=="approved") ab.onclick=async()=>{ab.disabled=true;try{await db.doc("jobs/"+ab.dataset.approve).update({status:"approved",updatedAt:Date.now()});ab.textContent="Approved — the worker builds it next run"}catch(e){ab.disabled=false;$("#n-note").textContent="Couldn't update the job."}};
 }
 
 // ---------- Queue ----------
@@ -455,11 +624,132 @@ function renderQueue(snap){
  jobsCache=snap.docs.map(d=>({id:d.id,...d.data()}));
  const tb=$("#q-table tbody"); tb.innerHTML="";
  jobsCache.forEach(j=>{const tr=document.createElement("tr");
-  tr.innerHTML=`<td class="num">${esc(new Date(j.updatedAt||j.createdAt||0).toISOString().slice(0,10))}</td><td>${esc(j.title||j.subject)}</td><td>${esc(FORMATS[j.format]?.label||j.format)}${j.mode==="update"?' <span class="pill warn">update</span>':""}</td><td><span class="pill ${j.status==="built"?"ok":j.status==="needs-site"?"bad":""}">${esc(j.status)}</span>${j.preview_url?` <a href="${esc(j.preview_url)}" target="_blank" rel="noopener">preview</a>`:""}</td><td><button class="copy" data-open="${esc(j.id)}">open</button>${canWrite?` <button class="copy del" data-id="${esc(j.id)}">remove</button>`:""}</td>`;
+  tr.innerHTML=`<td class="num">${esc(new Date(j.updatedAt||j.createdAt||0).toISOString().slice(0,10))}</td><td>${esc(j.title||j.subject)}${j.reason?` <span class="pill warn">${esc(j.reason)}</span>`:""}</td><td>${esc(fmtLabel(j.format))}${j.mode==="update"?' <span class="pill warn">update</span>':""}</td><td><span class="pill ${j.status==="built"?"ok":(j.status==="needs-site"||j.status==="needs-coco")?"bad":""}">${esc(j.status)}</span>${j.preview_url?` <a href="${esc(j.preview_url)}" target="_blank" rel="noopener">preview</a>`:""}</td><td><button class="copy" data-open="${esc(j.id)}">open</button>${canWrite?` <button class="copy del" data-id="${esc(j.id)}">remove</button>`:""}</td>`;
   tb.append(tr)});
- tb.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{const j=jobsCache.find(x=>x.id===b.dataset.open); if(!j)return; if(j.draft) renderPiece($("#q-detail"),j,j.id); else $("#q-detail").innerHTML=`<div class="card"><div class="meta">${esc(j.status)}</div><h4>${esc(j.title||j.subject)}</h4><div class="note">${esc((j.notes||"").slice(0,600))}</div>${j.worker_notes?`<div class="note">${esc(j.worker_notes)}</div>`:""}</div>`; $("#q-detail").scrollIntoView({behavior:"smooth"})});
+ renderProcessStats();
+ tb.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{const j=jobsCache.find(x=>x.id===b.dataset.open); if(!j)return; if(j.draft) renderPiece($("#q-detail"),j,j.id); else $("#q-detail").innerHTML=`<div class="card"><div class="meta">${esc(j.status)}${j.reason?" · "+esc(j.reason):""}</div><h4>${esc(j.title||j.subject)}</h4>${j.source_url?`<div class="note"><a href="${esc(j.source_url)}" target="_blank" rel="noopener">${esc(j.source_url)}</a></div>`:""}<div class="note">${esc((j.missing||j.notes||"").slice(0,600))}</div>${j.proposed_fix?`<div class="note">Proposed fix: ${esc(j.proposed_fix)}</div>`:""}${j.worker_notes?`<div class="note">${esc(j.worker_notes)}</div>`:""}</div>`; $("#q-detail").scrollIntoView({behavior:"smooth"})});
  tb.querySelectorAll(".del").forEach(b=>b.onclick=async()=>{if(b.dataset.armed){try{await db.doc("jobs/"+b.dataset.id).delete()}catch(e){}}else{b.dataset.armed="1";b.textContent="confirm remove";setTimeout(()=>{b.dataset.armed="";b.textContent="remove"},3000)}});
 }
+
+// ---------- Library ----------
+let lib=[], libSel=null;
+function libFilter(){
+ const q=$("#l-q").value.trim().toLowerCase(), p=$("#l-pillar").value, c=$("#l-cat").value, hl=$("#l-health").value, from=$("#l-from").value, to=$("#l-to").value, sort=$("#l-sort").value;
+ let rows=lib.filter(r=>(!q||[r.title,r.url,r.keyword,r.seo_title,(r.secondary_keywords||[]).join(" ")].join(" ").toLowerCase().includes(q))&&(!p||r.pillar===p)&&(!c||r.category===c)&&(!hl||(hl==="unset"?!r.health:r.health===hl))&&(!from||(r.last_updated||"")>=from)&&(!to||(r.last_updated||"")<=to));
+ const hRank={decaying:0,stale:1,duplicate:2,thin:3,ok:5};
+ rows.sort((a,b)=>sort==="title"?String(a.title).localeCompare(b.title):sort==="clicks"?((b.rank?.clicks28||0)-(a.rank?.clicks28||0)):sort==="health"?((hRank[a.health]??4)-(hRank[b.health]??4)):String(b.last_updated||"").localeCompare(a.last_updated||""));
+ return rows;
+}
+function renderLib(){
+ const rows=libFilter(); const tb=$("#l-table tbody"); tb.innerHTML="";
+ rows.slice(0,400).forEach(r=>{const tr=document.createElement("tr"); tr.className="rowbtn"; tr.dataset.id=r.id;
+  tr.innerHTML=`<td>${esc(r.title)}</td><td>${esc(r.pillar)} · ${esc(fmtLabel(r.format)||r.format)}</td><td>${esc(r.category||"")}</td><td>${esc(r.keyword||"")}</td><td class="num">${esc(r.last_updated||"")}</td><td class="num">${r.rank?esc(String(r.rank.clicks28??"")):"—"}</td><td>${r.health?`<span class="pill ${r.health==="ok"?"ok":"warn"}">${esc(r.health)}</span>`:'<span class="pill">—</span>'}</td>`;
+  tr.onclick=()=>openLib(r.id); tb.append(tr)});
+ $("#l-count").textContent=`${rows.length} of ${lib.length} pieces`;
+ const cnt=k=>lib.filter(r=>r.health===k).length;
+ $("#l-stats").innerHTML=`<span class="stat"><b>${lib.length}</b>pieces</span><span class="stat"><b>${lib.filter(r=>r.pillar!=="Old blog post").length}</b>pillar pieces</span><span class="stat"><b>${cnt("decaying")}</b>decaying</span><span class="stat"><b>${cnt("stale")}</b>stale</span><span class="stat"><b>${lib.filter(r=>r.rank).length}</b>with rankings</span>`;
+ const sel=$("#s-pick"); const cur=sel.value; sel.innerHTML='<option value="">Choose a piece…</option>'+lib.slice().sort((a,b)=>String(a.title).localeCompare(b.title)).map(r=>`<option value="${esc(r.id)}">${esc(r.title)}</option>`).join(""); sel.value=cur;
+}
+["l-q","l-pillar","l-cat","l-health","l-from","l-to","l-sort"].forEach(id=>$("#"+id).addEventListener("input",renderLib));
+$("#l-clear").onclick=()=>{["l-q","l-pillar","l-cat","l-health","l-from","l-to"].forEach(id=>$("#"+id).value="");$("#l-sort").value="updated";renderLib()};
+function openLib(id){
+ const r=lib.find(x=>x.id===id); if(!r)return; libSel=r; const s=r.suggestions||{}; const rk=r.rank;
+ $("#l-detail").innerHTML=`<div class="piece">
+  <div class="kicker">${esc(r.pillar)} · ${esc(fmtLabel(r.format)||r.format)} · ${esc(r.category||"")}</div>
+  <h2 class="title">${esc(r.title)}</h2>
+  <div class="byline"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a> · updated ${esc(r.last_updated||"?")} · ${r.paywalled?"gated":"free"} · ${esc(String(r.visible_words||"?"))} visible words</div>
+  <div class="two">
+   <div><label>Category</label><select id="d-cat" ${canWrite?"":"disabled"}>${["Commercial","Decision-support","Informational","Specialist intel","Authority"].map(c=>`<option ${c===r.category?"selected":""}>${c}</option>`).join("")}</select></div>
+   <div><label>Primary keyword</label><input type="text" id="d-kw" value="${esc(r.keyword||"")}" ${canWrite?"":"disabled"}></div>
+  </div>
+  <label>Goal</label><input type="text" id="d-goal" value="${esc(r.goal||"")}" ${canWrite?"":"disabled"}>
+  <label>Notes</label><textarea id="d-notes" style="min-height:70px" ${canWrite?"":"disabled"}>${esc(r.notes||"")}</textarea>
+  <div class="row">${canWrite?'<button class="btn alt" id="d-save">Save</button>':""}<button class="btn" id="d-improve">Suggest improvements</button><button class="btn alt" id="d-research">Request keyword research</button><button class="btn alt" id="d-refresh">Refresh this piece</button><button class="btn alt" id="d-social">Make social kit</button><span class="note" id="d-note"></span></div>
+  ${rk?`<div class="card"><div class="meta">RANKINGS · 28 days (pulled ${esc(rk.pulled_at||"")})</div><div class="kv" style="margin-top:8px"><div>Clicks</div><div>${esc(String(rk.clicks28))} <span class="note">prev ${esc(String(rk.clicks_prev??"—"))}</span></div><div>Impressions</div><div>${esc(String(rk.impressions28))} <span class="note">prev ${esc(String(rk.impressions_prev??"—"))}</span></div><div>Position</div><div>${esc(String(rk.position28))} <span class="note">prev ${esc(String(rk.position_prev??"—"))}</span></div><div>Top queries</div><div>${(rk.top_queries||[]).map(esc).join("<br>")}</div><div>GA4 sessions</div><div>${esc(String(rk.ga_sessions28??"—"))} · engaged ${esc(String(rk.ga_engaged28??"—"))}</div></div></div>`:'<div class="note">No rankings yet — the Monday run fills this once Search Console and GA4 credentials are in the environment (rankings-integration.md).</div>'}
+  ${(r.ai_questions||[]).length?`<div class="card"><div class="meta">AI QUESTIONS IT ANSWERS</div>${r.ai_questions.map(q=>`<div>${esc(q)}</div>`).join("")}</div>`:""}
+  <div id="d-sugg">${s.generated_at?renderSugg(s):""}</div>
+ </div>`;
+ $("#l-detail").scrollIntoView({behavior:"smooth",block:"start"});
+ const save=$("#d-save"); if(save) save.onclick=async()=>{try{await db.doc("library/"+r.id).update({category:$("#d-cat").value,keyword:$("#d-kw").value.trim(),goal:$("#d-goal").value.trim(),notes:$("#d-notes").value.trim(),updatedAt:Date.now()});$("#d-note").textContent="Saved."}catch(e){$("#d-note").textContent="Couldn't save."}};
+ $("#d-improve").onclick=async()=>{
+  if(!sample){$("#d-note").textContent="Claude isn't available in this view.";return}
+  $("#d-improve").disabled=true; $("#d-note").textContent="Thinking…";
+  try{const sg=await sample.json(improvePrompt(r),{cache:false}); sg.generated_at=today(); $("#d-sugg").innerHTML=renderSugg(sg); $("#d-note").textContent="";
+   if(canWrite){try{await db.doc("library/"+r.id).update({suggestions:sg,updatedAt:Date.now()})}catch(e){}}
+  }catch(e){$("#d-note").textContent=copyFor(e)} finally{$("#d-improve").disabled=false}
+ };
+ $("#d-research").onclick=async()=>{
+  if(!db||!canWrite){$("#d-note").textContent="Store not writable.";return}
+  try{await db.collection("jobs").add({type:"research",mode:"research",status:"queued",title:r.title,subject:r.title,source_url:r.url,format:r.format,library_id:r.id,createdAt:Date.now(),updatedAt:Date.now()});$("#d-note").textContent="Research job queued — the worker writes keywords and AI questions back to this record."}catch(e){$("#d-note").textContent="Couldn't queue it."}
+ };
+ $("#d-refresh").onclick=()=>{$("#n-mode").value="update";syncMode();$("#n-url").value=r.url;$("#n-subject").value=r.title;$("#n-format").value=FORMATS[r.format]?r.format:"suggest";$("#n-missing").value=(s.structure||[]).concat(s.seo||[]).slice(0,6).join(" · ");["n-url","n-subject","n-missing"].forEach(i=>ls.set(i,$("#"+i).value));show("new");window.scrollTo({top:0,behavior:"smooth"})};
+ $("#d-social").onclick=()=>{$("#s-pick").value=r.id;socialSrc={title:r.title,url:r.url,libId:r.id};$("#s-focus").value=s.social_angle||"";$("#s-photos").value=(s.photos||[]).slice(0,5).join(" · ");show("social");window.scrollTo({top:0,behavior:"smooth"})};
+}
+function renderSugg(s){
+ const li=a=>(a||[]).map(x=>`<li>${esc(x)}</li>`).join("");
+ const tc=s.title_check||{};
+ return `<div class="card"><div class="meta">SUGGESTIONS · ${esc(s.generated_at||"")}</div>
+  <h4>SEO</h4><ul style="margin:4px 0 0 18px">${li(s.seo)}</ul>
+  <h4>Structure</h4><ul style="margin:4px 0 0 18px">${li(s.structure)}</ul>
+  <h4>Photographs that would carry it</h4><ul style="margin:4px 0 0 18px">${li(s.photos)}</ul>
+  <h4>Keywords</h4><div class="kv"><div>Primary</div><div>${esc(s.keywords?.primary||"")}</div><div>Secondary</div><div>${(s.keywords?.secondary||[]).map(esc).join(", ")}</div><div>AI questions</div><div>${(s.keywords?.ai_questions||[]).map(esc).join("<br>")}</div></div>
+  <h4>Title lock</h4><div class="kv"><div>SEO title</div><div>${esc(tc.proposed_seo_title||"")} <span class="pill ${(tc.proposed_seo_title||"").length>60?"warn":"ok"}">${(tc.proposed_seo_title||"").length}</span></div><div>Meta</div><div>${esc(tc.proposed_meta||"")}</div><div>H1</div><div>${esc(tc.proposed_h1||"")}</div></div>
+  <h4>Social angle</h4><div>${esc(s.social_angle||"")}</div>
+ </div>`;
+}
+
+// ---------- Social ----------
+let socialSrc={};
+$("#s-pick").addEventListener("change",()=>{const r=lib.find(x=>x.id===$("#s-pick").value); if(r){socialSrc={title:r.title,url:r.url,libId:r.id}; if(r.suggestions?.social_angle&&!$("#s-focus").value)$("#s-focus").value=r.suggestions.social_angle; $("#s-note").textContent=$("#s-text").value.trim()?"":"Paste the piece text below (the library holds the record, not the body)."}});
+$("#s-run").onclick=async()=>{
+ const text=$("#s-text").value.trim(); if(!text){$("#s-note").textContent="Paste the piece text or send one from the Queue / Library.";return}
+ if(!sample) return;
+ const c=new AbortController(); $("#s-run").disabled=true; $("#s-stop").disabled=false; $("#s-stop").onclick=()=>c.abort();
+ $("#s-stream").textContent="Thinking…"; $("#s-kit").innerHTML=""; $("#s-note").textContent="";
+ try{
+  const kit=await sample.json(socialPrompt({...socialSrc,text,photos:$("#s-photos").value.trim(),focus:$("#s-focus").value.trim(),deliverable:$("#s-deliverable").value.trim()}),{signal:c.signal,cache:false,onText:({text})=>{$("#s-stream").textContent=text.slice(-1200)}});
+  $("#s-stream").textContent=""; renderKit($("#s-kit"),kit);
+  if(db&&canWrite){try{const ref=await db.collection("social").add({...kit,piece:socialSrc.title||"",url:socialSrc.url||"",libId:socialSrc.libId||"",date:today(),createdAt:Date.now()}); if(socialSrc.libId){const r=lib.find(x=>x.id===socialSrc.libId); if(r) db.doc("library/"+r.id).update({social:(r.social||[]).concat(ref.id),updatedAt:Date.now()}).catch(()=>{})}}catch(e){}}
+ }catch(e){$("#s-stream").textContent=""; if(e.code!=="cancelled") $("#s-note").textContent=copyFor(e)}
+ finally{$("#s-run").disabled=false;$("#s-stop").disabled=true}
+};
+function renderKit(el,k){
+ const slides=(k.carousel||[]);
+ el.innerHTML=`<div class="piece">
+  <div class="kicker">SOCIAL KIT · ${esc(k.hook||"")}</div>
+  <h3>Carousel <button class="copy" data-c="${esc(slides.map(s=>`${s.n}. ${s.text}\n   photo: ${s.photo||""}`).join("\n"))}">copy all</button></h3>
+  <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${slides.map(s=>`<div class="slide"><div class="n">SLIDE ${esc(String(s.n))}</div><div class="t">${esc(s.text)}</div><div class="ph">${esc(s.photo||"")}</div></div>`).join("")}</div>
+  <h3>Caption <button class="copy" data-c="${esc(k.caption||"")}">copy</button></h3><div class="out" style="margin-top:4px">${esc(k.caption||"")}</div>
+  <h3>First comment <button class="copy" data-c="${esc(k.first_comment||"")}">copy</button></h3><div class="out" style="margin-top:4px">${esc(k.first_comment||"")}</div>
+  <div class="two">
+   <div><h3>DM keyword</h3><div>${k.dm_keyword?`<strong>${esc(k.dm_keyword.word)}</strong> — ${esc(k.dm_keyword.line)}`:'<span class="note">Not this time — no concrete deliverable to send. (Right call: keyword asks only work with something real behind them.)</span>'}</div></div>
+   <div><h3>Tags</h3><div>${(k.tags||[]).map(esc).join(" · ")}</div></div>
+  </div>
+  <h3>Coco Edit · Reel / Short <button class="copy" data-c="${esc(k.coco_edit?.script||"")}">copy</button></h3><div class="out" style="margin-top:4px">${esc(k.coco_edit?.script||"")}</div><div class="note">On screen: ${esc(k.coco_edit?.on_screen||"")} · B-roll: ${(k.coco_edit?.broll||[]).map(esc).join(", ")}</div>
+  <h3>Stories</h3><div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">${(k.stories||[]).map(s=>`<div class="slide"><div class="n">FRAME ${esc(String(s.frame))}</div><div class="t">${esc(s.text)}</div><div class="ph">${esc(s.sticker||"")}</div></div>`).join("")}</div>
+  <h3>Pinterest</h3><div class="kv"><div>Title</div><div>${esc(k.pinterest?.title||"")}</div><div>Description</div><div>${esc(k.pinterest?.description||"")}</div><div>Board</div><div>${esc(k.pinterest?.board||"")}</div></div>
+  <h3>Alt text</h3><div class="kv">${(k.alt||[]).map(a=>`<div>${esc(a.photo)}</div><div>${esc(a.alt)}</div>`).join("")}</div>
+  <div class="note" style="margin-top:12px">${esc(k.posting_notes||"")}</div>
+  <div class="row"><button class="btn alt" id="k-all">Copy whole kit</button></div>
+ </div>`;
+ el.querySelectorAll(".copy").forEach(b=>b.onclick=()=>copyText(b.dataset.c,b));
+ $("#k-all").onclick=e=>copyText(["HOOK: "+k.hook,"","CAROUSEL",...slides.map(s=>`${s.n}. ${s.text}  [${s.photo||""}]`),"","CAPTION",k.caption,"","FIRST COMMENT",k.first_comment,"",k.dm_keyword?`DM: ${k.dm_keyword.word} — ${k.dm_keyword.line}`:"DM: none","","COCO EDIT",k.coco_edit?.script,"On screen: "+(k.coco_edit?.on_screen||""),"B-roll: "+(k.coco_edit?.broll||[]).join(", "),"","STORIES",...(k.stories||[]).map(s=>`${s.frame}. ${s.text} [${s.sticker||""}]`),"","PINTEREST",k.pinterest?.title,k.pinterest?.description,"Board: "+(k.pinterest?.board||""),"","TAGS: "+(k.tags||[]).join(" "),"","ALT",...(k.alt||[]).map(a=>`${a.photo}: ${a.alt}`),"",k.posting_notes||""].join("\n"),e.target);
+}
+function renderSocialList(snap){
+ const tb=$("#s-table tbody"); tb.innerHTML="";
+ snap.docs.forEach(d=>{const k=d.data(); const tr=document.createElement("tr");
+  tr.innerHTML=`<td class="num">${esc(k.date)}</td><td>${esc(k.piece)}</td><td>${esc(k.hook)}</td><td><button class="copy" data-id="${esc(d.id)}">open</button>${canWrite?` <button class="copy del" data-id="${esc(d.id)}">remove</button>`:""}</td>`;
+  tr.querySelector("[data-id]:not(.del)").onclick=()=>{renderKit($("#s-kit"),k);$("#s-kit").scrollIntoView({behavior:"smooth"})};
+  const del=tr.querySelector(".del"); if(del) del.onclick=async()=>{if(del.dataset.armed){try{await db.doc("social/"+d.id).delete()}catch(e){}}else{del.dataset.armed="1";del.textContent="confirm remove";setTimeout(()=>{del.dataset.armed="";del.textContent="remove"},3000)}};
+  tb.append(tr)});
+}
+
+// ---------- Process ----------
+function renderProcessStats(){
+ const c=s=>jobsCache.filter(j=>j.status===s).length;
+ $("#pr-stats").innerHTML=["queued","drafted","researched","approved","built","needs-site","needs-coco"].map(s=>`<span class="stat"><b>${c(s)}</b>${s}</span>`).join("");
+}
+$("#t-run").onclick=()=>{const iss=titleCheck($("#t-title").value,$("#t-format").value); $("#t-out").innerHTML=`<div class="card"><div class="meta">${iss.every(x=>x.ok)?'<span class="pill ok">PASSES THE LOCK</span>':'<span class="pill bad">'+iss.filter(x=>!x.ok).length+' TO FIX</span>'} · pattern: ${esc(FORMATS[$("#t-format").value]?.pattern||"")}</div>${iss.map(x=>`<div><span class="pill ${x.ok?"ok":"bad"}">${x.ok?"ok":"fix"}</span> ${esc(x.msg)}</div>`).join("")}</div>`};
 
 // ---------- Citations & benchmark ----------
 function renderPitches(snap){
@@ -481,14 +771,14 @@ $("#p-add").onclick=async()=>{
  if(!db||!canWrite){$("#p-note").textContent="You can't write to the store in this view.";return}
  const outlet=$("#p-outlet").value.trim(), ask=$("#p-ask").value.trim(); if(!outlet&&!ask){$("#p-note").textContent="Add an outlet or what you pitched.";return}
  $("#p-add").disabled=true;
- try{await db.collection("pitches").add({date:new Date().toISOString().slice(0,10),outlet,platform:$("#p-platform").value,ask,status:$("#p-status").value,link:$("#p-link").value.trim(),createdAt:Date.now()});["p-outlet","p-ask","p-link"].forEach(i=>$("#"+i).value="");$("#p-note").textContent="Added."}
+ try{await db.collection("pitches").add({date:today(),outlet,platform:$("#p-platform").value,ask,status:$("#p-status").value,link:$("#p-link").value.trim(),createdAt:Date.now()});["p-outlet","p-ask","p-link"].forEach(i=>$("#"+i).value="");$("#p-note").textContent="Added."}
  catch(e){$("#p-note").textContent=e.code==="quota_exceeded"?"The store is full — remove old rows.":"Couldn't add that row."}
  finally{$("#p-add").disabled=false}
 };
 $("#b-add").onclick=async()=>{
  if(!db||!canWrite){$("#b-note").textContent="You can't write to the store in this view.";return}
  $("#b-add").disabled=true;
- try{await db.collection("benchmarks").add({date:$("#b-date").value||new Date().toISOString().slice(0,10),tool:$("#b-tool").value,cited:Number($("#b-cited").value)||0,correct:Number($("#b-correct").value)||0,notes:$("#b-notes").value.trim(),createdAt:Date.now()});["b-cited","b-correct","b-notes"].forEach(i=>$("#"+i).value="");$("#b-note").textContent="Added."}
+ try{await db.collection("benchmarks").add({date:$("#b-date").value||today(),tool:$("#b-tool").value,cited:Number($("#b-cited").value)||0,correct:Number($("#b-correct").value)||0,notes:$("#b-notes").value.trim(),createdAt:Date.now()});["b-cited","b-correct","b-notes"].forEach(i=>$("#"+i).value="");$("#b-note").textContent="Added."}
  catch(e){$("#b-note").textContent="Couldn't add that run."}
  finally{$("#b-add").disabled=false}
 };
@@ -496,8 +786,9 @@ $("#b-add").onclick=async()=>{
 function setStatus(){
  $("#st-sample").textContent=sample?"ready":"off"; $("#st-db").textContent=db?(canWrite?"shared · write":"shared · read"):"off"; $("#st-granola").textContent=granolaOk?"ready":(mcp?"ask":"off");
  $("#n-quiet").style.display=sample?"none":"block"; $("#n-run").disabled=!sample;
+ $("#s-quiet").style.display=sample?"none":"block"; $("#s-run").disabled=!sample;
  $("#g-quiet").style.display=mcp?"none":"block"; $("#g-search").disabled=!mcp;
- ["q","p","b"].forEach(k=>$("#"+k+"-quiet").style.display=db?"none":"block");
+ ["q","p","b","l"].forEach(k=>$("#"+k+"-quiet").style.display=db?"none":"block");
 }
 (async()=>{
  setStatus();
@@ -507,7 +798,9 @@ function setStatus(){
  if(mcp){try{const l=await mcp.listTools("Granola");granolaOk=!!(l?.servers||[]).find(x=>x.server==="Granola"&&x.authStatus!=="needs_reauth")}catch(e){granolaOk=false}}
  setStatus();
  if(db){
-  try{db.collection("jobs").orderBy("updatedAt","desc").limit(100).onSnapshot(renderQueue,()=>{})}catch(e){}
+  try{db.collection("jobs").orderBy("updatedAt","desc").limit(200).onSnapshot(renderQueue,()=>{})}catch(e){}
+  try{db.collection("library").limit(1000).onSnapshot(snap=>{lib=snap.docs.map(x=>({id:x.id,...x.data()}));renderLib();if(libSel){const r=lib.find(x=>x.id===libSel.id);if(r)libSel=r}},()=>{})}catch(e){}
+  try{db.collection("social").orderBy("createdAt","desc").limit(100).onSnapshot(renderSocialList,()=>{})}catch(e){}
   try{db.collection("pitches").orderBy("createdAt","desc").limit(200).onSnapshot(renderPitches,()=>{})}catch(e){}
   try{db.collection("benchmarks").orderBy("createdAt","desc").limit(100).onSnapshot(renderBench,()=>{})}catch(e){}
  }

@@ -44,6 +44,12 @@
 | `06-wp-plugin/coco-photo-cms/` | **WordPress plugin**: resize + WebP/AVIF on upload, descriptive filenames from Property/Place/Detail fields, required alt + credit, rename-with-301, replace everywhere or only-here, usages finder, ImageObject schema, REST intake for the artifact, bulk tools. `php -l` clean; not yet run on a live site — install on staging first. README inside. |
 | `07-ai-benchmark/` | `questions.md` (the fixed 20 + method) and dated run reports. Baseline 24 Oct: **0 of 20** cited. Re-runs on the 1st and 15th via the scheduled task. |
 | `08-skills/coco-editorial-standards/SKILL.md` | The standards as a skill — add to the Coco Tran Collective project so every drafting session follows them |
+| `05-editorial-system/content-system.md` | The library schema (category · goal · keyword · last updated · rankings · health), the update cadence, the **title lock**, and the locked editorial process |
+| `05-editorial-system/social-reuse-playbook.md` | One piece → carousel, caption, hashtags, first comment, DM keyword, Coco Edit, stories, Pin — built on the Content Spinner rules, optimised for saves |
+| `05-editorial-system/rankings-integration.md` | Search Console + GA4 → library → refresh jobs: the one-time setup (service account, env vars) and the health rules |
+| `05-editorial-system/pillar-structure-proposals.md` | The ACF groups and taxonomy terms to add (Answerable opening, Content system, The Answer, Comparison fields, Planning Room fields, booking box) |
+| `data/library-seed/` | The 181 library records seeded into the Studio Desk store on 24 Oct |
+| **Scheduled tasks** | "Coco Tran studio queue worker" (4×/day) · "Coco Tran weekly rankings and library health" (Mondays 7:51 PT) · "Coco Tran AI-visibility benchmark" (1st & 15th) |
 | **Studio Desk artifact (v2)** | https://claude.ai/artifact/NVykejaCwzyJDdN2G1NMQt — one pipeline: pillar + subject + context (paste, Granola pull, Proposal/Agency Studio names) → drafts the whole piece in Coco's voice and pillar structure with the opening block and SEO set, runs the gates and voice pass on itself, queues it. Source: `10-artifacts/studio-desk.html` |
 | `08-skills/studio-pipeline/SKILL.md` | The worker: picks up the queue, researches title/meta/H1/keyword against what ranks, reads Proposal/Agency Studio, verifies facts, builds the WordPress draft (Application Password, Cowork Chrome, or writes the payload to `09-studio-output/`). Runs 4×/day as the scheduled task "Coco Tran studio queue worker"; also runnable by asking any session to "run the studio queue". |
 
