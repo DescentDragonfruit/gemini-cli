@@ -94,6 +94,10 @@ Readers ask through "Ask Coco about this place" (https://tally.so/r/Nqpavl, embe
 
 Mirrored from Agency Studio's supplier CRM by `11-builds/suppliers-sync.md`. The desk matches a job's subject against `suppliers` and shows the contact + "Draft the GM email". When a Verdict job is `queued` and no supplier matches, say so in `worker_notes` so Coco can add the contact in Agency Studio; never invent a contact. Re-run the sync (same doc) whenever Agency Studio's records change.
 
+## 6d. The link map (internal autolinks)
+
+After any piece goes live, is retired or merged, and at the end of the Monday run: rebuild the link map from the `library` collection and `POST /wp-json/coco-tran/v1/link-map` per `11-builds/wordpress-assets/link-map-builder.md` (keyword + title + hotel-name aliases + destination; priority Commercial 3 / Decision-support 2 / else 1; skip `retired` and `merged-into:` records). Record `version`, `stored` and any `rejected` in the run report; the desk reads `GET /autolink-report?post=ID` per piece.
+
 ## 7. Report
 
 One short message: pieces drafted / researched / built with preview links, anything `needs-coco` and why, VERIFY items left. Lead with corrections that matter to her business (a closure, a rebrand, a rule change found in research).
