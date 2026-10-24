@@ -35,6 +35,7 @@ function ccpc_default_settings() {
 		'make_avif'         => 0,
 		'keep_originals'    => 1,
 		'serve_webp'        => 1,
+		'front_cap'         => 1600,
 		'filename_template' => '{property}-{place}-{subject}-{n}-coco-tran',
 		'auto_rename'       => 1,
 		'default_credit'    => 'Photo: Coco Tran',

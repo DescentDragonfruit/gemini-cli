@@ -44,3 +44,8 @@ The label above the short answer is static ("The short answer"). Primer / Route 
 
 ## Styling tokens
 The `<style>` uses Kadence's globals: `--global-palette1` (accent → `--ct-accent`), `--global-palette3/5/7` (ink / grey / hairline), `--global-heading-font-family` for the short answer, `--global-body-font-family` for values, and a system monospace stack in small caps for labels. If the brand accent is not palette 1, override `--ct-accent` on `.ct-ao`. `--ct-ao-max` (720px) sets the measure; match it to the single-post content width.
+
+
+## "Facts checked" line (added 24 Oct)
+
+The byline now also prints `Facts checked <last_fact_check>` from the Content-system ACF group. The worker sets `last_fact_check` to today whenever its fact pass runs and finds nothing to change, **without** touching `updated_on` — so a piece can say "Updated March 2025 · Facts checked 24 Oct 2026", which is the honest freshness signal readers and AI engines both read. The row hides when the field is empty, like the others.

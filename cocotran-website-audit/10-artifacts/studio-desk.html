@@ -355,6 +355,14 @@ tr.rowbtn{cursor:pointer}tr.rowbtn:hover td{background:var(--panel)}
 <section class="desk" id="desk-rules">
   <div class="deskhead"><div><div class="eyebrow">Reference</div><h2>House rules</h2><p class="lead">What the desk and the worker draft against. Source: <code>05-editorial-system/</code> in the audit repo.</p></div></div>
   <div class="out" id="rules-out"></div>
+  <div class="fs"><div class="fsh"><span class="num">✎</span><span class="fst">Calibrate against your own writing</span></div><p class="fsd">Paste a piece you love in your own voice. If the rules flag things you'd keep, mark them "that's me" — they become allowances and the desk stops correcting them. Do this every few weeks so the rules follow your writing, not the other way round.</p>
+   <label for="cal-text">One of your own pieces</label><textarea id="cal-text" placeholder="Paste a favourite piece, as published."></textarea>
+   <div class="row"><button class="btn" id="cal-run">Check my own writing</button><span class="note" id="cal-note"></span></div>
+   <div id="cal-out" class="cards"></div>
+   <h3>Allowances <span class="pill" id="cal-count"></span></h3>
+   <div id="cal-allow" class="cards"></div>
+   <div class="row"><input type="text" id="cal-add" placeholder="Add a phrasing or pattern by hand" style="flex:1;min-width:220px"><button class="btn alt" id="cal-addbtn">Add</button></div>
+  </div>
 </section>
 
 </main>
@@ -376,6 +384,9 @@ const VOICE = `COCO TRAN HOUSE VOICE
 - No italics (<em>) in body HTML. No mid-piece sales pitch; one Inquire line near the end where the format allows: <p><a class="button" href="https://cocotrantravel.com/contact" target="_blank" rel="noopener">Inquire about a private [trip]</a></p>
 - At least one named person, dish, designer, room number or detail only someone who was there would know. Anything not firsthand is attributed ("the hotel says"). Nothing invented; unknown facts are written [VERIFY: what] and never guessed. Client names never appear.
 - Photographer's eye once per piece (light, material, space).`;
+
+let ALLOW=[]; // Coco's own phrasings the voice rules must never flag (stored in voice/allow)
+function voiceText(){return VOICE+(ALLOW.length?"\n- ALLOWED — these are Coco's own phrasings; never flag or rewrite them: "+ALLOW.map(a=>'"'+a+'"').join("; "):"")}
 
 const GATES = [
  ["Headline says what the story covers","Subject, place and format clear; SEO title ≤60; one H1; no (2026)/ultimate/BEST."],
@@ -416,7 +427,8 @@ const PROCESS=`Context (notes · Granola · Proposal/Agency Studio · live link 
  → Worker: library record · redirects if respin · question bank · benchmark set
  → Desk: social kit (carousel · caption · hashtags · first comment · DM keyword · Coco Edit · stories · Pin)
  → Monday: Search Console + GA4 → rank + health on every record → refresh jobs for decaying/stale pieces
- → 1st & 15th: AI benchmark (20 fixed questions) → benchmark log`;
+ → 1st & 15th: AI benchmark (20 fixed questions) → benchmark log
+ → Every few weeks: paste one of your own favourite pieces into House rules → Calibrate; allow what's yours`;
 
 // ---------- title check (deterministic) ----------
 const BANNED_TITLE=/\(\s?20\d\d\s?\)|\bULTIMATE\b|\bBEST\b|\bTOP\b|\bINCREDIBLE\b|\bAWESOME\b|look no further|must-see|\|\s*$|•|\s{2,}/;
@@ -445,7 +457,7 @@ function draftPrompt(fmtKey,ctx){
   :`Write a complete ${f.label} (${f.cpt} CPT) about "${ctx.subject}" from the CONTEXT below and nothing else. Facts not in the context are written as [VERIFY: what is needed] — never invented.`;
  return `You are the Coco Tran studio desk. ${task}
 
-${VOICE}
+${voiceText()}
 
 FORMAT RULES: ${f.guide}
 FIELDS, in order, as HTML (<p>, <h3>, <h4>, <strong> only — never <em>): ${f.fields.join(", ")}.${f.selects?" SELECT FIELDS (vocabulary only, not sentences): "+Object.entries(f.selects).map(([k,v])=>k+" = "+v).join("; ")+".":""}
@@ -470,7 +482,7 @@ ${ctx.proposal?"\nProposal Studio record to be read by the worker: "+ctx.proposa
 function deskPassPrompt(fmtKey,draft){
  return `You are the Coco Tran pre-publication desk. Below is a drafted ${FORMATS[fmtKey].label} as JSON. Run it through the gates and the voice rules, FIX what can be fixed without new facts, and return the corrected JSON plus a report. Keep every fact and every verdict; keep [VERIFY] markers; never add facts.
 
-${VOICE}
+${voiceText()}
 
 GATES: ${GATES.map((g,i)=>`${i+1}. ${g[0]} — ${g[1]}`).join(" ")}
 TITLE LOCK: seo_title must follow "${FORMATS[fmtKey].pattern}", ≤60 chars, no (20xx)/ULTIMATE/BEST caps/trailing |, no kicker word, subject + place present.
@@ -717,7 +729,7 @@ function openLib(id){
  $("#l-detail").innerHTML=`<div class="piece">
   <div class="kicker">${esc(r.pillar)} · ${esc(fmtLabel(r.format)||r.format)} · ${esc(r.category||"")}</div>
   <h2 class="title">${esc(r.title)}</h2>
-  <div class="byline"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a> · updated ${esc(r.last_updated||"?")} · ${r.paywalled?"gated":"free"} · ${esc(String(r.visible_words||"?"))} visible words</div>
+  <div class="byline"><a href="${esc(r.url)}" target="_blank" rel="noopener">open on cocotran.com ↗</a> · updated ${esc(r.last_updated||"?")} · ${r.paywalled?"gated":"free"} · ${esc(String(r.visible_words||"?"))} visible words</div>
   <div class="two">
    <div><label>Category</label><select id="d-cat" ${canWrite?"":"disabled"}>${["Commercial","Decision-support","Informational","Specialist intel","Authority"].map(c=>`<option ${c===r.category?"selected":""}>${c}</option>`).join("")}</select></div>
    <div><label>Primary keyword</label><input type="text" id="d-kw" value="${esc(r.keyword||"")}" ${canWrite?"":"disabled"}></div>
@@ -725,7 +737,7 @@ function openLib(id){
   <label>Goal</label><input type="text" id="d-goal" value="${esc(r.goal||"")}" ${canWrite?"":"disabled"}>
   <label>Notes</label><textarea id="d-notes" style="min-height:70px" ${canWrite?"":"disabled"}>${esc(r.notes||"")}</textarea>
   <div class="row">${canWrite?'<button class="btn alt" id="d-save">Save</button>':""}<button class="btn" id="d-improve">Suggest improvements</button><button class="btn alt" id="d-research">Request keyword research</button><button class="btn alt" id="d-refresh">Refresh this piece</button><button class="btn alt" id="d-social">Make social kit</button><span class="note" id="d-note"></span></div>
-  ${rk?`<div class="card"><div class="meta">RANKINGS · 28 days (pulled ${esc(rk.pulled_at||"")})</div><div class="kv" style="margin-top:8px"><div>Clicks</div><div>${esc(String(rk.clicks28))} <span class="note">prev ${esc(String(rk.clicks_prev??"—"))}</span></div><div>Impressions</div><div>${esc(String(rk.impressions28))} <span class="note">prev ${esc(String(rk.impressions_prev??"—"))}</span></div><div>Position</div><div>${esc(String(rk.position28))} <span class="note">prev ${esc(String(rk.position_prev??"—"))}</span></div><div>Top queries</div><div>${(rk.top_queries||[]).map(esc).join("<br>")}</div><div>GA4 sessions</div><div>${esc(String(rk.ga_sessions28??"—"))} · engaged ${esc(String(rk.ga_engaged28??"—"))}</div></div></div>`:'<div class="note">No rankings yet — the Monday run fills this once Search Console and GA4 credentials are in the environment (rankings-integration.md).</div>'}
+  ${rk?`<div class="card"><div class="meta">RANKINGS · 28 days (pulled ${esc(rk.pulled_at||"")})</div><div class="kv" style="margin-top:8px"><div>Clicks</div><div>${esc(String(rk.clicks28??"—"))} <span class="note">prev ${esc(String(rk.clicks_prev??"—"))}</span></div><div>Impressions</div><div>${esc(String(rk.impressions28??"—"))} <span class="note">prev ${esc(String(rk.impressions_prev??"—"))}</span></div><div>Position</div><div>${esc(String(rk.position28??"—"))} <span class="note">prev ${esc(String(rk.position_prev??"—"))}</span></div><div>Top queries</div><div>${(rk.top_queries||[]).map(esc).join("<br>")}</div><div>GA4 sessions</div><div>${esc(String(rk.ga_sessions28??"—"))} · engaged ${esc(String(rk.ga_engaged28??"—"))}</div></div></div>`:'<div class="note">No rankings yet — the Monday run fills this once Search Console and GA4 credentials are in the environment (rankings-integration.md).</div>'}
   ${(r.ai_questions||[]).length?`<div class="card"><div class="meta">AI QUESTIONS IT ANSWERS</div>${r.ai_questions.map(q=>`<div>${esc(q)}</div>`).join("")}</div>`:""}
   <div id="d-sugg">${s.generated_at?renderSugg(s):""}</div>
  </div>`;
@@ -890,6 +902,27 @@ function renderPlaybook(){
 }
 (function(){const keys=Object.keys(DOCS);$("#pb-pick").innerHTML=keys.map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join("");$("#pb-pick").value=keys.includes(ls.get("pb-pick"))?ls.get("pb-pick"):keys[0];$("#pb-pick").addEventListener("change",renderPlaybook);$("#pb-q").addEventListener("input",renderPlaybook);if(keys.length)renderPlaybook()})();
 
+// ---------- Voice calibration (allowances live in voice/allow) ----------
+function renderAllow(){$("#cal-count").textContent=ALLOW.length;$("#cal-allow").innerHTML=ALLOW.length?ALLOW.map((a,i)=>`<div class="card"><div style="display:flex;gap:10px;align-items:flex-start"><div style="flex:1">${esc(a)}</div>${canWrite?`<button class="copy" data-rm="${i}">remove</button>`:""}</div></div>`).join(""):'<div class="note">None yet. Flags you mark "that\'s me" land here.</div>';$("#cal-allow").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>saveAllow(ALLOW.filter((_,j)=>j!==+b.dataset.rm)))}
+async function saveAllow(list){ALLOW=list;renderAllow();if(db&&canWrite){try{await db.doc("voice/allow").set({items:ALLOW,updatedAt:Date.now()})}catch(e){$("#cal-note").textContent="Couldn't save the allowances."}}}
+$("#cal-addbtn").onclick=()=>{const v=$("#cal-add").value.trim();if(!v)return;$("#cal-add").value="";saveAllow(ALLOW.concat(v))};
+$("#cal-run").onclick=async()=>{
+ const t=$("#cal-text").value.trim(); if(!t){$("#cal-note").textContent="Paste a piece first.";return} if(!sample)return;
+ $("#cal-run").disabled=true;$("#cal-note").textContent="Reading it against the rules…";$("#cal-out").innerHTML="";
+ try{
+  const d=await sample.json(`${voiceText()}
+
+CALIBRATION MODE. The TEXT below is Coco's own published writing, which by definition IS her voice. List every sentence the house rules above would flag, with the rule it trips. Do not rewrite anything. For each, say in one line whether the rule or the sentence is more likely wrong — i.e. whether this looks like a phrasing of hers the rules should allow. Reply with only JSON: {"summary":"one sentence on how the rules fit this piece","flags":[{"sentence":"…","rule":"…","verdict":"allow|keep rule","why":"…"}]} (max 15 flags).
+
+TEXT:
+${t.slice(0,12000)}`,{cache:false});
+  const fl=Array.isArray(d?.flags)?d.flags:[];
+  $("#cal-out").innerHTML=`<div class="card"><div class="meta">FIT</div>${esc(d?.summary||"")}${fl.length?"":' <span class="pill ok">no flags — rules fit</span>'}</div>`+fl.map((f,i)=>`<div class="card"><div class="meta">${esc(f.rule||"")} · <span class="pill ${f.verdict==="allow"?"warn":""}">${esc(f.verdict||"")}</span></div><div>${esc(f.sentence||"")}</div><div class="note">${esc(f.why||"")}</div><div class="row"><button class="btn alt" data-keep="${esc(f.sentence||"")}">That's me — allow it</button></div></div>`).join("");
+  $("#cal-out").querySelectorAll("[data-keep]").forEach(b=>b.onclick=()=>{if(!ALLOW.includes(b.dataset.keep)){saveAllow(ALLOW.concat(b.dataset.keep));b.textContent="Allowed";b.disabled=true}});
+  $("#cal-note").textContent="";
+ }catch(e){$("#cal-note").textContent=copyFor(e)} finally{$("#cal-run").disabled=false}
+};
+
 function setStatus(){
  $("#st-sample").textContent=sample?"ready":"off"; $("#st-db").textContent=db?(canWrite?"shared · write":"shared · read"):"off"; $("#st-granola").textContent=granolaOk?"ready":(mcp?"ask":"off");
  $("#st-sample-w").classList.toggle("on",!!sample); $("#st-db-w").classList.toggle("on",!!db); $("#st-granola-w").classList.toggle("on",granolaOk);
@@ -906,6 +939,7 @@ function setStatus(){
  if(mcp){try{const l=await mcp.listTools("Granola");granolaOk=!!(l?.servers||[]).find(x=>x.server==="Granola"&&x.authStatus!=="needs_reauth")}catch(e){granolaOk=false}}
  setStatus();
  if(db){
+  try{db.doc("voice/allow").onSnapshot(sn=>{const x=sn.exists?sn.data():null;ALLOW=Array.isArray(x?.items)?x.items.map(String):[];renderAllow()},()=>{})}catch(e){}
   try{db.collection("jobs").orderBy("updatedAt","desc").limit(200).onSnapshot(renderQueue,()=>{})}catch(e){}
   try{db.collection("library").limit(1000).onSnapshot(snap=>{lib=snap.docs.map(x=>({id:x.id,...x.data()}));renderLib();if(libSel){const r=lib.find(x=>x.id===libSel.id);if(r)libSel=r}},()=>{})}catch(e){}
   try{db.collection("social").orderBy("createdAt","desc").limit(100).onSnapshot(renderSocialList,()=>{})}catch(e){}

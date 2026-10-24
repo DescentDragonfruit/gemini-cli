@@ -13,7 +13,14 @@ class CCPC_Serve {
 
 	public static function init() {
 		add_filter( 'wp_get_attachment_url', array( __CLASS__, 'cache_bust' ), 10, 2 );
-		if ( ! ccpc_setting( 'serve_webp' ) || is_admin() ) {
+		if ( is_admin() ) {
+			return;
+		}
+		if ( (int) ccpc_setting( 'front_cap' ) > 0 ) {
+			add_filter( 'image_downsize', array( __CLASS__, 'cap_full' ), 5, 3 );
+			add_filter( 'wp_content_img_tag', array( __CLASS__, 'cap_content_img' ), 5, 3 );
+		}
+		if ( ! ccpc_setting( 'serve_webp' ) ) {
 			return;
 		}
 		add_filter( 'wp_get_attachment_image_attributes', array( __CLASS__, 'image_attributes' ), 20, 3 );
@@ -113,6 +120,86 @@ class CCPC_Serve {
 		return preg_replace_callback( '/\s(src|data-src)="([^"]+)"/', function ( $m ) {
 			return ' ' . $m[1] . '="' . esc_url( self::swap_url( $m[2] ) ) . '"';
 		}, $filtered_image );
+	}
+
+	/**
+	 * The largest generated size whose width is <= the cap. Returns [url, w, h] or null.
+	 */
+	public static function capped_size( $attachment_id ) {
+		$cap  = (int) ccpc_setting( 'front_cap' );
+		$meta = wp_get_attachment_metadata( $attachment_id );
+		if ( $cap <= 0 || empty( $meta['sizes'] ) || ! is_array( $meta['sizes'] ) ) {
+			return null;
+		}
+		if ( ! empty( $meta['width'] ) && (int) $meta['width'] <= $cap ) {
+			return null; // original is already small enough
+		}
+		$best = null;
+		foreach ( $meta['sizes'] as $name => $sz ) {
+			if ( empty( $sz['width'] ) || empty( $sz['file'] ) || (int) $sz['width'] > $cap ) {
+				continue;
+			}
+			if ( ! $best || (int) $sz['width'] > (int) $best['width'] ) {
+				$best = $sz;
+			}
+		}
+		if ( ! $best ) {
+			return null;
+		}
+		$full = wp_get_attachment_url( $attachment_id );
+		if ( ! $full ) {
+			return null;
+		}
+		$full = strtok( $full, '?' );
+		$url  = trailingslashit( dirname( $full ) ) . $best['file'];
+		return array( $url, (int) $best['width'], (int) $best['height'] );
+	}
+
+	/**
+	 * image_downsize: when a template asks for 'full' on the front end, hand back the capped size.
+	 * Runs before core, which then skips its own lookup; srcset still matches because the capped
+	 * file is one of the registered sizes.
+	 */
+	public static function cap_full( $out, $attachment_id, $size ) {
+		if ( 'full' !== $size || ! wp_attachment_is_image( $attachment_id ) ) {
+			return $out;
+		}
+		$c = self::capped_size( $attachment_id );
+		if ( ! $c ) {
+			return $out;
+		}
+		$v = (int) get_post_meta( $attachment_id, '_ccpc_version', true );
+		if ( $v ) {
+			$c[0] = add_query_arg( 'v', $v, $c[0] );
+		}
+		return array( $c[0], $c[1], $c[2], true );
+	}
+
+	/**
+	 * Content <img> tags (classic blocks, Kadence galleries/sliders) that hard-code the original URL.
+	 */
+	public static function cap_content_img( $filtered_image, $context, $attachment_id ) {
+		if ( ! $attachment_id || false === strpos( $filtered_image, 'src="' ) ) {
+			return $filtered_image;
+		}
+		$c = self::capped_size( $attachment_id );
+		if ( ! $c ) {
+			return $filtered_image;
+		}
+		$full = strtok( (string) wp_get_attachment_url( $attachment_id ), '?' );
+		if ( ! $full ) {
+			return $filtered_image;
+		}
+		// Only replace the original/scaled URL (not an already-sized one).
+		$scaled = preg_replace( '/(\.[a-z]{3,4})$/i', '-scaled$1', $full );
+		foreach ( array( $full, $scaled ) as $orig ) {
+			if ( false !== strpos( $filtered_image, $orig ) ) {
+				$filtered_image = str_replace( $orig, $c[0], $filtered_image );
+				$filtered_image = preg_replace( '/\swidth="\d+"/', ' width="' . $c[1] . '"', $filtered_image, 1 );
+				$filtered_image = preg_replace( '/\sheight="\d+"/', ' height="' . $c[2] . '"', $filtered_image, 1 );
+			}
+		}
+		return $filtered_image;
 	}
 
 	/**
