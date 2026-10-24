@@ -62,3 +62,7 @@ Redirects (Rank Math → Redirections → Add New, never the updateRedirection e
 - **Link map**: every piece declares `authority.link_keyword` + `link_aliases` (what other pieces link to it with). On publish the worker writes `library/<id>.link` and POSTs the whole map to the site (`/coco-tran/v1/link-map`), so the autolink snippet links the first mention in every other piece and the Pair-it-with block shows same-destination siblings.
 - **Author block**: the site appends Coco's author line, counts and the Person schema; the piece never repeats a bio.
 
+## 2c. The marketing read (every piece and post)
+
+The desk is also Coco's marketing director. Every draft returns `marketing: {audience, decision, stage (discover|decide|book|trust), cta_primary {line, where}, cta_secondary|null, hook_options[3], distribution[5], email_line|null, kpi, risk}` written against `05-editorial-system/marketing-playbook.md`: one primary ask matched to the funnel stage, the booking box where the decision lands, the Planning Room line naming the real file, five distribution moves within 14 days, and the one number to watch. Every social kit returns `marketing: {why_it_works, cta, dm_funnel|null, best_time, boost_worth_it (bool + why), cross_post[], measure}`. The worker writes the read to the job (`job.marketing`) and, on publish, to the library record; the weekly rankings run names one marketing move for the week.
+
