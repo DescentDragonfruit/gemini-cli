@@ -161,7 +161,9 @@ class CCPC_Serve {
 	 * file is one of the registered sizes.
 	 */
 	public static function cap_full( $out, $attachment_id, $size ) {
-		if ( 'full' !== $size || ! wp_attachment_is_image( $attachment_id ) ) {
+		// An unregistered size name (e.g. 'post-thumbnail' in a theme without add_image_size) falls
+		// back to the original in core, so treat it like 'full'.
+		if ( is_array( $size ) || ( 'full' !== $size && in_array( $size, get_intermediate_image_sizes(), true ) ) || ! wp_attachment_is_image( $attachment_id ) ) {
 			return $out;
 		}
 		$c = self::capped_size( $attachment_id );

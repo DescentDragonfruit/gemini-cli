@@ -10,10 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class CCPC_Speed {
 
-	protected static $count    = 0;      // content images seen in the main loop
+	protected static $count    = 0;      // content images seen in the main loop (per request)
 	protected static $lcp_done = false;  // fetchpriority=high already assigned
-	protected static $eager    = array(); // src values that must never be lazy (ct-hero, first slide)
+	protected static $eager    = array(); // normalised src values that must never be lazy (ct-hero, first slide)
 	protected static $lcp_id   = null;
+	protected static $scanned  = false;  // first-slider lookup done (first main-content post only)
 
 	public static function init() {
 		if ( is_admin() || wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || wp_doing_cron() ) {
@@ -67,18 +68,20 @@ class CCPC_Speed {
 	 * (class ct-hero, and everything inside the first slide of the first Kadence slider).
 	 */
 	public static function scan_content( $content ) {
-		if ( ! in_the_loop() || ! is_main_query() || ! is_string( $content ) ) {
+		if ( ! is_string( $content ) || ! self::is_main_content( 'the_content' ) ) {
 			return $content;
 		}
-		self::$count = 0;
-		self::$eager = array();
 		if ( preg_match_all( '/<img\b[^>]*\bclass="[^"]*\bct-hero\b[^"]*"[^>]*>/i', $content, $m ) ) {
 			foreach ( $m[0] as $tag ) {
 				if ( preg_match( '/\ssrc="([^"]+)"/i', $tag, $sm ) ) {
-					self::$eager[ $sm[1] ] = 1;
+					self::$eager[ self::norm_src( $sm[1] ) ] = 1;
 				}
 			}
 		}
+		if ( self::$scanned ) {
+			return $content; // Archives: the eager budget and "first slider" apply to the page, not to every post.
+		}
+		self::$scanned = true;
 		// First Kadence slider/carousel wrapper → its first slide → its <img> tags.
 		if ( preg_match( '/class="[^"]*\b(kb-gallery-type-(?:slider|carousel|fluidcarousel|thumbslider)|kt-blocks-carousel|kb-splide|kb-slider|splide)\b[^"]*"/i', $content, $wm, PREG_OFFSET_CAPTURE ) ) {
 			$from  = (int) $wm[0][1];
@@ -92,7 +95,7 @@ class CCPC_Speed {
 				$chunk = substr( $content, $start, min( $end - $start, 20000 ) );
 				if ( preg_match_all( '/<img\b[^>]*\ssrc="([^"]+)"/i', $chunk, $im ) ) {
 					foreach ( $im[1] as $src ) {
-						self::$eager[ $src ] = 1;
+						self::$eager[ self::norm_src( $src ) ] = 1;
 					}
 				}
 			}
@@ -101,14 +104,39 @@ class CCPC_Speed {
 	}
 
 	/**
+	 * Is this the main post content (classic loop, or a block theme's core/post-content render)?
+	 */
+	protected static function is_main_content( $context ) {
+		if ( 'the_content' !== $context || ! is_main_query() ) {
+			return false;
+		}
+		return in_the_loop() || ( is_singular() && (int) get_the_ID() === (int) get_queried_object_id() );
+	}
+
+	/**
 	 * Content <img> tags (after core's own loading/srcset pass).
+	 *
+	 * Block themes run wp_filter_content_tags() a second time over the whole rendered template
+	 * (context 'template'). Images already decided in the first pass carry a `loading` or
+	 * `fetchpriority` attribute and are left alone; only untouched template images (logo, related
+	 * posts…) get the default treatment here.
 	 */
 	public static function content_img( $img, $context, $attachment_id ) {
 		if ( ! is_string( $img ) || '' === $img ) {
 			return $img;
 		}
-		$s     = ccpc_get_settings();
-		$main  = ( 'the_content' === $context ) && in_the_loop() && is_main_query();
+		$s    = ccpc_get_settings();
+		$main = self::is_main_content( $context );
+		if ( ! $main && ! in_array( $context, array( 'the_excerpt', 'widget_text_content', 'widget_block_content' ), true )
+			&& preg_match( '/\s(loading|fetchpriority)="/i', $img ) ) {
+			if ( ! empty( $s['speed_decoding'] ) ) {
+				$img = self::set_attr( $img, 'decoding', 'async' );
+			}
+			if ( ! empty( $s['speed_sizes'] ) ) {
+				$img = self::fix_sizes_tag( $img );
+			}
+			return $img;
+		}
 		$eager = false;
 		if ( $main ) {
 			self::$count++;
@@ -119,7 +147,7 @@ class CCPC_Speed {
 		if ( preg_match( '/\bclass="[^"]*\bct-hero\b[^"]*"/i', $img ) ) {
 			$eager = true;
 		}
-		if ( preg_match( '/\ssrc="([^"]+)"/i', $img, $sm ) && isset( self::$eager[ $sm[1] ] ) ) {
+		if ( preg_match( '/\ssrc="([^"]+)"/i', $img, $sm ) && isset( self::$eager[ self::norm_src( $sm[1] ) ] ) ) {
 			$eager = true;
 		}
 		$is_lcp = false;
@@ -137,7 +165,7 @@ class CCPC_Speed {
 		}
 		if ( $is_lcp ) {
 			$img            = self::set_attr( $img, 'fetchpriority', 'high' );
-			$img            = self::remove_attr( $img, 'loading' );
+			$img            = self::set_attr( $img, 'loading', 'eager' );
 			self::$lcp_done = true;
 			if ( function_exists( 'wp_high_priority_element_flag' ) ) {
 				wp_high_priority_element_flag( false );
@@ -148,7 +176,7 @@ class CCPC_Speed {
 			$img = self::remove_attr( $img, 'fetchpriority' ); // only one high-priority image per page
 		}
 		if ( ! empty( $s['speed_lazy'] ) ) {
-			$img = $eager ? self::remove_attr( $img, 'loading' ) : self::set_attr( $img, 'loading', 'lazy' );
+			$img = self::set_attr( $img, 'loading', $eager ? 'eager' : 'lazy' );
 		}
 		return $img;
 	}
@@ -170,7 +198,7 @@ class CCPC_Speed {
 		$eager = ! empty( $attr['class'] ) && preg_match( '/\bct-hero\b/', (string) $attr['class'] );
 		if ( ! empty( $s['speed_fetchpriority'] ) && ! self::$lcp_done && is_singular() && (int) $attachment->ID === self::lcp_id() && ! is_admin() ) {
 			$attr['fetchpriority'] = 'high';
-			unset( $attr['loading'] );
+			$attr['loading']       = 'eager';
 			self::$lcp_done = true;
 			if ( function_exists( 'wp_high_priority_element_flag' ) ) {
 				wp_high_priority_element_flag( false );
@@ -182,7 +210,7 @@ class CCPC_Speed {
 		}
 		if ( ! empty( $s['speed_lazy'] ) ) {
 			if ( $eager ) {
-				unset( $attr['loading'] );
+				$attr['loading'] = 'eager';
 			} elseif ( ! isset( $attr['loading'] ) || false === $attr['loading'] ) {
 				// Core leaves the first N (threshold) images eager; everything after is lazy.
 				if ( function_exists( 'wp_increase_content_media_count' ) && wp_increase_content_media_count( 0 ) > self::threshold() ) {
@@ -225,6 +253,14 @@ class CCPC_Speed {
 	}
 
 	/* ---------- helpers ---------- */
+
+	/**
+	 * Compare image URLs regardless of ?v= and of the WebP/AVIF swap done by CCPC_Serve.
+	 */
+	protected static function norm_src( $url ) {
+		$u = strtok( html_entity_decode( (string) $url ), '?' );
+		return preg_replace( '/\.(jpe?g|png|webp|avif)$/i', '', $u );
+	}
 
 	protected static function set_attr( $tag, $name, $value ) {
 		if ( preg_match( '/\s' . preg_quote( $name, '/' ) . '="[^"]*"/i', $tag ) ) {
