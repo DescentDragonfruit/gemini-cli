@@ -112,10 +112,7 @@ class CCPC_Optimise {
 		if ( is_wp_error( $editor ) ) {
 			return $editor;
 		}
-		$keep = array();
-		if ( method_exists( 'CCPC_Processor', 'read_credit_exif_public' ) ) {
-			$keep = CCPC_Processor::read_credit_exif_public( $source );
-		}
+		$keep = CCPC_Processor::read_credit_exif( $source );
 		$size = $editor->get_size();
 		if ( max( (int) $size['width'], (int) $size['height'] ) > $long_edge ) {
 			$r = $editor->resize( $long_edge, $long_edge, false );
@@ -133,7 +130,7 @@ class CCPC_Optimise {
 			return $saved;
 		}
 		if ( $keep ) {
-			CCPC_Processor::write_credit_exif_public( $file, $keep );
+			CCPC_Processor::write_credit_exif( $file, $keep );
 		}
 		clearstatcache( true, $file );
 

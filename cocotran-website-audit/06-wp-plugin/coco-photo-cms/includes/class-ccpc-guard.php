@@ -151,7 +151,8 @@ class CCPC_Guard {
 			unset( $list[ $id ] );
 			set_transient( 'ccpc_blocked_' . get_current_user_id(), $list, 5 * MINUTE_IN_SECONDS );
 		}
-		wp_safe_redirect( wp_nonce_url( admin_url( 'post.php?action=delete&post=' . $id ), 'delete-post_' . $id ) );
+		// Not wp_nonce_url(): it HTML-escapes the ampersands, which a Location header must not carry.
+		wp_safe_redirect( add_query_arg( array( 'action' => 'delete', 'post' => $id, '_wpnonce' => wp_create_nonce( 'delete-post_' . $id ) ), admin_url( 'post.php' ) ) );
 		exit;
 	}
 

@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Coco Photo CMS
  * Plugin URI:  https://cocotran.com
- * Description: The photo layer WordPress doesn't have: compress and convert on upload, descriptive filenames, required alt text and credits, rename with redirects, replace an image everywhere or in one place, ImageObject schema, and a REST intake for images pushed from Claude artifacts.
- * Version:     1.0.0
+ * Description: The photo layer WordPress doesn't have: compress and convert on upload, descriptive filenames, required alt text and credits, rename with redirects, replace an image everywhere or in one place, focal-point social crops with an export-only credit watermark, in-use delete guard, one-click resize, bulk optimise, front-end speed attributes, ImageObject schema, and a REST intake for images pushed from Claude artifacts.
+ * Version:     1.1.0
  * Author:      Coco Tran
  * License:     GPL-2.0-or-later
  * Text Domain: coco-photo-cms
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CCPC_VERSION', '1.0.0' );
+define( 'CCPC_VERSION', '1.1.0' );
 define( 'CCPC_FILE', __FILE__ );
 define( 'CCPC_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CCPC_URL', plugin_dir_url( __FILE__ ) );
@@ -46,7 +46,52 @@ function ccpc_default_settings() {
 		'schema_enabled'    => 1,
 		'schema_max_images' => 6,
 		'cors_origins'      => "https://claude.ai\nhttps://*.claude.ai",
+		// 1.1
+		'webp_preset'         => 'balanced',
+		'export_jpeg_quality' => 88,
+		'wm_text'             => '© Coco Tran · cocotranstudio.com',
+		'wm_position'         => 'br',
+		'wm_opacity'          => 70,
+		'wm_size'             => 2.2,
+		'wm_font'             => ccpc_detect_theme_font(),
+		'wm_default'          => 0,
+		'delete_guard'        => 1,
+		'speed_decoding'      => 1,
+		'speed_lazy'          => 1,
+		'speed_lazy_skip'     => 2,
+		'speed_fetchpriority' => 1,
+		'speed_preload'       => 1,
+		'speed_sizes'         => 1,
 	);
+}
+
+/**
+ * First .ttf/.otf found in the child or parent theme's /fonts/ folder, else ''. Used as the
+ * default watermark font (nothing is bundled; GD's bitmap font is the fallback).
+ *
+ * @return string Absolute path or ''.
+ */
+function ccpc_detect_theme_font() {
+	static $found = null;
+	if ( null !== $found ) {
+		return $found;
+	}
+	$found = '';
+	if ( ! function_exists( 'get_stylesheet_directory' ) ) {
+		return $found;
+	}
+	$dirs = array_unique( array( get_stylesheet_directory(), get_template_directory() ) );
+	foreach ( $dirs as $dir ) {
+		foreach ( array( '/fonts/*.ttf', '/fonts/*.otf', '/assets/fonts/*.ttf', '/assets/fonts/*.otf' ) as $pat ) {
+			$hits = glob( $dir . $pat );
+			if ( $hits ) {
+				sort( $hits );
+				$found = $hits[0];
+				return $found;
+			}
+		}
+	}
+	return $found;
 }
 
 /**
@@ -82,6 +127,11 @@ require_once CCPC_DIR . 'includes/class-ccpc-serve.php';
 require_once CCPC_DIR . 'includes/class-ccpc-schema.php';
 require_once CCPC_DIR . 'includes/class-ccpc-rest.php';
 require_once CCPC_DIR . 'includes/class-ccpc-settings.php';
+require_once CCPC_DIR . 'includes/class-ccpc-image.php';
+require_once CCPC_DIR . 'includes/class-ccpc-crops.php';
+require_once CCPC_DIR . 'includes/class-ccpc-guard.php';
+require_once CCPC_DIR . 'includes/class-ccpc-optimise.php';
+require_once CCPC_DIR . 'includes/class-ccpc-speed.php';
 
 /**
  * Find every place an attachment is used.
@@ -106,6 +156,10 @@ function ccpc_init() {
 	CCPC_Rest::init();
 	CCPC_Settings::init();
 	CCPC_Usages::init();
+	CCPC_Crops::init();
+	CCPC_Guard::init();
+	CCPC_Optimise::init();
+	CCPC_Speed::init();
 }
 add_action( 'plugins_loaded', 'ccpc_init' );
 
@@ -129,12 +183,15 @@ add_action( 'admin_enqueue_scripts', function ( $hook ) {
 	wp_enqueue_style( 'ccpc-admin', CCPC_URL . 'assets/admin.css', array(), CCPC_VERSION );
 	wp_enqueue_script( 'ccpc-admin', CCPC_URL . 'assets/admin.js', array( 'jquery' ), CCPC_VERSION, true );
 	wp_localize_script( 'ccpc-admin', 'CCPC', array(
-		'ajax'  => admin_url( 'admin-ajax.php' ),
-		'nonce' => wp_create_nonce( 'ccpc_admin' ),
-		'i18n'  => array(
+		'ajax'    => admin_url( 'admin-ajax.php' ),
+		'nonce'   => wp_create_nonce( 'ccpc_admin' ),
+		'formats' => class_exists( 'CCPC_Crops' ) ? CCPC_Crops::FORMATS : array(),
+		'job'     => class_exists( 'CCPC_Optimise' ) ? CCPC_Optimise::get_job() : array(),
+		'i18n'    => array(
 			'altRequired' => __( 'Alt text is required before this image can be saved.', 'coco-photo-cms' ),
 			'working'     => __( 'Working…', 'coco-photo-cms' ),
 			'done'        => __( 'Done.', 'coco-photo-cms' ),
+			'confirmResize' => __( 'Re-encode the full-size file and regenerate every size? The backed-up original (if any) is used as the source.', 'coco-photo-cms' ),
 		),
 	) );
 } );

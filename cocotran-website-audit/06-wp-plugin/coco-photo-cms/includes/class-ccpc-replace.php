@@ -90,31 +90,8 @@ class CCPC_Replace {
 			return new WP_Error( 'ccpc_ext', sprintf( 'The replacement must be a .%s like the original (so the URL stays the same).', $cur_ext ) );
 		}
 
-		// Remove old sizes/variants so no orphans remain.
-		$meta = wp_get_attachment_metadata( $attachment_id );
-		$dir  = dirname( $current );
-		if ( ! empty( $meta['sizes'] ) ) {
-			foreach ( $meta['sizes'] as $s ) {
-				if ( ! empty( $s['file'] ) ) {
-					$p = $dir . '/' . $s['file'];
-					foreach ( array( $p, CCPC_Processor::variant_path( $p, 'webp' ), CCPC_Processor::variant_path( $p, 'avif' ) ) as $f ) {
-						if ( file_exists( $f ) ) {
-							wp_delete_file( $f );
-						}
-					}
-				}
-			}
-		}
-		foreach ( array( 'webp', 'avif' ) as $v ) {
-			$f = CCPC_Processor::variant_path( $current, $v );
-			if ( file_exists( $f ) ) {
-				wp_delete_file( $f );
-			}
-		}
-		$orig = $dir . '/originals/' . basename( $current );
-		if ( file_exists( $orig ) ) {
-			wp_delete_file( $orig );
-		}
+		// Remove old sizes/variants and the old backup so no orphans remain.
+		CCPC_Processor::delete_generated( $attachment_id, true );
 
 		if ( ! copy( $tmp_path, $current ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions
 			return new WP_Error( 'ccpc_copy', 'Could not write the new file.' );

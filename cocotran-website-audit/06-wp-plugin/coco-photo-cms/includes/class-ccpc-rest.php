@@ -39,6 +39,87 @@ class CCPC_Rest {
 			'callback'            => array( __CLASS__, 'replace' ),
 			'permission_callback' => array( __CLASS__, 'can_edit' ),
 		) );
+		// 1.1: focal point + social crops.
+		register_rest_route( self::NS, '/focal/(?P<id>\d+)', array(
+			array(
+				'methods'             => 'GET',
+				'callback'            => function ( $req ) {
+					return rest_ensure_response( CCPC_Crops::get_focal( (int) $req['id'] ) );
+				},
+				'permission_callback' => array( __CLASS__, 'can_upload' ),
+			),
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( __CLASS__, 'focal' ),
+				'permission_callback' => array( __CLASS__, 'can_edit' ),
+			),
+		) );
+		register_rest_route( self::NS, '/crops/(?P<id>\d+)', array(
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( __CLASS__, 'crops_get' ),
+				'permission_callback' => array( __CLASS__, 'can_upload' ),
+			),
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( __CLASS__, 'crops_post' ),
+				'permission_callback' => array( __CLASS__, 'can_edit' ),
+			),
+		) );
+		// 1.1: resize one photo.
+		register_rest_route( self::NS, '/resize/(?P<id>\d+)', array(
+			'methods'             => 'POST',
+			'callback'            => array( __CLASS__, 'resize' ),
+			'permission_callback' => array( __CLASS__, 'can_edit' ),
+		) );
+		// 1.1: guarded delete.
+		register_rest_route( self::NS, '/media/(?P<id>\d+)', array(
+			'methods'             => 'DELETE',
+			'callback'            => array( __CLASS__, 'delete' ),
+			'permission_callback' => function ( $req ) {
+				return current_user_can( 'delete_post', (int) $req['id'] );
+			},
+		) );
+		// 1.1: bulk optimise (same engine as the Bulk tab).
+		register_rest_route( self::NS, '/optimise/estimate', array(
+			'methods'             => 'GET',
+			'callback'            => function ( $req ) {
+				$offset = (int) $req->get_param( 'offset' );
+				$r      = CCPC_Optimise::estimate_batch( $offset );
+				if ( 0 === $offset ) {
+					$r['count'] = CCPC_Optimise::count_images();
+				}
+				return rest_ensure_response( $r );
+			},
+			'permission_callback' => array( __CLASS__, 'can_manage' ),
+		) );
+		register_rest_route( self::NS, '/optimise/job', array(
+			array(
+				'methods'             => 'GET',
+				'callback'            => function () {
+					return rest_ensure_response( CCPC_Optimise::get_job() );
+				},
+				'permission_callback' => array( __CLASS__, 'can_manage' ),
+			),
+			array(
+				'methods'             => 'POST',
+				'callback'            => function ( $req ) {
+					return rest_ensure_response( CCPC_Optimise::run_batch(
+						array( 'reencode_jpeg' => (bool) $req->get_param( 'reencode_jpeg' ) ),
+						(bool) $req->get_param( 'restart' )
+					) );
+				},
+				'permission_callback' => array( __CLASS__, 'can_manage' ),
+			),
+			array(
+				'methods'             => 'DELETE',
+				'callback'            => function () {
+					delete_option( CCPC_Optimise::JOB_OPTION );
+					return rest_ensure_response( CCPC_Optimise::default_job() );
+				},
+				'permission_callback' => array( __CLASS__, 'can_manage' ),
+			),
+		) );
 		register_rest_route( self::NS, '/settings', array(
 			'methods'             => 'GET',
 			'callback'            => function () {
@@ -56,6 +137,128 @@ class CCPC_Rest {
 
 	public static function can_edit( $req ) {
 		return current_user_can( 'edit_post', (int) $req['id'] );
+	}
+
+	public static function can_manage() {
+		return current_user_can( 'manage_options' );
+	}
+
+	/* ---------- 1.1 routes ---------- */
+
+	/**
+	 * POST /focal/{id} {x, y} or {reset: 1}.
+	 */
+	public static function focal( WP_REST_Request $req ) {
+		$id = (int) $req['id'];
+		if ( $req->get_param( 'reset' ) ) {
+			CCPC_Crops::clear_focal( $id );
+			return rest_ensure_response( CCPC_Crops::get_focal( $id ) );
+		}
+		$x = $req->get_param( 'x' );
+		$y = $req->get_param( 'y' );
+		if ( ! is_numeric( $x ) || ! is_numeric( $y ) ) {
+			return new WP_Error( 'ccpc_focal', 'x and y (0–1) are required.', array( 'status' => 400 ) );
+		}
+		$r = CCPC_Crops::set_focal( $id, (float) $x, (float) $y );
+		if ( is_wp_error( $r ) ) {
+			$r->add_data( array( 'status' => 400 ) );
+			return $r;
+		}
+		return rest_ensure_response( $r );
+	}
+
+	/**
+	 * GET /crops/{id} → cached crops (nothing is generated).
+	 */
+	public static function crops_get( WP_REST_Request $req ) {
+		$id = (int) $req['id'];
+		if ( ! wp_attachment_is_image( $id ) ) {
+			return new WP_Error( 'ccpc_notimage', 'Not an image attachment.', array( 'status' => 404 ) );
+		}
+		return rest_ensure_response( array(
+			'id'      => $id,
+			'focal'   => CCPC_Crops::get_focal( $id ),
+			'formats' => self::formats(),
+			'crops'   => CCPC_Crops::cached( $id ),
+		) );
+	}
+
+	/**
+	 * POST /crops/{id} {formats: [...], focal?: {x, y}, watermark?: bool, force?: bool} → generated URLs.
+	 */
+	public static function crops_post( WP_REST_Request $req ) {
+		$id      = (int) $req['id'];
+		$formats = $req->get_param( 'formats' );
+		if ( is_string( $formats ) ) {
+			$formats = array_filter( array_map( 'trim', explode( ',', $formats ) ) );
+		}
+		$focal = $req->get_param( 'focal' );
+		if ( is_string( $focal ) ) {
+			$focal = json_decode( $focal, true );
+		}
+		if ( ! is_array( $focal ) || ! isset( $focal['x'], $focal['y'] ) ) {
+			$focal = null;
+		}
+		$r = CCPC_Crops::generate( $id, is_array( $formats ) ? $formats : array(), $focal, (bool) $req->get_param( 'watermark' ), (bool) $req->get_param( 'force' ) );
+		if ( is_wp_error( $r ) ) {
+			if ( empty( $r->get_error_data()['status'] ) ) {
+				$r->add_data( array( 'status' => 400 ) );
+			}
+			return $r;
+		}
+		return rest_ensure_response( array(
+			'id'    => $id,
+			'focal' => CCPC_Crops::get_focal( $id ),
+			'crops' => $r,
+		) );
+	}
+
+	public static function formats() {
+		$out = array();
+		foreach ( CCPC_Crops::FORMATS as $k => $f ) {
+			$out[ $k ] = array( 'width' => $f[0], 'height' => $f[1], 'label' => $f[2] );
+		}
+		return $out;
+	}
+
+	/**
+	 * POST /resize/{id} {long_edge}.
+	 */
+	public static function resize( WP_REST_Request $req ) {
+		$edge = (int) $req->get_param( 'long_edge' );
+		if ( $edge < 400 || $edge > 6000 ) {
+			return new WP_Error( 'ccpc_edge', 'long_edge must be 400–6000.', array( 'status' => 400 ) );
+		}
+		$r = CCPC_Optimise::resize_to( (int) $req['id'], $edge );
+		if ( is_wp_error( $r ) ) {
+			if ( empty( $r->get_error_data()['status'] ) ) {
+				$r->add_data( array( 'status' => 400 ) );
+			}
+			return $r;
+		}
+		return rest_ensure_response( array_merge( self::describe( (int) $req['id'] ), array( 'resize' => $r ) ) );
+	}
+
+	/**
+	 * DELETE /media/{id} [?force=1] → 409 + usages when still in use.
+	 */
+	public static function delete( WP_REST_Request $req ) {
+		$id = (int) $req['id'];
+		if ( 'attachment' !== get_post_type( $id ) ) {
+			return new WP_Error( 'ccpc_notfound', 'No such attachment.', array( 'status' => 404 ) );
+		}
+		$usages = class_exists( 'CCPC_Guard' ) && ccpc_setting( 'delete_guard' ) ? CCPC_Guard::blocking_usages( $id ) : array();
+		if ( $usages && ! $req->get_param( 'force' ) ) {
+			return CCPC_Guard::conflict( $id, $usages );
+		}
+		if ( $usages ) {
+			CCPC_Guard::grant_ticket( $id );
+		}
+		$r = wp_delete_attachment( $id, true );
+		if ( ! $r ) {
+			return new WP_Error( 'ccpc_delete_failed', 'The attachment could not be deleted.', array( 'status' => 500 ) );
+		}
+		return rest_ensure_response( array( 'deleted' => true, 'id' => $id, 'usages_were' => count( $usages ) ) );
 	}
 
 	/**

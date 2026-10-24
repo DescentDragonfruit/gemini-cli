@@ -89,7 +89,7 @@ class CCPC_Processor {
 		return true;
 	}
 
-	protected static function read_credit_exif( $path ) {
+	public static function read_credit_exif( $path ) {
 		if ( ! function_exists( 'exif_read_data' ) || 'image/jpeg' !== wp_check_filetype( $path )['type'] ) {
 			return array();
 		}
@@ -109,7 +109,7 @@ class CCPC_Processor {
 	/**
 	 * Re-apply copyright/artist with Imagick when available (GD cannot write EXIF).
 	 */
-	protected static function write_credit_exif( $path, $fields ) {
+	public static function write_credit_exif( $path, $fields ) {
 		if ( ! class_exists( 'Imagick' ) ) {
 			return;
 		}
@@ -148,9 +148,10 @@ class CCPC_Processor {
 	 *
 	 * @param int        $attachment_id ID.
 	 * @param array|null $metadata      Optional metadata to use.
+	 * @param bool       $force         Regenerate even when an up-to-date variant exists (quality change).
 	 * @return array List of generated relative paths.
 	 */
-	public static function generate_variants( $attachment_id, $metadata = null ) {
+	public static function generate_variants( $attachment_id, $metadata = null, $force = false ) {
 		$settings = ccpc_get_settings();
 		$metadata = $metadata ? $metadata : wp_get_attachment_metadata( $attachment_id );
 		$file     = get_attached_file( $attachment_id );
@@ -178,7 +179,7 @@ class CCPC_Processor {
 			}
 			foreach ( $formats as $ext => $q ) {
 				$target = self::variant_path( $p, $ext );
-				if ( file_exists( $target ) && filemtime( $target ) >= filemtime( $p ) ) {
+				if ( ! $force && file_exists( $target ) && filemtime( $target ) >= filemtime( $p ) ) {
 					$made[] = str_replace( trailingslashit( $uploads['basedir'] ), '', $target );
 					continue;
 				}
@@ -202,6 +203,47 @@ class CCPC_Processor {
 	public static function variant_path( $path, $ext ) {
 		$info = pathinfo( $path );
 		return $info['dirname'] . '/' . $info['filename'] . '.' . $ext;
+	}
+
+	/**
+	 * Delete every generated size and its WebP/AVIF siblings (and the full-size siblings), so a
+	 * resize/replace leaves no orphans. The full-size file itself is kept.
+	 *
+	 * @param int  $attachment_id    ID.
+	 * @param bool $include_original Also remove the /originals/ backup.
+	 */
+	public static function delete_generated( $attachment_id, $include_original = false ) {
+		$file = get_attached_file( $attachment_id );
+		if ( ! $file ) {
+			return;
+		}
+		$meta = wp_get_attachment_metadata( $attachment_id );
+		$dir  = dirname( $file );
+		if ( ! empty( $meta['sizes'] ) && is_array( $meta['sizes'] ) ) {
+			foreach ( $meta['sizes'] as $s ) {
+				if ( empty( $s['file'] ) ) {
+					continue;
+				}
+				$p = $dir . '/' . $s['file'];
+				foreach ( array( $p, self::variant_path( $p, 'webp' ), self::variant_path( $p, 'avif' ) ) as $f ) {
+					if ( file_exists( $f ) ) {
+						wp_delete_file( $f );
+					}
+				}
+			}
+		}
+		foreach ( array( 'webp', 'avif' ) as $v ) {
+			$f = self::variant_path( $file, $v );
+			if ( file_exists( $f ) ) {
+				wp_delete_file( $f );
+			}
+		}
+		if ( $include_original ) {
+			$orig = $dir . '/originals/' . basename( $file );
+			if ( file_exists( $orig ) ) {
+				wp_delete_file( $orig );
+			}
+		}
 	}
 
 	/**

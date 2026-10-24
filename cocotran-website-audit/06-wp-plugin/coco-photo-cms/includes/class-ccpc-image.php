@@ -271,10 +271,18 @@ class CCPC_Image {
 					return true;
 				}
 			}
-			// Built-in bitmap font, rendered small then scaled up so it is legible on a 1080 px image.
-			$latin = function_exists( 'iconv' ) ? @iconv( 'UTF-8', 'ISO-8859-1//TRANSLIT', $text ) : $text; // phpcs:ignore WordPress.PHP.NoSilencedErrors
-			if ( ! is_string( $latin ) || '' === $latin ) {
-				$latin = preg_replace( '/[^\x20-\x7E]/', '', $text );
+			// Built-in bitmap font (ASCII only), rendered small then scaled up so it is legible on a
+			// 1080 px image. Typographic characters are transliterated first.
+			$latin = str_replace( array( '©', '·', '•', '–', '—', '’', '‘', '“', '”', '…' ), array( '(c)', '-', '-', '-', '-', "'", "'", '"', '"', '...' ), $text );
+			if ( function_exists( 'iconv' ) ) {
+				$t = @iconv( 'UTF-8', 'ASCII//TRANSLIT//IGNORE', $latin ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+				if ( is_string( $t ) && '' !== $t ) {
+					$latin = $t;
+				}
+			}
+			$latin = preg_replace( '/[^\x20-\x7E]/', '', $latin );
+			if ( '' === trim( $latin ) ) {
+				return true;
 			}
 			$f   = 5;
 			$cw  = imagefontwidth( $f );
