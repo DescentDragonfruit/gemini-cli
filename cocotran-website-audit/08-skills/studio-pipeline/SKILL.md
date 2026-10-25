@@ -33,7 +33,7 @@ The job carries `source_url`, `missing` (what Coco says is wrong or absent) and 
 
 ## 2. Draft (status `queued` only)
 
-Use the Studio Desk's own prompt structure (format rules + field map + opening block + SEO set — copy from the artifact's `FORMATS` and `draftPrompt`, or from `coco-editorial-standards`), with the full context from step 1. Then run the gates/voice pass (`deskPassPrompt`). Write `draft`, `report`, `status: "drafted"`.
+Use the Studio Desk's own prompt structure (format rules + field map + opening block + SEO set — copy from the artifact's `FORMATS` and `draftPrompt`, or from `coco-editorial-standards`), with the full context from step 1. Then run the gates/voice pass (`deskPassPrompt`). Write `draft`, `report`, `status: "drafted"`. `report.gates` is an **array** of `{n, verdict: "PASS"|"FIXED"|"FAIL", note}` (one per gate), `report.needs_coco` and `report.voice_changes` arrays, never a sentence: a string there used to blank the piece in the desk (25 Oct 2026, five jobs). The desk now tolerates it, but write the arrays.
 
 ## 3. Research (status `drafted` → `researched`)
 
@@ -57,7 +57,7 @@ Route A — **REST with an Application Password**. Probe first: `curl -s -o /dev
 5. Rank Math: `POST /wp-json/rankmath/v1/updateMeta` with `{objectID, objectType:"post", meta:{rank_math_title, rank_math_description, rank_math_focus_keyword}}` (raw fetch with the nonce when in Chrome; basic auth on REST).
 6. Photos: if `job.photos` names WP media (a filename stem), `GET /wp/v2/media?search=<stem>&per_page=50`, assign IDs to the format's image slots in order (field maps in respin-old-content), set the featured image; write alt via the Coco Photo CMS fields if the plugin is installed. If photos are elsewhere, leave slots empty and say so.
 7. Verify: `GET /{cpt}/{slug}/?preview=true` renders (or `wp/v2/{cpt}/{id}?context=edit` shows the fields saved), no placeholder text, title fits.
-8. Write back: `status: "built"`, `preview_url`, `wp_id`, `worker_notes` (what was mapped, what's missing).
+8. Write back: `status: "built"`, `preview_url`, `wp_id`, `worker_notes` (what was mapped, what's missing). The desk shows `built` as **"Publish · needs Coco"** with an "Open in WordPress" button; `approved` shows as "Approved · worker builds it in WP". Approve is the only click she makes before the build: an approved job goes into WordPress as a draft on the next run with no second confirmation.
 
 ### 4a. Photos attached in the desk (`job.uploads`)
 
