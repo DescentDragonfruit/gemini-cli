@@ -111,3 +111,13 @@ After any piece goes live, is retired or merged, and at the end of the Monday ru
 ## 7. Report
 
 One short message: pieces drafted / researched / built with preview links, anything `needs-coco` and why, VERIFY items left. Lead with corrections that matter to her business (a closure, a rebrand, a rule change found in research).
+
+## Approved jobs: Coco edits in the desk, the worker builds what she approved
+
+Coco resolves everything in the Studio Desk, not in WordPress. In the Queue piece view she edits any field in place, replaces every `[VERIFY …]` / `[Coco to fill …]` bracket with the fact, confirms / corrects / cuts each item of `draft.verify` (stored in `verify_notes[i] = {status: confirmed|corrected|cut, note, item}`), runs the writing checklist (the desk runs `deskPassPrompt`, writes `report.gates`, `checked_at`), and only then can press Approve (`status: "approved"`, `approved_at`, `approved_draft_rev`). So on an approved job:
+
+1. **Never rewrite her text.** `draft` is the final version. Do not regenerate, re-voice or "improve" it. Apply only mechanical mapping to ACF fields.
+2. **Apply `verify_notes`** that are `corrected` (replace the claim in the text with her wording) or `cut` (remove the sentence). `confirmed` means leave as written.
+3. **Brackets left anywhere in the text (`[VERIFY`, `[Coco`, `[COCO VERIFIES`) stop the build.** Set `status: "needs-coco"`, list them in `worker_notes`, do not touch WordPress.
+4. **Final check**: run the ten gates once more over the final text. Write `report.final_check = {gates, checked_at}`. A FAIL on a gate she has not marked `PASS (Coco)` → `needs-coco` with the gate and the reason. Otherwise build.
+5. Build as before: WordPress draft, `status: "built"`, `preview_url`, `wp_id`. The desk shows it as "Publish · needs Coco"; she publishes from WordPress only after this.
