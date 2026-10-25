@@ -1,5 +1,7 @@
 # Kadence Element — "Answerable opening"
 
+> **Live since 25 Oct 2026 (post 30407).** Placement is NOT the before-content hook: the element's hook is set to Custom `ct_after_title` (never fired), and each format template carries `[kadence_element id="30407"]` in a Shortcode block directly under its headline row — templates 27262, 29436, 27517, 27738, 27762, 27733, 27556, 27818, 27776, 27810 and the Comparison 30381 (backups in `template-backups/`). Verified on a live Property: the block renders right after the H1, the shortcode is processed, nothing leaks. It stays invisible until the ACF group exists and `short_answer` is filled.
+
 One Element, hooked under the title on every single-post template, that renders the ACF group **Answerable opening** (`acf-answerable-opening.json`): byline strip → short answer → At a glance → disclosure line. Design per `05-editorial-system/eeat-rollout.md` §1: no fill, no icons, hairlines only, the brand accent appears once (the 2px left rule on the short answer).
 
 Prerequisites: Kadence Theme + Kadence Blocks **Pro** (dynamic content is a Pro feature) + ACF Pro with the field group imported (`INSTALL.md` step 1).
