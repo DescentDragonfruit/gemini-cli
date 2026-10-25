@@ -136,6 +136,43 @@ The desk's Authority map runs once a day and writes jobs with `authority {term_i
 - **Trip plans** (`mode: "plan"`, ids `plan-<trip>`): before the trip starts, write `plan{}` on the job: per place, the authority-map pillars still missing; the shot list each pillar needs (Verdict: arrival, room and bathroom, view, F&B, spa, the one detail; Rolodex: neighbourhoods, a street scene per section; Postcard: one moment, golden hour; Route: transport between bases); the questions to ask each GM (rates, room to ask for, perks, opening dates); 3 reel beats and 1 YouTube outline per place; the target keyword per piece from research. Add one `todo` per travel day. Do not build posts. After the trip ends, the daily map run queues the pieces once Coco's photos are on the site.
 - **Photos to edit** are `todo/photos-<trip>` items the desk adds for past trips with places that have none of her photos on the site. When photos for that place appear in the media library, mark the todo done.
 
+### Trips pipeline: trip research, planned pieces, culls (added 25 Oct 2026)
+The desk's **Trips** tab runs each trip from plan to video. Agency Studio is the source for fam trips and new trips. The Passport covers prior trips.
+- **Agency Studio mirror (every run).** Read Agency Studio (https://claude.ai/artifact/7VMcx1iKdmvdtq6KT6cgix).
+  - Its collections are `famtrips`, `reviews` and `guides`. Each document's `data` field is a JSON string.
+  - Refresh desk `trips/<id>` with `{name, startDate, endDate, status, destination, purpose, hotels[], places[], days[{date,title,place,description,reflect{did,saw,smelled,ate,felt,free},shots[{text,timing,done}],items[{type,name,notes,rating,photos}]}]}`.
+  - Refresh `inspections/<id>` with `{name, location, visitStart, visitEnd, purpose, status, rating, answers_count, answers_text, free, fromTrip}`.
+  - Strip booking references, confirmation numbers, balances due and consultant names from every text field.
+- **Coco's own itineraries.** In Proposal Studio (https://claude.ai/artifact/AyNiCSZubZrjMar4rpyAY3), `proposals` whose `cover.travelFor` is Coco are her own trips.
+  - Match one to its fam trip by dates, then by hotel name.
+  - Mirror it as `trips/<id>.itin{pid, title, days[{date,title,location,hotel,tip,body}]}`.
+  - Never read or copy the `clients` collection.
+- **Trip research** (`type: "research"`, `mode: "trip-research"`, id `research-<trip>`): queued by "Find the pieces".
+  - For each place, research keywords for the pieces this trip can fill, one pillar each, in the house title format.
+  - Each piece carries: primary keyword; demand (high, medium or low; mark estimates); `publish_by` (6–8 weeks before that place's search peak); `photos` count; `slots[]`; and `cull_tips` (what readers save for this piece).
+  - Check what cocotran.com already has first, and propose an update instead of a duplicate.
+  - Apply the rate floor to every Verdict. A hotel she only toured goes into a Shortlist or Comparison, never a Verdict.
+  - For an upcoming trip, also research shots for each place: `shots[{spot,what,why,when,medium,vertical,avoid}]`, unique and engagement-led, with the cliché named. Add `gm_questions` for each hotel, plus `video{title,hook,outline,shorts}`.
+  - Write `research/<trip id>` = `{places[{place,country,shots,pieces,gm_questions}], trip_top[], video, cull_tips{title:[...]}, at}`.
+  - Create one pipeline job for each `trip_top` piece (or for each piece on a past trip, up to 12).
+  - Append the shots to the Agency Studio famtrip's `days[].shots` on the matching day: text starts with "★", id starts with `r_`. Never edit or remove her own shots, and write with `if_version`.
+- **Pipeline jobs** (`pipeline: true`, `trip_id`, `status: "planned"`):
+  - **planned** means waiting for Coco. The worker never builds a planned job.
+  - Approving a cull in the desk sets it to **queued**; so does "write it". Then build it like any new piece.
+  - Facts come only from Coco's first-hand material:
+    - `inspections` matching the subject;
+    - `trip_notes` with this `trip_id` (her Granola notes, pulled by trip dates);
+    - `trips/<id>.days[].reflect` (her own voice) and `items[].notes`.
+  - Research is for context only and carries [VERIFY].
+  - Never use personal or family details from Granola notes (home, family, partner's job and the like), even when they appear in a trip-day note.
+  - Fam trips: leave `disclosure` empty and ask in `needs_coco` (hosted, discounted or paid).
+- **Photos.** `culls/<job id>` = `{slots[{slot, pick (file name), d, film, empty}], approved, edited}`.
+  - Use the picks in slot order. Coco uploads the edited selects, whose file names match the picks.
+  - A slot with `film: true` waits for her scans: build with the digital frame or leave it out, and say so in `needs_coco`.
+  - Don't publish photos until `edited` is true.
+- **Taste.** `taste/profile` is Coco's eye. `taste_choices` holds what she kept or overrode in culls and in Edit 1 vs Edit 2. Use the profile when choosing a hero or a social cover.
+- **Video.** `videos/<job id>` holds the clip list for the piece's YouTube video. Social kits for a pipeline piece reuse its hero and its `cull_tips`.
+
 ### Opening-block backfill jobs (`mode: "backfill"`, added 25 Oct 2026)
 Element 30407 (The short answer · At a glance · visited · updated) is printed by every pillar template directly under the facts strip and hides itself while `short_answer` is empty. A backfill job carries `targets: [{cpt, wp_id, url, title}]` and, per target: read the live ACF text, write `short_answer` (≤420 characters, first person, standalone: what it is, where, what is distinctive, who it suits — from the piece's own words, no new facts), the five glance rows with the format's labels (stay: Setting / Best for / Standout / Consider / Stayed; comparison: Choose A if / Choose B if / Price difference / Both share / Stayed; guide, brief, shortlist, dispatch: Setting / Best for / Standout / Consider / Last visit) using only values the text states (an unknown row stays empty: the block hides empty rows), `primary_keyword` from the library record's keyword when empty, `secondary_keywords` / `ai_questions` from the record's `rank.queries` (question-shaped ones go to `ai_questions`), `updated_on` = the post's modified date (YYYYMMDD), `content_category` from CATEGORY_BY_FORMAT when empty. **Never** write `visited`, `visit_basis`, `disclosure`, `last_fact_check` or `booking_access` from inference: leave them and list the piece under `needs_coco` with the one question. Write straight to the live post (these fields render only when filled); purge SpeedyCache + Cloudflare once at the end; record `backfilled_at` on each library record and `done: [{wp_id, fields}]` on the job.
 

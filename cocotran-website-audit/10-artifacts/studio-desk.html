@@ -420,12 +420,47 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
   .track{font-size:13px}
   .wcard,.lib-item{border-radius:0}
 }
+/* Trips pipeline */
+.pboard{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;align-items:start}
+@media (max-width:1100px){.pboard{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.pboard{grid-template-columns:1fr}}
+.pcol{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:10px}
+.pcol>h5{margin:0 0 8px;font:600 11.5px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
+.ptrip{all:unset;display:block;box-sizing:border-box;width:100%;cursor:pointer;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 8px}
+.ptrip:hover,.ptrip:focus-visible{border-color:var(--accent)}
+.ptrip b{display:block;font-size:14px;line-height:1.3}
+.ptrip .note{font-size:12px}
+.pbar{height:4px;background:var(--line);border-radius:4px;margin-top:8px;overflow:hidden}.pbar i{display:block;height:100%;background:var(--accent)}
+.pnext{display:grid;gap:12px}
+.pnext .card{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center}
+.pnext .n{font-family:var(--display);font-size:28px;color:var(--accent);line-height:1}
+@media (max-width:640px){.pnext .card{grid-template-columns:28px 1fr}.pnext .card>div:last-child{grid-column:2}}
+.pstage{display:inline-block;font:600 10.5px var(--body);letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.prow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.prow:first-child{border-top:0}
+.prio{font:inherit;font-size:12.5px;padding:4px 6px;border-radius:8px;border:1px solid var(--line2);background:var(--bg);color:var(--fg)}
+.cullgrid{display:grid;gap:14px}
+.cslot{border:1px solid var(--line);border-radius:var(--r);padding:12px;background:var(--bg2)}
+.cslot h5{margin:0 0 2px;font-size:14px}
+.cthumbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.cthumb{all:unset;cursor:pointer;display:block;border-radius:8px;overflow:hidden;border:2px solid transparent;background:var(--bg)}
+.cthumb img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.cthumb span{display:block;font-size:11.5px;padding:4px 6px;color:var(--muted);line-height:1.3}
+.cthumb[aria-pressed=true]{border-color:var(--accent)}
+.cthumb[aria-pressed=true] span{color:var(--fg)}
+.cdrop{border:1.5px dashed var(--line2);border-radius:var(--r);padding:22px;text-align:center;background:var(--bg2)}
+.cdrop.on{border-color:var(--accent);background:var(--accent-soft)}
+.ab{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ab img{width:100%;border-radius:8px;display:block}
+#pp-views{max-width:100%;overflow-x:auto;scrollbar-width:none}#pp-views button{white-space:nowrap;flex:0 0 auto}
+.shotl{margin:6px 0 0;padding-left:18px}.shotl li{margin:0 0 6px;font-size:13.5px;line-height:1.45}
 </style>
 
 <header class="topbar">
   <div class="tb-brand"><b>Studio Desk</b><span>Coco Tran · cocotran.com</span></div>
   <nav class="tb-nav" aria-label="Desks">
     <button data-desk="today" aria-current="page">Today</button>
+    <button data-desk="trips">Trips</button>
     <button data-desk="new">New piece</button>
     <button data-desk="queue">Queue</button>
     <button data-desk="library">Library</button>
@@ -456,6 +491,7 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
   <span class="k">Today</span>
   <button data-desk="today" aria-current="page"><span class="ic">◆</span>Today</button>
   <span class="k">Make</span>
+  <button data-desk="trips"><span class="ic">✦</span>Trips</button>
   <button data-desk="new"><span class="ic">01</span>New piece</button>
   <button data-desk="queue"><span class="ic">02</span>Queue</button>
   <span class="k">Keep</span>
@@ -479,6 +515,7 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
 <section class="desk on" id="desk-today">
   <div class="deskhead"><div><div class="eyebrow">Today</div><h2 id="today-greet">Good day, Coco</h2><p class="lead" id="today-sum">What needs your hand, what's waiting on your call, and the one thing to do next.</p></div></div>
   <div id="t-due"></div>
+  <div id="t-next3"></div>
   <div class="tiles">
     <button class="tile" data-go="queue"><span class="tl">Needs your call</span><b id="t-needs">0</b><span class="ts">in the Queue</span></button>
     <button class="tile" data-go="queue"><span class="tl">Queue</span><b id="t-queue-n">0</b><span class="ts" id="t-queue-s">pieces moving</span></button>
@@ -506,6 +543,22 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
   </div>
 </section>
 
+
+<!-- ============ TRIPS (pipeline) ============ -->
+<section class="desk" id="desk-trips">
+  <div class="deskhead"><div><div class="eyebrow">Make</div><h2>Trips</h2><p class="lead">Every trip from Agency Studio and your Passport, from plan to video. The desk ranks the work by search demand and timing, tells you how many photos each piece needs, culls the shoot for you, and keeps the rest out of sight. Three things at a time.</p></div></div>
+  <div class="row" style="align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+    <div class="views" id="pp-views"><button data-pv="next" aria-selected="true">Next 3</button><button data-pv="board">Board</button><button data-pv="list">By priority</button><button data-pv="trip">Trip</button><button data-pv="eye">Your eye</button></div>
+    <button class="copy" data-go="plan">Calendar →</button><button class="copy" data-go="authority">Places →</button>
+    <span class="note" id="pp-note" style="margin-left:auto"></span>
+  </div>
+  <div id="pp-next"></div>
+  <div id="pp-board" hidden></div>
+  <div id="pp-list" hidden></div>
+  <div id="pp-trip" hidden></div>
+  <div id="pp-eye" hidden></div>
+  <div class="quiet" id="pp-quiet">The shared store isn't available in this view.</div>
+</section>
 
 <!-- ============ NEW PIECE ============ -->
 <section class="desk" id="desk-new">
@@ -837,7 +890,7 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
 <div class="jump" id="jump"><button class="jump-btn" id="jump-btn" aria-expanded="false">Sections ▾</button><div class="jump-menu" id="jump-menu" hidden></div></div>
 <nav class="wfbar" aria-label="Workflow">
   <button data-desk="today"><b>I</b><span>Today</span></button>
-  <button data-desk="new"><b>II</b><span>Make</span></button>
+  <button data-desk="trips"><b>II</b><span>Trips</span></button>
   <button data-desk="queue"><b>III</b><span>Queue</span></button>
   <button data-desk="library"><b>IV</b><span>Library</span></button>
   <button data-desk="social"><b>V</b><span>Social</span></button>
@@ -1091,9 +1144,9 @@ const fmtLabel=k=>FORMATS[k]?.label||k||"";
 
 // tabs
 const navBtns=[...document.querySelectorAll("[data-desk]")];
-const DESK_NUM={today:"I",new:"II",queue:"III",library:"IV",social:"V",plan:"VI",keywords:"VII",respin:"VII",authority:"VII",cite:"VIII",bench:"VIII",questions:"IX",process:"X",rules:"XI",playbooks:"XII"};
+const DESK_NUM={today:"I",trips:"I",new:"II",queue:"III",library:"IV",social:"V",plan:"VI",keywords:"VII",respin:"VII",authority:"VII",cite:"VIII",bench:"VIII",questions:"IX",process:"X",rules:"XI",playbooks:"XII"};
 (function(){const mb=$("#tb-more"),mm=$("#tb-menu");if(mb&&mm){mb.onclick=e=>{e.stopPropagation();mm.hidden=!mm.hidden;mb.setAttribute("aria-expanded",String(!mm.hidden))};document.addEventListener("click",e=>{if(!mm.hidden&&!e.target.closest(".tb-more")){mm.hidden=true;mb.setAttribute("aria-expanded","false")}});const st=$("#tb-status"),old=document.querySelector("aside.side .status");if(st&&old){st.innerHTML=old.innerHTML;old.remove()}}})();
-const DESK_TITLES={keywords:"Keywords",respin:"Respin",authority:"Authority map",plan:"Plan",questions:"Reader questions",today:"Today",new:"New piece",queue:"Queue",library:"Library",social:"Social",cite:"Citations",bench:"AI benchmark",process:"Process",rules:"House rules",playbooks:"Playbooks"};
+const DESK_TITLES={trips:"Trips",keywords:"Keywords",respin:"Respin",authority:"Authority map",plan:"Plan",questions:"Reader questions",today:"Today",new:"New piece",queue:"Queue",library:"Library",social:"Social",cite:"Citations",bench:"AI benchmark",process:"Process",rules:"House rules",playbooks:"Playbooks"};
 const sideEl=document.querySelector("aside.side"); function closeMenu(){if(sideEl)sideEl.classList.remove("open");const b=$("#mb-menu");if(b)b.setAttribute("aria-expanded","false")}
 if($("#mb-menu")){$("#mb-menu").onclick=()=>{sideEl.classList.add("open");$("#mb-menu").setAttribute("aria-expanded","true")}} if($("#mb-close")){$("#mb-close").onclick=closeMenu}
 const ROMAN={"1":"I","2":"II","3":"III","4":"IV","5":"V","6":"VI"}; document.querySelectorAll(".fs .num").forEach(n=>{if(ROMAN[n.textContent.trim()])n.textContent=ROMAN[n.textContent.trim()]});
@@ -1101,7 +1154,7 @@ function buildJump(){const m=$("#jump-menu"),j=$("#jump");if(!m||!j)return;const
  j.style.display=items.length>2?"":"none"; m.innerHTML=items.map((x,i)=>`<button data-j="${i}">${esc(x.t)}</button>`).join("")+`<button class="top" data-j="top">↑ Top</button>`;
  m.querySelectorAll("[data-j]").forEach(b=>b.onclick=()=>{m.hidden=true;$("#jump-btn").setAttribute("aria-expanded","false");if(b.dataset.j==="top"){window.scrollTo({top:0,behavior:"smooth"});return}const el=items[+b.dataset.j].el;const y=el.getBoundingClientRect().top+window.scrollY-(window.innerWidth<=900?130:90);window.scrollTo({top:y,behavior:"smooth"})});}
 (function(){const b=$("#jump-btn"),m=$("#jump-menu");if(!b||!m)return;b.onclick=e=>{e.stopPropagation();buildJump();m.hidden=!m.hidden;b.setAttribute("aria-expanded",String(!m.hidden))};document.addEventListener("click",e=>{if(!m.hidden&&!e.target.closest("#jump")){m.hidden=true;b.setAttribute("aria-expanded","false")}})})();
-function show(id){ try{document.querySelector(".hero")?.classList.toggle("hero-today",id==="today");const hk=$("#hero-k");if(hk)hk.textContent=(DESK_NUM[id]||"")+" · "+(DESK_TITLES[id]||id);const mm=$("#tb-menu");if(mm)mm.hidden=true;closeMenu()}catch(e){}navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id)); try{const jm=$("#jump-menu");if(jm)jm.hidden=true;setTimeout(buildJump,60)}catch(e){}const ht=$("#hero-title");if(ht)ht.textContent=DESK_TITLES[id]||id;ls.set("desk",id);if(id==="authority"){try{renderAuthority()}catch(e){console.warn(e)}}window.scrollTo({top:0})}
+function show(id){ try{document.querySelector(".hero")?.classList.toggle("hero-today",id==="today");const hk=$("#hero-k");if(hk)hk.textContent=(DESK_NUM[id]||"")+" · "+(DESK_TITLES[id]||id);const mm=$("#tb-menu");if(mm)mm.hidden=true;closeMenu()}catch(e){}navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id)); try{const jm=$("#jump-menu");if(jm)jm.hidden=true;setTimeout(buildJump,60)}catch(e){}const ht=$("#hero-title");if(ht)ht.textContent=DESK_TITLES[id]||id;ls.set("desk",id);if(id==="authority"){try{renderAuthority()}catch(e){console.warn(e)}}if(id==="trips"){try{renderPipe()}catch(e){console.warn(e)}}window.scrollTo({top:0})}
 navBtns.forEach(b=>b.addEventListener("click",()=>show(b.dataset.desk)));
 document.querySelectorAll(".tile[data-go]").forEach(t=>t.onclick=()=>show(t.dataset.go));
 const h=(location.hash||"").slice(1);show(navBtns.some(b=>b.dataset.desk===h)?h:(ls.get("desk")||"today"));
@@ -1732,7 +1785,7 @@ async function queueRespin(c,btn){const card=btn.closest("[data-rs]");const note
 let jobsCache=[],jobsLoaded=false;
 function renderQueue(snap){
  jobsCache=snap.docs.map(d=>({id:d.id,...d.data()}));jobsLoaded=true;setTimeout(()=>{try{amAuto()}catch(e){console.warn("amAuto",e)}},2500);
- const live=jobsCache.filter(j=>!["published","done"].includes(j.status)); const done=jobsCache.filter(j=>["published","done"].includes(j.status));
+ const live=jobsCache.filter(j=>!["published","done","planned"].includes(j.status)); const done=jobsCache.filter(j=>["published","done"].includes(j.status));
  live.sort((a,b)=>((b.priority||0)-(a.priority||0))||((b.updatedAt||0)-(a.updatedAt||0)));
  const ordered=live.concat(done); const host=$("#q-cards"); host.innerHTML="";
  if(!ordered.length) host.innerHTML='<div class="note">Nothing in the queue. Make a piece, or press "Fix this now" on a library record.</div>';
@@ -2629,6 +2682,240 @@ function setStatus(){
  $("#q-quiet").style.display=mcp?"none":"block"; setTimeout(loadWorkerStatus,1500); renderTemplateSelect(); $("#kw-quiet").style.display=sample?"none":"block"; try{const kf=$("#kw-format");if(kf&&kf.options.length<=1)Object.keys(FORMATS).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=FORMATS[k].label;kf.append(o)})}catch(e){} try{renderKwData()}catch(e){} $("#plan-quiet").style.display=db?"none":"block"; try{renderCalendar()}catch(e){} $("#n-files-quiet").style.display=assets?"none":"block"; $("#n-files").disabled=!assets;
  ["q","p","b","l"].forEach(k=>$("#"+k+"-quiet").style.display=db?"none":"block"); $("#todo-quiet").style.display=db?"none":"block";
 }
+// ---------- Trips pipeline: trip → photos → pieces → social → video ----------
+// Trips come from Agency Studio (mirrored into trips/ and inspections/ by the worker, with days[] and the
+// Proposal Studio itinerary marked "Coco") and from the Passport (travel/). Pieces are jobs with pipeline:true.
+// Culling runs on this device: grouping and sharpness are computed here, only small previews go to Claude.
+let pipeJobs=[], boardPrio={}, culls={}, videos={}, research={}, tripNotes=[], tasteProfile=null, tasteChoices=[];
+let ppView=ls.get("ppView")||"next", ppTrip=ls.get("ppTrip")||"";
+const PP_STAGES=["Plan","On trip","Cull","Edit","Write","Share","Done"];
+const PP_COLS=[["Upcoming",["Plan","On trip"]],["Cull",["Cull"]],["Edit",["Edit"]],["Write",["Write"]],["Share",["Share"]],["Done",["Done"]]];
+const PP_SLOTS={
+ verdict:["hero","arrival","lobby or public space","room, wide","room detail","bathroom","view from the room","pool","spa or gym","restaurant","the plate","the one detail","you in frame","the neighbourhood"],
+ tradeoff:["hero","room","the trade-off, side one","the trade-off, side two","detail","view"],
+ comparison:["hero","A: room","B: room","A: pool or view","B: pool or view","A: dining","B: dining","A: detail","B: detail","the verdict frame"],
+ shortlist:["hero","pick 1","pick 2","pick 3","pick 4","pick 5","pick 6"],
+ rolodex:["hero","where to stay 1","where to stay 2","where to eat 1","where to eat 2","a drink","what to do 1","what to do 2","a street scene","the detail"],
+ roundup:["hero","pick 1","pick 2","pick 3","pick 4","pick 5"],
+ primer:["hero","when to go","getting there","the neighbourhood","the detail","a moment"],
+ route:["hero","day 1","day 2","day 3","day 4","on the road"],
+ dossier:["hero","the place","stay","eat","do","detail","people","on the road","the view","closing"],
+ postcard:["hero","the moment","the moment, closer","the detail","people","closing frame"],
+ fieldnotes:["hero","the room","plate 1","plate 2","the detail","people"],
+ take:["hero","proof 1","proof 2"],
+ answer:["hero","proof 1","proof 2","the detail"]
+};
+function ppSlots(j){if(Array.isArray(j.slots)&&j.slots.length)return j.slots.map(String);const pn=(j.draft&&Array.isArray(j.draft.photos_needed))?j.draft.photos_needed:[];if(pn.length)return pn.map(p=>String(p.slot||p.shows||p));let s=(PP_SLOTS[j.format]||PP_SLOTS.postcard).slice();
+ if(j.format==="route"){const n=+(String(j.title||"").match(/(\d+)\s*(?:days|nights)/i)||[])[1]||4;s=["hero"].concat(Array.from({length:Math.min(n,10)},(_,i)=>"day "+(i+1)),["on the road"])}
+ const want=+j.photos_target||0; if(want&&want<s.length)s=s.slice(0,want); return s}
+function ppTripsAll(){const out=[];const seen=new Set();
+ trips.forEach(t=>{seen.add("pp-a"+t.id);seen.add("pp-"+t.id);out.push({key:"a:"+t.id,id:t.id,src:"agency",name:String(t.name||"Trip").trim(),start:t.startDate||"",end:t.endDate||"",status:t.status||ppStatus(t.startDate,t.endDate),places:t.places||ppPlaces(t),hotels:t.hotels||[],days:t.days||[],itin:t.itin||null,kind:"fam"})});
+ travelCache.forEach(t=>{if(seen.has(t.id))return;out.push({key:"p:"+t.id,id:t.id,src:"passport",name:String(t.name||"Trip").trim(),start:t.start||"",end:t.end||"",status:t.status||ppStatus(t.start,t.end),places:t.places||[],hotels:(t.hotels||[]).map(h=>typeof h==="string"?h:h.name),days:[],itin:null,kind:t.kind||"personal"})});
+ return out}
+function ppStatus(s,e){const td=today();if(!s)return "past";if(s>td)return "upcoming";if(e&&e<td)return "past";return "live"}
+function ppPlaces(t){const set=[];(t.days||[]).forEach(d=>{const p=String(d.place||"").split(",")[0].trim();if(p&&!set.includes(p))set.push(p)});if(!set.length&&t.destination)String(t.destination).split(/[·,()]/).map(x=>x.trim()).filter(Boolean).forEach(p=>{if(!set.includes(p))set.push(p)});return set.slice(0,12)}
+function ppPieces(trip){return pipeJobs.filter(j=>j.trip_id===trip.id||j.trip_id===("pp-a"+trip.id)).filter(j=>ppPrio("job:"+j.id)!=="archive")}
+function ppLive(j){return ["published","done","live"].includes(j.status)||!!j.live_url}
+function ppPrio(k){return (boardPrio[k]&&boardPrio[k].priority)||""}
+function ppSocialDone(j){if(j.social_kit_made)return true;const r=lib.find(x=>(j.live_url&&x.url===j.live_url)||(j.seo_slug&&x.id===j.seo_slug)||(j.draft&&j.draft.seo&&x.id===j.draft.seo.slug));return !!(r&&r.social_kit_made)}
+function ppStage(j,trip){if(trip&&trip.status==="upcoming")return "Plan";if(trip&&trip.status==="live")return "On trip";const c=culls[j.id]||{};
+ if(!c.approved)return "Cull"; if(!c.edited)return "Edit"; if(!ppLive(j))return "Write"; const v=videos[j.id]||{}; if(!ppSocialDone(j)||!v.cut)return "Share"; return "Done"}
+function ppTripStage(t){const ps=ppPieces(t);if(t.status==="upcoming")return "Plan";if(t.status==="live")return "On trip";if(!ps.length)return "Cull";return ps.map(j=>ppStage(j,t)).sort((a,b)=>PP_STAGES.indexOf(a)-PP_STAGES.indexOf(b))[0]}
+function ppMonthsTo(ym){if(!/^\d{4}-\d{2}/.test(ym||""))return null;const [y,m]=ym.split("-").map(Number);const n=new Date();return (y-n.getFullYear())*12+(m-(n.getMonth()+1))}
+function ppScore(j,trip){const why=[];let s=0;const dem={high:3,medium:2,low:1}[String(j.demand||"").toLowerCase()]||1;s+=dem;if(dem>=2)why.push(String(j.demand).toLowerCase()+" search demand");
+ const mt=ppMonthsTo(j.publish_by);if(mt!==null){if(mt<=1){s+=3;why.push(mt<0?"past its search window — still worth it":"publish by "+j.publish_by)}else if(mt<=3){s+=2;why.push("publish by "+j.publish_by)}}
+ const ins=ppNotesFor(j);if(ins.length){s+=1;why.push("your notes are in")}
+ if(trip&&trip.end){const ago=-daysTo(trip.end);if(ago>=0&&ago<=60){s+=1;why.push("fresh trip")}}
+ const p=ppPrio("job:"+j.id)||ppPrio("trip:"+(trip?trip.id:""));if(p==="now"){s+=100;why.unshift("you marked it now")}else if(p==="next")s+=10;else if(p==="later")s-=10;
+ return {s,why}}
+function ppNotesFor(j){const subj=String(j.subject||j.title||"").toLowerCase();const words=subj.replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(w=>w.length>3&&!["hotel","the","verdict","belmond","lodge","camp","resort"].includes(w));
+ return inspections.filter(i=>{const n=String(i.name||"").toLowerCase();return (i.answers_count||0)>0&&words.length&&words.some(w=>n.includes(w))})}
+function ppAction(j,trip){const st=ppStage(j,trip);const n=ppSlots(j).length;const t=j.title||j.subject||"the piece";
+ if(st==="Cull")return {st,text:`Cull the photos for ${t}`,sub:`Drop the shoot. The desk picks ${n} and you approve them (about 15 minutes).`,btn:"Cull now",act:"cull"};
+ if(st==="Edit")return {st,text:`Edit ${n} selects for ${t}`,sub:"Tune the 3 hero frames, sync that look to the rest, export, tick done.",btn:"Edited ✓",act:"edited"};
+ if(st==="Write"){if(j.status==="planned")return {st,text:`Start writing ${t}`,sub:"Your notes and photos are ready. The worker drafts it in your voice.",btn:"Write it",act:"write"};
+  if(j.status==="needs-coco")return {st,text:`Answer the questions on ${t}`,sub:(j.report&&j.report.needs_coco||[]).slice(0,2).map(String).join(" · ").slice(0,160)||"The worker is waiting on you.",btn:"Open",act:"queue"};
+  if(["built","draft","drafted","approved"].includes(j.status))return {st,text:`Review the draft of ${t}`,sub:"Read it, approve it, it goes live.",btn:"Open",act:"queue"};
+  return null}
+ if(st==="Share"){if(!ppSocialDone(j))return {st,text:`Make the social pack for ${t}`,sub:"Carousel, caption, Reel script and Stories, from the live piece.",btn:"Make it",act:"social"};
+  const v=videos[j.id];return {st,text:v?`Cut the video for ${t}`:`Get the clip list for ${t}`,sub:v?"The clip list tells you exactly which clips to pull. Tick when it's cut.":"The desk writes the outline and the clips to pull, so you only edit those.",btn:v?"Open":"Clip list",act:"video"}}
+ return null}
+function ppAllActions(){const out=[];ppTripsAll().forEach(t=>{if(ppPrio("trip:"+t.key)==="archive")return;
+  if(t.status==="upcoming"&&daysTo(t.start)<=21){const r=research[t.id];out.push({trip:t,j:null,st:"Plan",score:{s:50-daysTo(t.start),why:["leaves in "+daysTo(t.start)+" days"]},text:r?`Read the shot plan for ${t.name}`:`Research shots and pieces for ${t.name}`,sub:r?`${(r.places||[]).reduce((a,p)=>a+(p.shots||[]).length,0)} shots across ${(r.places||[]).length} places, already in your Agency Studio shot list.`:"The worker finds the unique frames and the pieces worth writing, by search demand.",btn:r?"Open":"Research",act:r?"trip":"research"})}
+  ppPieces(t).forEach(j=>{const a=ppAction(j,t);if(a)out.push({trip:t,j,...a,score:ppScore(j,t)})})});
+ return out.sort((a,b)=>b.score.s-a.score.s)}
+function renderPipe(){const el=$("#desk-trips");if(!el)return;$("#pp-quiet").style.display=db?"none":"block";
+ $("#pp-views").querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.pv===ppView)));
+ ["next","board","list","trip","eye"].forEach(v=>{$("#pp-"+v).hidden=v!==ppView});
+ try{({next:ppRenderNext,board:ppRenderBoard,list:ppRenderList,trip:ppRenderTrip,eye:ppRenderEye}[ppView]||ppRenderNext)()}catch(e){console.warn("pipe",e)}
+ try{ppRenderToday()}catch(e){}}
+function ppActCard(a,i){return `<div class="card"><div class="n">${i+1}</div><div><div class="meta"><span class="pstage">${esc(a.st)}</span> ${esc(a.trip.name)}</div><h4 style="margin:4px 0 2px">${esc(a.text)}</h4><div class="note">${esc(a.sub||"")}</div><div class="note" style="margin-top:4px;color:var(--muted)">Why now: ${esc(a.score.why.slice(0,3).join(" · ")||"next in line")}</div></div><div><button class="btn" data-ppact="${esc(a.act)}" data-trip="${esc(a.trip.key)}" data-job="${esc(a.j?a.j.id:"")}">${esc(a.btn)}</button></div></div>`}
+function ppRenderNext(){const acts=ppAllActions();const more=$("#pp-next").dataset.more==="1";const show=acts.slice(0,more?6:3);
+ $("#pp-next").innerHTML=acts.length?`<div class="pnext">${show.map(ppActCard).join("")}</div><div class="row" style="margin-top:10px"><span class="note">${acts.length>3?`${acts.length-3} more wait out of sight. Finish one and the next moves up.`:"That's everything for now."}</span>${acts.length>3?`<button class="copy" id="pp-more">${more?"show 3":"show 3 more"}</button>`:""}</div>`:`<div class="note">Nothing needs you. When a trip's research lands or photos are due, it shows up here.</div>`;
+ const m=$("#pp-more");if(m)m.onclick=()=>{$("#pp-next").dataset.more=more?"0":"1";ppRenderNext()};ppWireActs($("#pp-next"))}
+function ppRenderToday(){const el=$("#t-next3");if(!el)return;const acts=ppAllActions().slice(0,3);el.innerHTML=acts.length?`<div class="fs" style="margin-top:0;border-top:0;padding-top:0"><div class="fsh"><span class="num">Trips</span><span class="fst">Your next three</span><button class="copy" data-go="trips" style="margin-left:auto">all trips →</button></div><div class="pnext">${acts.map(ppActCard).join("")}</div></div>`:"";ppWireActs(el);el.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go))}
+function ppWireActs(root){root.querySelectorAll("[data-ppact]").forEach(b=>b.onclick=()=>ppDo(b.dataset.ppact,b.dataset.trip,b.dataset.job,b))}
+async function ppDo(act,tkey,jid,btn){const t=ppTripsAll().find(x=>x.key===tkey);const j=pipeJobs.find(x=>x.id===jid);
+ if(act==="trip"){ppTrip=tkey;ls.set("ppTrip",tkey);ppView="trip";ls.set("ppView","trip");show("trips");renderPipe();return}
+ if(act==="research"){await ppResearch(t,btn);return}
+ if(act==="cull"&&j){ppCullOpen(j,t);return}
+ if(act==="edited"&&j){if(!canWrite)return;btn.disabled=true;try{await db.doc("culls/"+j.id).set({...(culls[j.id]||{}),edited:true,edited_at:Date.now(),updatedAt:Date.now()})}catch(e){btn.disabled=false}return}
+ if(act==="write"&&j){if(!canWrite)return;btn.disabled=true;btn.textContent="Queued";try{await db.doc("jobs/"+j.id).update({status:"queued",updatedAt:Date.now()});runNow({...j,status:"queued"},null)}catch(e){btn.disabled=false}return}
+ if(act==="queue"){show("queue");return}
+ if(act==="social"&&j){const r=lib.find(x=>(j.live_url&&x.url===j.live_url));if(r&&$("#s-pick")){$("#s-pick").value=r.id;$("#s-pick").dispatchEvent(new Event("change"))}show("social");return}
+ if(act==="video"&&j){ppVideoOpen(j,t);return}}
+function ppRenderBoard(){const all=ppTripsAll().filter(t=>ppPrio("trip:"+t.key)!=="archive");const td=today();
+ const ranked=all.map(t=>{const ps=ppPieces(t);const live=ps.filter(ppLive).length;const sc=ps.reduce((a,j)=>Math.max(a,ppScore(j,t).s),0)+(ppPrio("trip:"+t.key)==="now"?100:0);return {t,ps,live,st:ppTripStage(t),sc}});
+ const active=ranked.filter(x=>x.ps.length||(x.t.start&&x.t.status!=="past")||ppPrio("trip:"+x.t.key));const backlog=ranked.filter(x=>!active.includes(x)).sort((a,b)=>(b.t.end||"").localeCompare(a.t.end||""));
+ const card=x=>`<button class="ptrip" data-open="${esc(x.t.key)}"><b>${esc(x.t.name)}</b><span class="note">${esc(x.t.start||"")}${x.t.end?" → "+esc(x.t.end):""}${x.t.src==="agency"?" · fam":""}</span>${x.ps.length?`<span class="note" style="display:block">${x.live}/${x.ps.length} pieces live</span><div class="pbar"><i style="width:${Math.round(100*x.live/x.ps.length)}%"></i></div>`:""}${ppPrio("trip:"+x.t.key)?`<span class="pill">${esc(ppPrio("trip:"+x.t.key))}</span>`:""}</button>`;
+ $("#pp-board").innerHTML=`<div class="pboard">${PP_COLS.map(([h,sts])=>{const xs=active.filter(x=>sts.includes(x.st)).sort((a,b)=>b.sc-a.sc);return `<div class="pcol"><h5><span>${esc(h)}</span><span>${xs.length}</span></h5>${xs.map(card).join("")||'<div class="note">—</div>'}</div>`}).join("")}</div>
+ <div class="fs"><div class="fsh"><span class="num">Older</span><span class="fst">${backlog.length} past trips with no pieces yet</span><button class="copy" id="pp-bl" style="margin-left:auto">${$("#pp-board").dataset.bl==="1"?"hide":"show them"}</button></div><p class="note" style="margin:0">They wait here so they don't crowd you. Open one and press "Find the pieces" when you want it; the desk works out what's worth writing and how many photos it needs.</p>${$("#pp-board").dataset.bl==="1"?`<div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${backlog.map(card).join("")}</div>`:""}</div>`;
+ $("#pp-board").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>ppDo("trip",b.dataset.open));const bl=$("#pp-bl");if(bl)bl.onclick=()=>{$("#pp-board").dataset.bl=$("#pp-board").dataset.bl==="1"?"0":"1";ppRenderBoard()}}
+function ppPrioSel(k){const v=ppPrio(k);return `<select class="prio" data-prio="${esc(k)}" aria-label="Priority">${[["","auto"],["now","Now"],["next","Next"],["later","Later"],["archive","Archive"]].map(([a,b])=>`<option value="${a}"${a===v?" selected":""}>${b}</option>`).join("")}</select>`}
+function ppWirePrio(root){root.querySelectorAll("[data-prio]").forEach(s=>s.onchange=async()=>{if(!canWrite)return;const k=s.dataset.prio;try{if(s.value)await db.doc("board/"+k.replace(/[/:]/g,"_")).set({key:k,priority:s.value,updatedAt:Date.now()});else await db.doc("board/"+k.replace(/[/:]/g,"_")).delete()}catch(e){}})}
+function ppRenderList(){const rows=[];ppTripsAll().forEach(t=>ppPieces(t).forEach(j=>rows.push({t,j,st:ppStage(j,t),sc:ppScore(j,t)})));rows.sort((a,b)=>b.sc.s-a.sc.s);
+ $("#pp-list").innerHTML=rows.length?`<div class="card">${rows.map(x=>`<div class="prow"><div><div class="meta"><span class="pstage">${esc(x.st)}</span> ${esc(x.t.name)} · ${esc((FORMATS[x.j.format]||{}).label||x.j.format||"")} · ${ppSlots(x.j).length} photos</div><b>${esc(x.j.title||x.j.subject)}</b><div class="note">${esc(x.j.primary_keyword||"")} · ${esc(x.sc.why.slice(0,3).join(" · "))}</div></div><div class="row" style="gap:6px">${ppPrioSel("job:"+x.j.id)}<button class="copy" data-open="${esc(x.t.key)}">trip</button></div></div>`).join("")}</div>`:`<div class="note">No pieces yet. Open a trip and press "Find the pieces".</div>`;
+ $("#pp-list").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>ppDo("trip",b.dataset.open));ppWirePrio($("#pp-list"))}
+function ppRenderTrip(){const all=ppTripsAll();let t=all.find(x=>x.key===ppTrip);if(!t){const up=all.filter(x=>x.status!=="past").sort((a,b)=>(a.start||"").localeCompare(b.start||""));t=up[0]||all.find(x=>x.src==="agency")||all[0]}
+ if(!t){$("#pp-trip").innerHTML='<div class="note">No trips yet.</div>';return}
+ const r=research[t.id];const ps=ppPieces(t);const notes=tripNotes.filter(n=>n.trip_id===t.id);const ins=inspections.filter(i=>(i.fromTrip&&(i.fromTrip.id===t.id||i.fromTrip===t.id)));
+ const reflect=(t.days||[]).filter(d=>d.reflect&&Object.values(d.reflect).some(v=>String(v||"").trim())).length;
+ const opts=all.slice().sort((a,b)=>(b.start||"").localeCompare(a.start||"")).map(x=>`<option value="${esc(x.key)}"${x.key===t.key?" selected":""}>${esc(x.name)} · ${esc(x.start||"")}</option>`).join("");
+ const pieceRow=j=>{const st=ppStage(j,t);const c=culls[j.id]||{};const v=videos[j.id];const n=ppSlots(j).length;return `<div class="prow"><div><div class="meta"><span class="pstage">${esc(st)}</span> ${esc((FORMATS[j.format]||{}).label||j.format||"")} · ${n} photos${c.approved?` · ${(c.slots||[]).filter(s=>s.pick).length} picked`:""}${j.demand?" · "+esc(j.demand)+" demand":""}${j.publish_by?" · by "+esc(j.publish_by):""}</div><b>${esc(j.title||j.subject)}</b><div class="note">${esc(j.primary_keyword||"")}${j.why?" — "+esc(j.why):""}</div></div><div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-end">${ppPrioSel("job:"+j.id)}<button class="copy" data-ppact="cull" data-trip="${esc(t.key)}" data-job="${esc(j.id)}">${c.approved?"re-cull":"cull"}</button>${c.approved&&!c.edited?`<button class="copy" data-ppact="edited" data-trip="${esc(t.key)}" data-job="${esc(j.id)}">edited ✓</button>`:""}${j.status==="planned"?`<button class="copy" data-ppact="write" data-trip="${esc(t.key)}" data-job="${esc(j.id)}">write it</button>`:`<span class="pill">${esc(j.status||"")}</span>`}<button class="copy" data-ppact="video" data-trip="${esc(t.key)}" data-job="${esc(j.id)}">${v?"clip list":"video"}</button></div></div>`};
+ const shots=(r&&r.places||[]).map(p=>`<details><summary><b>${esc(p.place)}</b> <span class="note">${(p.shots||[]).length} shots · ${(p.pieces||[]).length} pieces</span></summary><ol class="shotl">${(p.shots||[]).map(s=>`<li><b>${esc(s.spot||"")}</b>: ${esc(s.what||"")} <span class="note">· ${esc(s.when||"")} · ${esc(s.medium||"")}${s.vertical?" · also 9:16":""}</span>${s.why?`<div class="note">${esc(s.why)}</div>`:""}${s.avoid?`<div class="note">Skip: ${esc(s.avoid)}</div>`:""}</li>`).join("")}</ol>${(p.gm_questions||[]).map(g=>`<div class="note" style="margin:6px 0 0"><b>Ask at ${esc(g.hotel)}:</b> ${(g.questions||[]).map(esc).join(" · ")}</div>`).join("")}${(p.pieces||[]).filter(pc=>!pipeJobs.some(j=>j.title===pc.title)).length?`<div class="note" style="margin:8px 0 0"><b>More pieces from the research:</b></div>${(p.pieces||[]).filter(pc=>!pipeJobs.some(j=>j.title===pc.title)).map(pc=>`<div class="row" style="gap:6px;margin:4px 0"><span style="font-size:13px">${esc(pc.title)} <span class="note">${esc(String(pc.demand||"").split(" ")[0])} demand${pc.publish_by?" · by "+esc(pc.publish_by):""}</span></span><button class="copy" data-addpc="${esc(p.place)}|${esc(pc.title)}">add</button></div>`).join("")}`:""}</details>`).join("");
+ const itin=t.itin&&Array.isArray(t.itin.days)?t.itin.days:[];
+ $("#pp-trip").innerHTML=`<div class="row" style="gap:10px;flex-wrap:wrap;margin-bottom:10px"><select id="pp-tsel" aria-label="Trip">${opts}</select>${ppPrioSel("trip:"+t.key)}<span class="note">${esc(t.start||"")} → ${esc(t.end||"")} · ${esc(t.status)} · ${t.src==="agency"?"Agency Studio":"Passport"}</span></div>
+ <div class="card"><div class="fsh" style="margin:0 0 6px"><span class="num">1</span><span class="fst">Pieces</span><button class="copy" id="pp-find" style="margin-left:auto">${ps.length?"refresh the pieces":"Find the pieces"}</button></div>${ps.length?ps.sort((a,b)=>ppScore(b,t).s-ppScore(a,t).s).map(pieceRow).join(""):`<p class="note" style="margin:0">No pieces yet. "Find the pieces" asks the worker for the keyword research: which pillars this trip can fill, by search demand and timing, and how many photos each one needs.</p>`}<div class="note" id="pp-find-note"></div></div>
+ <div class="card" style="margin-top:12px"><div class="fsh" style="margin:0 0 6px"><span class="num">2</span><span class="fst">Shot plan</span><span class="note" style="margin-left:auto">${r?"in your Agency Studio shot list too":""}</span></div>${shots||`<p class="note" style="margin:0">No shot research yet. It comes with "Find the pieces": the unique frames, best light, film or digital, and the clichés to skip.</p>`}${r&&r.video?`<details style="margin-top:8px"><summary><b>YouTube idea:</b> ${esc(r.video.title||"")}</summary><div class="note">${esc(r.video.hook||"")}</div><ol class="shotl">${(r.video.outline||[]).map(x=>`<li>${esc(typeof x==="string"?x:JSON.stringify(x))}</li>`).join("")}</ol></details>`:""}</div>
+ <div class="card" style="margin-top:12px"><div class="fsh" style="margin:0 0 6px"><span class="num">3</span><span class="fst">Your notes</span></div><div class="note">${ins.length} site inspections (${ins.filter(i=>(i.answers_count||0)>0).length} with notes) · ${reflect} days with your reflections · ${notes.length} Granola notes pulled${itin.length?` · itinerary from Proposal Studio (${itin.length} days)`:""}</div>${ins.length?`<div class="note" style="margin-top:6px">${ins.map(i=>esc(String(i.name||"").replace(/\s*[—–-]\s*check-in.*$/i,""))+((i.answers_count||0)?` <b>${i.answers_count}</b>`:"")).join(" · ")}</div>`:""}<div class="row" style="margin-top:8px"><button class="copy" id="pp-granola">Pull Granola from the trip dates</button><span class="note" id="pp-gnote"></span></div>${itin.length?`<details><summary class="note" style="cursor:pointer">Itinerary days</summary><ol class="shotl">${itin.map(d=>`<li><b>${esc(d.date||"")} ${esc(d.title||"")}</b> <span class="note">${esc(d.location||"")}${d.hotel?" · "+esc(d.hotel):""}</span></li>`).join("")}</ol></details>`:""}</div>`;
+ $("#pp-tsel").onchange=e=>{ppTrip=e.target.value;ls.set("ppTrip",ppTrip);ppRenderTrip()};
+ $("#pp-trip").querySelectorAll("[data-addpc]").forEach(b=>b.onclick=async()=>{if(!canWrite)return;const [pl,ti]=b.dataset.addpc.split("|");const P=(r.places||[]).find(x=>x.place===pl);const pc=P&&(P.pieces||[]).find(x=>x.title===ti);if(!pc)return;b.disabled=true;
+  const id=("pp-"+String(t.id).slice(0,6)+"-"+ti.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-")).slice(0,80).replace(/-$/,"");
+  try{await db.doc("jobs/"+id).set({id,pipeline:true,trip_id:t.id,type:"new",mode:pc.update?"update":"new",format:pc.format,title:pc.title,subject:pc.format==="verdict"?ti.replace(/^The Verdict:\s*/,"").replace(/,[^,]*$/,""):ti.replace(/^The [A-Z][a-z]+:\s*/,""),place:pl,primary_keyword:pc.keyword||"",demand:(String(pc.demand||"").match(/high|medium|low/i)||["low"])[0].toLowerCase(),why:pc.why||"",publish_by:pc.publish_by||"",photos_target:+pc.photos||0,needs:pc.needs||"",status:"planned",priority:0,trust:{},needs_coco:[],notes:"PIPELINE PIECE added from the trip research. Same rules as the other pipeline pieces: Coco's inspections, trip_notes and trips/"+t.id+" reflections for first-hand facts; photos from culls/"+id+".",idea:{q:pc.keyword||"",src:["trip-research"],questions:[],secondary:[]},createdAt:Date.now(),updatedAt:Date.now()})}catch(e){b.disabled=false}});
+ $("#pp-find").onclick=()=>ppResearch(t,$("#pp-find"));$("#pp-granola").onclick=()=>ppGranola(t);ppWireActs($("#pp-trip"));ppWirePrio($("#pp-trip"))}
+async function ppResearch(t,btn){if(!t)return;const note=$("#pp-find-note")||$("#pp-note");if(!canWrite){note.textContent="The store is read-only in this view.";return}
+ if(btn)btn.disabled=true;const id="research-"+String(t.id).replace(/[^a-z0-9-]/gi,"").slice(0,60);
+ try{await db.doc("jobs/"+id).set({id,type:"research",mode:"trip-research",status:"queued",title:"Find the pieces · "+t.name,subject:t.name,trip_id:t.id,trip:{key:t.key,src:t.src,name:t.name,start:t.start,end:t.end,status:t.status,places:t.places,hotels:t.hotels},priority:Math.max(0,...jobsCache.map(x=>x.priority||0))+1,worker_instructions:"SKILL.md 'Trip research'. Keyword research for each place: the pieces this trip can fill per pillar (house title, primary keyword, demand, publish_by, photo slots); shot research for upcoming trips; write research/<trip id> and one pipeline job per piece (status planned).",createdAt:Date.now(),updatedAt:Date.now()});
+  note.textContent="Queued. The worker researches it now; the pieces and shot plan land here.";runNow({id,title:"Find the pieces · "+t.name,status:"queued"},null)}catch(e){note.textContent="Couldn't queue it."}finally{if(btn)btn.disabled=false}}
+async function ppGranola(t){const note=$("#pp-gnote");if(!mcp){note.textContent="Connectors aren't available in this view.";return}if(!t.start){note.textContent="This trip has no dates.";return}
+ const shift=(d,n)=>{const x=new Date(d+"T12:00:00");x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};note.textContent="Looking in Granola…";
+ try{const r=await mcp.callTool("Granola","search_meetings",{from_date:shift(t.start,-1),to_date:shift(t.end||t.start,1),limit:60,max_participants:2},{cache:false});const ms=Array.isArray(r.payload?.meetings)?r.payload.meetings:[];
+  if(!ms.length){note.textContent="No Granola notes in those dates.";return}const have=new Set(tripNotes.filter(n=>n.trip_id===t.id).map(n=>n.meeting_id));const todo=ms.filter(m=>!have.has(m.id));let n=0;
+  for(let i=0;i<todo.length;i+=10){const g=await mcp.callTool("Granola","get_meetings",{meeting_ids:todo.slice(i,i+10).map(m=>m.id),max_participants:3},{cache:false});const arr=Array.isArray(g.payload?.meetings)?g.payload.meetings:[];
+   for(const m of arr){const text=[m.summary,m.notes,m.private_notes,m.ai_summary,m.content].filter(Boolean).map(v=>typeof v==="string"?v:JSON.stringify(v)).join("\n\n").slice(0,12000);const mid=m.id||m.meeting_id;if(!mid||!canWrite)continue;
+    await db.doc("trip_notes/"+(String(t.id)+"__"+mid).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,120)).set({trip_id:t.id,meeting_id:mid,title:m.title||"Meeting",date:String(m.meeting_at||m.created_at||"").slice(0,10),notes:text,pulled_at:Date.now()});n++}}
+  note.textContent=n?`${n} notes pulled. The writer uses them as your first-hand facts.`:"Already pulled."}catch(e){note.textContent=granolaErr(e)}}
+
+// ---------- Cull ----------
+let cullState=null;
+function hamming(a,b){let d=0;for(let i=0;i<a.length;i++)if(a[i]!==b[i])d++;return d}
+function exifTime(buf){try{const v=new DataView(buf);if(v.getUint16(0)!==0xFFD8)return 0;let o=2;while(o<v.byteLength-4){const mk=v.getUint16(o);const len=v.getUint16(o+2);if(mk===0xFFE1&&v.getUint32(o+4)===0x45786966){const t=o+10;const le=v.getUint16(t)===0x4949;const g16=p=>v.getUint16(p,le),g32=p=>v.getUint32(p,le);
+  const ifd=(p)=>{const n=g16(p);const out={};for(let i=0;i<n;i++){const e=p+2+i*12;out[g16(e)]={type:g16(e+2),count:g32(e+4),off:e+8}}return out};
+  const i0=ifd(t+g32(t+4));const ex=i0[0x8769];if(!ex)return 0;const ie=ifd(t+g32(ex.off));const dt=ie[0x9003]||ie[0x9004];if(!dt)return 0;const p=t+g32(dt.off);let s="";for(let i=0;i<19;i++)s+=String.fromCharCode(v.getUint8(p+i));
+  const m=s.match(/(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)/);return m?new Date(+m[1],+m[2]-1,+m[3],+m[4],+m[5],+m[6]).getTime():0}
+  if((mk&0xFF00)!==0xFF00)break;o+=2+len}}catch(e){}return 0}
+async function cullPrep(f){let bmp;try{bmp=await createImageBitmap(f)}catch(e){return null}
+ const long=Math.max(bmp.width,bmp.height);const sc=Math.min(1,640/long);const w=Math.max(1,Math.round(bmp.width*sc)),h=Math.max(1,Math.round(bmp.height*sc));
+ const cv=document.createElement("canvas");cv.width=w;cv.height=h;const cx=cv.getContext("2d");cx.drawImage(bmp,0,0,w,h);
+ const blob=await new Promise(r=>cv.toBlob(r,"image/jpeg",0.72));
+ const d9=document.createElement("canvas");d9.width=9;d9.height=8;const dx=d9.getContext("2d");dx.drawImage(bmp,0,0,9,8);const px=dx.getImageData(0,0,9,8).data;let hash="";
+ for(let y=0;y<8;y++)for(let x=0;x<8;x++){const a=(y*9+x)*4,b=(y*9+x+1)*4;hash+=(px[a]+px[a+1]+px[a+2])>(px[b]+px[b+1]+px[b+2])?"1":"0"}
+ const sw=Math.min(256,w),sh=Math.max(1,Math.round(h*sw/w));const s2=document.createElement("canvas");s2.width=sw;s2.height=sh;const sx=s2.getContext("2d");sx.drawImage(bmp,0,0,sw,sh);const g=sx.getImageData(0,0,sw,sh).data;
+ let sum=0,sq=0,n=0;for(let y=1;y<sh-1;y++)for(let x=1;x<sw-1;x++){const i=(y*sw+x)*4;const L=q=>g[q]*.3+g[q+1]*.59+g[q+2]*.11;const lap=4*L(i)-L(i-4)-L(i+4)-L(i-sw*4)-L(i+sw*4);sum+=lap;sq+=lap*lap;n++}
+ const sharp=n?sq/n-(sum/n)**2:0;let t=0;try{t=exifTime(await f.slice(0,262144).arrayBuffer())}catch(e){}
+ bmp.close&&bmp.close();return {name:f.name,base:f.name.replace(/\.[^.]+$/,""),blob,url:URL.createObjectURL(blob),hash,sharp,t:t||f.lastModified||0,portrait:h>w}}
+function cullGroup(items){items.sort((a,b)=>a.t-b.t||a.name.localeCompare(b.name));const groups=[];
+ for(const it of items){let g=groups[groups.length-1];if(g&&Math.abs(it.t-g.last)<=5000&&hamming(it.hash,g.rep.hash)<=14){g.items.push(it);g.last=it.t;if(it.sharp>g.rep.sharp)g.rep=it;continue}
+  const near=groups.slice(-40).find(x=>hamming(it.hash,x.rep.hash)<=6);if(near){near.items.push(it);if(it.sharp>near.rep.sharp)near.rep=it;continue}
+  groups.push({items:[it],rep:it,last:it.t})}
+ return groups}
+function tasteText(){const p=tasteProfile||{};return [p.text||"",p.prefer&&p.prefer.length?"Prefers: "+p.prefer.join("; "):"",p.avoid&&p.avoid.length?"Avoids: "+p.avoid.join("; "):""].filter(Boolean).join("\n")}
+function cullTips(j){const r=research[j.trip_id]||research[String(j.trip_id||"").replace(/^pp-a/,"")];const tips=r&&r.cull_tips&&(r.cull_tips[j.title]||r.cull_tips[j.id]);return Array.isArray(tips)?tips.join(" "):(j.cull_tips||"")}
+function ppCullOpen(j,t){cullState={job:j,trip:t,items:[],groups:[],scores:{},slots:ppSlots(j).map(s=>({slot:s,cands:[],pick:null,film:false,empty:false})),phase:"drop"};
+ openPanel(`<h4>Cull · ${esc(j.title||j.subject)}</h4><p class="note" style="margin:0 0 10px">This piece needs <b>${cullState.slots.length} photos</b>: ${cullState.slots.map(s=>esc(s.slot)).join(" · ")}. Drop the whole shoot (JPEG previews from Lightroom, about 1600px, are plenty; RAW files can't be read in the browser). Grouping and sharpness are worked out on this computer; only small previews go to Claude.</p>
+ <label class="cdrop" id="cu-drop" for="cu-files">Drop photos here, or <u>choose files</u><input type="file" id="cu-files" accept="image/jpeg,image/png,image/webp,image/heic" multiple hidden></label>
+ <div class="row" style="margin-top:10px"><button class="btn" id="cu-run" disabled>Pick the photos</button><button class="btn alt" id="cu-stop" disabled>Stop</button><span class="note" id="cu-note"></span></div><div id="cu-out"></div>`,true);
+ const drop=$("#cu-drop"),inp=$("#cu-files");const add=async files=>{const fs=[...files].filter(f=>/^image\//.test(f.type)||/\.(jpe?g|png|webp|heic)$/i.test(f.name));let k=0;for(const f of fs){k++;$("#cu-note").textContent=`Reading ${k}/${fs.length}…`;const it=await cullPrep(f);if(it)cullState.items.push(it)}
+  cullState.groups=cullGroup(cullState.items);$("#cu-note").textContent=`${cullState.items.length} photos · ${cullState.groups.length} moments after grouping bursts and near-duplicates${fs.length>cullState.items.length?` · ${fs.length-cullState.items.length} couldn't be read`:""}.`;$("#cu-run").disabled=!cullState.items.length};
+ inp.onchange=e=>add(e.target.files);drop.addEventListener("dragover",e=>{e.preventDefault();drop.classList.add("on")});drop.addEventListener("dragleave",()=>drop.classList.remove("on"));drop.addEventListener("drop",e=>{e.preventDefault();drop.classList.remove("on");add(e.dataTransfer.files)});
+ $("#cu-run").onclick=()=>cullRun();}
+async function cullRun(){const S=cullState;if(!S||!sample){$("#cu-note").textContent="Claude isn't available in this view.";return}
+ let lim=null;try{lim=await sample.limits()}catch(e){}const maxN=Math.max(1,Math.min(16,lim&&lim.images?lim.images.maxCount:0));if(!lim||!lim.images){$("#cu-note").textContent="This view can't send photos to Claude. Open the desk on claude.ai and allow it.";return}
+ const sh=S.groups.map(g=>g.rep.sharp).sort((a,b)=>a-b);const cut=sh[Math.floor(sh.length*0.15)]||0;let reps=S.groups.map(g=>g.rep).filter(r=>r.sharp>=cut*0.6||S.groups.length<40);
+ const CAP=Math.max(48,S.slots.length*12);if(reps.length>CAP){const step=reps.length/CAP;reps=Array.from({length:CAP},(_,i)=>reps[Math.floor(i*step)])}
+ const ctlr=new AbortController();$("#cu-stop").disabled=false;$("#cu-stop").onclick=()=>ctlr.abort();$("#cu-run").disabled=true;
+ const slotList=S.slots.map((s,i)=>`${i+1}. ${s.slot}`).join("\n");const tips=cullTips(S.job);
+ try{for(let i=0;i<reps.length;i+=maxN){const batch=reps.slice(i,i+maxN);$("#cu-note").textContent=`Looking at ${Math.min(i+maxN,reps.length)}/${reps.length} moments…`;
+   const res=await sample.json(`You are culling photographs for Coco Tran, a professional film and digital travel photographer, for one cocotran.com piece. Pick the way she would.
+HER EYE:
+${tasteText()||"Natural light, warm but true colour, clean composition with breathing room, real moments over posed ones, the specific detail over the generic view."}
+PIECE: ${S.job.title||S.job.subject} (${(FORMATS[S.job.format]||{}).label||S.job.format})
+${tips?"WHAT READERS SAVE FOR THIS PIECE: "+tips+"\n":""}PHOTO SLOTS:
+${slotList}
+The ${batch.length} images are numbered 1 to ${batch.length} in the order given. For EACH image return {"i":n,"slots":[slot numbers it could fill, best first, at most 2; [] if none],"score":1-10 (how strongly she would keep it for this piece: light, composition, moment, sharpness on the subject, how saveable),"flags":[any of "soft","eyes","tilt","clutter","exposure","cliche"],"d":"what it shows, at most 10 words"}. Be strict: 8+ only for frames she'd publish. Return a JSON array only.`,{images:batch.map(b=>b.blob),signal:ctlr.signal,cache:false});
+   (Array.isArray(res)?res:[]).forEach(x=>{const it=batch[(+x.i||0)-1];if(it)S.scores[it.name]={slots:(x.slots||[]).map(Number).filter(n=>n>=1&&n<=S.slots.length),score:+x.score||0,flags:x.flags||[],d:String(x.d||"").slice(0,90)}})}
+ }catch(e){if(e&&e.name!=="AbortError"){$("#cu-note").textContent=e&&e.code==="rate_limited"?"Claude is busy; try again in a minute.":"Stopped: "+(e&&e.message||"error").slice(0,100);}}
+ finally{$("#cu-stop").disabled=true;$("#cu-run").disabled=false}
+ cullAssign();cullRender()}
+function cullAssign(){const S=cullState;const used=new Set();const by=S.slots.map((s,si)=>Object.entries(S.scores).filter(([n,x])=>x.slots.includes(si+1)).map(([n,x])=>({name:n,score:x.score+(x.slots[0]===si+1?0.5:0)-(x.flags||[]).length*0.4,d:x.d})).sort((a,b)=>b.score-a.score));
+ S.slots.map((s,i)=>i).sort((a,b)=>by[a].length-by[b].length).forEach(si=>{const c=by[si];const pick=c.find(x=>!used.has(x.name));const s=S.slots[si];s.cands=c.slice(0,6);if(pick){used.add(pick.name);s.pick=pick.name;s.auto=pick.name;s.cands=[pick].concat(c.filter(x=>x.name!==pick.name).slice(0,2))}else{s.pick=null;s.auto=null;s.cands=c.slice(0,3)}})}
+function cullRender(){const S=cullState;const url=n=>(S.items.find(x=>x.name===n)||{}).url||"";const filled=S.slots.filter(s=>s.pick).length;
+ $("#cu-out").innerHTML=`<p class="note" style="margin:12px 0">Claude's pick is outlined. Tap another frame to swap. ${filled}/${S.slots.length} slots filled from ${Object.keys(S.scores).length} moments.</p><div class="cullgrid">${S.slots.map((s,si)=>`<div class="cslot"><h5>${si+1}. ${esc(s.slot)}</h5>${s.cands.length?`<div class="cthumbs">${s.cands.map(c=>`<button class="cthumb" data-si="${si}" data-n="${esc(c.name)}" aria-pressed="${String(c.name===s.pick)}"><img src="${esc(url(c.name))}" alt="${esc(c.d||c.name)}"><span>${esc(c.name)}<br>${esc(c.d||"")}</span></button>`).join("")}</div>`:`<div class="note">Nothing in this shoot fits.</div>`}<div class="row" style="gap:10px;margin-top:6px"><label class="note" style="display:flex;gap:6px;align-items:center;margin:0;text-transform:none;letter-spacing:0"><input type="checkbox" data-film="${si}"${s.film?" checked":""}> film pending</label><button class="copy" data-none="${si}">${s.pick?"none of these":""}</button></div></div>`).join("")}</div>
+ <div class="row" style="margin-top:14px"><button class="btn" id="cu-ok">Approve ${filled} photos</button><span class="note" id="cu-okn"></span></div><div id="cu-done"></div>`;
+ $("#cu-out").querySelectorAll(".cthumb").forEach(b=>b.onclick=()=>{S.slots[+b.dataset.si].pick=b.dataset.n;cullRender()});
+ $("#cu-out").querySelectorAll("[data-film]").forEach(c=>c.onchange=()=>{S.slots[+c.dataset.film].film=c.checked});
+ $("#cu-out").querySelectorAll("[data-none]").forEach(b=>b.onclick=()=>{const s=S.slots[+b.dataset.none];s.pick=null;s.empty=true;cullRender()});
+ $("#cu-ok").onclick=cullApprove}
+async function cullApprove(){const S=cullState;const j=S.job;const picks=S.slots.filter(s=>s.pick);const names=picks.map(s=>(S.items.find(x=>x.name===s.pick)||{}).base||s.pick);
+ const doc={job:j.id,trip_id:j.trip_id||"",title:j.title||"",slots:S.slots.map(s=>({slot:s.slot,pick:s.pick||"",d:(S.scores[s.pick]||{}).d||"",auto:s.auto||"",film:!!s.film,empty:!!s.empty})),n_files:S.items.length,n_groups:S.groups.length,approved:true,approved_at:Date.now(),edited:false,updatedAt:Date.now()};
+ if(canWrite){try{await db.doc("culls/"+j.id).set(doc);
+   for(const s of S.slots){if(!s.pick&&!s.auto)continue;const chosen=(S.scores[s.pick]||{}).d||"";const passed=s.cands.filter(c=>c.name!==s.pick).map(c=>c.d).filter(Boolean);await db.collection("taste_choices").add({kind:"cull",piece:j.title||"",format:j.format||"",slot:s.slot,chosen,passed,changed:!!(s.auto&&s.pick!==s.auto),at:Date.now()})}
+   if(j.status==="planned")await db.doc("jobs/"+j.id).update({status:"queued",photos_approved_at:Date.now(),updatedAt:Date.now()})}catch(e){$("#cu-okn").textContent="Couldn't save: "+(e&&e.code||"error");return}}
+ const list=names.join(" ");$("#cu-done").innerHTML=`<div class="card" style="margin-top:12px"><b>Approved.</b> ${j.status==="planned"?"The writer picks up the words on its next run. ":""}Your edit list (${names.length}):<textarea readonly style="margin-top:8px;min-height:70px">${esc(list)}</textarea><div class="row"><button class="copy" id="cu-copy">copy the list</button></div><p class="note" style="margin:8px 0 0">Lightroom Classic: Library → Filter bar → Text → <b>Filename</b> → <b>Contains</b> → paste → select all → press <b>P</b> to flag. Edit 3 hero frames, sync the look to the rest, export, then press "edited ✓" on the piece.${S.slots.some(s=>s.film)?" Slots marked film pending wait for your scans.":""}</p></div>`;
+ $("#cu-copy").onclick=()=>{try{navigator.clipboard.writeText(list);$("#cu-copy").textContent="copied"}catch(e){}}}
+
+// ---------- Your eye: taste profile and Edit A vs B ----------
+function ppRenderEye(){const p=tasteProfile||{};const n=tasteChoices.length;
+ $("#pp-eye").innerHTML=`<div class="two"><div class="card"><div class="meta">How the desk sees your eye · ${n} choices learned</div><p style="margin:6px 0">${esc(p.text||"No profile yet.")}</p>${(p.prefer||[]).length?`<div class="note"><b>Keeps:</b> ${(p.prefer||[]).map(esc).join(" · ")}</div>`:""}${(p.avoid||[]).length?`<div class="note" style="margin-top:4px"><b>Skips:</b> ${(p.avoid||[]).map(esc).join(" · ")}</div>`:""}${p.edit_notes?`<div class="note" style="margin-top:4px"><b>Edits:</b> ${esc(p.edit_notes)}</div>`:""}<div class="row" style="margin-top:8px"><button class="copy" id="eye-up">Update it from my choices</button><span class="note" id="eye-note"></span></div></div>
+ <div class="card"><div class="meta">Edit 1 vs Edit 2</div><p class="note" style="margin:6px 0">Export two versions of the same frame. The desk says which is more you, and why. Your pick teaches it.</p><div class="two"><div><label for="ab-a">Edit 1</label><input type="file" id="ab-a" accept="image/*"></div><div><label for="ab-b">Edit 2</label><input type="file" id="ab-b" accept="image/*"></div></div><div class="row"><button class="btn" id="ab-run">Compare</button><span class="note" id="ab-note"></span></div><div id="ab-out"></div></div></div>`;
+ $("#eye-up").onclick=tasteUpdate;$("#ab-run").onclick=abRun}
+async function abRun(){const a=$("#ab-a").files[0],b=$("#ab-b").files[0];if(!a||!b){$("#ab-note").textContent="Choose both edits.";return}if(!sample){$("#ab-note").textContent="Claude isn't available in this view.";return}
+ $("#ab-note").textContent="Comparing…";try{const [A,B]=await Promise.all([cullPrep(a),cullPrep(b)]);
+  const r=await sample.json(`Two edits of the same photograph by Coco Tran (film and digital travel photographer). Image 1 is Edit 1, image 2 is Edit 2.
+HER EYE: ${tasteText()}
+HOW SHE EDITS: ${(tasteProfile&&tasteProfile.edit_notes)||"warm but true colour, soft contrast, natural skin, never over-saturated."}
+Return JSON {"pick":1 or 2,"why":"one or two sentences, concrete (highlights, blacks, white balance, greens, skin)","one":"Edit 1's grade in at most 10 words","two":"Edit 2's grade in at most 10 words","tweak":["up to 3 slider moves that would make the pick even more her"]}.`,{images:[A.blob,B.blob],cache:false});
+  $("#ab-out").innerHTML=`<div class="ab" style="margin-top:10px"><div><img src="${esc(A.url)}" alt="Edit 1"><div class="note">${esc(r.one||"")}</div><button class="btn${r.pick==1?"":" alt"}" data-ab="1">I prefer 1</button></div><div><img src="${esc(B.url)}" alt="Edit 2"><div class="note">${esc(r.two||"")}</div><button class="btn${r.pick==2?"":" alt"}" data-ab="2">I prefer 2</button></div></div><p style="margin:10px 0 4px"><b>The desk picks ${esc(r.pick)}.</b> ${esc(r.why||"")}</p>${(r.tweak||[]).length?`<div class="note">To push it further: ${(r.tweak||[]).map(esc).join(" · ")}</div>`:""}`;$("#ab-note").textContent="";
+  $("#ab-out").querySelectorAll("[data-ab]").forEach(x=>x.onclick=async()=>{const k=+x.dataset.ab;if(canWrite){try{await db.collection("taste_choices").add({kind:"edit",chosen:k===1?r.one:r.two,passed:[k===1?r.two:r.one],changed:k!=r.pick,at:Date.now()})}catch(e){}}$("#ab-note").textContent=k==r.pick?"Agreed. Noted.":"Noted. The desk learns from that one.";})}
+ catch(e){$("#ab-note").textContent="Couldn't compare: "+(e&&e.code||e&&e.message||"error")}}
+async function tasteUpdate(){if(!sample||!canWrite){$("#eye-note").textContent="Not available in this view.";return}const recent=tasteChoices.slice().sort((a,b)=>(b.at||0)-(a.at||0)).slice(0,120);if(recent.length<5){$("#eye-note").textContent="Approve a few culls or compare a few edits first.";return}
+ $("#eye-note").textContent="Learning…";try{const p=tasteProfile||{};const r=await sample.json(`Update this photographer's taste profile from her recent choices. Keep what still holds, sharpen what the choices show, drop what they contradict.
+CURRENT PROFILE: ${JSON.stringify({text:p.text||"",prefer:p.prefer||[],avoid:p.avoid||[],edit_notes:p.edit_notes||""})}
+CHOICES (chosen vs passed; "changed" means she overrode the desk's pick, weigh those most):
+${recent.map(c=>`- [${c.kind}${c.slot?" · "+c.slot:""}${c.changed?" · OVERRIDE":""}] kept: ${c.chosen} | passed: ${(c.passed||[]).join(" / ")}`).join("\n")}
+Return JSON {"text":"≤170 words, addressed to the AI picker: 'Coco favours…'","prefer":["8–12 short rules"],"avoid":["6–10 short rules"],"edit_notes":"2–3 sentences on her grade"}.`,{cache:false});
+  await db.doc("taste/profile").set({...p,...r,n_choices:tasteChoices.length,updatedAt:Date.now()});$("#eye-note").textContent="Updated."}catch(e){$("#eye-note").textContent="Couldn't update: "+(e&&e.code||"error")}}
+
+// ---------- Video: outline and the clips to pull ----------
+function ppVideoOpen(j,t){const v=videos[j.id];
+ const body=v=>`<p style="margin:0 0 6px"><b>${esc(v.title||"")}</b></p><div class="note">Hook: ${esc(v.hook||"")}</div><ol class="shotl">${(v.beats||[]).map(b=>`<li><b>${esc(b.t||"")}</b> ${esc(b.clip||"")}${b.vo?` <div class="note">VO: ${esc(b.vo)}</div>`:""}</li>`).join("")}</ol>${(v.shorts||[]).length?`<div class="note"><b>Shorts / Reels:</b> ${(v.shorts||[]).map(s=>esc(s.title||s)+(s.clips?` (${esc([].concat(s.clips).join(", "))})`:"")).join(" · ")}</div>`:""}${(v.pull||[]).length?`<div class="note" style="margin-top:6px"><b>Pull only these clips:</b> ${(v.pull||[]).map(esc).join(" · ")}</div>`:""}`;
+ openPanel(`<h4>Video · ${esc(j.title||j.subject)}</h4><div id="vd-body">${v?body(v):'<p class="note">The desk writes the outline from your notes and the piece: the hook, each beat with the clip to use, and 3 Shorts cut from the same clips. You only edit those.</p>'}</div><div class="row" style="margin-top:10px"><button class="btn" id="vd-run">${v?"Rewrite it":"Write the clip list"}</button>${v?`<button class="btn alt" id="vd-cut">${v.cut?"Cut ✓":"Mark it cut"}</button>`:""}<span class="note" id="vd-note"></span></div>`,true);
+ $("#vd-run").onclick=async()=>{if(!sample){$("#vd-note").textContent="Claude isn't available in this view.";return}$("#vd-note").textContent="Writing…";
+  const ins=ppNotesFor(j).map(i=>`${i.name}: ${String(i.free||"").slice(0,600)} ${String(i.answers_text||"").slice(0,1600)}`).join("\n\n");const r0=research[j.trip_id];
+  try{const r=await sample.json(`${voiceText?voiceText():""}
+Write a YouTube video plan for Coco Tran's channel "Coco Tran Travel", built from one cocotran.com piece and her own trip notes. She shoots film and digital stills plus video clips; she edits the video herself, so tell her exactly which clips to pull.
+PIECE: ${j.title||j.subject} (${(FORMATS[j.format]||{}).label||j.format}) · keyword: ${j.primary_keyword||""}
+TRIP: ${t?t.name:""}
+${r0&&r0.video?"TRIP VIDEO IDEA: "+JSON.stringify(r0.video).slice(0,800):""}
+HER NOTES (facts, use only these, no invented details):
+${ins.slice(0,5000)||"(none yet)"}
+Return JSON {"title":"search-led YouTube title ≤70 chars","title_options":["2 more"],"hook":"first 8 seconds, spoken","beats":[{"t":"0:00","clip":"the exact clip to pull (what is in frame)","vo":"one line of voiceover"}] (8–12 beats, 6–10 minutes total),"shorts":[{"title":"…","clips":["which beats/clips"]}] (3),"pull":["the deduplicated list of clips to pull from her footage"],"thumbnail":"the frame for the thumbnail"}.`,{cache:false,modelTier:"complex"});
+   if(canWrite)await db.doc("videos/"+j.id).set({...r,job:j.id,cut:false,updatedAt:Date.now()});$("#vd-body").innerHTML=body(r);$("#vd-note").textContent="Saved."}catch(e){$("#vd-note").textContent="Couldn't write it: "+(e&&e.code||"error")}};
+ const c=$("#vd-cut");if(c)c.onclick=async()=>{if(!canWrite)return;try{await db.doc("videos/"+j.id).update({cut:!v.cut,cut_at:Date.now()});closePanel()}catch(e){}}}
+
+$("#pp-views").querySelectorAll("button").forEach(b=>b.onclick=()=>{ppView=b.dataset.pv;ls.set("ppView",ppView);renderPipe()});
+document.querySelectorAll("#desk-trips [data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
+let ppTimer=null;function schedulePipe(){clearTimeout(ppTimer);ppTimer=setTimeout(()=>{try{if(document.querySelector("#desk-trips.on"))renderPipe();else ppRenderToday()}catch(e){console.warn("pipe",e)}},200)}
 (async()=>{
  setStatus();
  const [s,d,u,m,a,dl]=await Promise.all([claude.use("sample"),claude.use("db"),claude.use("user"),claude.use("mcp"),claude.use("assets"),claude.use("downloads")]);
@@ -2646,9 +2933,17 @@ function setStatus(){
   try{db.collection("settings").doc("analytics").onSnapshot(d=>{analyticsSettings=d.exists?d.data():null;renderKwData()},()=>{})}catch(e){}
   try{db.collection("settings").doc("ideas").onSnapshot(d=>{const x=d.exists?d.data():{};ideaStore={imported:x.imported||[],paa:x.paa||[]};if(x.summary_fields)summaryFields={...SUMMARY_DEFAULT,...x.summary_fields};scheduleIdeas()},()=>{})}catch(e){}
   try{db.collection("plan").limit(300).onSnapshot(sn=>{plans=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderCalendar()}catch(e){}},()=>{})}catch(e){}
-  try{db.collection("trips").limit(50).onSnapshot(sn=>{trips=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderToday();renderCalendar()}catch(e){}},()=>{})}catch(e){}
-  try{db.collection("travel").limit(400).onSnapshot(sn=>{travelCache=sn.docs.map(x=>({id:x.id,...x.data()}));try{if(document.querySelector("#desk-authority.on"))renderAuthority()}catch(e){}},()=>{})}catch(e){}
-  try{db.collection("inspections").limit(100).onSnapshot(sn=>{inspections=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderToday()}catch(e){}},()=>{})}catch(e){}
+  try{db.collection("trips").limit(50).onSnapshot(sn=>{trips=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderToday();renderCalendar()}catch(e){}schedulePipe()},()=>{})}catch(e){}
+  try{db.collection("jobs").where("pipeline","==",true).limit(300).onSnapshot(sn=>{pipeJobs=sn.docs.map(x=>({id:x.id,...x.data()}));schedulePipe()},()=>{})}catch(e){}
+  try{db.collection("board").limit(500).onSnapshot(sn=>{boardPrio={};sn.docs.forEach(x=>{const v=x.data();if(v&&v.key)boardPrio[v.key]=v});schedulePipe()},()=>{})}catch(e){}
+  try{db.collection("culls").limit(300).onSnapshot(sn=>{culls={};sn.docs.forEach(x=>culls[x.id]=x.data());schedulePipe()},()=>{})}catch(e){}
+  try{db.collection("videos").limit(300).onSnapshot(sn=>{videos={};sn.docs.forEach(x=>videos[x.id]=x.data());schedulePipe()},()=>{})}catch(e){}
+  try{db.collection("research").limit(100).onSnapshot(sn=>{research={};sn.docs.forEach(x=>research[x.id]=x.data());schedulePipe()},()=>{})}catch(e){}
+  try{db.collection("trip_notes").limit(500).onSnapshot(sn=>{tripNotes=sn.docs.map(x=>({id:x.id,...x.data()}));schedulePipe()},()=>{})}catch(e){}
+  try{db.doc("taste/profile").onSnapshot(sn=>{tasteProfile=sn.exists?sn.data():null;if(document.querySelector("#desk-trips.on")&&ppView==="eye")ppRenderEye()},()=>{})}catch(e){}
+  try{db.collection("taste_choices").limit(400).onSnapshot(sn=>{tasteChoices=sn.docs.map(x=>x.data())},()=>{})}catch(e){}
+  try{db.collection("travel").limit(400).onSnapshot(sn=>{travelCache=sn.docs.map(x=>({id:x.id,...x.data()}));schedulePipe();try{if(document.querySelector("#desk-authority.on"))renderAuthority()}catch(e){}},()=>{})}catch(e){}
+  try{db.collection("inspections").limit(100).onSnapshot(sn=>{inspections=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderToday()}catch(e){}schedulePipe();},()=>{})}catch(e){}
   try{db.collection("todo").limit(100).onSnapshot(sn=>{todos=sn.docs.map(x=>({id:x.id,...x.data()}));renderTodos()},()=>{})}catch(e){}
   try{db.collection("benchmarks").orderBy("createdAt","desc").limit(1).onSnapshot(renderBenchToday,()=>{})}catch(e){}
   try{db.doc("voice/rules").onSnapshot(sn=>{const x=sn.exists?sn.data():null;VOICE_RULES=String(x?.text||"");renderVoiceRules()},()=>{})}catch(e){}
