@@ -1,6 +1,6 @@
 <?php
 /**
- * Code Snippets (WPCode) · PHP · Run everywhere.  v2.5 · 25 Oct 2026
+ * Code Snippets (WPCode) · PHP · Run everywhere.  v2.6 · 25 Oct 2026
  * The two footer blocks from the Site Snippets plugin, "Pair it with" and the author line, in the facts-strip style:
  * sans light labels in capitals, more air around everything, and a small greyscale photo of each paired piece on
  * the left of its text (the piece's featured image; items without one simply show text).
@@ -11,7 +11,7 @@
 /* ---------- 1. The look (one stylesheet, served through both plugin filters) ---------- */
 function ct_footer_blocks_css() {
 	return <<<'CSS'
-/* Coco Tran — footer blocks in the facts-strip style (v2.5) */
+/* Coco Tran — footer blocks in the facts-strip style (v2.6) */
 .ct-tail{max-width:none!important;padding:0!important;margin:4rem 0 3rem!important}
 .ct-pair,.ct-author{--ct-ink:#111;--ct-hair:var(--global-palette7,#e3e0da);max-width:none;margin:0;font-family:sans,"Inter",system-ui,sans-serif;color:var(--ct-ink);}
 body .ct-pair{display:grid;grid-template-columns:174px 1fr;column-gap:64px;padding:3.6rem 32px 3rem!important;border-top:3px solid #000!important;background:#fff;}
@@ -93,10 +93,9 @@ function ct_pair_add_thumbs( $html ) {
 		return '<a class="ct-pair__link has-thumb" href="' . $m[1] . '"><span class="ct-pair__thumb"><img src="' . esc_url( $src ) . '" alt="" loading="lazy" decoding="async"></span>';
 	}, $html );
 }
-/* Classic posts: the plugin appends the blocks to the_content at priority 25. */
-add_filter( 'the_content', 'ct_pair_add_thumbs', 26 );
-/* Magazine post types: the plugin echoes the blocks on these Kadence hooks (priority 20 and 5); buffer around them. */
-add_action( 'kadence_single_after_content', function () { ob_start(); }, 19 );
-add_action( 'kadence_single_after_content', function () { echo ct_pair_add_thumbs( (string) ob_get_clean() ); }, 21 );
-add_action( 'kadence_after_content', function () { ob_start(); }, 4 );
-add_action( 'kadence_after_content', function () { echo ct_pair_add_thumbs( (string) ob_get_clean() ); }, 6 );
+/* The plugin prints the blocks on different hooks depending on the template, so instead of guessing the hook the
+   whole page passes through ct_pair_add_thumbs() once on output (singular pages only, idempotent, a few ms). */
+add_action( 'template_redirect', function () {
+	if ( is_admin() || ! is_singular() || is_feed() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) { return; }
+	ob_start( 'ct_pair_add_thumbs' );
+}, 1 );
