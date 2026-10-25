@@ -57,3 +57,9 @@ Four more snippets inside the **Coco Tran Site Snippets** plugin (`12-install/co
 5. Cache: Delete all Cache + Cloudflare purge after the first map POST. Pair blocks are cached 12 h per piece and cleared by every map POST and by any publish/trash of a piece.
 
 Notes: the engine rewrites the content through DOMDocument, so `<img …/>` becomes `<img …>` and attribute order can change — no visual effect. The hub page is found by `ct_hub_url`, then the ACF `hub` post object, then a published Page whose slug equals the destination slug.
+
+## snippet-booking-popup.php (v1.0, 25 Oct 2026)
+"Request this booking" opens the Tally form **2jEqDb** as a window on the page (hotel and page carried as hidden fields) instead of leaving for cocotrantravel.com/contact. One Code Snippets entry, PHP, run everywhere. Without JavaScript the button opens https://tally.so/r/2jEqDb. Tally emails each request to the account's email; sending to traveladvisor@cocotran.com directly needs Tally Pro (settings drafted, blocked on the free plan) or a forwarding rule in that inbox.
+
+### Updating a snippet
+Open the existing snippet in Code Snippets, select all, paste the new file over it, Save and Activate. Never keep two copies active: a second copy of the same functions is a fatal error on the whole site. Plugins are the same idea: upload the new zip and choose "Replace current with uploaded".

@@ -7,6 +7,7 @@
  *     (the continent is dropped whenever a more specific place is filed) — on the strip and in "Filed under".
  *  3. Footer blocks: "Pair it with" and "Photos & words" headings in the article's heading style, black.
  *  4. Booking box: title in the article's heading style, strip-style labels, full column width.
+ *  5. Pair it with: the format line under each title ("FROM THE ARCHIVE", "THE VERDICT") in capitals.
  * Remove the snippet to revert everything at once.
  */
 add_filter( 'get_the_terms', function ( $terms, $post_id, $taxonomy ) {
@@ -39,7 +40,7 @@ add_action( 'wp_head', function () {
 .kt-inside-inner-col > .wp-block-post-terms{margin:0!important;line-height:20px!important}
 /* 3. Footer blocks: headings in the article's heading style, black */
 body .ct-pair .ct-pair__kicker, body .ct-author::before{font-family:sans,"Inter",system-ui,sans-serif;font-weight:400;font-size:22px;line-height:30px;letter-spacing:0;text-transform:uppercase;color:#000}
-body .ct-pair .ct-pair__format{color:#000}
+body .ct-pair .ct-pair__format{color:#000;text-transform:uppercase;letter-spacing:.39px} /* "FROM THE ARCHIVE", "THE VERDICT" … */
 body .ct-pair,body .ct-author{--ct-ink:#000;color:#000}
 body .ct-pair .ct-pair__excerpt{opacity:.78}
 /* 4. Booking box: title in the article's heading style, labels in the strip's sans, full column width, nothing gold */
