@@ -53,3 +53,62 @@ add_filter( 'acf/load_field_group', function ( $group ) {
 	}
 	return $group;
 }, 20 );
+
+/* Fallback: if a type or taxonomy was registered before this plugin loaded
+ * (mu-plugin or theme code calling register_post_type at file load), the
+ * args filters above never saw it. Re-register it late with the same
+ * arguments plus REST support. register_post_type() on an existing name
+ * replaces the registration in place; slugs, rewrites and templates stay. */
+add_action( 'init', function () {
+	foreach ( ct_rest_magazine_types() as $type ) {
+		$obj = get_post_type_object( $type );
+		if ( ! $obj || ! empty( $obj->show_in_rest ) ) { continue; }
+		$args = get_object_vars( $obj );
+		unset( $args['name'], $args['cap'], $args['label'], $args['labels'], $args['rest_controller'], $args['revisions_rest_controller'], $args['autosave_rest_controller'], $args['template'], $args['template_lock'] );
+		$args['labels']       = (array) $obj->labels;
+		$args['label']        = $obj->label;
+		$args['show_in_rest'] = true;
+		$args['rest_base']    = $type;
+		$args['rest_controller_class'] = 'WP_REST_Posts_Controller';
+		$args['supports']     = array_values( array_unique( array_merge( array_keys( get_all_post_type_supports( $type ) ), array( 'custom-fields' ) ) ) );
+		$args['taxonomies']   = get_object_taxonomies( $type );
+		if ( isset( $args['rewrite'] ) && is_object( $args['rewrite'] ) ) { $args['rewrite'] = (array) $args['rewrite']; }
+		register_post_type( $type, $args );
+	}
+	foreach ( get_taxonomies( array(), 'objects' ) as $tax ) {
+		if ( ! empty( $tax->show_in_rest ) || $tax->_builtin ) { continue; }
+		$types = (array) $tax->object_type;
+		if ( ! array_intersect( $types, ct_rest_magazine_types() ) && ! in_array( $tax->name, array( 'destinations', 'destination', 'brief_format', 'dispatch_format', 'collection', 'collections', 'region' ), true ) ) { continue; }
+		$args = get_object_vars( $tax );
+		unset( $args['name'], $args['object_type'], $args['cap'], $args['label'], $args['labels'], $args['rest_controller'] );
+		$args['labels']       = (array) $tax->labels;
+		$args['label']        = $tax->label;
+		$args['show_in_rest'] = true;
+		$args['rest_base']    = $tax->name;
+		if ( isset( $args['rewrite'] ) && is_object( $args['rewrite'] ) ) { $args['rewrite'] = (array) $args['rewrite']; }
+		register_taxonomy( $tax->name, $types, $args );
+	}
+}, 999 );
+
+/* Read-only diagnostic for the Studio Desk worker: which types and
+ * taxonomies exist and whether REST sees them. Admins only. */
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'coco-tran/v1', '/types', array(
+		'methods'             => 'GET',
+		'permission_callback' => function () { return current_user_can( 'edit_others_posts' ); },
+		'callback'            => function () {
+			$out = array( 'post_types' => array(), 'taxonomies' => array(), 'acf' => function_exists( 'acf_get_field_groups' ) );
+			foreach ( get_post_types( array( '_builtin' => false ), 'objects' ) as $t ) {
+				$out['post_types'][ $t->name ] = array( 'show_in_rest' => (bool) $t->show_in_rest, 'rest_base' => $t->rest_base ?: null, 'public' => (bool) $t->public, 'taxonomies' => get_object_taxonomies( $t->name ) );
+			}
+			foreach ( get_taxonomies( array( '_builtin' => false ), 'objects' ) as $x ) {
+				$out['taxonomies'][ $x->name ] = array( 'show_in_rest' => (bool) $x->show_in_rest, 'rest_base' => $x->rest_base ?: null, 'types' => (array) $x->object_type, 'hierarchical' => (bool) $x->hierarchical );
+			}
+			if ( function_exists( 'acf_get_field_groups' ) ) {
+				$out['acf_groups'] = array();
+				foreach ( acf_get_field_groups() as $g ) { $out['acf_groups'][] = array( 'key' => $g['key'], 'title' => $g['title'], 'show_in_rest' => ! empty( $g['show_in_rest'] ), 'location' => $g['location'] ); }
+			}
+			return $out;
+		},
+	) );
+} );
