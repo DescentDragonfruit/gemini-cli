@@ -4,7 +4,7 @@ Paste the block below into a Claude session that runs ON COCO'S MAC (Claude Desk
 where she is logged in to cocotran.com). A cloud session cannot click inside WordPress admin.
 
 Files it needs (both repos carry them, folder `wordpress-setup/` in ctbusiness):
-- `wpcode-import/wpcode-import-all-three.json`
+- `wpcode-import/wpcode-import-all.json`
 - `acf-comparison-brief.json`
 - `snippet-booking-popup.php` is NOT installed yet (form choice still open) — skip it.
 
@@ -12,11 +12,12 @@ Files it needs (both repos carry them, folder `wordpress-setup/` in ctbusiness):
 You are working in my Chrome, logged in as admin on https://cocotran.com. Do exactly this, confirm each step with a screenshot, change nothing else.
 
 1. Open https://cocotran.com/wp-admin/admin.php?page=wpcode-tools&view=import . Upload the file
-   `wpcode-import-all-three.json` (from the ctbusiness repo, wordpress-setup/wpcode-import/). Press Import.
-   Expected: three new snippets, all Active, titles starting "Coco Tran ·":
+   `wpcode-import-all.json` (from the ctbusiness repo, wordpress-setup/wpcode-import/). Press Import.
+   Expected: four new snippets, all Active, titles starting "Coco Tran ·":
    - Coco Tran · Article chrome (…)
    - Coco Tran · Footer blocks style (…)
    - Coco Tran · Comparison booking box (…)
+   - Coco Tran · Article schema (…)
 
 2. Open https://cocotran.com/wp-admin/admin.php?page=wpcode . For every OTHER PHP snippet whose code does the same job,
    move it to Trash (hover → Trash). Recognise them by content, the titles were typed by hand:
@@ -24,7 +25,7 @@ You are working in my Chrome, logged in as admin on https://cocotran.com. Do exa
    - any snippet containing `id=\"ct-article-chrome\"` or `get_the_terms` with `destination`  → duplicate of "Article chrome"
    - any snippet containing `shortcode_atts_ctt_book` or `$out['hotel']`  → duplicate of "Comparison booking box"
    - a snippet whose code is JSON (starts with `[` or `{`, or shows `\n` sequences) → broken paste, Trash it
-   Keep exactly ONE active copy of each of the three. Do not touch snippets about anything else
+   Keep exactly ONE active copy of each of the four. Do not touch snippets about anything else
    (Rank Math, WooCommerce, Kadence, memberships, email) and do not touch the Coco Tran Site Snippets plugin.
 
 3. Open https://cocotran.com/wp-admin/edit.php?post_type=acf-field-group&page=acf-tools . Under Import Field Groups,
