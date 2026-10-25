@@ -1247,7 +1247,8 @@ function acfKnown(cpt,acf){const known=ACF_KEYS[cpt];if(!known)return {acf,dropp
  on("id-file","change",e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$("#id-paste").value=String(r.result||"").slice(0,400000);importIdeas($("#id-paste").value)};r.readAsText(f)});
  let t=null;const later=()=>{clearTimeout(t);t=setTimeout(()=>{try{renderFmtPick();renderLinkPlan()}catch(e){console.warn(e)}},300)};
  ["n-subject","n-goal","n-notes","n-dest","n-url"].forEach(id=>on(id,"input",later));["n-format","n-mode"].forEach(id=>on(id,"change",()=>{later();syncAccess()}));
- ["n-visited","n-visitmonth","n-disclosure"].forEach(id=>on(id,"change",renderTrustNote));
+ ["n-visited","n-visitmonth","n-disclosure"].forEach(id=>on(id,"change",renderTrustNote));on("n-disclosure","change",()=>{$("#n-disclosure").dataset.touched="1"});
+ ["n-subject","n-dest"].forEach(id=>on(id,"change",()=>{try{const t=travelPrefill();if(t){renderTrustNote();const el=$("#n-trustnote");if(el)el.innerHTML=`From your travel log: <b>${esc(tripLabel(t))}</b> (${esc(t.kind==="fam"?"fam trip":"personal trip")}). `+el.innerHTML}}catch(e){}}));
  const fc=$("#n-factcheck");if(fc&&!fc.value){const d=new Date();fc.value=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
  setTimeout(()=>{syncAccess();renderTrustNote();try{renderFmtPick()}catch(e){}},0);
 })();
@@ -1285,9 +1286,11 @@ let amCache=[];
 function renderAuthority(){const host=$("#am-list");if(!host)return;if(!lib.length){host.innerHTML='<div class="note">The library has not loaded yet.</div>';return}amCache=amPlan();const f=normTxt($("#am-q")?.value||"");const onlyGaps=$("#am-gaps")?.checked;
  const rows=amCache.filter(x=>(!f||normTxt(x.p.chain.map(t=>t.name).join(" ")).includes(f))&&(!onlyGaps||x.cov.missing.length));
  const totalMissing=amCache.reduce((a,x)=>a+x.cov.missing.length,0);$("#am-sum").textContent=`${amCache.length} places · ${amCache.filter(x=>!x.cov.missing.length).length} complete · ${totalMissing} pillars missing`;
- host.innerHTML=rows.map((x,i)=>{const p=x.p,c=x.cov;const queued=jobsCache.filter(j=>j.authority&&j.authority.term_id===p.id&&!["done","published"].includes(j.status));
+ const tp=travelPanel();
+ host.innerHTML=tp+rows.map((x,i)=>{const p=x.p,c=x.cov;const visits=[x.p.name].concat(x.p.rolled||[]).flatMap(n=>travelMatch(n)).filter((t,i2,a)=>a.indexOf(t)===i2);const queued=jobsCache.filter(j=>j.authority&&j.authority.term_id===p.id&&!["done","published"].includes(j.status));
   return `<div class="card" data-am="${i}"><div class="meta">${esc(p.kind==="country"?"COUNTRY":"PLACE")}${p.rolled.length?" (with "+esc(p.rolled.join(", "))+")":""} · ${esc(p.chain.map(t=>t.name).join(" › "))} · ${p.pieces.length} live · ${p.old.length} old posts · photos ≈ ${x.ph.own+Math.round(x.ph.unknown*0.5)} yours</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 14px;margin:8px 0">${c.rows.map(r=>`<div style="font-size:13px;line-height:1.45"><span class="pill ${r.missing?"warn":"ok"}">${r.missing?"missing":"✓"}</span> ${esc(r.label)}${r.have.length?`<br>${r.have.slice(0,2).map(h=>`<a href="${esc(h.url)}" target="_blank" rel="noopener">${esc((h.title||"").slice(0,40))}</a>`).join("<br>")}`:""}</div>`).join("")}</div>
+  ${visits.length?`<div class="note">Your visits: ${visits.slice(0,4).map(t=>esc(tripLabel(t))).join(" · ")}</div>`:`<div class="note"><span class="pill warn">no visit in your travel log</span> pieces here are written as the advisor who planned it, not as if you stayed</div>`}
   ${c.hub?`<div class="note">Hub: <a href="${esc(c.hub.url)}" target="_blank" rel="noopener">${esc(c.hub.title)}</a>${c.countryHub&&p.depth>=3?` · up to <a href="${esc(c.countryHub.url)}" target="_blank" rel="noopener">${esc(c.countryHub.title)}</a>`:""}</div>`:`<div class="note"><span class="pill warn">no hub</span> the Rolodex for ${esc(p.name)} is the first thing to build — every other piece links to it.</div>`}
   <div class="row" style="margin-top:8px">${c.missing.length?`<button class="btn" data-amq="${i}" ${queued.length?"disabled":""}>${queued.length?queued.length+" queued":"Queue the "+c.missing.length+" missing"}</button>`:""}${p.pieces.length>1?`<button class="btn alt" data-aml="${i}">Fix the links between these ${p.pieces.length}</button>`:""}<span class="note" data-amnote="${i}"></span></div></div>`}).join("")||'<div class="note">No place matches.</div>';
  host.querySelectorAll("[data-amq]").forEach(b=>b.onclick=()=>amQueue(rows[+b.dataset.amq],b));host.querySelectorAll("[data-aml]").forEach(b=>b.onclick=()=>amQueueLinks(rows[+b.dataset.aml],b))}
@@ -1297,7 +1300,7 @@ async function amQueue(x,btn){if(!db||!canWrite){return 0}const p=x.p,c=x.cov;co
   const id=`am-${normTxt(p.name).replace(/[^a-z0-9]+/g,"-")}-${k}`;if(jobsCache.some(j=>j.id===id))continue;
   const job={id,mode:fromOld?"respin":"new",status:!photosOk?"needs-coco":(k==="verdict"&&!hotelOld.length)?"needs-coco":"queued",format:fmt,subject:k==="stay"?"Where to stay in "+p.name:k==="eat"?"Where to eat in "+p.name:p.name,dest:chainTxt,title:(FORMATS[fmt]?.label||fmt)+" · "+p.name,category:CATEGORY_BY_FORMAT[fmt]||"",
    authority:{term_id:p.id,chain:p.chain.map(t=>t.name),pillar:k,hub:c.hub?{title:c.hub.title,url:c.hub.url}:null,country_hub:c.countryHub?{title:c.countryHub.title,url:c.countryHub.url}:null,siblings:p.pieces.map(r=>({title:r.title,url:r.url,format:r.format}))},
-   idea:{q,src:["authority-map"],questions:[],secondary:[]},link_plan:lp,primary_keyword:q,
+   idea:{q,src:["authority-map"],questions:[],secondary:[]},link_plan:lp,primary_keyword:q,visits:[p.name].concat(p.rolled||[]).flatMap(n=>travelMatch(n)).filter((t,i2,a)=>a.indexOf(t)===i2).slice(0,5).map(t=>({name:t.name,start:t.start,end:t.end||null,kind:t.kind})),
    source_urls:fromOld?(k==="verdict"?hotelOld:p.old).map(r=>r.url):[],source_wp_ids:fromOld?(k==="verdict"?hotelOld:p.old).map(r=>r.wp_id).filter(Boolean):[],
    notes:`AUTHORITY MAP: ${p.name} is missing its ${k}. Write it from Coco's own live pieces on ${p.name} and the old posts listed (her words, her photos), plus research. Link up to the hub and the country hub, across to two siblings, and add this piece to the hub's related fields once live.`+(k==="verdict"?" A Verdict needs the hotel Coco stayed in: ask her which.":"")+(photosOk?"":" PHOTOS: fewer than five of Coco's own frames for this place — ask her for the scans before building."),
    needs_coco:[...(k==="verdict"&&!hotelOld.length?["Which hotel in "+p.name+" did you stay at? A Verdict needs your stay."]:[]),...(photosOk?[]:["Photos of "+p.name+": fewer than five of yours are on the site."])],createdAt:Date.now(),updatedAt:Date.now(),priority:AM_PRI[k]||0};
@@ -1314,10 +1317,41 @@ let amAutoRan=false;
 async function amAuto(){if(amAutoRan||!db||!canWrite||!lib.length||!jobsLoaded)return;let owner=false;try{const u=await claude.use("user");owner=u?.isOwner?.()??false}catch(e){}if(!owner)return;amAutoRan=true;
  let last=0;try{const d=await db.doc("settings/authority").get();last=d.exists?(d.data().last_auto||0):0}catch(e){}if(Date.now()-last<20*3600e3)return;
  const plan=amPlan();let q=0,l=0;for(const x of plan){q+=await amQueue(x,null);if(x.p.pieces.length>1)l+=await amQueueLinks(x,null)}
+ let tr={photos:0,plans:0};try{tr=await travelAuto()}catch(e){console.warn('travelAuto',e)}
  try{await db.doc("settings/authority").set({last_auto:Date.now(),queued:q,links:l,places:plan.length,missing:plan.reduce((a,x)=>a+x.cov.missing.length,0)})}catch(e){}
- const el=$("#am-auto");if(el)el.textContent=`Ran by itself ${new Date().toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}: ${q} pillar job${q===1?"":"s"} and ${l} link job${l===1?"":"s"} queued.`}
+ const el=$("#am-auto");if(el)el.textContent=`Ran by itself ${new Date().toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}: ${q} pillar job${q===1?"":"s"}, ${l} link job${l===1?"":"s"}, ${tr.plans} trip plan${tr.plans===1?"":"s"} queued · ${tr.photos} photo to-do${tr.photos===1?"":"s"} added.`}
 
 (function(){const q=$("#am-q"),g=$("#am-gaps");if(q)q.addEventListener("input",()=>{try{renderAuthority()}catch(e){}});if(g)g.addEventListener("change",()=>{try{renderAuthority()}catch(e){}})})();
+// ---------- Travel history (Notion · Cocos Travel Hub · Trips) + Agency Studio fam trips → visits, photos to edit, shoot plans ----------
+// Only places and dates are synced. Passport numbers, birth dates and addresses never enter the desk.
+let travelCache=[];
+function travelMatch(name){const n=normTxt(name||"");if(n.length<3)return [];return travelCache.filter(t=>asList(t.places).some(p=>{const q=normTxt(p);return q===n||(q.length>=4&&(q.includes(n)||n.includes(q)))})).sort((a,b)=>String(b.start).localeCompare(String(a.start)))}
+function travelForText(text){const hay=normTxt(text||"");if(!hay)return [];const hits=new Map();travelCache.forEach(t=>asList(t.places).forEach(p=>{const q=normTxt(p);if(q.length>=4&&hay.includes(q))hits.set(t.id,t)}));return [...hits.values()].sort((a,b)=>String(b.start).localeCompare(String(a.start)))}
+function tripMonth(t){const d=String(t.end||t.start||"");return d.slice(0,7)}
+function tripLabel(t){return `${t.name} · ${monthText(String(t.start).slice(0,7))}${t.end&&String(t.end).slice(0,7)!==String(t.start).slice(0,7)?"–"+monthText(String(t.end).slice(0,7)):""}`}
+function placePresence(name){const n=normTxt(name);const recs=lib.filter(r=>/^live/.test(r.status||"")&&normTxt((r.title||"")+" "+(r.url||"")).includes(n));const live=recs.filter(r=>r.status==="live"&&(r.cpt||"post")!=="post");const ph=photoRead(recs);const own=ph.own+Math.round(ph.unknown*0.5);
+ const state=live.length>=3?"written":own>=5?"write":"photos";return {live,old:recs.filter(r=>(r.cpt||"post")==="post"),own,state}}
+const TRAVEL_STATE={written:["ok","written"],write:["warn","photos on the site — write it"],photos:["bad","edit and upload the photos"]};
+function travelPanel(){if(!travelCache.length)return "";const past=travelCache.filter(t=>t.status==="past").sort((a,b)=>String(b.start).localeCompare(String(a.start)));const up=travelCache.filter(t=>t.status!=="past").sort((a,b)=>String(a.start).localeCompare(String(b.start)));
+ const famHotels=n=>{const ft=(typeof trips!=="undefined"?trips:[]).find(x=>normTxt(x.name||"").includes(normTxt(n).split(" ")[0]));return ft?asList(ft.hotels):[]};
+ const row=t=>{const ps=asList(t.places).slice(0,10).map(p=>{const pr=placePresence(p);const s=TRAVEL_STATE[pr.state];return `<span style="white-space:nowrap"><span class="pill ${s[0]}" title="${esc(s[1])}">${pr.state==="written"?"✓":pr.state==="write"?"✎":"◐"}</span> ${esc(p)}${pr.live.length?` <span class="note">${pr.live.length} live</span>`:""}</span>`}).join(" &nbsp; ");return `<div style="padding:8px 0;border-top:1px solid var(--line)"><b>${esc(tripLabel(t))}</b> <span class="note">${t.kind==="fam"?"fam trip":"personal"}</span><div style="font-size:13px;line-height:1.9;margin-top:2px">${ps}</div></div>`};
+ return `<div class="card" style="margin-bottom:14px"><div class="meta">FROM YOUR TRAVELS · ${past.length} trips taken · ${up.length} coming up · synced from Notion (Cocos Travel Hub · Trips) and Agency Studio</div>
+ <div class="note" style="margin:6px 0">✓ written (3+ live pieces) · ✎ your photos are on the site, the pieces are queued · ◐ no photos on the site yet: edit and upload them, the set queues itself once five are up.</div>
+ ${up.length?`<div style="margin:8px 0 4px"><b>Coming up</b> — the desk writes a shoot and content plan for each one before you go.</div>${up.map(t=>`<div style="padding:6px 0;border-top:1px solid var(--line)"><b>${esc(tripLabel(t))}</b> · ${esc(asList(t.places).join(", "))}${famHotels(t.name).length?`<div class="note">Stays to review: ${esc(famHotels(t.name).slice(0,8).join(" · "))}</div>`:""}</div>`).join("")}`:""}
+ <details style="margin-top:8px"><summary style="cursor:pointer"><b>Trips taken</b> (newest first)</summary>${past.map(row).join("")}</details></div>`}
+async function travelAuto(){if(!db||!canWrite||!travelCache.length)return {photos:0,plans:0};let photos=0,plans=0;const ymd=new Date().toISOString().slice(0,10);
+ for(const t of travelCache){
+  if(t.status==="past"){const need=asList(t.places).filter(p=>placePresence(p).state==="photos");if(!need.length)continue;const id="photos-"+t.id;try{const d=await db.doc("todo/"+id).get();if(d.exists)continue;await db.doc("todo/"+id).set({order:60,group:"Photos to edit",text:`Edit and upload your photos from ${tripLabel(t)}: ${need.join(", ")}. Drop them in New piece or the media library; the authority map queues the pieces once five are up.`,minutes:90,done:false,trip_id:t.id,places:need,createdAt:Date.now()});photos++}catch(e){}}
+  else{const id="plan-"+t.id;if(jobsCache.some(j=>j.id===id))continue;const ft=(typeof trips!=="undefined"?trips:[]).find(x=>String(x.startDate||"").slice(0,7)===String(t.start).slice(0,7)||normTxt(x.name||"").includes(normTxt(t.name).split(" ")[0]));
+   const auth=asList(t.places).map(p=>{try{return authorityFor(p,p)}catch(e){return null}}).filter(Boolean);
+   try{await db.doc("jobs/"+id).set({id,mode:"plan",type:"plan",status:"queued",priority:2,title:"Shoot and content plan · "+t.name,subject:t.name,format:"plan",trip:t,fam:ft?{id:ft.id,name:ft.name,hotels:asList(ft.hotels),purpose:ft.purpose||""}:null,authority:auth,worker_instructions:"SKILL.md 'Trip plans'. Before departure: per place, the pillars it is missing (authority), the shot list each pillar needs (opening, image slots, Verdict rooms/F&B/spa/arrival, Postcard moment), the GM questions per hotel, the reels/YouTube beats, and the keyword per piece from research. Write plan{} on this job and a todo per day. After the trip ends and photos are on the site, the map queues the pieces.",createdAt:Date.now(),updatedAt:Date.now()});plans++}catch(e){}}}
+ return {photos,plans}}
+function travelPrefill(){const subj=$("#n-subject").value.trim(),dest=$("#n-dest").value.trim();if(!subj&&!dest)return null;const hits=travelForText(subj+" "+dest).filter(t=>t.status==="past");if(!hits.length)return null;const t=hits[0];
+ if(!$("#n-visitmonth").value){$("#n-visitmonth").value=tripMonth(t)}
+ if(!$("#n-visited").value){$("#n-visited").value="Stayed"}
+ if(t.kind==="personal"&&$("#n-disclosure").dataset.touched!=="1"){$("#n-disclosure").value="Trip I took"}
+ return t}
+
 // ---------- Granola ----------
 let pulled=[];
 function granolaErr(e){const m={server_not_connected:"Add Granola under claude.ai Settings → Connectors.",needs_reauth:"Reconnect Granola under Settings → Connectors.",not_in_manifest:"Granola isn't allowed for this page in this view.",approval_required:"Granola needs your approval — try again and allow it.",tool_error:"Granola reported an error: "+(e.message||"").slice(0,120)};return m[e?.code]||"Granola didn't answer — try again."}
@@ -2601,6 +2635,7 @@ function setStatus(){
   try{db.collection("settings").doc("ideas").onSnapshot(d=>{const x=d.exists?d.data():{};ideaStore={imported:x.imported||[],paa:x.paa||[]};if(x.summary_fields)summaryFields={...SUMMARY_DEFAULT,...x.summary_fields};scheduleIdeas()},()=>{})}catch(e){}
   try{db.collection("plan").limit(300).onSnapshot(sn=>{plans=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderCalendar()}catch(e){}},()=>{})}catch(e){}
   try{db.collection("trips").limit(50).onSnapshot(sn=>{trips=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderToday();renderCalendar()}catch(e){}},()=>{})}catch(e){}
+  try{db.collection("travel").limit(400).onSnapshot(sn=>{travelCache=sn.docs.map(x=>({id:x.id,...x.data()}));try{if(document.querySelector("#desk-authority.on"))renderAuthority()}catch(e){}},()=>{})}catch(e){}
   try{db.collection("inspections").limit(100).onSnapshot(sn=>{inspections=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderToday()}catch(e){}},()=>{})}catch(e){}
   try{db.collection("todo").limit(100).onSnapshot(sn=>{todos=sn.docs.map(x=>({id:x.id,...x.data()}));renderTodos()},()=>{})}catch(e){}
   try{db.collection("benchmarks").orderBy("createdAt","desc").limit(1).onSnapshot(renderBenchToday,()=>{})}catch(e){}
