@@ -1,6 +1,6 @@
 <?php
 /**
- * Code Snippets (WPCode) · PHP · Run everywhere.  v2.2 · 25 Oct 2026
+ * Code Snippets (WPCode) · PHP · Run everywhere.  v2.3 · 25 Oct 2026
  * The two footer blocks from the Site Snippets plugin, "Pair it with" and the author line, in the facts-strip style:
  * sans light labels in capitals, more air around everything, and a small greyscale photo of each paired piece on
  * the left of its text (the piece's featured image; items without one simply show text).
@@ -12,10 +12,10 @@
 function ct_footer_blocks_css() {
 	return <<<'CSS'
 /* Coco Tran — footer blocks in the facts-strip style (v2) */
-.ct-tail{max-width:none!important;padding:0!important;margin:3rem 0 0!important}
+.ct-tail{max-width:none!important;padding:0!important;margin:4rem 0 3rem!important}
 .ct-pair,.ct-author{--ct-ink:#111;--ct-hair:var(--global-palette7,#e3e0da);max-width:none;margin:0;font-family:sans,"Inter",system-ui,sans-serif;color:var(--ct-ink);}
-.ct-pair{display:grid;grid-template-columns:174px 1fr;column-gap:64px;padding:3rem 32px 2.6rem;border-top:1px solid var(--ct-ink);background:#fff;}
-.ct-pair .ct-pair__kicker{margin:0;font-family:sans,"Inter",system-ui,sans-serif;font-weight:400;font-size:17px;line-height:1.5;letter-spacing:2px;text-transform:uppercase;font-variant-caps:normal;color:#000;} /* = the theme h3 */
+.ct-pair{display:grid;grid-template-columns:174px 1fr;column-gap:64px;padding:3.6rem 32px 3rem;border-top:1px solid #000;background:#fff;}
+.ct-pair .ct-pair__kicker{margin:0;font-family:sans,"Inter",system-ui,sans-serif;font-weight:400;font-size:17px;line-height:24px;letter-spacing:1.5px;text-transform:uppercase;font-variant-caps:normal;color:#000;} /* = the theme h3 */
 .ct-pair .ct-pair__list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:72px;row-gap:30px;}
 .ct-pair .ct-pair__item{margin:0;padding:0;}
 .ct-pair .ct-pair__link{display:grid!important;grid-template-columns:1fr;column-gap:24px;align-items:start;text-decoration:none;color:inherit;border-top:1px solid var(--ct-hair);padding:20px 0 14px;}
@@ -29,8 +29,8 @@ function ct_footer_blocks_css() {
 .ct-pair .ct-pair__link:hover .ct-pair__title{text-decoration:underline;text-underline-offset:3px;color:var(--ct-ink);}
 .ct-pair .ct-pair__excerpt{display:block;font-family:var(--global-heading-font-family,Georgia,serif);font-size:14px;line-height:22px;color:var(--ct-ink);opacity:.72;margin-top:6px;}
 .ct-pair .ct-pair__item--hub .ct-pair__link{border-top-color:var(--ct-ink);}
-.ct-author{display:grid;grid-template-columns:174px 1fr;column-gap:64px;padding:2.6rem 32px 3.4rem;border-top:1px solid var(--ct-hair);background:#fff;font-size:16px;line-height:30px;}
-.ct-author::before{content:"Photos & words";font-family:sans,"Inter",system-ui,sans-serif;font-weight:400;font-size:17px;line-height:1.5;letter-spacing:2px;text-transform:uppercase;color:#000;}
+.ct-author{display:grid;grid-template-columns:174px 1fr;column-gap:64px;padding:2.8rem 32px 3.6rem;border-top:1px solid var(--ct-hair);border-bottom:1px solid #000;background:#fff;font-size:16px;line-height:30px;}
+.ct-author::before{content:"Photos & words";font-family:sans,"Inter",system-ui,sans-serif;font-weight:400;font-size:17px;line-height:24px;letter-spacing:1.5px;text-transform:uppercase;color:#000;}
 .ct-author > *{grid-column:2;}
 .ct-author p{margin:0;}
 .ct-author .ct-author__line{font-family:var(--global-heading-font-family,Georgia,serif);font-size:17px;line-height:30px;}
@@ -43,8 +43,9 @@ function ct_footer_blocks_css() {
 .ct-author .ct-author__links{margin-top:14px;font-family:sans,"Inter",system-ui,sans-serif;font-weight:300;font-size:15px;}
 .ct-author .ct-author__links a{color:var(--ct-ink);text-decoration:none;border-bottom:1px solid var(--ct-hair);}
 @media (max-width:767px){
- .ct-pair,.ct-author{grid-template-columns:1fr;column-gap:0;padding:2rem 8px 1.6rem;}
- .ct-pair .ct-pair__kicker,.ct-author::before{font-size:17px;line-height:1.5;letter-spacing:2px;margin-bottom:10px;}
+ .ct-pair,.ct-author{grid-template-columns:1fr;column-gap:0;padding:2.4rem 8px 2rem;}
+ .ct-tail{margin:3rem 0 2rem!important}
+ .ct-pair .ct-pair__kicker,.ct-author::before{font-size:17px;line-height:24px;letter-spacing:1.5px;margin-bottom:10px;}
  .ct-pair .ct-pair__list{grid-template-columns:1fr;row-gap:14px;}
  .ct-pair .ct-pair__link{padding:14px 0 10px;column-gap:16px;}
  .ct-pair .ct-pair__link.has-thumb{grid-template-columns:72px minmax(0,1fr)!important;}

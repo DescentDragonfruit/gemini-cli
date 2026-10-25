@@ -73,7 +73,7 @@ add_action( 'wp_head', function () {
 .kt-inside-inner-col:has(> .wp-block-post-terms){align-items:baseline!important}
 .kt-inside-inner-col > .wp-block-post-terms{margin:0!important;line-height:20px!important}
 /* 3. Footer blocks: headings in the article's heading style, black */
-body .ct-pair .ct-pair__kicker, body .ct-author::before{font-family:sans,"Inter",system-ui,sans-serif;font-weight:400;font-size:17px;line-height:1.5;letter-spacing:2px;text-transform:uppercase;color:#000;margin:0} /* = the theme's h3 (17px, tracking 2px) */
+body .ct-pair .ct-pair__kicker, body .ct-author::before{font-family:sans,"Inter",system-ui,sans-serif;font-weight:400;font-size:17px;line-height:24px;letter-spacing:1.5px;text-transform:uppercase;color:#000;margin:0} /* = the theme's h3 (17px, tracking 2px) */
 body .ct-pair .ct-pair__format{color:#000;text-transform:uppercase;letter-spacing:.39px} /* "FROM THE ARCHIVE", "THE VERDICT" … */
 body .ct-pair,body .ct-author{--ct-ink:#000;color:#000}
 body .ct-pair .ct-pair__excerpt{opacity:.78}
@@ -87,7 +87,7 @@ body .ctt-book .ctt-book__btn, body .ctt-book a.button.ctt-book__btn{font-family
 body .ctt-book .ctt-book__note{font-family:var(--global-heading-font-family,Georgia,serif);font-size:14px;color:#000;opacity:.78}
 @media (max-width:767px){
 body .ctt-book .ctt-book__title{font-size:16px;line-height:23px;letter-spacing:2px}
-body .ct-pair .ct-pair__kicker, body .ct-author::before{font-size:17px;line-height:1.5;letter-spacing:2px}
+body .ct-pair .ct-pair__kicker, body .ct-author::before{font-size:17px;line-height:24px;letter-spacing:1.5px}
 }
 
 CSS . "</style>\n";
