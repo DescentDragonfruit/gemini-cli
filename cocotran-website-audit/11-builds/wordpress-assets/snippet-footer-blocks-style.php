@@ -1,6 +1,6 @@
 <?php
 /**
- * Code Snippets (WPCode) · PHP · Run everywhere.  v2.3 · 25 Oct 2026
+ * Code Snippets (WPCode) · PHP · Run everywhere.  v2.4 · 25 Oct 2026
  * The two footer blocks from the Site Snippets plugin, "Pair it with" and the author line, in the facts-strip style:
  * sans light labels in capitals, more air around everything, and a small greyscale photo of each paired piece on
  * the left of its text (the piece's featured image; items without one simply show text).
@@ -61,12 +61,31 @@ add_filter( 'ct_author_css', 'ct_footer_blocks_css', 99 );
 add_action( 'wp_head', function () { if ( ! is_admin() ) { echo '<style id="ct-footer-blocks-v2">' . ct_footer_blocks_css() . '</style>' . "\n"; } }, 99 );
 
 /* ---------- 2. The small greyscale photo on each paired piece ---------- */
+/** Post ID for a cocotran.com URL. url_to_postid() misses the magazine post types, so fall back to the slug. */
+function ct_pair_post_id_from_url( $url ) {
+	$pid = (int) url_to_postid( $url );
+	if ( $pid ) { return $pid; }
+	$path = trim( (string) parse_url( $url, PHP_URL_PATH ), '/' );
+	if ( '' === $path ) { return 0; }
+	$parts = explode( '/', $path );
+	$slug  = sanitize_title( end( $parts ) );
+	if ( '' === $slug ) { return 0; }
+	$found = get_posts( array( 'name' => $slug, 'post_type' => array( 'property', 'guide', 'brief', 'dispatch', 'shortlist', 'post', 'page' ), 'post_status' => 'publish', 'posts_per_page' => 1, 'fields' => 'ids', 'no_found_rows' => true ) );
+	return $found ? (int) $found[0] : 0;
+}
+/** The photo for a piece: featured image, else the first image attached to it. */
+function ct_pair_thumb_src( $pid ) {
+	$src = get_the_post_thumbnail_url( $pid, 'medium' );
+	if ( $src ) { return $src; }
+	$media = get_attached_media( 'image', $pid );
+	if ( $media ) { $first = reset( $media ); $src = wp_get_attachment_image_url( $first->ID, 'medium' ); if ( $src ) { return $src; } }
+	return '';
+}
 function ct_pair_add_thumbs( $html ) {
 	if ( ! is_string( $html ) || false === strpos( $html, 'ct-pair__link' ) || false !== strpos( $html, 'ct-pair__thumb' ) ) { return $html; }
 	return preg_replace_callback( '/<a class="ct-pair__link" href="([^"]+)">/', function ( $m ) {
-		$url = html_entity_decode( $m[1] );
-		$pid = url_to_postid( $url );
-		$src = $pid ? get_the_post_thumbnail_url( $pid, 'medium' ) : '';
+		$pid = ct_pair_post_id_from_url( html_entity_decode( $m[1] ) );
+		$src = $pid ? ct_pair_thumb_src( $pid ) : '';
 		if ( ! $src ) { return $m[0]; }
 		return '<a class="ct-pair__link has-thumb" href="' . $m[1] . '"><span class="ct-pair__thumb"><img src="' . esc_url( $src ) . '" alt="" loading="lazy" decoding="async"></span>';
 	}, $html );
