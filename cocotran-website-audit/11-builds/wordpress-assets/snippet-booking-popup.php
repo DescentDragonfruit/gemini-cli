@@ -1,6 +1,6 @@
 <?php
 /**
- * Code Snippets (WPCode) · PHP · Run everywhere.  v2.0 · 25 Oct 2026
+ * Code Snippets (WPCode) · PHP · Run everywhere.  v2.1 · 25 Oct 2026 (no PHP tags inside: WPCode strips them)
  * "Request this booking" opens a form in a window on the page, in the article's own style, and sends it
  * through Splitforms (the same service the Proposal Studio uses) to the inbox the access key is registered to.
  * No Tally, no plugin. The hotel and the page travel with the request. Without JavaScript the button still
@@ -24,8 +24,8 @@ add_filter( 'do_shortcode_tag', function ( $out, $tag ) {
 
 add_action( 'wp_footer', function () {
 	if ( is_admin() ) { return; }
-	$key = esc_js( CT_BOOK_SF_KEY );
-	?>
+	// WPCode strips PHP tags from snippets, so the markup is printed from a string rather than by leaving PHP mode.
+	$html = <<<'HTML'
 <style id="ct-book-pop-css">
 .ct-bk-overlay{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;transition:opacity .2s}
 .ct-bk-overlay.is-open{opacity:1}
@@ -50,7 +50,7 @@ add_action( 'wp_footer', function () {
 </style>
 <script id="ct-book-pop">
 (function(){
-  var KEY="<?php echo $key; ?>";
+  var KEY="__CT_BOOK_SF_KEY__";
   function esc(s){return String(s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
   function build(hotel,source){
     var h=hotel||"this hotel";
@@ -106,5 +106,6 @@ add_action( 'wp_footer', function () {
   });
 })();
 </script>
-	<?php
+HTML;
+	echo str_replace( '__CT_BOOK_SF_KEY__', esc_js( CT_BOOK_SF_KEY ), $html );
 }, 50 );
