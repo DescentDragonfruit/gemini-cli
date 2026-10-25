@@ -1,5 +1,7 @@
 # Install on cocotran.com — what to upload where (≈15 min)
 
+> Multisite: upload from **Network Admin → Plugins → Add New → Upload**. If the plugin exists already, WordPress offers **Replace current with uploaded** — click it, or the old version stays (25 Oct: site reported Photo CMS 1.1.0 and Snippets 1.0.0 while the zips here are 1.2.0 and 1.2.0). Then activate on cocotran.com only (Sites → cocotran.com → Plugins).
+
 Nothing here is installed yet. Do it on staging first if you have one.
 
 1. **Plugins → Add New → Upload Plugin** → `coco-photo-cms.zip` → Activate. Then Settings → Coco Photo CMS: check max long edge (2000), keep originals, serve WebP (turn off LiteSpeed's own WebP replacement if you enable this). Run Bulk → "Regenerate WebP" and the missing-alt list. **Front-end size cap** (default 1600 px) is on: templates that ask for the full-size image get the largest generated size under 1600 instead — this alone takes the 24 MB homepage down to a few MB with no theme change.
