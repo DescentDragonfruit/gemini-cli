@@ -1,6 +1,6 @@
 <?php
 /**
- * Code Snippets (WPCode) · PHP · Run everywhere.  v2.6 · 25 Oct 2026
+ * Code Snippets (WPCode) · PHP · Run everywhere.  v2.7 · 25 Oct 2026
  * The two footer blocks from the Site Snippets plugin, "Pair it with" and the author line, in the facts-strip style:
  * sans light labels in capitals, more air around everything, and a small greyscale photo of each paired piece on
  * the left of its text (the piece's featured image; items without one simply show text).
@@ -11,7 +11,7 @@
 /* ---------- 1. The look (one stylesheet, served through both plugin filters) ---------- */
 function ct_footer_blocks_css() {
 	return <<<'CSS'
-/* Coco Tran — footer blocks in the facts-strip style (v2.6) */
+/* Coco Tran — footer blocks in the facts-strip style (v2.7) */
 .ct-tail{max-width:none!important;padding:0!important;margin:4rem 0 3rem!important}
 .ct-pair,.ct-author{--ct-ink:#111;--ct-hair:var(--global-palette7,#e3e0da);max-width:none;margin:0;font-family:sans,"Inter",system-ui,sans-serif;color:var(--ct-ink);}
 body .ct-pair{display:grid;grid-template-columns:174px 1fr;column-gap:64px;padding:3.6rem 32px 3rem!important;border-top:3px solid #000!important;background:#fff;}
@@ -85,7 +85,7 @@ function ct_pair_thumb_src( $pid ) {
 	return '';
 }
 function ct_pair_add_thumbs( $html ) {
-	if ( ! is_string( $html ) || false === strpos( $html, 'ct-pair__link' ) || false !== strpos( $html, 'ct-pair__thumb' ) ) { return $html; }
+	if ( ! is_string( $html ) || false === strpos( $html, 'class="ct-pair__link' ) || false !== strpos( $html, '<span class="ct-pair__thumb"' ) ) { return $html; } // the stylesheet also mentions ct-pair__thumb, so test for the markup, not the word
 	return preg_replace_callback( '/<a class="ct-pair__link" href="([^"]+)">/', function ( $m ) {
 		$pid = ct_pair_post_id_from_url( html_entity_decode( $m[1] ) );
 		$src = $pid ? ct_pair_thumb_src( $pid ) : '';
