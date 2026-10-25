@@ -73,20 +73,20 @@ add_action( 'wp_head', function () {
 .kt-inside-inner-col:has(> .wp-block-post-terms){align-items:baseline!important}
 .kt-inside-inner-col > .wp-block-post-terms{margin:0!important;line-height:20px!important}
 /* 3. Footer blocks: headings in the article's heading style, black */
-body .ct-pair .ct-pair__kicker, body .ct-author::before{font-family:sans,"Inter",system-ui,sans-serif;font-weight:400;font-size:22px;line-height:30px;letter-spacing:0;text-transform:uppercase;color:#000}
+body .ct-pair .ct-pair__kicker, body .ct-author::before{font-family:sans,"Inter",system-ui,sans-serif;font-weight:400;font-size:17px;line-height:24px;letter-spacing:2px;text-transform:uppercase;color:#000;margin:0} /* = the theme's h3 (17px, tracking 2px) */
 body .ct-pair .ct-pair__format{color:#000;text-transform:uppercase;letter-spacing:.39px} /* "FROM THE ARCHIVE", "THE VERDICT" … */
 body .ct-pair,body .ct-author{--ct-ink:#000;color:#000}
 body .ct-pair .ct-pair__excerpt{opacity:.78}
 /* 4. Booking box: title in the article's heading style, labels in the strip's sans, full column width, nothing gold */
 body .ctt-book{max-width:none;margin:3rem 0;padding:2.6rem 0 2.75rem;border-top:1px solid var(--ct-hair,var(--global-palette7,#e3e0da));border-bottom:1px solid var(--ct-hair,var(--global-palette7,#e3e0da));--ct-accent:#000;--ct-grey:#0e0e0e} /* same light hairline top and bottom, more air */
 body .ctt-book .ctt-book__kicker{font-family:sans,"Inter",system-ui,sans-serif;font-variant-caps:normal;font-weight:300;font-size:13px;letter-spacing:.39px;text-transform:uppercase;color:#0e0e0e;margin:0 0 .4rem}
-body .ctt-book .ctt-book__title{font-family:sans,"Inter",system-ui,sans-serif;font-weight:400;font-size:22px;line-height:30px;letter-spacing:0;text-transform:uppercase;color:#000;margin:0 0 .6rem;overflow-wrap:normal;word-break:normal}
+body .ctt-book .ctt-book__title{font-family:sans,"Inter",system-ui,sans-serif;font-weight:400;font-size:17px;line-height:24px;letter-spacing:2px;text-transform:uppercase;color:#000;margin:0 0 .6rem;overflow-wrap:anywhere}
 body .ctt-book .ctt-book__title em{font:inherit;font-style:normal;color:#000;text-transform:inherit}
 body .ctt-book .ctt-book__perks{font-size:16px;line-height:30px}
 body .ctt-book .ctt-book__btn, body .ctt-book a.button.ctt-book__btn{font-family:sans,"Inter",system-ui,sans-serif;font-variant-caps:normal;font-weight:300;font-size:13px;letter-spacing:.39px;text-transform:uppercase;border-color:#000;color:#000}
 body .ctt-book .ctt-book__note{font-family:var(--global-heading-font-family,Georgia,serif);font-size:14px;color:#000;opacity:.78}
 @media (max-width:767px){
-body .ct-pair .ct-pair__kicker, body .ct-author::before, body .ctt-book .ctt-book__title{font-size:16px;line-height:22px}
+body .ct-pair .ct-pair__kicker, body .ct-author::before, body .ctt-book .ctt-book__title{font-size:16px;line-height:23px;letter-spacing:2px}
 }
 
 CSS . "</style>\n";
