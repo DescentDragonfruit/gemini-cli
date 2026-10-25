@@ -1,6 +1,6 @@
 <?php
 /**
- * Code Snippets (WPCode) · PHP · Run everywhere.  v2.1 · 25 Oct 2026 (no PHP tags inside: WPCode strips them)
+ * Code Snippets (WPCode) · PHP · Run everywhere.  v2.2 · 25 Oct 2026 (no PHP tags inside: WPCode strips them)
  * "Request this booking" opens a form in a window on the page, in the article's own style, and sends it
  * through Splitforms (the same service the Proposal Studio uses) to the inbox the access key is registered to.
  * No Tally, no plugin. The hotel and the page travel with the request. Without JavaScript the button still
@@ -27,9 +27,9 @@ add_action( 'wp_footer', function () {
 	// WPCode strips PHP tags from snippets, so the markup is printed from a string rather than by leaving PHP mode.
 	$html = <<<'HTML'
 <style id="ct-book-pop-css">
-.ct-bk-overlay{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;transition:opacity .2s}
+.ct-bk-overlay{position:fixed;inset:0;z-index:2147483000;background:rgba(0,0,0,.42);display:block;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:24px 16px;box-sizing:border-box;opacity:0;transition:opacity .2s}
 .ct-bk-overlay.is-open{opacity:1}
-.ct-bk{position:relative;width:min(560px,100%);max-height:calc(100vh - 32px);overflow:auto;background:#fff;color:#000;padding:34px 36px 32px;box-sizing:border-box;font-family:sans,"Inter",system-ui,sans-serif;border-top:3px solid #000}
+.ct-bk{position:relative;width:min(560px,100%);margin:0 auto 40px;background:#fff;color:#000;padding:34px 36px 32px;box-sizing:border-box;font-family:sans,"Inter",system-ui,sans-serif;border-top:3px solid #000}
 .ct-bk__close{position:absolute;top:14px;right:14px;border:0;background:none;font:inherit;font-size:13px;letter-spacing:.39px;text-transform:uppercase;cursor:pointer;color:#000;padding:6px}
 .ct-bk__kicker{font-weight:300;font-size:13px;letter-spacing:.39px;text-transform:uppercase;margin:0 0 6px}
 .ct-bk__title{font-weight:400;font-size:17px;line-height:24px;letter-spacing:2px;text-transform:uppercase;margin:0 0 10px}
@@ -46,7 +46,7 @@ add_action( 'wp_footer', function () {
 .ct-bk__note{font-family:var(--global-heading-font-family,Georgia,serif);font-size:14px;color:#000;opacity:.78}
 .ct-bk__done{font-family:var(--global-heading-font-family,Georgia,serif);font-size:17px;line-height:28px;margin:0}
 .ct-bk .hp{position:absolute;left:-9999px;top:-9999px;height:0;width:0;opacity:0}
-@media (max-width:600px){.ct-bk{padding:26px 20px 24px}.ct-bk__grid{grid-template-columns:1fr;gap:16px}}
+@media (max-width:600px){.ct-bk-overlay{padding:12px 10px}.ct-bk{padding:26px 20px 28px;margin-bottom:24px}.ct-bk__grid{grid-template-columns:1fr;gap:16px}}
 </style>
 <script id="ct-book-pop">
 (function(){
@@ -76,7 +76,7 @@ add_action( 'wp_footer', function () {
   }
   function open(a){
     var hotel=a.getAttribute("data-ct-hotel")||"", source=a.getAttribute("data-ct-source")||location.href.split("#")[0];
-    var ov=document.createElement("div");ov.className="ct-bk-overlay";ov.innerHTML=build(hotel,source);document.body.appendChild(ov);
+    var ov=document.createElement("div");ov.className="ct-bk-overlay";ov.setAttribute("data-lenis-prevent","");ov.setAttribute("data-scroll-lock-scrollable","");ov.innerHTML=build(hotel,source);document.body.appendChild(ov);["wheel","touchmove"].forEach(function(ev){ov.addEventListener(ev,function(e){e.stopPropagation()},{passive:true})});
     var prev=document.body.style.overflow;document.body.style.overflow="hidden";
     requestAnimationFrame(function(){ov.classList.add("is-open")});
     function close(){ov.classList.remove("is-open");document.body.style.overflow=prev;setTimeout(function(){ov.remove()},200);document.removeEventListener("keydown",onKey)}
