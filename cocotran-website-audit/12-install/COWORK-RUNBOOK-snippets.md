@@ -43,3 +43,7 @@ You are working in my Chrome, logged in as admin on https://cocotran.com. Do exa
 
 After it reports, tell the cloud session "snippets in" and it will write the Bora Bora "Both share" line and verify the
 live render.
+
+
+## 6. Redirects snippet (added 25 Oct 2026, evening)
+`11-builds/wordpress-assets/snippet-redirects.php` → WPCode → Add Snippet → PHP → paste WITHOUT the `<?php` line → Run everywhere → Activate. Marker to dedupe: `ct_rd_norm`. It adds `GET/POST/DELETE /wp-json/coco-tran/v1/redirects`; the Studio worker posts a 301 there automatically whenever a URL changes (a respin replacing old posts, a slug change Coco asked for). Nothing else on the site changes. Check: `https://cocotran.com/wp-json/coco-tran/v1/redirects` answers `[]` (logged in) instead of 404.
