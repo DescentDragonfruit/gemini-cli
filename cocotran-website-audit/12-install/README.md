@@ -1,5 +1,7 @@
 # Install on cocotran.com — what to upload where (≈15 min)
 
+> Zips handed to Coco always carry the version in the filename (`coco-tran-site-snippets-1.2.1.zip`); the canonical unversioned files here are what the docs reference. Current: Site Snippets **1.2.1**, Photo CMS **1.2.0**.
+
 > Multisite: upload from **Network Admin → Plugins → Add New → Upload**. If the plugin exists already, WordPress offers **Replace current with uploaded** — click it, or the old version stays (25 Oct: site reported Photo CMS 1.1.0 and Snippets 1.0.0 while the zips here are 1.2.0 and 1.2.0). Then activate on cocotran.com only (Sites → cocotran.com → Plugins).
 
 Nothing here is installed yet. Do it on staging first if you have one.
