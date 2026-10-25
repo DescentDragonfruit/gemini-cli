@@ -1,5 +1,7 @@
 # Wire "The Comparison" (Brief) in WordPress — ≈25 minutes with site access
 
+> 25 Oct 2026: REST now exposes `brief`, `brief_format` and `destinations` (Site Snippets 1.2.1 + ACF PRO active). Path B works from a Claude cloud session for the term and destination steps; the ACF group import still needs the PHP (Code Snippets / WPCode, run once) or the admin importer.
+
 Place-vs-place comparisons (Bora Bora vs Maldives) live on the **Brief** CPT under a new `brief_format` term **The Comparison** (`05-editorial-system/content-system.md` → "Where a Comparison lives"). Hotel-vs-hotel stays on the Property CPT as The Trade-Off and needs nothing here.
 
 The kit, all in this folder:
