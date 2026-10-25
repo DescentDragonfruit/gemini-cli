@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Coco Tran — Paywall schema + dateModified
+ * Module: Coco Tran — Paywall schema + dateModified
  * Description: Adds isAccessibleForFree:false + hasPart{cssSelector:".members-only"} to Rank Math's Article/Review JSON-LD on gated pieces only (singular Brief, any post carrying a pms/content-restriction-start block, or a ct_gated meta), and maps ACF `updated_on` → dateModified so the visible date and the schema date can't drift.
- * Version:     1.0.0
+ * Module version: 1.0.0
  * Author:      Coco Tran
  * License:     GPL-2.0-or-later
  *

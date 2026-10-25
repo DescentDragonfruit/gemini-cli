@@ -336,7 +336,7 @@ add_action(
 );
 
 define( 'CT_PAIR_CSS', <<<'CSS'
-.ct-pair{--ct-accent:var(--global-palette1,#8a6d3b);--ct-ink:var(--global-palette3,#1d1d1b);--ct-grey:var(--global-palette5,#6b6b66);--ct-hair:var(--global-palette7,#e3e0da);
+.ct-pair{--ct-ink:var(--global-palette3,#1d1d1b);--ct-accent:var(--ct-ink);--ct-grey:var(--ct-ink);--ct-hair:var(--global-palette7,#e3e0da);
   max-width:var(--ct-ao-max,720px);margin:2.5rem auto 0;padding:1.4rem 0 1.6rem;border-top:1px solid var(--ct-ink);font-family:var(--global-body-font-family,Georgia,serif);color:var(--ct-ink);}
 .ct-pair .ct-pair__kicker{margin:0 0 .9rem;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-caps:all-small-caps;letter-spacing:.08em;font-size:.78rem;color:var(--ct-grey);}
 .ct-pair .ct-pair__list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem 1.5rem;}
@@ -352,8 +352,8 @@ CSS
 
 /* Bust the Pair cache whenever this file's logic changes. */
 add_action( 'init', function () {
-	if ( get_option( 'ct_pair_code_ver' ) !== '1.2.2' ) {
+	if ( get_option( 'ct_pair_code_ver' ) !== '1.2.4' ) {
 		update_option( 'ct_pair_salt', time(), false );
-		update_option( 'ct_pair_code_ver', '1.2.2', false );
+		update_option( 'ct_pair_code_ver', '1.2.4', false );
 	}
 }, 5 );

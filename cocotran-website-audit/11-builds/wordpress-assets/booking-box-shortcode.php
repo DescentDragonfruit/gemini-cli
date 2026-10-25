@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Coco Tran — Booking box shortcode
+ * Module: Coco Tran — Booking box shortcode
  * Description: [ctt_book hotel="…" perks="…"] renders the "Book [hotel] through Coco Tran Travel — same rate, plus perks" box, linking to cocotrantravel.com/contact with the hotel and the source URL. Also provides [ctt_book_perks] and [ctt_book_button] for the Kadence Element on Properties.
- * Version:     1.0.0
+ * Module version: 1.0.0
  * Author:      Coco Tran
  * License:     GPL-2.0-or-later
  *

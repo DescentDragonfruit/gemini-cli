@@ -324,7 +324,7 @@ add_action(
 );
 
 define( 'CT_AUTHOR_CSS', <<<'CSS'
-.ct-author{--ct-accent:var(--global-palette1,#8a6d3b);--ct-ink:var(--global-palette3,#1d1d1b);--ct-grey:var(--global-palette5,#6b6b66);--ct-hair:var(--global-palette7,#e3e0da);
+.ct-author{--ct-ink:var(--global-palette3,#1d1d1b);--ct-accent:var(--ct-ink);--ct-grey:var(--ct-ink);--ct-hair:var(--global-palette7,#e3e0da);
   max-width:var(--ct-ao-max,720px);margin:1.5rem auto 2.5rem;padding:1.2rem 0 0;border-top:1px solid var(--ct-hair);font-family:var(--global-body-font-family,Georgia,serif);color:var(--ct-ink);font-size:.95rem;line-height:1.5;}
 .ct-author p{margin:0 0 .35rem;}
 .ct-author .ct-author__line{font-family:var(--global-heading-font-family,Georgia,serif);font-size:1.1rem;}
