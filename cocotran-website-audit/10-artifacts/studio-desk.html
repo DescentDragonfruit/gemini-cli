@@ -1232,7 +1232,7 @@ function gateList(v){return asList(v).map(g=>typeof g==="object"&&g?g:{verdict:"
 function wpEditUrl(j){return j.wp_id?"https://cocotran.com/wp-admin/post.php?post="+encodeURIComponent(j.wp_id)+"&action=edit":""}
 function renderPiece(el,job,id){
  const d=job.draft||{}, f=FORMATS[job.format]||FORMATS.fieldnotes, r=job.report||{};
- const gates=gateList(r.gates), needsCoco=asList(r.needs_coco), voice=asList(r.voice_changes), verify=asList(d.verify), photosNeeded=asList(d.photos_needed), glance=asList(d.glance);
+ const gates=gateList(r.gates), needsCoco=asList(r.needs_coco), voice=asList(r.voice_changes), verify=asList(d.verify), photosNeeded=asList(d.photos_needed), glance=asList(d.glance).map(g=>Array.isArray(g)?{label:g[0],value:g[1]}:g); // the worker sometimes writes glance rows as [label,value] pairs
  const fields=d.fields||{}; const order=f.fields.filter(k=>fields[k]!=null).concat(Object.keys(fields).filter(k=>!f.fields.includes(k)));
  const acf={...fields,...(d.selects||{}),short_answer:d.short_answer||"",visit_basis:job.basis||"",disclosure:job.disclosure||"",content_category:job.category||"",content_goal:job.goal||"",primary_keyword:d.seo?.primary_query||""};
  glance.forEach((g,i)=>{acf["glance_"+(i+1)+"_label"]=g?.label||"";acf["glance_"+(i+1)+"_value"]=g?.value||""});
