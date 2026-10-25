@@ -51,6 +51,15 @@
     "show_in_rest": 1
    },
    {
+    "key": "field_ctt_cmp_both",
+    "label": "Both share",
+    "name": "comparison_both_share",
+    "type": "text",
+    "instructions": "One line: what the two have in common (overwater villas, warm water all year, the right length of stay).",
+    "required": 0,
+    "show_in_rest": 1
+   },
+   {
     "key": "field_ctt_cmp_setup",
     "label": "The set-up",
     "name": "comparison_the_set_up",
