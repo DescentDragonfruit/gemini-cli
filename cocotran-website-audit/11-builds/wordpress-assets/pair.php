@@ -70,7 +70,11 @@ function ct_piece_kicker( $post ) {
 
 /** 12-word excerpt: ACF `short_answer`, else the excerpt, else the content. */
 function ct_piece_excerpt( $post, $words = 12 ) {
-	$text = trim( (string) get_post_meta( $post->ID, 'short_answer', true ) );
+	$text = '';
+	foreach ( array( 'short_answer', 'comparison_short_answer', 'one_line_about_property', 'dispatch_one_liner', 'overall', 'destination_overview', 'rank_math_description' ) as $k ) {
+		$v = trim( wp_strip_all_tags( (string) get_post_meta( $post->ID, $k, true ) ) );
+		if ( '' !== $v && '(' !== $v[0] ) { $text = $v; break; }
+	}
 	if ( '' === $text && '' !== trim( (string) $post->post_excerpt ) ) {
 		$text = $post->post_excerpt;
 	}
@@ -183,12 +187,34 @@ function ct_pair_compute( $post ) {
 	};
 
 	if ( ! empty( $dests ) ) {
-		$term_ids = wp_list_pluck( $dests, 'term_id' );
-		$tax_q    = array( array( 'taxonomy' => $tax, 'field' => 'term_id', 'terms' => $term_ids ) );
-		// 1. same destination, a different format
-		$pull( array( 'tax_query' => $tax_q, 'post_type' => array_values( array_diff( $types, array( $post->post_type ) ) ) ), $budget );
-		// 2. same destination, same format
-		$pull( array( 'tax_query' => $tax_q, 'post_type' => array( $post->post_type ) ), $budget - count( $picked ) );
+		// Most specific first: a place (Bora Bora) before its country (French Polynesia) before its continent (Oceania).
+		$by_depth = array();
+		foreach ( $dests as $d ) {
+			$depth = count( get_ancestors( $d->term_id, $tax, 'taxonomy' ) );
+			$by_depth[ $depth ][] = $d;
+		}
+		krsort( $by_depth );
+		$continents = array();
+		foreach ( $by_depth as $depth => $group ) {
+			if ( 0 === $depth ) { $continents = $group; continue; }
+			$tax_q = array( array( 'taxonomy' => $tax, 'field' => 'term_id', 'terms' => wp_list_pluck( $group, 'term_id' ), 'include_children' => false ) );
+			// 1. same place, a different format
+			$pull( array( 'tax_query' => $tax_q, 'post_type' => array_values( array_diff( $types, array( $post->post_type ) ) ) ), $budget - count( $picked ) );
+			// 2. same place, same format
+			$pull( array( 'tax_query' => $tax_q, 'post_type' => array( $post->post_type ) ), $budget - count( $picked ) );
+			// 3. pieces that name the place in their title (old posts filed by category, not destination)
+			if ( count( $picked ) < $budget ) {
+				foreach ( $group as $d ) {
+					$pull( array( 's' => $d->name, 'search_columns' => array( 'post_title' ), 'orderby' => 'relevance' ), $budget - count( $picked ) );
+				}
+			}
+			if ( count( $picked ) >= $budget ) { break; }
+		}
+		// 4. continent-level matches fill at most one slot, and only when nothing closer exists
+		if ( empty( $picked ) && ! empty( $continents ) ) {
+			$tax_q = array( array( 'taxonomy' => $tax, 'field' => 'term_id', 'terms' => wp_list_pluck( $continents, 'term_id' ), 'include_children' => false ) );
+			$pull( array( 'tax_query' => $tax_q ), 1 );
+		}
 	}
 	// 3. same pillar (post type), newest
 	if ( count( $picked ) < $budget && 'post' !== $post->post_type ) {
@@ -319,3 +345,11 @@ define( 'CT_PAIR_CSS', <<<'CSS'
 .ct-pair .ct-pair__item--hub .ct-pair__link{border-top-color:var(--ct-ink);}
 CSS
 );
+
+/* Bust the Pair cache whenever this file's logic changes. */
+add_action( 'init', function () {
+	if ( get_option( 'ct_pair_code_ver' ) !== '1.2.2' ) {
+		update_option( 'ct_pair_salt', time(), false );
+		update_option( 'ct_pair_code_ver', '1.2.2', false );
+	}
+}, 5 );
