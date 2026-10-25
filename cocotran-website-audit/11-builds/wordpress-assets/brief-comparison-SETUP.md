@@ -1,5 +1,7 @@
 # Wire "The Comparison" (Brief) in WordPress — ≈25 minutes with site access
 
+> **Done over REST on 25 Oct 2026:** `brief_format` **The Comparison = 802**; destinations **Bora Bora = 803** (parent French Polynesia 654), **Maldives = 804** (parent Asia 628); Kadence Element **"Brief — The Comparison" = post 30381, status draft**, type default, hook `kadence_single_before_content`, priority 10, show on `singular|brief` with `brief_format` = The Comparison. Remaining: the ACF group import (A2, via WPCode run-once of `brief-comparison-setup.php`, which skips the term/destinations it finds) and publishing the Element (A4 step 5) after checking its Display rule in the UI.
+
 > 25 Oct 2026: REST now exposes `brief`, `brief_format` and `destinations` (Site Snippets 1.2.1 + ACF PRO active). Path B works from a Claude cloud session for the term and destination steps; the ACF group import still needs the PHP (Code Snippets / WPCode, run once) or the admin importer.
 
 Place-vs-place comparisons (Bora Bora vs Maldives) live on the **Brief** CPT under a new `brief_format` term **The Comparison** (`05-editorial-system/content-system.md` → "Where a Comparison lives"). Hotel-vs-hotel stays on the Property CPT as The Trade-Off and needs nothing here.
