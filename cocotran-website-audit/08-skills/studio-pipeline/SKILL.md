@@ -123,3 +123,13 @@ Coco resolves everything in the Studio Desk, not in WordPress. In the Queue piec
 5. Build. **New pieces**: a WordPress draft as before. **Update jobs (`mode: "update"`) never touch the live post at this step.** Build a PRIVATE COPY instead: same CPT, same taxonomy terms, same ACF values and image IDs as the live post, then the approved changes applied; `post_status: private`; slug `<live-slug>-rewrite-<yyyymmdd>`; Rank Math robots `noindex,nofollow`; title unchanged. Write `status: "built"`, `wp_id` = the copy, `live_wp_id` = the live post, `preview_url` = the copy's permalink. The desk shows "Publish · needs Coco" with Open in WordPress (the copy) and a **Replace the live article with this draft** button.
 6. **When the job carries `publish_requested_at`** (she pressed that button): copy every changed ACF field, title, Rank Math title/description/focus keyword from the copy onto the live post (`POST /wp/v2/{cpt}/{live_wp_id}`), keep the live slug and URL, set `last_fact_check`/`updated_on` to today, trash the copy, then write `status: "published"`, `live_url` (the live permalink), `live_at`, `wp_id` = live post, and update `library/<id>` (`text`, `seo_title`, `meta_description`, `last_updated`, `rank_history` checkpoint `moved_after_rewrite`). Only then is the rewrite live.
 7. A new piece she published herself in WordPress is still closed with **This is live ✓** in the desk, as before.
+
+## The Respin Pipeline spec is the law for migrations
+Read `respin-pipeline.md` in this folder before any respin, merge, redirect or four-pillar set. It overrides anything here that disagrees. The points that bite most:
+- A piece is built only if Coco's own photographs can carry it; stock means park and tell her. Contact sheet first.
+- Decide the merge before writing. Per destination, where photos allow: Primer, Rolodex, Postcard, Brief, each with its own primary_keyword.
+- Voice: warm, first person to "you", private and escorted as the default, top-tier hotels only, no <em>, CTA to https://cocotrantravel.com/contact before "pair it with".
+- Field names with typos are reproduced exactly; restricted selects (content_category, disclosure, health, trip_type) and the 420-character short_answer cap fail the whole write.
+- Always tag the destination chain: continent, country, city.
+- Redirects only through Rank Math → Redirections → Add New, after she has published, then trash, then cache. **Never /rankmath/v1/updateRedirection.**
+- Check "Facts worth not re-researching" and "Known traps" before fact-checking or debugging.
