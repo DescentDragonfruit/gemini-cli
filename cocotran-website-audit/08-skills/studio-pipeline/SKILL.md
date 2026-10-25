@@ -133,3 +133,12 @@ Read `respin-pipeline.md` in this folder before any respin, merge, redirect or f
 - Always tag the destination chain: continent, country, city.
 - Redirects only through Rank Math → Redirections → Add New, after she has published, then trash, then cache. **Never /rankmath/v1/updateRedirection.**
 - Check "Facts worth not re-researching" and "Known traps" before fact-checking or debugging.
+
+## Respin jobs (`mode: "respin"`, queued from the desk's Respin section)
+One job per pillar of a destination set. The job carries `cluster` (term_id, chain), `source_urls` / `source_wp_ids` (the old posts to fold in), `format`, `cpt`, `primary_keyword`, `secondary_queries`, `set` (the sibling pillars queued with it), `photos_estimate` and `notes` with the search numbers. Work it exactly as `respin-pipeline.md` says:
+1. Survey the old posts and pull their image IDs; make the contact sheet; if Coco's own photography cannot carry this pillar, `status: "needs-coco"` with the count and why (never stock), and stop.
+2. Fact-check against primary sources, VERIFIED / UNVERIFIED on each claim; drop the unverified; check "Facts worth not re-researching" first.
+3. Build ONE new post for this pillar (draft), merging every source post: format taxonomy term + ACF format string, full destination chain, featured image and alt text, the field map for the format with the exact (typo'd) names, the content-ops layer (short_answer ≤ 420 chars, five glance rows, `primary_keyword` from the job, `secondary_keywords`, `ai_questions`, `content_category` by pillar), Rank Math title ≈60 / description ≈155 / focus keyword = `primary_keyword`. Trust fields blank unless the job says; CTA to https://cocotrantravel.com/contact before "pair it with"; no `<em>`.
+4. Keep this pillar's angle and keyword distinct from the siblings in `set`.
+5. Write back `status: "built"`, `wp_id`, `preview_url`, `draft` (so the desk piece view can show, edit and checklist it), `redirects: [{from: <old path>, to: <new permalink>}]` for every source URL, `worker_notes` leading with corrections that matter to her business.
+6. Coco reviews in the desk, publishes in WordPress, and adds the redirects herself in Rank Math → Redirections → Add New (never the API). When she presses **This is live ✓**, on the next run: fetch each old URL; only where it already answers with a 301 to the new piece, trash that old post and set its library record `status: "redirected"`, `redirect_to`. Old URLs that still return 200 stay untouched and are listed in `worker_notes` for her.
