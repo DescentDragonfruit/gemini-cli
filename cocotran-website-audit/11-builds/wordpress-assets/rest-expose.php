@@ -108,7 +108,7 @@ add_action( 'rest_api_init', function () {
 				$out['acf_groups'] = array();
 				foreach ( acf_get_field_groups() as $g ) { $out['acf_groups'][] = array( 'key' => $g['key'], 'title' => $g['title'], 'show_in_rest' => ! empty( $g['show_in_rest'] ), 'location' => $g['location'] ); }
 			}
-			return $out;
+			return apply_filters( 'ct_types_diagnostic', $out );
 		},
 	) );
 } );
