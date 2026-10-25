@@ -39,7 +39,7 @@ Several parts per batch are fine (page / page+query / current + previous window)
 
 ## What the worker pulls (weekly, Monday 7:51 Pacific)
 
-Search Console `searchanalytics/query`, dimensions `page` (and `page,query` for top queries), 28 days ending yesterday and the 28 before that. GA4 `runReport`: `landingPagePlusQueryString` × `sessions`, `engagedSessions`, `conversions` (the booking-request and membership events once tagged), same two windows. Written to `library/<id>.rank` as described in `content-system.md`.
+Search Console `searchanalytics/query`, dimensions `page` (and `page,query` for top queries), 28 days ending yesterday and the 28 before that. GA4 `runReport`: `landingPagePlusQueryString` × `sessions`, `engagedSessions`, `conversions` (the booking-request and membership events once tagged), same two windows. Written to `library/<id>.rank` as described in `content-system.md`, and appended to `library/<id>.rank_history[]` as `{date, position, clicks28, impressions28, ctr}` (keep the last 26 entries) so the desk can show whether a page moved after a rewrite.
 
 ## Health rules
 

@@ -235,6 +235,7 @@ hr{border:0;border-top:1px solid var(--line);margin:22px 0}
 .modal{position:fixed;inset:0;background:rgba(10,14,15,.5);z-index:80;display:grid;place-items:center;padding:16px}
 .modal[hidden]{display:none}
 .modal .box{background:var(--bg2);border-radius:14px;padding:20px 22px;max-width:460px;width:100%;display:flex;flex-direction:column;gap:6px;max-height:calc(100dvh - 32px);overflow-y:auto;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.modal .box.wide{max-width:960px}.bf{padding:9px 0;border-bottom:1px solid var(--line)}.bf .bv{white-space:pre-wrap;line-height:1.5}.bf textarea{min-height:84px;margin-top:4px}.bf .meta{display:flex;justify-content:space-between;align-items:center;gap:8px}.bf .meta .copy{margin:0}.secbox{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;background:var(--panel)}.track{font-size:13px;color:var(--muted);margin-top:6px}.track b{color:var(--fg)}
 .modal .box h4{font-family:var(--display);font-weight:500;font-size:24px;margin:0 0 4px}
 .modal .box .ph{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;background:var(--line);margin-bottom:8px}
 .modal .box label{margin-top:10px}
@@ -1824,9 +1825,9 @@ function renderAct(){const fs=$("#kw-actfs"),el=$("#kw-act");if(!el)return;
   const r=x.r,mv=x.moves.find(mm=>!f||mm.move===f)||x.top;const pill=mv.move==="retire"?"warn":mv.move==="decay"?"bad":"ok";
   return `<div class="card" style="margin-bottom:10px"><div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap"><div style="flex:1;min-width:240px"><div class="meta"><span class="pill ${pill}">${esc(MOVE_LABEL[mv.move])}</span> · worth ~${mv.worth} clicks/mo · ${esc(r.format||r.pillar||"")}</div><h4 style="margin:6px 0 2px"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(deent(r.title))}</a></h4><div class="note">${esc(mv.why)}${x.moves.length>1?` · also: ${x.moves.filter(mm=>mm!==mv).map(mm=>MOVE_LABEL[mm.move].toLowerCase()).join(", ")}`:""}</div>
    <div class="kv" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr));margin-top:8px;gap:4px 10px"><div><div class="meta">POSITION</div><b>${x.pos.toFixed(1)}</b></div><div><div class="meta">IMPRESSIONS</div><b>${x.imp.toLocaleString()}</b></div><div><div class="meta">CLICKS</div><b>${x.clicks}</b>${x.prev!=null?`<span class="note"> / ${x.prev}</span>`:""}</div><div><div class="meta">CTR</div><b>${(x.ctr*100).toFixed(1)}%</b></div><div><div class="meta">GA4 SESSIONS</div><b>${x.sess}</b>${x.eng?`<span class="note"> · ${x.eng} engaged</span>`:""}</div><div><div class="meta">BOOKINGS</div><b>${x.conv}</b></div></div>
-   ${x.qs.length?`<div class="note" style="margin-top:6px">Queries: ${x.qs.slice(0,8).map(q=>x.unanswered.includes(q)?`<b>${esc(q)}</b>`:esc(q)).join(" · ")}${x.unanswered.length?" <span class='pill warn'>bold = not answered on the page</span>":""}</div>`:""}</div></div>
-   <div class="row" style="margin-top:10px"><button class="btn alt" data-brief="${esc(r.id)}" data-move="${mv.move}">Brief: what and how to write</button><button class="btn" data-rewrite="${esc(r.id)}" data-move="${mv.move}">Rewrite now</button><button class="btn alt" data-queue="${esc(r.id)}" data-move="${mv.move}">Queue</button><span class="note" data-note="${esc(r.id)}"></span></div></div>`}).join("");
- el.querySelectorAll("[data-brief]").forEach(b=>b.onclick=()=>dataBrief(b.dataset.brief,b.dataset.move));
+   ${trackLine(r)}${x.qs.length?`<div class="note" style="margin-top:6px">Queries: ${x.qs.slice(0,8).map(q=>x.unanswered.includes(q)?`<b>${esc(q)}</b>`:esc(q)).join(" · ")}${x.unanswered.length?" <span class='pill warn'>bold = not answered on the page</span>":""}</div>`:""}</div></div>
+   <div class="row" style="margin-top:10px"><button class="btn alt" data-brief="${esc(r.id)}" data-move="${mv.move}">${briefDoc(r.id)&&briefDoc(r.id).brief?"Open the brief":"Brief: what and how to write"}</button><button class="btn" data-rewrite="${esc(r.id)}" data-move="${mv.move}">Rewrite now</button><button class="btn alt" data-queue="${esc(r.id)}" data-move="${mv.move}">Queue</button><span class="note" data-note="${esc(r.id)}"></span></div></div>`}).join("");
+ el.querySelectorAll("[data-brief]").forEach(b=>b.onclick=()=>{const d=briefDoc(b.dataset.brief);const x=triageCache.find(t=>t.r.id===b.dataset.brief);if(d&&d.brief&&x){renderBriefModal(x,d.move||b.dataset.move)}else dataBrief(b.dataset.brief,b.dataset.move)});
  el.querySelectorAll("[data-rewrite]").forEach(b=>b.onclick=()=>dataJob(b.dataset.rewrite,b.dataset.move,true,null,el.querySelector(`[data-note="${CSS.escape(b.dataset.rewrite)}"]`)));
  el.querySelectorAll("[data-queue]").forEach(b=>b.onclick=()=>dataJob(b.dataset.queue,b.dataset.move,false,null,el.querySelector(`[data-note="${CSS.escape(b.dataset.queue)}"]`)));
  el.querySelectorAll("[data-gapnew]").forEach(b=>b.onclick=()=>{const g=gaps.find(x=>x.gap.query===b.dataset.gapnew);if(!g)return;$("#kw-topic").value=g.gap.suggested_title||g.gap.query;$("#kw-format").value=FORMATS[g.gap.suggested_format]?g.gap.suggested_format:"";$("#kw-topic").scrollIntoView({behavior:"smooth",block:"center"});$("#kw-run").click()});}
@@ -1837,61 +1838,106 @@ Position ${x.pos.toFixed(1)} · ${x.imp.toLocaleString()} impressions (prev ${rk
 Queries it already ranks for: ${x.qs.join("; ")||"(none returned)"}
 Queries NOT answered on the page: ${x.unanswered.join("; ")||"none"}
 Visible words ${x.r.visible_words||"?"} · last updated ${x.r.last_updated||"?"} · health ${x.r.health||"?"}`}
-function briefPrompt(x,move){return `You are Coco Tran's search editor. Using ONLY the measured data below plus what you know about how Google and AI search choose results, write the rewrite brief for this cocotran.com page. Reader first: the goal is that the person typing these queries gets the answer in the first screen and keeps reading; ranking follows. Do not invent facts about the place; where a fact is needed, mark it [COCO VERIFIES].
+function pillarSpec(fmtKey){const f=FORMATS[fmtKey];if(!f)return `Format "${fmtKey||"?"}": no field spec on file — keep the page's existing section order; new material goes in as additions, never a restructure.`;return `PILLAR: ${f.label} (${f.pillar||""}, CPT ${f.cpt||"?"}). The on-page fields, IN THIS ORDER, are fixed by the pillar and do not change: ${(f.fields||[]).join(" → ")||"(fields unknown)"}. Glance rows: ${(f.glance||[]).join(", ")}. Field guide: ${f.guide||""}`}
+function briefPrompt(x,move,prev,edits){const r=x.r;return `You are Coco Tran's search editor AND the magazine's managing editor. Using the measured data below, write the rewrite brief for this cocotran.com page. Two things must hold at once: the reader who typed these queries gets the answer in the first screen, AND the page still reads as Coco's magazine — first person, warm, concrete, editorial. Never trade the voice for a keyword. Never invent facts; mark what Coco must confirm as [COCO VERIFIES].
 
-PAGE: ${x.r.title} · ${x.r.url} · format ${x.r.format||x.r.pillar||"?"}
+HOUSE VOICE (binding):
+${voiceText()}
+
+${pillarSpec(r.format)}
+The pillar does NOT change. Map every section you propose onto one of the pillar's fields: "action":"keep" (fine as is), "rewrite" (same field, new content), or "add" (new material placed INSIDE an existing field or as a short new block "after <field>"). Only if the page truly cannot do its job in this pillar — e.g. a restaurant field-note being asked to be a full shortlist — propose "cpt_change" with the target format key and why; otherwise cpt_change must be null.
+Title rule: "seo_title" is the Rank Math SEO title only. Coco's on-page headline stays as it is; do not propose an H1. The SEO title may carry the query; the headline carries the voice.
+
+PAGE: ${r.title} · ${r.url} · format ${r.format||r.pillar||"?"} · ${r.visible_words||"?"} visible words · last updated ${r.last_updated||"?"}
 ${dataNotes(x,move)}
-CURRENT TITLE/META: ${x.r.seo_title||"?"} / ${x.r.meta_description||"?"}
-FIRST 1200 CHARS OF THE PAGE: ${(x.r.text||"").slice(0,1200).replace(/\s+/g," ")}
+CURRENT SEO TITLE / META: ${r.seo_title||"?"} / ${r.meta_description||"?"}
+FIRST 1500 CHARS OF THE PAGE: ${(r.text||"").slice(0,1500).replace(/\s+/g," ")}
+${prev?`
+PREVIOUS BRIEF (refresh it; keep what still holds):
+${JSON.stringify(prev).slice(0,6000)}`:""}${edits&&Object.keys(edits).length?`
+EDITOR'S EDITS — Coco changed these by hand. Keep them VERBATIM in the refreshed brief and make everything else consistent with them:
+${Object.entries(edits).map(([k,v])=>`- ${k}: ${JSON.stringify(v)}`).join("\n")}`:""}
 
-Google guidance that applies: a page wins (and gets cited by AI Overviews/AI Mode/Perplexity) when it answers the query and its sub-questions directly in the first screen, shows first-hand experience with specific detail, has a clear author and date, matches the dominant intent of the queries (a "menu" or "prices" query wants a list with numbers; a "review" query wants a verdict), and uses headings that mirror how people phrase the questions. Title tags are rewritten by Google when they don't match the query; CTR rises when the title states the answer or the number.
+What ranks and gets cited (Google's guidance, AI Overviews/AI Mode, Perplexity): answer the query and its sub-questions directly in the first screen; first-hand experience with specific detail; clear author and date; match the dominant intent of the queries (a "menu"/"prices" query wants names and numbers; a "review" query wants a verdict); headings phrased like the questions; a title that states the answer or the number. Google rewrites titles that don't match the query.
 
 Reply with only JSON:
-{"diagnosis":"two sentences: what the numbers say is wrong and why",
- "intent":"what the main queries actually want (menu/prices, verdict, directions, comparison…)",
- "target_queries":[{"query":"…","role":"primary|secondary","where":"title|h1|first screen|section|faq"}],
- "title_lock":{"seo_title":"≤60 chars, states the answer or number","h1":"…","meta":"≤155 chars, first person, the answer","why":"…"},
- "first_screen":"the exact opening 2–4 sentences to publish: the answer, one first-hand detail, one number",
- "sections":[{"h2":"phrased like the query","answers":"which query","include":"what must be in it (numbers, names, a glance row, a photo)","length":"~words"}],
+{"diagnosis":"two sentences: what the numbers say and why",
+ "intent":"what the main queries want",
+ "voice_check":"one line: how this brief keeps Coco's voice while answering the queries",
+ "target_queries":[{"query":"…","role":"primary|secondary","where":"seo title|first screen|<field name>|faq"}],
+ "title_lock":{"seo_title":"≤60 chars, states the answer or number, Rank Math only","meta":"≤155 chars, first person, the answer","focus_keyword":"…","why":"…"},
+ "first_screen":"the opening 2–4 sentences to publish, in Coco's voice: the answer, one first-hand detail, one number",
+ "sections":[{"field":"<pillar field or NEW>","action":"keep|rewrite|add","placement":"inside <field> | after <field>","h2":"phrased like the query, in her voice","answers":"which query","include":"what must be in it (numbers, names, a glance row, a photo)","length":"~words","weight":"high|medium|low — how much this moves ranking vs. how much it risks the read"}],
  "glance_rows":[{"label":"…","value":"… or [COCO VERIFIES]"}],
  "cuts":["what to remove or shorten and why"],
  "internal_links":[{"anchor":"…","to":"a cocotran.com piece that fits"}],
- "conversion":{"placement":"where the booking box / Planning Room line goes","line":"the one-sentence CTA in Coco's voice"},
- "schema":"which structured data the page needs (Restaurant/Hotel/FAQ/Review) and the fields",
+ "conversion":{"placement":"where the booking box / Planning Room line goes (which field, before or after what)","line":"the one-sentence CTA in Coco's voice"},
+ "schema":"structured data the page needs and the fields",
+ "cpt_change":null,
  "social":{"hook":"first line of the carousel using the data","why_now":"…"},
  "expected":{"position":"realistic target in 8 weeks","clicks_per_month":"estimate","confidence":"low|medium|high"},
  "effort":"minutes for Coco | minutes for the worker",
- "do_not":["things that would hurt: keyword stuffing, removing the first-hand detail, changing the URL…"]}`}
-let briefCache={};
-async function dataBrief(id,move){const x=triageCache.find(t=>t.r.id===id);if(!x)return;const el=$("#kw-brief");if(!sample){el.innerHTML='<div class="quiet">Claude isn\'t available in this view.</div>';return}
- el.innerHTML=`<div class="piece"><div class="kicker">BRIEF · ${esc(MOVE_LABEL[move])}</div><h2 class="title" style="font-size:28px">${esc(deent(x.r.title))}</h2><div class="out" id="kw-briefstream">Reading the numbers…</div></div>`;el.scrollIntoView({behavior:"smooth",block:"start"});
- try{const b=await sample.json(briefPrompt(x,move),{cache:true,onText:({text})=>{const o=$("#kw-briefstream");if(o)o.textContent=text.slice(-700)}});briefCache[id]=b;renderBrief(x,move,b)}catch(e){el.innerHTML=`<div class="quiet">${esc(copyFor(e))}</div>`}}
-function renderBrief(x,move,b){const el=$("#kw-brief");const kv=(o)=>Object.entries(o||{}).map(([k,v])=>`<div>${esc(k.replace(/_/g," "))}</div><div>${esc(String(v))}</div>`).join("");
- el.innerHTML=`<div class="piece">
-  <div class="kicker">BRIEF · ${esc(MOVE_LABEL[move])} · ${esc(b.expected?.confidence||"")} confidence</div>
-  <h2 class="title" style="font-size:28px">${esc(deent(x.r.title))}</h2>
+ "do_not":["what would hurt: keyword stuffing, losing the first-hand detail, changing the URL, changing the headline…"]}`}
+let briefCache={}, briefDocs={}, briefOpen=null;
+function briefDoc(id){return briefDocs[id]||null}
+async function saveBriefDoc(id,patch){const cur=briefDocs[id]||{library_id:id,createdAt:Date.now()};const next={...cur,...patch,updatedAt:Date.now()};briefDocs[id]=next;if(db&&canWrite){try{await db.collection("briefs").doc(id).set(next)}catch(e){}}return next}
+function fmtD(ts){try{return new Date(ts).toLocaleDateString("en-US",{month:"short",day:"numeric"})}catch(e){return ""}}
+function trackLine(r){const d=briefDoc(r.id);const rk=r.rank||{};const hist=r.rank_history||[];if(!d&&!hist.length)return "";const parts=[];
+ if(d&&d.baseline){const b=d.baseline;parts.push(`Brief ${fmtD(d.generatedAt||d.createdAt)} at pos <b>${(+b.position||0).toFixed(1)}</b>, ${b.clicks28||0} clicks`);if(rk.position&&rk.pulled_at&&rk.pulled_at!==b.date){const dp=(+b.position)-(+rk.position),dc=(rk.clicks28||0)-(b.clicks28||0);parts.push(`now <b>${(+rk.position).toFixed(1)}</b> (${dp>0?"▲":dp<0?"▼":"="}${Math.abs(dp).toFixed(1)}), ${rk.clicks28||0} clicks (${dc>=0?"+":""}${dc}) as of ${rk.pulled_at}`)}}
+ if(d&&d.job_id){const j=jobsCache.find(x=>x.id===d.job_id);parts.push(j?`rewrite ${esc(j.status)}${j.built_at||j.preview_url?" · built":""}${j.live_at?" · live "+fmtD(j.live_at):""}`:`rewrite queued ${fmtD(d.queuedAt||d.updatedAt)}`)}
+ if(hist.length>1)parts.push(`history ${hist.slice(-6).map(h=>(+h.position).toFixed(1)).join(" → ")}`);
+ return parts.length?`<div class="track">${parts.join(" · ")}</div>`:""}
+async function dataBrief(id,move,opts){const x=triageCache.find(t=>t.r.id===id);if(!x)return;if(!sample){openPanel('<h4>Brief</h4><div class="quiet">Claude isn\'t available in this view.</div><div class="row"><button class="btn alt" onclick="closePanel()">Close</button></div>',true);return}
+ const d=briefDoc(id);const prev=(opts&&opts.refresh&&d&&d.brief)||null;const edits=(d&&d.edits)||{};
+ openPanel(`<h4>${esc(deent(x.r.title))}</h4><div class="meta">${esc(MOVE_LABEL[move])} · ${prev?"refreshing with your edits":"reading the numbers"}…</div><div class="out" id="kw-briefstream">Thinking…</div>`,true);
+ try{const b=await sample.json(briefPrompt(x,move,prev,prev?edits:null),{cache:false,onText:({text})=>{const o=$("#kw-briefstream");if(o)o.textContent=text.slice(-700)}});
+  // re-apply hand edits verbatim (belt and braces)
+  Object.entries(edits).forEach(([p,v])=>setPath(b,p,v));
+  const baseline=(d&&d.baseline)||{position:x.pos,clicks28:x.clicks,impressions28:x.imp,ctr:x.ctr,date:x.rk.pulled_at||new Date().toISOString().slice(0,10)};
+  await saveBriefDoc(id,{move,brief:b,edits,baseline,generatedAt:Date.now(),dirty:false,title:x.r.title,url:x.r.url});
+  briefCache[id]=b;renderBriefModal(x,move)}catch(e){window.__lastErr=e;openPanel(`<h4>Brief</h4><div class="quiet">${esc(copyFor(e))}</div><div class="row"><button class="btn alt" onclick="closePanel()">Close</button></div>`,true)}}
+function getPath(o,p){return p.split(".").reduce((a,k)=>a==null?a:a[k],o)}
+function setPath(o,p,v){const ks=p.split(".");let a=o;ks.slice(0,-1).forEach(k=>{if(a[k]==null)a[k]=isNaN(+ks[ks.indexOf(k)+1])?{}:[];a=a[k]});a[ks[ks.length-1]]=v}
+function renderBriefModal(x,move){const d=briefDoc(x.r.id)||{};const b=d.brief||briefCache[x.r.id];if(!b)return;briefOpen={id:x.r.id,move};const f=FORMATS[x.r.format];
+ const ed=(path,label,val,multi)=>`<div class="bf" data-path="${esc(path)}"><div class="meta"><span>${esc(label)}</span><button class="copy" data-edit="${esc(path)}" data-multi="${multi?1:0}">edit</button></div><div class="bv">${esc(val==null?"":String(val))}${d.edits&&d.edits[path]!==undefined?' <span class="pill ok">yours</span>':""}</div></div>`;
+ const secs=(b.sections||[]).map((sc,i)=>`<div class="secbox"><div class="meta" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="pill ${sc.action==="add"?"warn":sc.action==="rewrite"?"info":"ok"}">${esc(sc.action||"")}</span><span>${esc(sc.field||"")}</span>${sc.placement?`<span class="note">· ${esc(sc.placement)}</span>`:""}<span class="note">· weight ${esc(sc.weight||"")}</span><button class="copy" data-delsec="${i}" style="margin-left:auto">remove</button></div>${ed(`sections.${i}.h2`,"Heading",sc.h2)}${ed(`sections.${i}.include`,`Must include · answers “${sc.answers||""}” · ${sc.length||""}`,sc.include,true)}${ed(`sections.${i}.placement`,"Placement",sc.placement)}</div>`).join("");
+ const cpt=b.cpt_change&&b.cpt_change.to?`<div class="due" style="margin-top:10px"><b>Pillar question:</b> the brief thinks this page cannot do its job as ${esc(f?f.label:x.r.format||"its current type")} and should become <b>${esc(FORMATS[b.cpt_change.to]?.label||b.cpt_change.to)}</b> — ${esc(b.cpt_change.why||"")} <span class="note">(${esc(b.cpt_change.confidence||"")} confidence)</span><div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn" id="bf-cpt">Change the CPT and run it</button><button class="btn alt" id="bf-keeppillar">Keep the pillar</button></div></div>`:`<div class="note" style="margin-top:8px">Pillar stays: ${esc(f?f.label+" · "+(f.pillar||""):x.r.format||"")}. ${esc(b.voice_check||"")}</div>`;
+ openPanel(`<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><div class="kicker">BRIEF · ${esc(MOVE_LABEL[move])} · ${esc(b.expected?.confidence||"")} confidence${d.dirty?' · <span class="pill warn">edited — refresh before rewriting</span>':""}</div><h4 style="margin:4px 0 0">${esc(deent(x.r.title))}</h4>${trackLine(x.r)}</div><button class="copy" id="bf-close" aria-label="Close">close ✕</button></div>
   <div class="due"><b>Diagnosis:</b> ${esc(b.diagnosis||"")} <span class="note">Intent: ${esc(b.intent||"")}</span></div>
-  <div class="two">
-   <div class="card"><div class="meta">TITLE LOCK</div><div class="kv" style="grid-template-columns:70px 1fr;margin-top:6px"><div>Title</div><div>${esc(b.title_lock?.seo_title||"")} <span class="pill ${(b.title_lock?.seo_title||"").length>60?"warn":"ok"}">${(b.title_lock?.seo_title||"").length}</span></div><div>H1</div><div>${esc(b.title_lock?.h1||"")}</div><div>Meta</div><div>${esc(b.title_lock?.meta||"")}</div><div>Why</div><div class="note">${esc(b.title_lock?.why||"")}</div></div></div>
+  ${cpt}
+  <div class="two" style="margin-top:8px">
+   <div class="card"><div class="meta">SEO TITLE LOCK · RANK MATH ONLY, YOUR HEADLINE STAYS</div>${ed("title_lock.seo_title",`SEO title (${(b.title_lock?.seo_title||"").length}/60)`,b.title_lock?.seo_title)}${ed("title_lock.meta",`Meta (${(b.title_lock?.meta||"").length}/155)`,b.title_lock?.meta,true)}${ed("title_lock.focus_keyword","Focus keyword",b.title_lock?.focus_keyword)}<div class="note" style="margin-top:6px">${esc(b.title_lock?.why||"")}</div></div>
    <div class="card"><div class="meta">TARGET QUERIES · WHERE THEY GO</div>${(b.target_queries||[]).map(q=>`<div style="padding:4px 0;border-bottom:1px solid var(--line)"><b>${esc(q.query)}</b> <span class="note">${esc(q.role)} → ${esc(q.where)}</span></div>`).join("")}</div>
   </div>
-  <div class="card"><div class="meta">FIRST SCREEN · PUBLISH THIS OPENING</div><p style="margin:6px 0 0;font-size:17px">${esc(b.first_screen||"")}</p></div>
-  <div class="card"><div class="meta">SECTIONS, IN ORDER</div>${(b.sections||[]).map((s,i)=>`<div style="padding:6px 0;border-bottom:1px solid var(--line)"><b>${i+1}. ${esc(s.h2)}</b> <span class="note">answers “${esc(s.answers)}” · ${esc(s.length||"")}</span><div class="note">${esc(s.include||"")}</div></div>`).join("")}</div>
+  <div class="card">${ed("first_screen","FIRST SCREEN · PUBLISH THIS OPENING (IN HER VOICE)",b.first_screen,true)}</div>
+  <div class="card"><div class="meta" style="display:flex;justify-content:space-between"><span>SECTIONS · MAPPED TO THE PILLAR'S FIELDS, IN ORDER</span><button class="copy" id="bf-addsec">+ add a section</button></div>${secs}</div>
   <div class="two">
    <div class="card"><div class="meta">GLANCE ROWS · CUTS</div><div class="kv" style="grid-template-columns:120px 1fr">${(b.glance_rows||[]).map(g=>`<div>${esc(g.label)}</div><div>${esc(g.value)}</div>`).join("")}</div>${(b.cuts||[]).map(c=>`<div class="note">Cut: ${esc(c)}</div>`).join("")}</div>
-   <div class="card"><div class="meta">LINKS · CONVERSION · SCHEMA</div>${(b.internal_links||[]).map(l=>`<div class="note">Link “${esc(l.anchor)}” → ${esc(l.to)}</div>`).join("")}<div style="margin-top:6px"><b>${esc(b.conversion?.placement||"")}</b><div class="note">${esc(b.conversion?.line||"")}</div></div><div class="note" style="margin-top:6px">Schema: ${esc(b.schema||"")}</div></div>
+   <div class="card"><div class="meta">LINKS · CONVERSION · SCHEMA</div>${(b.internal_links||[]).map(l=>`<div class="note">Link “${esc(l.anchor)}” → ${esc(l.to)}</div>`).join("")}${ed("conversion.placement","Conversion placement",b.conversion?.placement)}${ed("conversion.line","CTA line",b.conversion?.line,true)}<div class="note" style="margin-top:6px">Schema: ${esc(b.schema||"")}</div></div>
   </div>
-  <div class="card"><div class="meta">EXPECTED · EFFORT · SOCIAL</div><div class="kv" style="grid-template-columns:140px 1fr;margin-top:6px">${kv(b.expected)}<div>effort</div><div>${esc(b.effort||"")}</div><div>social hook</div><div>${esc(b.social?.hook||"")} <span class="note">${esc(b.social?.why_now||"")}</span></div></div>${(b.do_not||[]).length?`<div class="note" style="margin-top:6px">Do not: ${b.do_not.map(esc).join(" · ")}</div>`:""}</div>
-  <div class="row" style="margin-top:12px"><button class="btn" id="kw-brief-now">Rewrite now with this brief</button><button class="btn alt" id="kw-brief-queue">Queue with this brief</button><button class="btn alt" id="kw-brief-copy">Copy the brief</button><span class="note" id="kw-brief-note"></span></div>
- </div>`;
- $("#kw-brief-now").onclick=()=>dataJob(x.r.id,move,true,b,$("#kw-brief-note"));$("#kw-brief-queue").onclick=()=>dataJob(x.r.id,move,false,b,$("#kw-brief-note"));$("#kw-brief-copy").onclick=e=>copyText(dataNotes(x,move)+"\n\nBRIEF\n"+JSON.stringify(b,null,1),e.target);}
+  <div class="card"><div class="meta">EXPECTED · EFFORT · SOCIAL</div><div class="kv" style="grid-template-columns:140px 1fr;margin-top:6px"><div>position</div><div>${esc(b.expected?.position||"")}</div><div>clicks / month</div><div>${esc(b.expected?.clicks_per_month||"")}</div><div>effort</div><div>${esc(b.effort||"")}</div></div>${ed("social.hook","Social hook",b.social?.hook)}${(b.do_not||[]).length?`<div class="note" style="margin-top:6px">Do not: ${b.do_not.map(esc).join(" · ")}</div>`:""}</div>
+  <div class="row" style="justify-content:flex-start;flex-wrap:wrap"><button class="btn" id="bf-now">Rewrite now${d.dirty?" (refreshes first)":""}</button><button class="btn alt" id="bf-queue">Queue${d.dirty?" (refreshes first)":""}</button><button class="btn alt" id="bf-refresh">Refresh the brief with my edits</button><button class="btn alt" id="bf-copy">Copy</button><span class="note" id="bf-note"></span></div>`,true);
+ const box=$("#modal .box");
+ $("#bf-close").onclick=closePanel;
+ box.querySelectorAll("[data-edit]").forEach(btn=>btn.onclick=()=>{const path=btn.dataset.edit,wrap=box.querySelector(`.bf[data-path="${CSS.escape(path)}"]`),bv=wrap.querySelector(".bv"),cur=getPath(b,path)||"";const ta=document.createElement("textarea");ta.value=cur;if(btn.dataset.multi!=="1")ta.style.minHeight="44px";const row=document.createElement("div");row.className="row";row.style.cssText="justify-content:flex-start;margin-top:6px";row.innerHTML='<button class="btn" data-save>Save</button><button class="btn alt" data-cancel>Cancel</button>';bv.replaceWith(ta);wrap.append(row);ta.focus();
+  row.querySelector("[data-cancel]").onclick=()=>renderBriefModal(x,move);
+  row.querySelector("[data-save]").onclick=async()=>{const v=ta.value.trim();setPath(b,path,v);const edits={...(d.edits||{}),[path]:v};await saveBriefDoc(x.r.id,{brief:b,edits,dirty:true});renderBriefModal(x,move)}});
+ box.querySelectorAll("[data-delsec]").forEach(btn=>btn.onclick=async()=>{b.sections.splice(+btn.dataset.delsec,1);const edits={...(d.edits||{}),["sections.removed."+Date.now()]:"removed by Coco"};await saveBriefDoc(x.r.id,{brief:b,edits,dirty:true});renderBriefModal(x,move)});
+ $("#bf-addsec").onclick=async()=>{(b.sections=b.sections||[]).push({field:"NEW",action:"add",placement:"after "+((f&&f.fields&&f.fields[f.fields.length-1])||"the last section"),h2:"",answers:"",include:"",length:"~120",weight:"medium"});await saveBriefDoc(x.r.id,{brief:b,dirty:true});renderBriefModal(x,move)};
+ $("#bf-refresh").onclick=()=>dataBrief(x.r.id,move,{refresh:true});
+ $("#bf-copy").onclick=e=>copyText(dataNotes(x,move)+"\n\nBRIEF\n"+JSON.stringify(b,null,1),e.target);
+ const go=async(now)=>{const note=$("#bf-note");let cur=briefDoc(x.r.id)||{};if(cur.dirty){note.textContent="Refreshing the brief with your edits first…";await dataBrief(x.r.id,move,{refresh:true});cur=briefDoc(x.r.id)||{};}const n2=$("#bf-note")||note;await dataJob(x.r.id,move,now,cur.brief||b,n2)};
+ $("#bf-now").onclick=()=>go(true);$("#bf-queue").onclick=()=>go(false);
+ const kp=$("#bf-keeppillar");if(kp)kp.onclick=async()=>{b.cpt_change=null;await saveBriefDoc(x.r.id,{brief:b,edits:{...(d.edits||{}),cpt_change:null}});renderBriefModal(x,move)};
+ const cp=$("#bf-cpt");if(cp)cp.onclick=async()=>{const note=$("#bf-note");if(!db||!canWrite){note.textContent="Store not writable.";return}const to=b.cpt_change.to;const jid=`cpt-${x.r.id}-${new Date().toISOString().slice(0,10).replace(/-/g,"")}`;try{await db.collection("jobs").doc(jid).set({mode:"update",cpt_change:{from:x.r.format||"",to,why:b.cpt_change.why||""},format:FORMATS[to]?to:"suggest",subject:x.r.title,title:x.r.title,source_url:x.r.url,library_id:x.r.id,reason:"data:cpt",goal:`Move to ${FORMATS[to]?.label||to}: rebuild in that pillar's fields, keep every first-hand detail and the voice, redirect the old URL only if the slug must change`,notes:dataNotes(x,move),brief:b,target_queries:(b.target_queries||[]).map(q=>q.query),rank_snapshot:{clicks28:x.clicks,impressions28:x.imp,position:x.pos},priority:3,status:"queued",createdAt:Date.now(),updatedAt:Date.now()});await saveBriefDoc(x.r.id,{job_id:jid,queuedAt:Date.now()});note.textContent="CPT change queued. Starting a worker…";await kick(jid,x.r.title,note)}catch(e){note.textContent="Couldn't queue it."}};
+}
 async function dataJob(id,move,now,brief,note){const x=triageCache.find(t=>t.r.id===id);if(!x)return;if(!db||!canWrite){if(note)note.textContent="Store not writable.";return}
  const r=x.r;const jid=`update-${r.id}-${new Date().toISOString().slice(0,10).replace(/-/g,"")}`;const existing=jobsCache.find(j=>j.id===jid||(j.library_id===r.id&&j.mode==="update"&&["queued","drafted","researched"].includes(j.status)));
  const notes=dataNotes(x,move)+(brief?"\n\nBRIEF (from the data)\nTitle: "+(brief.title_lock?.seo_title||"")+"\nMeta: "+(brief.title_lock?.meta||"")+"\nFirst screen: "+(brief.first_screen||"")+"\nSections: "+(brief.sections||[]).map(s=>s.h2+" ["+s.answers+"]").join(" → ")+"\nCuts: "+(brief.cuts||[]).join("; ")+"\nConversion: "+(brief.conversion?.placement||"")+" — "+(brief.conversion?.line||"")+"\nSchema: "+(brief.schema||""):"");
  const goal=move==="convert"?GOALS_UPDATE[4]:move==="retire"?GOALS_UPDATE[2]:move==="decay"?GOALS_UPDATE[3]:`Rank page one for “${(x.qs[0]||r.keyword||r.title)}”: answer it in the first screen, add the sections the queries ask for, keep every first-hand detail`;
  const job={mode:"update",format:FORMATS[r.format]?r.format:"suggest",subject:r.title,title:r.title,source_url:r.url,library_id:r.id,reason:"data:"+move,proposed_fix:(brief?.diagnosis||x.moves.find(m=>m.move===move)?.why||""),goal,notes,target_queries:(brief?.target_queries||[]).map(q=>q.query).concat(x.qs).filter((v,i,a)=>v&&a.indexOf(v)===i).slice(0,12),rank_snapshot:{clicks28:x.clicks,clicks_prev28:x.prev,impressions28:x.imp,position:x.pos,ctr:x.ctr,sessions28:x.sess,conversions28:x.conv},brief:brief||null,priority:now?3:(move==="push"||move==="ctr"?2:1),status:"queued",createdAt:Date.now(),updatedAt:Date.now()};
- try{if(existing){await db.collection("jobs").doc(existing.id).update({notes,brief:brief||existing.brief||null,goal,target_queries:job.target_queries,priority:Math.max(existing.priority||0,job.priority),reason:job.reason,updatedAt:Date.now()});if(note)note.textContent=now?"Already queued — updated with this data. Starting a worker…":"Already queued — updated with this data.";if(now)await kick(existing.id,r.title,note);return}
-  await db.collection("jobs").doc(jid).set(job);if(note)note.textContent=now?"Queued with the data. Starting a worker…":"Queued with the data. The worker takes it in priority order.";if(now)await kick(jid,r.title,note)}catch(e){if(note)note.textContent="Couldn't queue it."}}
+ try{if(existing){await db.collection("jobs").doc(existing.id).update({notes,brief:brief||existing.brief||null,brief_edits:(briefDoc(r.id)||{}).edits||null,goal,target_queries:job.target_queries,priority:Math.max(existing.priority||0,job.priority),reason:job.reason,updatedAt:Date.now()});if(note)note.textContent=now?"Already queued — updated with this data. Starting a worker…":"Already queued — updated with this data.";if(now)await kick(existing.id,r.title,note);return}
+  await db.collection("jobs").doc(jid).set({...job,brief_edits:(briefDoc(r.id)||{}).edits||null});try{await saveBriefDoc(r.id,{job_id:jid,queuedAt:Date.now()})}catch(e){}if(note)note.textContent=now?"Queued with the data. Starting a worker…":"Queued with the data. The worker takes it in priority order.";if(now)await kick(jid,r.title,note)}catch(e){if(note)note.textContent="Couldn't queue it."}}
 
 // UTM on social copy
 function utmUrl(u,k){try{if(!/cocotran\.com/.test(u)||/utm_/.test(u))return u;const src=/pinterest/i.test(k.platform||"")?"pinterest":/youtube/i.test(k.platform||"")?"youtube":/tiktok/i.test(k.platform||"")?"tiktok":"instagram";return u+(u.includes("?")?"&":"?")+"utm_source="+src+"&utm_medium=social&utm_campaign="+encodeURIComponent((k.id||k.piece||"post").toString().slice(0,40).replace(/\s+/g,"-").toLowerCase())}catch(e){return u}}
@@ -1911,8 +1957,8 @@ function thumbFor(e){if(e.kind==="social")return e.k?.canva?.thumb||e.k?.photos_
 function renderDue(){const td=today();const due=todos.filter(t=>!t.done&&t.due&&t.due<=td).sort((a,b)=>a.due.localeCompare(b.due));const html=due.length?`<div class="due"><b>${due.filter(t=>t.due<td).length?"Overdue and due today":"Due today"}:</b> ${due.slice(0,6).map(t=>`${esc(t.text.slice(0,70))} <span class="note">(${esc(t.due)})</span>`).join(" · ")}${due.length>6?` · +${due.length-6}`:""}</div>`:"";
  ["#cal-due","#t-due"].forEach(id=>{const el=$(id);if(el)el.innerHTML=html});
  try{if(due.length&&"Notification" in window&&Notification.permission==="granted"&&ls.get("due-notified")!==td){new Notification("Studio Desk",{body:due.length+" to-do"+(due.length===1?"":"s")+" due: "+due.map(t=>t.text.slice(0,40)).join(" · ").slice(0,180)});ls.set("due-notified",td)}}catch(e){}}
-function openPanel(html){let m=$("#modal");if(!m){m=document.createElement("div");m.id="modal";m.className="modal";m.innerHTML='<div class="box" role="dialog" aria-modal="true"></div>';document.body.append(m);m.addEventListener("click",e=>{if(e.target===m)closePanel()});document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel()})}
- m.querySelector(".box").innerHTML=html; m.hidden=false; const f=m.querySelector("input[type=text],input[type=search],select,input[type=date]"); if(f) setTimeout(()=>f.focus(),30)}
+function openPanel(html,wide){let m=$("#modal");if(!m){m=document.createElement("div");m.id="modal";m.className="modal";m.innerHTML='<div class="box" role="dialog" aria-modal="true"></div>';document.body.append(m);m.addEventListener("click",e=>{if(e.target===m)closePanel()});document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel()})}
+ m.querySelector(".box").innerHTML=html; m.querySelector(".box").classList.toggle("wide",!!wide); m.hidden=false; const f=m.querySelector("input[type=text],input[type=search],select,input[type=date]"); if(f) setTimeout(()=>f.focus(),30)}
 function closePanel(){const m=$("#modal");if(m)m.hidden=true}
 function dayPanel(iso){const ev=planEvents().filter(e=>e.date===iso);const d=new Date(iso+"T12:00:00");
  openPanel(`<h4>${d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</h4><div id="dp-list"></div><div class="row" style="gap:6px;margin-top:8px"><button class="btn" id="dp-add">+ Add to this day</button><button class="copy" id="dp-close">close</button></div>`);
@@ -2080,6 +2126,7 @@ function setStatus(){
   try{db.doc("settings/social_templates").onSnapshot(sn=>{const x=sn.exists?sn.data():null;if(Array.isArray(x?.items)&&x.items.length){templates=x.items}renderTemplateSelect()},()=>{})}catch(e){}
   try{db.collection("keywords").orderBy("createdAt","desc").limit(60).onSnapshot(renderKwList,()=>{})}catch(e){}
   try{db.collection("insights").orderBy("date","desc").limit(1).onSnapshot(sn=>{insightsLatest=sn.docs[0]?sn.docs[0].data():null;renderKwData()},()=>{})}catch(e){}
+  try{db.collection("briefs").limit(400).onSnapshot(sn=>{briefDocs={};sn.docs.forEach(d=>briefDocs[d.id]=d.data());try{renderAct()}catch(e){}},()=>{})}catch(e){}
   try{db.collection("settings").doc("analytics").onSnapshot(d=>{analyticsSettings=d.exists?d.data():null;renderKwData()},()=>{})}catch(e){}
   try{db.collection("plan").limit(300).onSnapshot(sn=>{plans=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderCalendar()}catch(e){}},()=>{})}catch(e){}
   try{db.collection("trips").limit(50).onSnapshot(sn=>{trips=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderToday();renderCalendar()}catch(e){}},()=>{})}catch(e){}
