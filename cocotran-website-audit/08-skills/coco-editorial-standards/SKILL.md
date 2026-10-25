@@ -34,7 +34,7 @@ The narrative below the block is untouched: MOMENT opening, the fields in order,
 - **Coco's own voice sheet wins.** Before drafting anything, read `voice/rules` in the Studio Desk store (ArtifactData get, url https://claude.ai/artifact/NVykejaCwzyJDdN2G1NMQt, collection `voice`, doc `rules`). If `text` is non-empty it replaces the house voice block; `voice/allow` lists phrasings never to flag. Mirror any change to `05-editorial-system/voice.md` and commit it.
 - First person to "you". Never listicle, never third-person detached.
 - Negatives reframed as charm or handled lightly; keep the fact.
-- Private/escorted default; top-tier hotels; $800+/night floor on Properties.
+- Private/escorted default; top-tier hotels; $700+/night floor on Properties ($400 in a very low-cost country or for a very boutique, design-forward property).
 - Banned: breathtaking, seamless, meticulously curated, world-class, stunning, wanderlust, elevated (adj.), 6-star, hidden gem, look no further, ultimate, must-see, nestled. No italics in body HTML. No mid-piece CTA.
 - One named person/dish/designer/room number per piece.
 

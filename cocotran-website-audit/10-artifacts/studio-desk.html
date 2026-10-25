@@ -639,6 +639,9 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
     <div class="count" id="l-count"></div>
   </div>
   <div class="libfilters" id="l-filters" hidden>
+    <div><label for="l-cont">Continent</label><select id="l-cont"><option value="">All continents</option></select></div>
+    <div><label for="l-country">Country</label><select id="l-country"><option value="">All countries</option></select></div>
+    <div><label for="l-city">City · region</label><select id="l-city"><option value="">All places</option></select></div>
     <div><label for="l-pillar">Pillar</label><select id="l-pillar"><option value="">All pillars</option><option>The Property</option><option>The Guide</option><option>The Brief</option><option>The Shortlist</option><option>The Dispatch</option><option>Old blog post</option></select></div>
     <div><label for="l-cat">Category</label><select id="l-cat"><option value="">All categories</option><option>Commercial</option><option>Decision-support</option><option>Informational</option><option>Specialist intel</option><option>Authority</option></select></div>
     <div><label for="l-health">Health</label><select id="l-health"><option value="">Any</option><option>ok</option><option>decaying</option><option>stale</option><option>thin</option><option>duplicate</option><option value="unset">not checked</option></select></div>
@@ -1342,7 +1345,7 @@ function travelPanel(){if(!travelCache.length)return "";const past=travelCache.f
 async function travelAuto(){if(!db||!canWrite||!travelCache.length)return {photos:0,plans:0};let photos=0,plans=0;const ymd=new Date().toISOString().slice(0,10);
  for(const t of travelCache){
   if(t.status==="past"){const need=asList(t.places).filter(p=>placePresence(p).state==="photos");if(!need.length)continue;const id="photos-"+t.id;try{const d=await db.doc("todo/"+id).get();if(d.exists)continue;await db.doc("todo/"+id).set({order:60,group:"Photos to edit",text:`Edit and upload your photos from ${tripLabel(t)}: ${need.join(", ")}. Drop them in New piece or the media library; the authority map queues the pieces once five are up.`,minutes:90,done:false,trip_id:t.id,places:need,createdAt:Date.now()});photos++}catch(e){}}
-  else{const id="plan-"+t.id;if(jobsCache.some(j=>j.id===id))continue;const ft=(typeof trips!=="undefined"?trips:[]).find(x=>String(x.startDate||"").slice(0,7)===String(t.start).slice(0,7)||normTxt(x.name||"").includes(normTxt(t.name).split(" ")[0]));
+  else if(t.status==="upcoming"||t.status==="live"){const id="plan-"+t.id;if(jobsCache.some(j=>j.id===id))continue;const ft=(typeof trips!=="undefined"?trips:[]).find(x=>String(x.startDate||"").slice(0,7)===String(t.start).slice(0,7)||normTxt(x.name||"").includes(normTxt(t.name).split(" ")[0]));
    const auth=asList(t.places).map(p=>{try{return authorityFor(p,p)}catch(e){return null}}).filter(Boolean);
    try{await db.doc("jobs/"+id).set({id,mode:"plan",type:"plan",status:"queued",priority:2,title:"Shoot and content plan · "+t.name,subject:t.name,format:"plan",trip:t,fam:ft?{id:ft.id,name:ft.name,hotels:asList(ft.hotels),purpose:ft.purpose||""}:null,authority:auth,worker_instructions:"SKILL.md 'Trip plans'. Before departure: per place, the pillars it is missing (authority), the shot list each pillar needs (opening, image slots, Verdict rooms/F&B/spa/arrival, Postcard moment), the GM questions per hotel, the reels/YouTube beats, and the keyword per piece from research. Write plan{} on this job and a todo per day. After the trip ends and photos are on the site, the map queues the pieces.",createdAt:Date.now(),updatedAt:Date.now()});plans++}catch(e){}}}
  return {photos,plans}}
@@ -1805,9 +1808,17 @@ function oppScore(r){
 
 // ---------- Library ----------
 let lib=[], libSel=null;
+// Place filters: every record is placed on the destination chain (continent › country › city) from its title, URL and queries.
+const libChainCache=new Map();
+function libChain(r){const k=r.id+"|"+(r.title||"");if(libChainCache.has(k))return libChainCache.get(k);let ch=[];try{const id=destFor(r);ch=id?destChain(id):[]}catch(e){}libChainCache.set(k,ch);return ch}
+function libPlaceOptions(){const sel={cont:$("#l-cont"),country:$("#l-country"),city:$("#l-city")};if(!sel.cont)return;const cur={cont:sel.cont.value,country:sel.country.value,city:sel.city.value};const cnt=[{},{},{}],name={};
+ lib.forEach(r=>{const ch=libChain(r);if(cur.cont&&String(ch[0]?.id)!==cur.cont&&ch.length)return;ch.slice(0,3).forEach((t,i)=>{if(i===1&&cur.cont&&String(ch[0].id)!==cur.cont)return;if(i===2&&cur.country&&String(ch[1]?.id)!==cur.country)return;cnt[i][t.id]=(cnt[i][t.id]||0)+1;name[t.id]=t.name});ch.slice(3).forEach(t=>{if(cur.country&&String(ch[1]?.id)!==cur.country)return;cnt[2][t.id]=(cnt[2][t.id]||0)+1;name[t.id]=ch[2].name+" › "+t.name})});
+ const fill=(el,c,all,v)=>{el.innerHTML=`<option value="">${all}</option>`+Object.keys(c).sort((a,b)=>name[a].localeCompare(name[b])).map(id=>`<option value="${id}" ${id===v?"selected":""}>${esc(name[id])} (${c[id]})</option>`).join("")};
+ fill(sel.cont,cnt[0],"All continents",cur.cont);fill(sel.country,cnt[1],"All countries",cur.country);fill(sel.city,cnt[2],"All places",cur.city)}
+function libPlaceOk(r){const v=[$("#l-cont")?.value,$("#l-country")?.value,$("#l-city")?.value].filter(Boolean);if(!v.length)return true;const ids=libChain(r).map(t=>String(t.id));return v.every(x=>ids.includes(x))}
 function libFilter(){
  const q=$("#l-q").value.trim().toLowerCase(), p=$("#l-pillar").value, c=$("#l-cat").value, hl=$("#l-health").value, from=$("#l-from").value, to=$("#l-to").value, sort=$("#l-sort").value;
- let rows=lib.filter(r=>(!q||[r.title,r.url,r.keyword,r.seo_title,(r.secondary_keywords||[]).join(" ")].join(" ").toLowerCase().includes(q))&&(!p||r.pillar===p)&&(!c||r.category===c)&&(!hl||(hl==="unset"?!r.health:r.health===hl))&&(!from||(r.last_updated||"")>=from)&&(!to||(r.last_updated||"")<=to));
+ let rows=lib.filter(r=>(!q||[r.title,r.url,r.keyword,r.seo_title,(r.secondary_keywords||[]).join(" ")].join(" ").toLowerCase().includes(q))&&(!p||r.pillar===p)&&(!c||r.category===c)&&(!hl||(hl==="unset"?!r.health:r.health===hl))&&(!from||(r.last_updated||"")>=from)&&(!to||(r.last_updated||"")<=to)&&libPlaceOk(r));
  const hRank={decaying:0,stale:1,duplicate:2,thin:3,ok:5};
  if(sort==="priority"){rows.forEach(r=>{r._opp=oppScore(r)});rows.sort((a,b)=>b._opp.score-a._opp.score);return rows}
  rows.sort((a,b)=>sort==="title"?String(a.title).localeCompare(b.title):sort==="clicks"?((b.rank?.clicks28||0)-(a.rank?.clicks28||0)):sort==="health"?((hRank[a.health]??4)-(hRank[b.health]??4)):sort==="pillar"?(String(a.pillar).localeCompare(b.pillar)||String(a.title).localeCompare(b.title)):String(b.last_updated||"").localeCompare(a.last_updated||""));
@@ -1816,6 +1827,7 @@ function libFilter(){
 let libView=ls.get("libView")||"cards";
 function heroOf(r){const p=(r.photos_list||[])[0];return p?.url||""}
 function renderLib(){
+ try{libPlaceOptions()}catch(e){}
  const rows=libFilter(); const list=$("#l-list"); list.innerHTML="";
  const sort=$("#l-sort").value; let lastGroup=null;
  list.className="lib-list lib-"+libView;
@@ -1849,8 +1861,8 @@ function renderLib(){
 }
 document.querySelectorAll(".views button").forEach(b=>b.onclick=()=>{libView=b.dataset.view;ls.set("libView",libView);renderLib()});
 $("#l-filters-toggle").onclick=()=>{const f=$("#l-filters");f.hidden=!f.hidden;$("#l-filters-toggle").setAttribute("aria-expanded",String(!f.hidden))};
-["l-q","l-pillar","l-cat","l-health","l-from","l-to","l-sort"].forEach(id=>$("#"+id).addEventListener("input",renderLib));
-$("#l-clear").onclick=()=>{["l-q","l-pillar","l-cat","l-health","l-from","l-to"].forEach(id=>$("#"+id).value="");$("#l-sort").value="updated";renderLib()};
+["l-q","l-pillar","l-cat","l-health","l-from","l-to","l-sort","l-cont","l-country","l-city"].forEach(id=>$("#"+id).addEventListener("input",renderLib));$("#l-cont").addEventListener("change",()=>{$("#l-country").value="";$("#l-city").value="";renderLib()});$("#l-country").addEventListener("change",()=>{$("#l-city").value="";renderLib()});
+$("#l-clear").onclick=()=>{["l-q","l-pillar","l-cat","l-health","l-from","l-to","l-cont","l-country","l-city"].forEach(id=>$("#"+id).value="");$("#l-sort").value="updated";renderLib()};
 function openLib(id){
  const r=lib.find(x=>x.id===id); if(!r)return; libSel=r; const s=r.suggestions||{}; const rk=r.rank;
  $("#l-detail").innerHTML=`<div class="piece">

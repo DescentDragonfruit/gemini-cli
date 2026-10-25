@@ -17,7 +17,7 @@ Every piece — new, respun, or Claude-drafted — goes through this before "Pub
 | 9 | **Disclosures clear** | Paid / hosted / discounted stated on every Property. Affiliate and Coco Tran Travel booking relationship stated where relevant. Methodology page linked from every Property. |
 | 10 | **Free portion delivers value before the gate** | A non-member leaves with the short answer, the at-a-glance facts and a reason to subscribe. The gate never lands mid-sentence. Gated pages carry paywall markup. |
 
-**Voice gates (apply to 1–10):** first person, speaking to "you"; positive, warm, excited — never clipped or cold; concrete over clever; no sentence that explains the sentence before it ("That's the point."); banned words absent (breathtaking, seamless, meticulously curated, world-class, stunning, wanderlust, elevated-as-adjective, 6-star); no italics in body HTML; no mid-article sales pitch (one Inquire/CTA near the end only, where the format allows it); private/escorted is the default recommendation, top-tier hotels only, $800+/night floor on Properties.
+**Voice gates (apply to 1–10):** first person, speaking to "you"; positive, warm, excited — never clipped or cold; concrete over clever; no sentence that explains the sentence before it ("That's the point."); banned words absent (breathtaking, seamless, meticulously curated, world-class, stunning, wanderlust, elevated-as-adjective, 6-star); no italics in body HTML; no mid-article sales pitch (one Inquire/CTA near the end only, where the format allows it); private/escorted is the default recommendation, top-tier hotels only, $700+/night floor on Properties ($400 in a very low-cost country or for a very boutique, design-forward property).
 
 ## Part 2 · Structured-data checklist by page type
 

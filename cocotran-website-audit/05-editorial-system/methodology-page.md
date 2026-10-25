@@ -12,7 +12,7 @@ I'm Coco, and everything on this site comes from me — the stays, the photograp
 
 ## How I choose what to review
 
-I don't review everywhere I stay, and I don't stay everywhere I'm offered. A property gets written up when it has a real sense of place and I'd send a client there. That's the bar: not the price, not the brand, but whether someone poured themselves into making it. Most properties here sit above $800 a night; a few don't, because they earned it another way.
+I don't review everywhere I stay, and I don't stay everywhere I'm offered. A property gets written up when it has a real sense of place and I'd send a client there. That's the bar: not the price, not the brand, but whether someone poured themselves into making it. Most properties here sit above $700 a night; a few don't, because they earned it another way.
 
 ## What a stay actually involves
 
