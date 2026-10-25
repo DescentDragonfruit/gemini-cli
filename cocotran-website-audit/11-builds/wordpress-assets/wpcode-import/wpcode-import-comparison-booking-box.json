@@ -1,0 +1,21 @@
+[
+ {
+  "title": "Coco Tran · Comparison booking box (hotel = A or B)",
+  "code": "/**\n * Code Snippets (WPCode) · PHP · Run everywhere.\n * On a Comparison brief the shared [ctt_book] box has no hotel of its own, so name the two\n * places from the piece's fields. Nothing else changes.\n */\nadd_filter( 'shortcode_atts_ctt_book', function ( $out ) {\n\tif ( ( $out['hotel'] ?? '' ) === '' && get_post_type() === 'brief' ) {\n\t\t$a = trim( (string) get_post_meta( get_the_ID(), 'side_a_name', true ) );\n\t\t$b = trim( (string) get_post_meta( get_the_ID(), 'side_b_name', true ) );\n\t\tif ( $a && $b ) { $out['hotel'] = $a . ' or ' . $b; }\n\t}\n\treturn $out;\n} );\n",
+  "code_type": "php",
+  "location": "everywhere",
+  "auto_insert": 1,
+  "insert_number": 1,
+  "use_rules": false,
+  "rules": [],
+  "priority": 10,
+  "active": true,
+  "tags": [
+   "coco-tran"
+  ],
+  "note": "Imported from the audit repo (snippet-comparison-booking-box.php). To update: Tools → Import again with the newer file, then delete the old copy. Never keep two copies active.",
+  "location_extra": "",
+  "shortcode_attributes": [],
+  "custom_shortcode": ""
+ }
+]

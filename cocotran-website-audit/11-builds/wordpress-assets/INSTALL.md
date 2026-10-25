@@ -63,3 +63,6 @@ Notes: the engine rewrites the content through DOMDocument, so `<img …/>` beco
 
 ### Updating a snippet
 Open the existing snippet in Code Snippets, select all, paste the new file over it, Save and Activate. Never keep two copies active: a second copy of the same functions is a fatal error on the whole site. Plugins are the same idea: upload the new zip and choose "Replace current with uploaded".
+
+## WPCode import files (titles included)
+`wpcode-import/*.json` are WPCode import files: one per snippet, plus `wpcode-import-all-three.json`. In WordPress: **Code Snippets → Tools → Import → choose the .json → Import**. Each arrives with its title, as PHP, Run Everywhere, active. No typing. To update a snippet later: import the newer file, then delete the old copy of the same title. Never leave two copies active.
