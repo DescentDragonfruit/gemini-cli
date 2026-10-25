@@ -1,6 +1,6 @@
 <?php
 /**
- * Code Snippets (WPCode) · PHP · Run everywhere.  v2.0 · 25 Oct 2026
+ * Code Snippets (WPCode) · PHP · Run everywhere.  v2.1 · 25 Oct 2026
  * The two footer blocks from the Site Snippets plugin, "Pair it with" and the author line, in the facts-strip style:
  * sans light labels in capitals, more air around everything, and a small greyscale photo of each paired piece on
  * the left of its text (the piece's featured image; items without one simply show text).
@@ -18,11 +18,11 @@ function ct_footer_blocks_css() {
 .ct-pair .ct-pair__kicker{margin:0;font-family:sans,"Inter",system-ui,sans-serif;font-weight:400;font-size:17px;line-height:24px;letter-spacing:2px;text-transform:uppercase;font-variant-caps:normal;color:#000;} /* = the theme h3 */
 .ct-pair .ct-pair__list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:72px;row-gap:30px;}
 .ct-pair .ct-pair__item{margin:0;padding:0;}
-.ct-pair .ct-pair__link{display:grid;grid-template-columns:1fr;column-gap:24px;align-items:start;text-decoration:none;color:inherit;border-top:1px solid var(--ct-hair);padding:20px 0 14px;}
-.ct-pair .ct-pair__link.has-thumb{grid-template-columns:96px minmax(0,1fr);}
-.ct-pair .ct-pair__thumb{grid-column:1;grid-row:1/span 3;display:block;width:96px;height:96px;overflow:hidden;background:#f1efea;}
-.ct-pair .ct-pair__thumb img{display:block;width:100%;height:100%;object-fit:cover;filter:grayscale(1);transition:filter .25s;}
-.ct-pair .ct-pair__link:hover .ct-pair__thumb img{filter:grayscale(0);}
+.ct-pair .ct-pair__link{display:grid!important;grid-template-columns:1fr;column-gap:24px;align-items:start;text-decoration:none;color:inherit;border-top:1px solid var(--ct-hair);padding:20px 0 14px;}
+.ct-pair .ct-pair__link.has-thumb{grid-template-columns:96px minmax(0,1fr)!important;}
+.ct-pair .ct-pair__thumb{grid-column:1;grid-row:1/span 3;display:block;width:96px!important;height:96px!important;overflow:hidden;background:#f1efea;}
+.ct-pair .ct-pair__thumb img{display:block;width:100%!important;height:100%!important;max-width:none;object-fit:cover;filter:grayscale(1)!important;transition:filter .25s;}
+.ct-pair .ct-pair__link:hover .ct-pair__thumb img{filter:grayscale(0)!important;}
 .ct-pair .has-thumb > .ct-pair__format,.ct-pair .has-thumb > .ct-pair__title,.ct-pair .has-thumb > .ct-pair__excerpt{grid-column:2;}
 .ct-pair .ct-pair__format{display:block;font-family:sans,"Inter",system-ui,sans-serif;font-weight:300;font-size:13px;line-height:20px;letter-spacing:.6px;text-transform:uppercase;font-variant-caps:normal;color:#000;margin:0 0 6px;}
 .ct-pair .ct-pair__title{display:block;font-family:var(--global-heading-font-family,Georgia,serif);font-weight:400;font-size:17px;line-height:26px;color:var(--ct-ink);}
@@ -47,14 +47,17 @@ function ct_footer_blocks_css() {
  .ct-pair .ct-pair__kicker,.ct-author::before{font-size:16px;line-height:23px;letter-spacing:2px;margin-bottom:10px;}
  .ct-pair .ct-pair__list{grid-template-columns:1fr;row-gap:14px;}
  .ct-pair .ct-pair__link{padding:14px 0 10px;column-gap:16px;}
- .ct-pair .ct-pair__link.has-thumb{grid-template-columns:72px minmax(0,1fr);}
- .ct-pair .ct-pair__thumb{width:72px;height:72px;}
+ .ct-pair .ct-pair__link.has-thumb{grid-template-columns:72px minmax(0,1fr)!important;}
+ .ct-pair .ct-pair__thumb{width:72px!important;height:72px!important;}
  .ct-author > *{grid-column:1;}
 }
 CSS;
 }
-add_filter( 'ct_pair_css', 'ct_footer_blocks_css' );
-add_filter( 'ct_author_css', 'ct_footer_blocks_css' );
+/* Priority 99 so this wins over any older copy of the footer snippet that may still be active; the same stylesheet
+   is also printed in the head, so the photos never render full-size even if the plugin's filters change. */
+add_filter( 'ct_pair_css', 'ct_footer_blocks_css', 99 );
+add_filter( 'ct_author_css', 'ct_footer_blocks_css', 99 );
+add_action( 'wp_head', function () { if ( ! is_admin() ) { echo '<style id="ct-footer-blocks-v2">' . ct_footer_blocks_css() . '</style>' . "\n"; } }, 99 );
 
 /* ---------- 2. The small greyscale photo on each paired piece ---------- */
 function ct_pair_add_thumbs( $html ) {
