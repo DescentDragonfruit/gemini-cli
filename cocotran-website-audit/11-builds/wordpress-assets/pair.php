@@ -304,10 +304,14 @@ function ct_pair_the_content( $content ) {
 		return $content;
 	}
 	$post = get_post();
-	if ( ! $post || ! in_array( $post->post_type, ct_site_post_types(), true ) || ct_pair_is_off( $post->ID ) || isset( $done[ $post->ID ] ) ) {
+	if ( ! $post || ! in_array( $post->post_type, ct_site_post_types(), true ) || ct_pair_is_off( $post->ID ) || isset( $done[ $post->ID ] ) || ! empty( $GLOBALS['ct_tail_done'][ $post->ID ]['pair'] ) ) {
 		return $content;
 	}
+	if ( '' === trim( wp_strip_all_tags( $content ) ) && function_exists( 'ct_kadence_tail' ) ) {
+		return $content; // ACF-rendered piece: the Kadence template hook prints the block instead
+	}
 	$done[ $post->ID ] = true;
+	$GLOBALS['ct_tail_done'][ $post->ID ]['pair'] = true;
 	return ct_insert_before_booking_box( $content, ct_pair_render( $post ) );
 }
 add_filter( 'the_content', 'ct_pair_the_content', 25 );

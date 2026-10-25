@@ -214,10 +214,14 @@ function ct_author_the_content( $content ) {
 	if ( ! $post || ! in_array( $post->post_type, ct_author_post_types(), true ) || ct_author_is_off( $post->ID ) || isset( $done[ $post->ID ] ) ) {
 		return $content;
 	}
-	if ( has_shortcode( (string) $post->post_content, 'ct_author' ) || false !== strpos( $content, 'data-ct-author="1"' ) ) {
-		return $content; // placed by hand
+	if ( has_shortcode( (string) $post->post_content, 'ct_author' ) || false !== strpos( $content, 'data-ct-author="1"' ) || ! empty( $GLOBALS['ct_tail_done'][ $post->ID ]['author'] ) ) {
+		return $content; // placed by hand, or already printed by the Kadence template hook
+	}
+	if ( '' === trim( wp_strip_all_tags( $content ) ) && function_exists( 'ct_kadence_tail' ) ) {
+		return $content; // ACF-rendered piece: the Kadence template hook prints the block instead
 	}
 	$done[ $post->ID ] = true;
+	$GLOBALS['ct_tail_done'][ $post->ID ]['author'] = true;
 	return ct_insert_before_booking_box( $content, ct_author_render( $post ) );
 }
 add_filter( 'the_content', 'ct_author_the_content', 26 );
