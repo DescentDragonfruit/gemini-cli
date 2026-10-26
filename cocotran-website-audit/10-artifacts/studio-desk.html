@@ -501,6 +501,41 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
 .pill.wpp{margin-left:6px}
 .lcard .pill.wpp{margin-left:0}
 @media (max-width:700px){.wpcard .row>.btn{flex:1 1 100%}.wplist .prow{grid-template-columns:1fr}.wplist .prow>.row{justify-content:flex-start!important}}
+
+.amviews{display:flex;width:max-content;max-width:100%;border:1px solid var(--line2);border-radius:999px;overflow:hidden;background:var(--bg2);margin-bottom:10px}
+.amviews button{border:0;background:transparent;padding:9px 16px;font:500 13px var(--body);color:var(--muted);cursor:pointer;white-space:nowrap;flex:0 0 auto}
+.amviews button[aria-selected=true]{background:var(--accent);color:var(--accent-ink)}
+.amrow{all:unset;box-sizing:border-box;display:block;width:100%;font-size:13px;line-height:1.45;cursor:pointer;border-radius:8px;padding:2px 4px;margin:-2px -4px}
+.amrow:hover,.amrow:focus-visible{background:var(--accent-soft);outline:none}
+.amrow .amgo{color:var(--muted);font-size:12px;margin-left:4px}
+.amplus{margin-left:6px;padding:1px 8px!important;font-size:11.5px!important}
+.amfbar{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px 10px;align-items:end;margin:0 0 10px}
+.amfl{display:flex;flex-direction:column;gap:2px;margin:0;font:500 11.5px var(--body);color:var(--muted);text-transform:none;letter-spacing:0;min-width:0}
+.amfl input,.amfl select{width:100%;min-width:0}
+.amchips{margin-top:4px;display:flex;flex-wrap:wrap;gap:4px}.amchips .pill{margin-left:0}
+.amgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.amc{border:1px solid var(--line);border-radius:var(--r);background:var(--bg2);padding:12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.amc h4{margin:2px 0;font-size:16px;line-height:1.3}.amc>.row{margin-top:auto;padding-top:8px;justify-content:flex-start!important}
+.amtl{border-left:2px solid var(--line2);margin-left:6px;padding-left:18px}
+.amtm{font-family:var(--display);font-size:21px;margin:14px 0 4px}.amtm:first-child{margin-top:0}
+.amti{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.amdot{position:absolute;left:-25px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--bg)}
+.amacts{display:flex;flex-wrap:wrap;gap:8px}
+.amthumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px;margin-top:8px}.amthumbs img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px}
+#am-content .prow>div{min-width:0}
+#am-panel .fsh{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+#am-panel .fsh .fst{color:var(--muted);font-size:13px}
+#am-panel .row{justify-content:flex-start}
+.amc .meta,.amti .meta,#am-content .prow .meta{font-size:11px;line-height:1.4}
+@media (max-width:700px){
+ .amfbar{grid-template-columns:1fr 1fr}
+ .amgrid{grid-template-columns:1fr}
+ #am-content .prow,.amti{grid-template-columns:1fr}
+ #am-content .prow>.row,.amti>.row{justify-content:flex-start!important}
+ .amacts .btn{flex:1 1 140px;justify-content:center}
+ #am-views{overflow-x:auto;scrollbar-width:none}
+ #am-views button{padding:9px 12px}
+}
 </style>
 
 <header class="topbar">
@@ -809,9 +844,11 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
 
 <section class="desk" id="desk-authority">
   <div class="deskhead"><div><div class="eyebrow">Grow</div><h2>Authority map</h2><p class="lead">Every country and place you cover, which pillars it has and which it is missing. A place carries the full set: the Rolodex as its hub, the Primer, the Route, where to stay, where to eat, a Postcard or Field Notes, a Verdict and the Dossier. A country with two or more places carries its own planning layer. The hub links down to every piece, every piece links up to its hub and its country hub and across to two siblings. <b>This runs by itself once a day</b>: missing pillars are queued (as respins where old posts exist), and link fixes are queued whenever a place gains a piece. You only see a question when a piece needs your photos or the hotel you stayed in.</p></div></div>
-  <div class="row" style="margin-bottom:8px;gap:10px;flex-wrap:wrap"><input type="text" id="am-q" placeholder="Filter places" aria-label="Filter places" style="min-width:200px"><label class="note" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="am-gaps" checked> only places with gaps</label><span class="note" id="am-sum"></span></div>
+  <div class="amviews" id="am-views"><button data-amv="map" aria-selected="true">Map</button><button data-amv="list">Content list</button><button data-amv="cards">Cards</button><button data-amv="timeline">Timeline</button></div>
+  <div class="row" id="am-maprow" style="margin-bottom:8px;gap:10px;flex-wrap:wrap"><input type="text" id="am-q" placeholder="Filter places" aria-label="Filter places" style="min-width:200px"><label class="note" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="am-gaps" checked> only places with gaps</label><span class="note" id="am-sum"></span></div>
   <div class="note" id="am-auto" style="margin-bottom:10px"></div>
   <div id="am-list" class="cards" style="grid-template-columns:1fr"></div>
+  <div id="am-content" hidden></div>
 </section>
 
 <section class="desk" id="desk-keywords">
@@ -1400,29 +1437,33 @@ function renderAuthority(){const host=$("#am-list");if(!host)return;if(!lib.leng
  const tp=travelPanel();
  host.innerHTML=tp+rows.map((x,i)=>{const p=x.p,c=x.cov;const visits=[x.p.name].concat(x.p.rolled||[]).flatMap(n=>travelMatch(n)).filter((t,i2,a)=>a.indexOf(t)===i2);const queued=jobsCache.filter(j=>j.authority&&j.authority.term_id===p.id&&!["done","published"].includes(j.status));
   return `<div class="card" data-am="${i}"><div class="meta">${esc(p.kind==="country"?"COUNTRY":"PLACE")}${p.rolled.length?" (with "+esc(p.rolled.join(", "))+")":""} · ${esc(p.chain.map(t=>t.name).join(" › "))} · ${p.pieces.length} live · ${p.old.length} old posts · photos ≈ ${x.ph.own+Math.round(x.ph.unknown*0.5)} yours</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 14px;margin:8px 0">${c.rows.map(r=>`<div style="font-size:13px;line-height:1.45"><span class="pill ${r.missing?"warn":"ok"}">${r.missing?"missing":"✓"}</span> ${esc(r.label)}${r.have.length?`<br>${r.have.slice(0,2).map(h=>`<a href="${esc(h.url)}" target="_blank" rel="noopener">${esc((h.title||"").slice(0,40))}</a>`).join("<br>")}`:""}</div>`).join("")}</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 14px;margin:8px 0">${c.rows.map(r=>{if(r.missing){const aj=amJobFor(p,r.k);const st=aj?(ppLive(aj)?"live":aj.status||"planned"):"";return `<button class="amrow" data-amp="${esc(p.id+":"+r.k)}" title="Brief, queue, write, photos, date"><span class="pill warn">${st?esc(st):"missing"}</span> ${esc(r.label)}<span class="amgo">open ›</span></button>`}return `<div style="font-size:13px;line-height:1.45"><span class="pill ok">✓</span> ${esc(r.label)}<button class="copy amplus" data-amm="${esc(p.id+":"+r.k)}" title="More articles for this pillar">+ more</button>${r.have.length?`<br>${r.have.slice(0,2).map(h=>`<a href="${esc(h.url)}" target="_blank" rel="noopener">${esc((h.title||"").slice(0,40))}</a>`).join("<br>")}`:""}</div>`}).join("")}</div>
   ${visits.length?`<div class="note">Your visits: ${visits.slice(0,4).map(t=>esc(tripLabel(t))).join(" · ")}</div>`:`<div class="note"><span class="pill warn">no visit in your travel log</span> pieces here are written as the advisor who planned it, not as if you stayed</div>`}
   ${c.hub?`<div class="note">Hub: <a href="${esc(c.hub.url)}" target="_blank" rel="noopener">${esc(c.hub.title)}</a>${c.countryHub&&p.depth>=3?` · up to <a href="${esc(c.countryHub.url)}" target="_blank" rel="noopener">${esc(c.countryHub.title)}</a>`:""}</div>`:`<div class="note"><span class="pill warn">no hub</span> the Rolodex for ${esc(p.name)} is the first thing to build — every other piece links to it.</div>`}
   <div class="row" style="margin-top:8px">${c.missing.length?`<button class="btn" data-amq="${i}" ${queued.length?"disabled":""}>${queued.length?queued.length+" queued":"Queue the "+c.missing.length+" missing"}</button>`:""}${p.pieces.length>1?`<button class="btn alt" data-aml="${i}">Fix the links between these ${p.pieces.length}</button>`:""}<span class="note" data-amnote="${i}"></span></div></div>`}).join("")||'<div class="note">No place matches.</div>';
- host.querySelectorAll("[data-amq]").forEach(b=>b.onclick=()=>amQueue(rows[+b.dataset.amq],b));host.querySelectorAll("[data-aml]").forEach(b=>b.onclick=()=>amQueueLinks(rows[+b.dataset.aml],b))}
-async function amQueue(x,btn){if(!db||!canWrite){return 0}const p=x.p,c=x.cov;const note=btn?btn.parentElement.querySelector("[data-amnote]"):null;if(btn)btn.disabled=true;const own=x.ph.own+Math.round(x.ph.unknown*0.5);const chainTxt=p.chain.map(t=>t.name).join(" · ");let n=0;const ymd=new Date().toISOString().slice(0,10).replace(/-/g,"");
- const lp=linkPlan(p.name,chainTxt,"rolodex","");
- const ownPhotos=own;for(const k of c.missing){if(amHasJob(p.id,k))continue;const hotelOld=p.old.filter(r=>typeof isHotelPost==='function'&&isHotelPost(r));const fmt=AM_FMT[k]||k;const q=AM_KW[k]?AM_KW[k](p.name.toLowerCase()):p.name;const fromOld=k==="verdict"?hotelOld.length>0:p.old.filter(r=>!(typeof isHotelPost==='function'&&isHotelPost(r))).length>0;const photosOk=own>=5||c.rows.some(r=>!r.missing);
-  const id=`am-${normTxt(p.name).replace(/[^a-z0-9]+/g,"-")}-${k}`;if(jobsCache.some(j=>j.id===id))continue;
+ host.querySelectorAll("[data-amq]").forEach(b=>b.onclick=()=>amQueue(rows[+b.dataset.amq],b));host.querySelectorAll("[data-aml]").forEach(b=>b.onclick=()=>amQueueLinks(rows[+b.dataset.aml],b));
+ host.querySelectorAll("[data-amp]").forEach(b=>b.onclick=()=>amOpen(b.dataset.amp));host.querySelectorAll("[data-amm]").forEach(b=>b.onclick=()=>{const [pid,k]=b.dataset.amm.split(":");amMoreOnly(pid,k)});amSyncView()}
+function amBuildJob(x,k){const p=x.p,c=x.cov;const own=x.ph.own+Math.round(x.ph.unknown*0.5);const chainTxt=p.chain.map(t=>t.name).join(" · ");const lp=linkPlan(p.name,chainTxt,"rolodex","");
+ const hotelOld=p.old.filter(r=>typeof isHotelPost==='function'&&isHotelPost(r));const fmt=AM_FMT[k]||k;const q=AM_KW[k]?AM_KW[k](p.name.toLowerCase()):p.name;const fromOld=k==="verdict"?hotelOld.length>0:p.old.filter(r=>!(typeof isHotelPost==='function'&&isHotelPost(r))).length>0;const photosOk=own>=5||c.rows.some(r=>!r.missing);
+  const id=`am-${normTxt(p.name).replace(/[^a-z0-9]+/g,"-")}-${k}`;
   const job={id,mode:fromOld?"respin":"new",status:!photosOk?"needs-coco":(k==="verdict"&&!hotelOld.length)?"needs-coco":"queued",format:fmt,subject:k==="stay"?"Where to stay in "+p.name:k==="eat"?"Where to eat in "+p.name:p.name,dest:chainTxt,title:(FORMATS[fmt]?.label||fmt)+" · "+p.name,category:CATEGORY_BY_FORMAT[fmt]||"",
    authority:{term_id:p.id,chain:p.chain.map(t=>t.name),pillar:k,hub:c.hub?{title:c.hub.title,url:c.hub.url}:null,country_hub:c.countryHub?{title:c.countryHub.title,url:c.countryHub.url}:null,siblings:p.pieces.map(r=>({title:r.title,url:r.url,format:r.format}))},
    idea:{q,src:["authority-map"],questions:[],secondary:[]},link_plan:lp,primary_keyword:q,visits:[p.name].concat(p.rolled||[]).flatMap(n=>travelMatch(n)).filter((t,i2,a)=>a.indexOf(t)===i2).slice(0,5).map(t=>({name:t.name,start:t.start,end:t.end||null,kind:t.kind})),
    source_urls:fromOld?(k==="verdict"?hotelOld:p.old).map(r=>r.url):[],source_wp_ids:fromOld?(k==="verdict"?hotelOld:p.old).map(r=>r.wp_id).filter(Boolean):[],
    notes:`AUTHORITY MAP: ${p.name} is missing its ${k}. Write it from Coco's own live pieces on ${p.name} and the old posts listed (her words, her photos), plus research. Link up to the hub and the country hub, across to two siblings, and add this piece to the hub's related fields once live.`+(k==="verdict"?" A Verdict needs the hotel Coco stayed in: ask her which.":"")+(photosOk?"":" PHOTOS: fewer than five of Coco's own frames for this place — ask her for the scans before building."),
    needs_coco:[...(k==="verdict"&&!hotelOld.length?["Which hotel in "+p.name+" did you stay at? A Verdict needs your stay."]:[]),...(photosOk?[]:["Photos of "+p.name+": fewer than five of yours are on the site."])],createdAt:Date.now(),updatedAt:Date.now(),priority:AM_PRI[k]||0};
-  try{await db.doc("jobs/"+id).set(job);n++}catch(e){}}
+ return job}
+async function amQueue(x,btn){if(!db||!canWrite){return 0}const p=x.p,c=x.cov;const note=btn?btn.parentElement.querySelector("[data-amnote]"):null;if(btn)btn.disabled=true;let n=0;
+ for(const k of c.missing){if(amHasJob(p.id,k))continue;const job=amBuildJob(x,k);if(!job||jobsCache.some(j=>j.id===job.id))continue;
+  try{await db.doc("jobs/"+job.id).set(job);n++}catch(e){}}
  if(note)note.textContent=`${n} job${n===1?"":"s"} queued for ${p.name}.`;if(btn)btn.textContent=n+" queued";return n}
 async function amQueueLinks(x,btn){if(!db||!canWrite)return 0;const p=x.p;const note=btn?btn.parentElement.querySelector("[data-amnote]"):null;if(btn)btn.disabled=true;const id=`links-${normTxt(p.name).replace(/[^a-z0-9]+/g,"-")}`;const prev=jobsCache.find(j=>j.id===id);const sig=x.links.map(l=>l.piece.id).sort().join(",");if(prev&&prev.sig===sig)return 0;
  try{await db.doc("jobs/"+id).set({id,mode:"links",type:"links",status:"approved",title:"Authority links · "+p.name,subject:p.name,format:"links",authority:{term_id:p.id,chain:p.chain.map(t=>t.name)},links:x.links,worker_instructions:"SKILL.md 'Topical authority map'. For each piece in links[], make sure it links to every entry in need[]: the related fields that exist on its CPT (hub = the destination Page only), the 'Pair it with' footer follows those fields, and one natural in-body link on first mention for the up-links. Never rewrite Coco's sentences; add a closing 'Read next' line only where the piece has none. Skip posts with an open update job.",sig,createdAt:Date.now(),updatedAt:Date.now(),priority:2});if(note)note.textContent="Link job queued.";if(btn)btn.textContent="Links queued";return 1}catch(e){if(note)note.textContent="Couldn't queue.";return 0}}
 function authorityFor(dest,subject){if(!lib.length)return null;const places=amPlaces();const id=destFor({title:(dest||"")+" "+(subject||"")});const p=places.find(x=>x.id===id);if(!p)return null;const cov=amCoverage(p,places);return {name:p.name,chain:p.chain.map(t=>t.name),missing:cov.missing,hub:cov.hub?{title:cov.hub.title,url:cov.hub.url}:null,country_hub:cov.countryHub?{title:cov.countryHub.title,url:cov.countryHub.url}:null,have:cov.rows.filter(r=>!r.missing).map(r=>({pillar:r.k,pieces:r.have.map(h=>({title:h.title,url:h.url}))}))}}
 
 const AM_PRI={rolodex:3,primer:2,stay:2,route:1,eat:1,dossier:1,dispatch:0,verdict:0};
-function amHasJob(termId,k){const fmt=AM_FMT[k]||k;const nm=normTxt(destName(termId));return jobsCache.some(j=>!["failed"].includes(j.status)&&((!j.authority&&j.format===fmt&&nm&&normTxt((j.subject||"")+" "+(j.title||"")+" "+(j.dest||"")).includes(nm)&&(fmt!=="shortlist"||(k==="stay")===/stay|hotel/.test(normTxt(j.subject||j.title||""))))||(j.authority&&j.authority.term_id===termId&&j.authority.pillar===k)||(j.mode==="respin"&&j.cluster&&j.cluster.term_id===termId&&j.format===fmt&&k!=="stay"&&k!=="eat")))}
+function amHasJob(termId,k){return !!amCoverJob(termId,k)}
+function amCoverJob(termId,k){const fmt=AM_FMT[k]||k;const nm=normTxt(destName(termId));return jobsCache.find(j=>!["failed"].includes(j.status)&&((!j.authority&&j.format===fmt&&nm&&normTxt((j.subject||"")+" "+(j.title||"")+" "+(j.dest||"")).includes(nm)&&(fmt!=="shortlist"||(k==="stay")===/stay|hotel/.test(normTxt(j.subject||j.title||""))))||(j.authority&&!j.authority.extra&&j.authority.term_id===termId&&j.authority.pillar===k)||(j.mode==="respin"&&j.cluster&&j.cluster.term_id===termId&&j.format===fmt&&k!=="stay"&&k!=="eat")))}
 // Automatic: once a day, when the owner opens the desk, queue every missing pillar and every place whose links need fixing.
 let amAutoRan=false;
 async function amAuto(){if(amAutoRan||!db||!canWrite||!lib.length||!jobsLoaded)return;let owner=false;try{const u=await claude.use("user");owner=u?.isOwner?.()??false}catch(e){}if(!owner)return;amAutoRan=true;
@@ -1432,7 +1473,126 @@ async function amAuto(){if(amAutoRan||!db||!canWrite||!lib.length||!jobsLoaded)r
  try{await db.doc("settings/authority").set({last_auto:Date.now(),queued:q,links:l,places:plan.length,missing:plan.reduce((a,x)=>a+x.cov.missing.length,0)})}catch(e){}
  const el=$("#am-auto");if(el)el.textContent=`Ran by itself ${new Date().toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}: ${q} pillar job${q===1?"":"s"}, ${l} link job${l===1?"":"s"}, ${tr.plans} trip plan${tr.plans===1?"":"s"} queued · ${tr.photos} photo to-do${tr.photos===1?"":"s"} added.`}
 
-(function(){const q=$("#am-q"),g=$("#am-gaps");if(q)q.addEventListener("input",()=>{try{renderAuthority()}catch(e){}});if(g)g.addEventListener("change",()=>{try{renderAuthority()}catch(e){}})})();
+// ---------- Authority map, round two: act on every missing pillar, more for a pillar, the content list ----------
+// Click a missing pillar (or "+ more" on any pillar) to open its panel: brief, queue, edit now, cull / edit / add photos,
+// a date, and more pieces for the pillar. Everything lands as a job (planned until it's queued) and in the content list,
+// which filters by location, country, timing, priority, trip recency, season and photos, as a list, cards or a timeline.
+let amLocal={};const AM_MON=["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+function amSlug(p){return normTxt(p.name).replace(/[^a-z0-9]+/g,"-")}
+function amJobsAll(){const m=new Map();jobsCache.concat(typeof pipeJobs!=="undefined"?pipeJobs:[]).concat(Object.values(amLocal)).forEach(j=>{if(!j||!j.id)return;const o=m.get(j.id);if(!o||(j.updatedAt||0)>=(o.updatedAt||0))m.set(j.id,{...(o||{}),...j})});return [...m.values()]}
+function amJobFor(p,k){const all=amJobsAll();const id=`am-${amSlug(p)}-${k}`;return all.find(j=>j.id===id)||all.find(j=>j.authority&&j.authority.term_id===p.id&&j.authority.pillar===k&&!j.authority.extra&&j.type!=="links")||null}
+function amTripFor(p){const n=normTxt(p.name);if(n.length<3)return null;return ppTripsAll().filter(t=>(t.places||[]).concat([t.name]).some(x=>{const q=normTxt(x);return q===n||(q.length>=4&&n.length>=4&&(q.includes(n)||n.includes(q)))})).sort((a,b)=>String(b.start||"").localeCompare(String(a.start||"")))[0]||null}
+function amPeakState(sg){const pk=(sg.peak_months||[]).map(m=>{const s=String(m).toLowerCase();if(/^\d{4}-\d{2}/.test(s))return +s.slice(5,7);if(/^\d{1,2}$/.test(s))return +s;const i=AM_MON.indexOf(s.slice(0,3));return i>=0?i+1:null}).filter(Boolean);if(!pk.length)return "none";const now=new Date().getMonth()+1;const d=Math.min(...pk.map(m=>(m-now+12)%12));return d<=2?"open":d<=4?"soon":"later"}
+function amPlanFor(j){return j?plans.find(pl=>pl.job_id===j.id&&!pl.publish_target)||null:null}
+function amItem(x,k,j,extra){const p=x.p;const row=x.cov.rows.find(r=>r.k===k);const label=extra?(FORMATS[j.format]||{}).label||j.format||k:row?row.label:k;const visits=[p.name].concat(p.rolled||[]).flatMap(n=>travelMatch(n)).filter((t,i,a)=>a.indexOf(t)===i);const last=visits.map(t=>String(t.start||"")).sort().reverse()[0]||"";
+ const t=amTripFor(p);const pl=amPlanFor(j);const date=pl?pl.date:(j&&/^\d{4}-\d{2}/.test(j.publish_by||"")?j.publish_by.slice(0,7)+"-15":"");
+ const yrs=last?(Date.now()-Date.parse(last.slice(0,10)))/(365.25*864e5):null;const recency=yrs===null?"never":yrs<1?"1y":yrs<3?"3y":"older";
+ const w=j&&j.publish_by?ppWindow(j):null;const season=w&&w.state!=="none"?w.state==="passed"?"later":w.state:amPeakState(((t&&research[t.id])||{}).signals||{});
+ const c=j?culls[j.id]:null;const photos=c&&c.approved?"ready":j&&(j.photos||[]).length?"added":(x.ph.own>=5?"on site":"needed");
+ const live=j&&ppLive(j);const status=!j?"missing":live?"live":({planned:"planned","needs-coco":"needs you",drafting:"drafting",queued:"queued"}[j.status]||j.status||"planned");
+ const pkey=j?"job:"+j.id:"am:"+p.id+":"+k;const prio=ppPrio(pkey)||(k==="rolodex"&&!extra?"now":(AM_PRI[k]||0)>=2&&!extra?"next":"later");
+ const chain=p.chain.map(c2=>c2.name);return {key:extra?"x:"+j.id:p.id+":"+k,x,p,k,label,extra:!!extra,job:j,title:j?(j.title||j.subject):(label.replace(/ ·.*$/,"")+" · "+p.name),status,date,country:chain[1]||chain[0]||"",region:chain[0]||"",place:p.name,chain,visits,last,recency,season,photos,prio,pkey,trip:t,kw:j?(j.primary_keyword||""):(AM_KW[k]?AM_KW[k](p.name.toLowerCase()):p.name)}}
+function amItems(){if(lib.length&&(!amCache.length||amItems.lib!==lib)){amCache=amPlan();amItems.lib=lib}const out=[];amCache.forEach(x=>{x.cov.rows.filter(r=>r.missing).forEach(r=>out.push(amItem(x,r.k,amJobFor(x.p,r.k)||amCoverJob(x.p.id,r.k)||null,false)))});
+ amJobsAll().filter(j=>j.authority&&j.authority.extra).forEach(j=>{const x=amCache.find(y=>y.p.id===j.authority.term_id);if(x)out.push(amItem(x,j.authority.pillar,j,true))});return out}
+function amFind(key){return amItems().find(i=>i.key===key)}
+const AMF=["q","country","timing","prio","recency","season","photos","status","sort"];
+function amF(){const g=k=>ls.get("amf-"+k)||"";const o={};AMF.forEach(k=>o[k]=g(k));o.sort=o.sort||"priority";return o}
+function amTiming(i){if(!i.date)return "undated";if(i.status!=="live"&&i.date<today())return "overdue";const d=(Date.parse(i.date)-Date.now())/864e5;return d<=31?"month":d<=92?"quarter":"later"}
+function amFilter(items){const f=amF();return items.filter(i=>{if(f.q&&!normTxt(i.chain.join(" ")+" "+i.title+" "+i.kw).includes(normTxt(f.q)))return false;if(f.country&&i.country!==f.country)return false;if(f.timing&&amTiming(i)!==f.timing)return false;if(f.prio&&i.prio!==f.prio)return false;
+ if(f.recency&&(f.recency==="visited"?i.recency==="never":i.recency!==f.recency))return false;if(f.season&&i.season!==f.season)return false;if(f.photos&&(f.photos==="ready"?!["ready","added","on site"].includes(i.photos):i.photos!=="needed"))return false;
+ if(f.status&&(f.status==="todo"?["live","covered"].includes(i.status):i.status!==f.status))return false;return true})}
+function amScore(i){return ({now:30,next:20,later:10,archive:-50}[i.prio]||0)+({open:6,soon:3}[i.season]||0)+({"1y":4,"3y":2}[i.recency]||0)+({ready:4,added:3,"on site":2}[i.photos]||0)+(AM_PRI[i.k]||0)}
+function amSort(items){const s=amF().sort;const by={priority:(a,b)=>amScore(b)-amScore(a),date:(a,b)=>(a.date||"9999").localeCompare(b.date||"9999"),recent:(a,b)=>(b.last||"").localeCompare(a.last||""),place:(a,b)=>a.chain.join(" ").localeCompare(b.chain.join(" "))}[s]||((a,b)=>amScore(b)-amScore(a));return items.slice().sort(by)}
+function amChips(i){const pc={ready:"ok",added:"ok","on site":"ok",needed:"warn"}[i.photos]||"";const sc={missing:"warn","needs you":"warn",live:"ok",queued:"ok"}[i.status]||"";
+ return `<span class="pill ${sc}">${esc(i.status)}</span><span class="pill">${esc(i.prio)}</span><span class="pill ${pc}">photos ${esc(i.photos)}</span>${i.season!=="none"?`<span class="pill${i.season==="open"?" ok":""}">${i.season==="open"?"in season":esc(i.season)}</span>`:""}${i.date?`<span class="pill">${esc(i.date)}</span>`:""}`}
+function amMeta(i){return `${esc(i.chain.slice(1).join(" › ")||i.place)} · ${esc(i.label)}${i.extra?" · extra":""}${i.last?" · visited "+esc(i.last.slice(0,7)):" · not visited"}`}
+function amToolbar(items){const f=amF();const countries=[...new Set(items.map(i=>i.country).filter(Boolean))].sort();
+ const sel=(k,label,opts)=>`<label class="amfl">${label}<select data-amf="${k}">${opts.map(([a,b])=>`<option value="${esc(a)}"${a===f[k]?" selected":""}>${esc(b)}</option>`).join("")}</select></label>`;
+ return `<div class="amfbar"><label class="amfl">Location<input type="text" data-amf="q" value="${esc(f.q)}" placeholder="place, pillar, keyword"></label>
+ ${sel("country","Country",[["","All countries"]].concat(countries.map(c=>[c,c])))}${sel("timing","Timing",[["","Any date"],["overdue","Overdue"],["month","Next 30 days"],["quarter","Next 3 months"],["later","Later"],["undated","No date yet"]])}
+ ${sel("prio","Priority",[["","Any"],["now","Now"],["next","Next"],["later","Later"],["archive","Archive"]])}${sel("recency","Trip",[["","Any"],["1y","Visited this year"],["3y","Visited 1–3 years ago"],["older","Visited 3+ years ago"],["visited","Visited at all"],["never","Never visited"]])}
+ ${sel("season","Season",[["","Any"],["open","In season now"],["soon","Coming up"],["later","Later"],["none","No season data"]])}${sel("photos","Photos",[["","Any"],["ready","Ready or on the site"],["needed","Still needed"]])}
+ ${sel("status","Status",[["todo","To do"],["","Everything"],["missing","Missing (no job)"],["planned","Planned"],["queued","Queued"],["needs you","Needs you"],["drafting","Drafting"],["live","Live"]])}${sel("sort","Sort",[["priority","Priority"],["date","Date"],["recent","Most recent trip"],["place","Place"]])}<button class="copy" data-amclear>clear</button></div>`}
+function amSyncView(){const v=ls.get("am-view")||"map";const vs=$("#am-views");if(vs)vs.querySelectorAll("[data-amv]").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.amv===v)));
+ const map=v==="map";["#am-list","#am-maprow"].forEach(s=>{const e=$(s);if(e)e.hidden=!map});const c=$("#am-content");if(c){c.hidden=map;if(!map)amRenderContent()}}
+function amRenderContent(){const host=$("#am-content");if(!host)return;const v=ls.get("am-view")||"list";const all=amItems();if(!ls.get("amf-status"))ls.set("amf-status","todo");const rows=amSort(amFilter(all));
+ const btns=i=>`<div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="btn sm" data-amo="${esc(i.key)}">Open</button>${ppPrioSel(i.pkey)}</div>`;
+ let body="";if(!rows.length)body='<div class="card"><div class="note">Nothing matches these filters.</div></div>';
+ else if(v==="cards")body=`<div class="amgrid">${rows.map(i=>`<div class="amc"><div class="meta">${amMeta(i)}</div><h4>${esc(i.title)}</h4><div class="note">${esc(i.kw)}</div><div class="amchips">${amChips(i)}</div>${btns(i)}</div>`).join("")}</div>`;
+ else if(v==="timeline"){const g={};rows.forEach(i=>{const m=i.date?i.date.slice(0,7):"";(g[m]=g[m]||[]).push(i)});const ks=Object.keys(g).sort((a,b)=>!a?1:!b?-1:a.localeCompare(b));
+  body=`<div class="amtl">${ks.map(m=>`<div class="amtm">${m?new Date(m+"-15T12:00:00").toLocaleDateString("en-US",{month:"long",year:"numeric"}):"No date yet"}<span class="note"> · ${g[m].length}</span></div>${g[m].map(i=>`<div class="amti"><span class="amdot"></span><div><div class="meta">${i.date?esc(i.date)+" · ":""}${amMeta(i)}</div><b>${esc(i.title)}</b><div class="amchips">${amChips(i)}</div></div>${btns(i)}</div>`).join("")}`).join("")}</div>`}
+ else body=`<div class="card">${rows.map(i=>`<div class="prow"><div><div class="meta">${amMeta(i)}</div><b>${esc(i.title)}</b><div class="note">${esc(i.kw)}</div><div class="amchips">${amChips(i)}</div></div>${btns(i)}</div>`).join("")}</div>`;
+ host.innerHTML=`${amToolbar(all)}<div class="note" style="margin:0 0 8px">${rows.length} of ${all.length} pieces · missing pillars and the extras you added. Open one to brief it, queue it, write it now, do its photos or give it a date.</div>${body}`;
+ host.querySelectorAll("[data-amf]").forEach(el=>{const k=el.dataset.amf;el[k==="q"?"oninput":"onchange"]=()=>{ls.set("amf-"+k,el.value);clearTimeout(amRenderContent.t);amRenderContent.t=setTimeout(()=>{amRenderContent();if(k==="q"){const q=host.querySelector('[data-amf="q"]');if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}},k==="q"?250:0)}});
+ const cl=host.querySelector("[data-amclear]");if(cl)cl.onclick=()=>{AMF.forEach(k=>ls.set("amf-"+k,""));amRenderContent()};
+ host.querySelectorAll("[data-amo]").forEach(b=>b.onclick=()=>amOpen(b.dataset.amo));ppWirePrio(host)}
+function amRefresh(){setTimeout(()=>{try{if(document.querySelector("#desk-authority.on")){renderAuthority()}const k=amOpen.cur;if(k&&$("#am-panel")&&!$("#modal").hidden)amOpen(k,true)}catch(e){}},500)}
+async function amSave(id,patch){const j={...(amJobsAll().find(x=>x.id===id)||{}),...patch,id,updatedAt:Date.now()};amLocal[id]=j;await db.doc("jobs/"+id).update({...patch,updatedAt:j.updatedAt});return j}
+async function amEnsure(i){if(i.job)return i.job;if(!db||!canWrite)throw new Error("Store not writable.");const base=amBuildJob(i.x,i.k);if(!base)throw new Error("Couldn't build the job.");
+ const t=i.trip;const job={...base,status:"planned",pipeline:true,...(t?{trip_id:t.id}:{}),createdAt:Date.now(),updatedAt:Date.now()};await db.doc("jobs/"+job.id).set(job);amLocal[job.id]=job;i.job=job;return job}
+function amPanelBits(i){const j=i.job;const pl=amPlanFor(j);const c=j?culls[j.id]:null;return {chips:amChips(i),photos:c&&c.approved?"culled ✓":(j&&(j.photos||[]).length?(j.photos.length+" added"):"not done yet"),thumbs:j&&(j.photos||[]).length?j.photos.slice(0,12).map(ph=>`<img src="${esc(ph.url)}" alt="${esc(ph.name||"")}" loading="lazy">`).join(""):"",date:pl?"on the plan "+esc(pl.date):"not on the plan",dbtn:pl?"move it":"put it on the plan",qdis:!!(j&&["queued","drafting"].includes(j.status)),qtxt:j&&j.status==="queued"?"In the queue":j&&j.status==="drafting"?"Drafting":"Add to queue",btxt:j&&j.am_brief?"Rewrite the brief":"Create brief"}}
+function amPanelSync(i){const b=amPanelBits(i);const set=(id,h)=>{const e=$("#"+id);if(e)e.innerHTML=h};set("am-ph-chips",b.chips);set("am-ph-photos",b.photos);set("am-ph-thumbs",b.thumbs);set("am-ph-date",b.date);
+ const q=$('#am-panel [data-ama="queue"]');if(q){q.disabled=b.qdis;q.textContent=b.qtxt}const d=$('#am-panel [data-ama="date"]');if(d)d.textContent=b.dbtn;const br=$('#am-panel [data-ama="brief"]');if(br)br.textContent=b.btxt}
+function amOpen(key,keep){const i=amFind(key);if(!i)return;amOpen.cur=key;if(keep&&$("#am-panel")&&$("#am-panel").dataset.key===key){amPanelSync(i);return}const j=i.job;const pl=amPlanFor(j);const br=j&&j.am_brief;const B=amPanelBits(i);
+ const html=`<div id="am-panel" data-key="${esc(key)}"><div class="meta">${amMeta(i)}</div><h4 style="margin:4px 0 6px">${esc(i.title)}</h4><div class="amchips" id="am-ph-chips" style="margin-bottom:10px">${B.chips}</div>
+ <div class="amacts"><button class="btn" data-ama="brief">${B.btxt}</button><button class="btn alt" data-ama="queue"${B.qdis?" disabled":""}>${B.qtxt}</button><button class="btn alt" data-ama="edit">Edit now</button><button class="btn alt" data-ama="more">More for this pillar</button></div>
+ <div class="fsh" style="margin:14px 0 6px"><span class="num">Photos</span><span class="fst" id="am-ph-photos">${B.photos}</span></div>
+ <div class="amacts"><button class="copy" data-ama="cull">cull photos</button><button class="copy" data-ama="eye">edit (your eye)</button><label class="copy" style="cursor:pointer">add photos<input type="file" id="am-up" accept="image/*" multiple hidden></label></div>
+ <div class="amthumbs" id="am-ph-thumbs">${B.thumbs}</div>
+ <div class="fsh" style="margin:14px 0 6px"><span class="num">Date</span><span class="fst" id="am-ph-date">${B.date}</span></div>
+ <div class="row" style="gap:8px;flex-wrap:wrap"><input type="date" id="am-date" value="${esc(pl?pl.date:(i.date||ppSlotDates("article",6).find(d=>!plans.some(p2=>p2.kind==="article"&&p2.date===d))||today()))}" style="max-width:170px"><button class="copy" data-ama="date">${B.dbtn}</button></div>
+ <div class="note" id="am-pnote" style="margin-top:8px"></div><div id="am-pout">${br?amBriefHtml(br):""}</div></div>`;
+ openPanel(html,true);const root=$("#am-panel");const note=$("#am-pnote");
+ const run=async(f,b)=>{if(b)b.disabled=true;let ok=false;try{await f();ok=true}catch(e){note.textContent=(e&&e.message)||"Couldn't do that."}finally{if(b&&!(ok&&b.dataset.ama==="queue"))b.disabled=false}};
+ root.querySelectorAll("[data-ama]").forEach(b=>b.onclick=()=>run(()=>AM_ACT[b.dataset.ama](amFind(key)||i,note,b),b));
+ const up=$("#am-up");if(up)up.onchange=()=>run(()=>amUpload(amFind(key)||i,up.files,note))}
+const AM_ACT={
+ brief:async(i,note)=>{if(!sample)throw new Error("Claude isn't available in this view.");note.textContent="Writing the brief…";const j=await amEnsure(i);const x=i.x;const cov=x.cov;
+  const r=await sample.json(`You are the editor of Coco Tran's luxury travel magazine (cocotran.com). Coco is a luxury travel advisor and a film and digital photographer. Today is ${today()}. Write a short, practical brief for ONE piece so she can write it fast. Plain words, no hype.
+PIECE: ${i.title} · pillar ${i.label} · format ${j.format} · place ${i.chain.join(" › ")}
+PRIMARY KEYWORD: ${i.kw}
+HUB: ${cov.hub?cov.hub.title:"none yet (the Rolodex comes first)"} · COUNTRY HUB: ${cov.countryHub?cov.countryHub.title:"none"}
+HER LIVE PIECES HERE: ${x.p.pieces.map(r=>r.title).slice(0,12).join(" | ")||"none"}
+HER OLD POSTS HERE: ${x.p.old.map(r=>r.title).slice(0,10).join(" | ")||"none"}
+HER VISITS: ${i.visits.slice(0,4).map(t=>(t.name||"")+" "+(t.start||"")).join(" | ")||"none in the travel log (write as the advisor who planned it)"}
+PHOTOS: ${i.photos} · needs ${ppSlots(j).length}: ${ppSlots(j).join(", ")}
+Return JSON {"angle":"one sentence","title":"house-format title","keyword":"primary keyword","secondary":["3–6"],"outline":[{"h2":"section","covers":"one line"}],"answer_these":["3–6 questions readers ask"],"photos":["the 3–6 frames that matter most"],"links":["titles of her pieces to link"],"by":"YYYY-MM when it should be live and why in 5 words"}.`,{cache:false});
+  await amSave(j.id,{am_brief:{...r,at:Date.now()},...(r.keyword&&!j.primary_keyword?{primary_keyword:r.keyword}:{}),...(/^\d{4}-\d{2}/.test(r.by||"")&&!j.publish_by?{publish_by:r.by.slice(0,7)}:{})});note.textContent="Brief saved to the piece.";$("#am-pout").innerHTML=amBriefHtml(r);amRefresh()},
+ queue:async(i,note)=>{const j=await amEnsure(i);const st=(j.needs_coco||[]).length?"needs-coco":"queued";await amSave(j.id,{status:st,queued_at:Date.now()});note.textContent=st==="queued"?"Queued. The worker takes it in priority order.":"Queued, but it needs you first: "+j.needs_coco.join(" · ");amRefresh()},
+ edit:async(i)=>{const j=await amEnsure(i);closePanel();ppWriteWithMe(j);const cov=i.x.cov;const add=[`AUTHORITY MAP · ${i.label} for ${i.chain.join(" › ")}`,cov.hub?"Link up to the hub: "+cov.hub.title+" "+cov.hub.url:"No hub yet: this place needs its Rolodex.",cov.countryHub?"Country hub: "+cov.countryHub.title+" "+cov.countryHub.url:"",i.x.p.pieces.filter(r=>!cov.hub||r.id!==cov.hub.id).length?"Siblings to link across: "+i.x.p.pieces.filter(r=>!cov.hub||r.id!==cov.hub.id).slice(0,4).map(r=>r.title+" "+r.url).join(" | "):"",i.x.p.old.length?"Old posts to fold in: "+i.x.p.old.slice(0,6).map(r=>r.title+(r.url?" "+r.url:"")).join(" | "):"",j.am_brief?"BRIEF: "+j.am_brief.angle+"\nOutline: "+(j.am_brief.outline||[]).map(o=>o.h2).join(" / ")+"\nAnswer: "+(j.am_brief.answer_these||[]).join(" | "):""].filter(Boolean).join("\n");
+  const n=$("#n-notes");if(n){n.value=add+"\n\n"+n.value;ls.set("n-notes",n.value)}const nn=$("#n-note");if(nn)nn.textContent="Filled in from the Authority map: "+(j.title||"")+". Check the details, add your photos, then draft."},
+ cull:async(i)=>{const j=await amEnsure(i);ppCullOpen(j,i.trip)},
+ eye:async()=>{closePanel();ppView="eye";ls.set("ppView","eye");show("trips");try{renderPipe()}catch(e){}},
+ date:async(i,note)=>{const d=$("#am-date").value;if(!/^\d{4}-\d{2}-\d{2}$/.test(d))throw new Error("Pick a date.");const j=await amEnsure(i);const pl=amPlanFor(j);
+  if(pl)await db.doc("plan/"+pl.id).update({date:d,updatedAt:Date.now()});else await db.collection("plan").add({kind:"article",title:"Write & publish: "+(j.title||j.subject),date:d,status:"planned",job_id:j.id,createdAt:Date.now(),updatedAt:Date.now()});
+  await amSave(j.id,{publish_by:d.slice(0,7)});note.textContent="On the plan for "+d+".";amRefresh()},
+ more:async(i,note)=>{if(!sample)throw new Error("Claude isn't available in this view.");note.textContent="Thinking about more for this pillar…";const x=i.x;const fmt=AM_FMT[i.k]||i.job&&i.job.format||i.k;const have=amJobsAll().filter(j=>j.authority&&j.authority.term_id===x.p.id).map(j=>j.title).concat(x.p.pieces.map(r=>r.title));
+  const r=await sample.json(`You are the editor of Coco Tran's luxury travel magazine (cocotran.com). Propose ADDITIONAL articles in ONE pillar for ONE place, so the pillar goes deeper than a single piece and builds topical authority. Each must be distinct, searchable and something a luxury traveller decides on. Use the house title formats: The Verdict: [Hotel], [Place] · The Comparison: A vs B · The Primer: [Place] · The Rolodex: [Place] · The Route: [N Days] in [Place] · [Place] : The Dossier · [Place] [Theme]: The Shortlist · Postcard From [Place] · A Table At: [Restaurant], [City] · The Answer: …?
+PLACE: ${i.chain.join(" › ")} · PILLAR: ${i.label} (format ${fmt}) · THE PIECE: ${i.title}
+HER VISITS: ${i.visits.slice(0,4).map(t=>(t.name||"")+" "+(t.start||"")).join(" | ")||"none"} · HER OLD POSTS: ${x.p.old.map(r=>r.title).slice(0,10).join(" | ")||"none"}
+ALREADY HAS OR PLANNED (don't repeat): ${have.slice(0,60).join(" | ")}
+Return JSON {"ideas":[{"title":"house-format title","format":"verdict|comparison|primer|rolodex|route|dossier|shortlist|postcard|fieldnotes|answer","keyword":"primary keyword","demand":"high|medium|low","why":"one line","by":"YYYY-MM"}]} with 3–6 ideas, best first.`,{cache:false});
+  const slots=ppSlotDates("article",12).filter(d=>!plans.some(p2=>p2.kind==="article"&&p2.date===d));const ideas=(r.ideas||[]).slice(0,6);note.textContent="";
+  $("#am-pout").innerHTML=`<div class="fsh" style="margin:14px 0 6px"><span class="num">More</span><span class="fst">${esc(i.label)} · ${esc(i.place)}</span></div>${ideas.map((d,n)=>`<div class="prow"><div><div class="meta">${esc((FORMATS[d.format]||{}).label||d.format||"")} · ${esc(d.demand||"")} demand · ${esc(d.keyword||"")}</div><b>${esc(d.title)}</b><div class="note">${esc(d.why||"")}</div></div><div class="row" style="gap:6px;flex-wrap:wrap"><input type="date" data-amxd="${n}" value="${esc(slots[n]||today())}" style="max-width:150px"><button class="copy" data-amxa="${n}">add to the list</button></div></div>`).join("")||'<div class="note">No ideas came back.</div>'}`;
+  $("#am-pout").querySelectorAll("[data-amxa]").forEach(b=>b.onclick=async()=>{b.disabled=true;try{await amAddExtra(i,ideas[+b.dataset.amxa],$(`#am-pout [data-amxd="${b.dataset.amxa}"]`).value);b.textContent="added ✓"}catch(e){b.disabled=false;note.textContent="Couldn't add: "+(e&&e.message||"error")}})}};
+function amBriefHtml(r){const li=xs=>(xs||[]).length?`<ol class="shotl">${xs.map(x=>`<li>${esc(typeof x==="string"?x:(x.h2?x.h2+(x.covers?" — "+x.covers:""):JSON.stringify(x)))}</li>`).join("")}</ol>`:"";
+ return `<div class="fsh" style="margin:14px 0 6px"><span class="num">Brief</span><span class="fst">${esc(r.title||"")}</span></div><p style="margin:0 0 6px"><b>${esc(r.angle||"")}</b></p><div class="note">Keyword: ${esc(r.keyword||"")}${(r.secondary||[]).length?" · also "+esc(r.secondary.join(", ")):""}${r.by?" · live by "+esc(r.by):""}</div><div class="meta">Outline</div>${li(r.outline)}<div class="meta">Answer these</div>${li(r.answer_these)}<div class="meta">Photos that matter</div>${li(r.photos)}${(r.links||[]).length?`<div class="meta">Link to</div>${li(r.links)}`:""}`}
+async function amAddExtra(i,d,date){if(!db||!canWrite)throw new Error("Store not writable.");const x=i.x;const p=x.p;const fmt=FORMATS[d.format]?d.format:(AM_FMT[i.k]||"postcard");const id=("am-x-"+amSlug(p)+"-"+normTxt(d.title).replace(/[^a-z0-9]+/g,"-")).slice(0,90);const chainTxt=p.chain.map(t=>t.name).join(" · ");
+ const job={id,pipeline:true,mode:"new",type:"new",status:"planned",format:fmt,title:d.title,subject:String(d.title).replace(/^The [A-Z][a-z]+:\s*/,""),dest:chainTxt,category:CATEGORY_BY_FORMAT[fmt]||"",primary_keyword:d.keyword||"",demand:d.demand||"",why:d.why||"",publish_by:/^\d{4}-\d{2}-\d{2}$/.test(date||"")?date.slice(0,7):(d.by||""),...(i.trip?{trip_id:i.trip.id}:{}),
+  authority:{term_id:p.id,chain:p.chain.map(t=>t.name),pillar:i.k,extra:true,from:i.key,hub:x.cov.hub?{title:x.cov.hub.title,url:x.cov.hub.url}:null,country_hub:x.cov.countryHub?{title:x.cov.countryHub.title,url:x.cov.countryHub.url}:null,siblings:p.pieces.map(r=>({title:r.title,url:r.url,format:r.format}))},
+  idea:{q:d.keyword||d.title,src:["authority-map","more-for-pillar"],questions:[],secondary:[]},trust:{},needs_coco:[],priority:0,
+  notes:`AUTHORITY MAP · more for the ${i.label} pillar in ${p.name}. Coco's own live pieces, old posts, inspections and trip notes for first-hand facts; research for the rest, marked [VERIFY]. Link up to the hub and country hub, across to two siblings. Photos from culls/${id}.`,createdAt:Date.now(),updatedAt:Date.now()};
+ await db.doc("jobs/"+id).set(job);amLocal[id]=job;if(/^\d{4}-\d{2}-\d{2}$/.test(date||""))await db.collection("plan").add({kind:"article",title:"Write & publish: "+d.title,date,status:"planned",job_id:id,createdAt:Date.now(),updatedAt:Date.now()});amRefresh();return job}
+async function amUpload(i,files,note){if(!assets)throw new Error("Uploads aren't available in this view.");const fs=[...files||[]];if(!fs.length)return;const j=await amEnsure(i);const out=(j.photos||[]).slice();let k=0;
+ for(const f of fs){k++;note.textContent=`Uploading ${k}/${fs.length}…`;const r=await assets.upload(f);out.push({id:r.id,url:r.url,name:f.name,size:r.sizeBytes,type:r.contentType,at:Date.now()})}
+ await amSave(j.id,{photos:out});note.textContent=`${fs.length} photo${fs.length===1?"":"s"} added to the piece.`;amRefresh()}
+
+function amMoreOnly(pid,k){if(!amCache.length)amCache=amPlan();const x=amCache.find(y=>String(y.p.id)===String(pid));if(!x)return;const i=amItem(x,k,amJobFor(x.p,k),false);const row=x.cov.rows.find(r=>r.k===k);if(row&&!row.missing&&row.have[0])i.title=row.have[0].title;amOpen.cur=null;
+ openPanel(`<div id="am-panel"><div class="meta">${amMeta(i)}</div><h4 style="margin:4px 0 6px">More for ${esc(i.label)} · ${esc(i.place)}</h4><p class="note" style="margin:0 0 8px">Ideas that take this pillar deeper around ${esc(i.title)}. Pick a date and add each one to the content list.</p><div class="note" id="am-pnote"></div><div id="am-pout"></div></div>`,true);
+ AM_ACT.more(i,$("#am-pnote")).catch(e=>{$("#am-pnote").textContent="Couldn't think of more: "+(e&&e.code||e&&e.message||"error")})}
+let amJobsT=null;function amOnJobs(){clearTimeout(amJobsT);amJobsT=setTimeout(()=>{try{if(document.querySelector("#desk-authority.on")){if((ls.get("am-view")||"map")==="map")renderAuthority();else amRenderContent()}}catch(e){}},300)}
+(function(){const q=$("#am-q"),g=$("#am-gaps");if(q)q.addEventListener("input",()=>{try{renderAuthority()}catch(e){}});if(g)g.addEventListener("change",()=>{try{renderAuthority()}catch(e){}});
+ const v=$("#am-views");if(v)v.querySelectorAll("[data-amv]").forEach(b=>b.onclick=()=>{ls.set("am-view",b.dataset.amv);try{if(b.dataset.amv==="map")renderAuthority();amSyncView()}catch(e){console.warn(e)}})})();
 // ---------- Travel history (Notion · Cocos Travel Hub · Trips) + Agency Studio fam trips → visits, photos to edit, shoot plans ----------
 // Only places and dates are synced. Passport numbers, birth dates and addresses never enter the desk.
 let travelCache=[];
@@ -3397,7 +3557,7 @@ let ppTimer=null,resultsTicked=false;function schedulePipe(){clearTimeout(ppTime
   try{db.collection("benchmarks").orderBy("createdAt","desc").limit(1).onSnapshot(renderBenchToday,()=>{})}catch(e){}
   try{db.doc("voice/rules").onSnapshot(sn=>{const x=sn.exists?sn.data():null;VOICE_RULES=String(x?.text||"");renderVoiceRules()},()=>{})}catch(e){}
   try{db.doc("voice/allow").onSnapshot(sn=>{const x=sn.exists?sn.data():null;ALLOW=Array.isArray(x?.items)?x.items.map(String):[];renderAllow()},()=>{})}catch(e){}
-  try{db.collection("jobs").orderBy("updatedAt","desc").limit(200).onSnapshot(renderQueue,()=>{})}catch(e){}
+  try{db.collection("jobs").orderBy("updatedAt","desc").limit(200).onSnapshot(sn=>{renderQueue(sn);amOnJobs()},()=>{})}catch(e){}
   try{db.doc("settings/respin").onSnapshot(d=>{try{const v=d&&d.exists&&(typeof d.data==="function"?d.data():d.data);respinParked=(v&&v.parked)||{};renderRespin()}catch(e){}},()=>{})}catch(e){}
   try{db.doc("settings/wp_check").onSnapshot(sn=>{wpCheck=sn.exists?sn.data():null;try{renderLibWp()}catch(e){}},()=>{})}catch(e){}
   try{db.collection("library").limit(1000).onSnapshot(snap=>{lib=snap.docs.map(x=>({id:x.id,...x.data()}));renderLib();try{renderToday();renderSuggest();renderKwData()}catch(e){}scheduleIdeas();try{renderRespin()}catch(e){console.warn("respin",e)}if(libSel){const r=lib.find(x=>x.id===libSel.id);if(r)libSel=r}},()=>{})}catch(e){}

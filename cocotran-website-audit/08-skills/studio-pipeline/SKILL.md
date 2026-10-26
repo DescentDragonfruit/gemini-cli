@@ -229,6 +229,11 @@ The Content bank ranks past trips by a desk priority score, and "ask the desk" p
   - The sources are `insights.content_gaps` and the library's `rank.top_queries`.
   - "Add to <trip>" creates a planned pipeline job `pp-gsc-<slug>` with `idea.src: ["search-console"]`. Treat it like any other planned pipeline piece.
 
+### Authority map actions (added 26 Oct 2026, desk v63)
+- Each missing pillar on the Places map opens a panel. The panel offers: brief (saved on the job as `am_brief`), add to queue, edit now (New piece with `from_pipeline`), cull, add photos (job `photos[]`, asset ids), a date (a `plan` doc plus `publish_by`), and "more for this pillar".
+- "More for this pillar" creates planned pipeline jobs tagged as extras, with `trip_id` when a trip matches the place. They are ordinary planned pieces. An extra never counts as the missing pillar itself.
+- When a job has `am_brief`, follow it as the outline. Use `photos[]` uploads alongside `culls/<id>` picks.
+
 ### Ideas queue: keyword ideas for past trips (separate agent, added 25 Oct 2026)
 `ideas_queue/<trip id>` holds trips sent from the desk's **Content bank** (Trips → Content bank).
 Each doc is `{trip_key, trip_id, src, name, start, end, kind, places[], hotels[{name,city,kind,nights,rating}], on_site[], old_posts[], status, score}`.
