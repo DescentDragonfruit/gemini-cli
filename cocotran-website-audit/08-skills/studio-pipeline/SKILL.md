@@ -189,6 +189,13 @@ The desk's **Trips** tab runs each trip from plan to video. Agency Studio is the
 - **Season windows.** A planned piece's search window is open when `publish_by` is 2 months away or less.
   - A window that has passed comes back the same month next year. Never change `publish_by` yourself.
 
+### Trip signals: keyword demand, People also ask, search season (added 26 Oct 2026)
+The Content bank ranks past trips by a desk priority score, and "ask the desk" picks the three to do first. Both read `research/<trip id>.signals`, which the ideas agent writes (merge it; never overwrite `pieces`):
+`signals = {paa:[{q, place}] (6–12 real Google People-also-ask questions for the trip's places and stays), keywords:[{q, demand: high|medium|low, intent: plan|book|compare|answer, note}] (5–10 head and mid-tail terms), peak_months:["Dec",...] (when searches for the place peak), best_window:"YYYY-MM" (when the first piece should be live: 6–8 weeks before the next peak), competition: low|medium|high, summary:"one sentence on the opportunity", at}`.
+- Use WebSearch for real People-also-ask questions, autocomplete and the strength of the ranking results. Mark demand as an estimate. Peak months come from what you can verify (seasonality, events, holidays), never from guesses.
+- Refresh a trip's signals when its pieces change or when they are 90 days old.
+- The desk's call is saved in `settings/trip_priority {picks[{trip_key, start_with, by, why}], note, at}`. Respect it when choosing what to build next.
+
 ### Accommodations and the photo list (added 26 Oct 2026)
 - **Accommodations.** `accommodations/<id>` = `{name, aliases[], trips[], notion_id, notion_url, status: linked|missing, agency_review}`.
   - The record links each hotel or experience on a trip to Coco's Notion **Accommodation Master List** (`collection://fffece75-bb28-812b-bb4b-000bd96df58b`), the same list Agency Studio reviews link to through `accomMaster`.
