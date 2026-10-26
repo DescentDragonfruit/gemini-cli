@@ -173,6 +173,34 @@ The desk's **Trips** tab runs each trip from plan to video. Agency Studio is the
 - **Taste.** `taste/profile` is Coco's eye. `taste_choices` holds what she kept or overrode in culls and in Edit 1 vs Edit 2. Use the profile when choosing a hero or a social cover.
 - **Video.** `videos/<job id>` holds the clip list for the piece's YouTube video. Social kits for a pipeline piece reuse its hero and its `cull_tips`.
 
+### Trips, round two (added 26 Oct 2026)
+- **Debriefs.** `debriefs/<trip>__<date>` holds `{trip_id, date, reflect{did,saw,smelled,ate,felt}, sources[], status}`. Coco approves a debrief in the desk.
+  - On every run, copy each `approved` debrief into the matching Agency Studio famtrip day's `reflect`. Fill empty fields only, never overwrite. Write with `if_version`.
+  - Then set the debrief to `status: "synced"` and refresh `trips/<id>.days` in the mirror.
+- **Partial culls.** In a whole-trip cull, a piece with fewer than half its slots picked gets `culls/<id>.partial: true` and stays `planned`.
+  - Do not build it. It waits for more frames or for film scans.
+- **Share checklist.** `share/<job id>.done{carousel, reel, short, youtube, pin, newsletter}` tracks each live piece's channels.
+  - When you make a social kit or YouTube plan for a pipeline piece, tick the matching channel.
+- **Monday plan.** `weekplan/<YYYY-Www>` records the trip and three pieces Coco chose for the week, with matching calendar entries in `plan`.
+  - Within the queued work, give those pieces priority.
+- **Results.** `results/<job id>` = `{live_at, d30, d60, d90}`, with each reading a snapshot of the library record's `rank` (clicks28, impressions28, inquiries28, conversions28, position).
+  - When the Monday analytics run refreshes the library, also fill any milestone that is now due.
+- **Season windows.** A planned piece's search window is open when `publish_by` is 2 months away or less.
+  - A window that has passed comes back the same month next year. Never change `publish_by` yourself.
+
+### Accommodations and the photo list (added 26 Oct 2026)
+- **Accommodations.** `accommodations/<id>` = `{name, aliases[], trips[], notion_id, notion_url, status: linked|missing, agency_review}`.
+  - The record links each hotel or experience on a trip to Coco's Notion **Accommodation Master List** (`collection://fffece75-bb28-812b-bb4b-000bd96df58b`), the same list Agency Studio reviews link to through `accomMaster`.
+  - Where an Agency Studio review already carries `accomMaster`, that link wins.
+  - When a trip gains a hotel, match it by name to the master list. Prefer Coco's own records (ids containing `ece75bb28`).
+  - Set `accomMaster` on the matching Agency Studio review when it is empty. Never overwrite one she set, unless it names a different property; if it does, fix it and say so in your notes.
+  - A hotel with no master-list record is `status: "missing"`. Do not create Notion pages unless Coco asks.
+  - Verdicts and Shortlists cite the master-list record in `notes`, where you'll find the GM, consortia and perks. Never copy phone numbers, emails or booking references from it.
+- **Photo list.** `photo_stash/<id>` = `{region, text, trip_key, trip_id, places[], hotels[], experiences[], month, days}` holds places, stays and experiences Coco has photos of that the Passport trips don't show. She keeps adding them.
+  - Entries matched to a trip are added to that trip's `ideas_queue` doc as `extras`, and the doc is re-queued with `rerun: "extras"`.
+  - The ideas agent then adds only the new ideas the extras open up, for example a Verdict for the Hiram Bingham train or a Lima piece. It never duplicates existing planned pieces.
+  - An entry without a trip is its own trip for ideas: use its region, places and month.
+
 ### Ideas queue: keyword ideas for past trips (separate agent, added 25 Oct 2026)
 `ideas_queue/<trip id>` holds trips sent from the desk's **Content bank** (Trips → Content bank).
 Each doc is `{trip_key, trip_id, src, name, start, end, kind, places[], hotels[{name,city,kind,nights,rating}], on_site[], old_posts[], status, score}`.
