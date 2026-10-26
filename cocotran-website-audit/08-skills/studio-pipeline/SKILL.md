@@ -234,6 +234,61 @@ The Content bank ranks past trips by a desk priority score, and "ask the desk" p
 - "More for this pillar" creates planned pipeline jobs tagged as extras, with `trip_id` when a trip matches the place. They are ordinary planned pieces. An extra never counts as the missing pillar itself.
 - When a job has `am_brief`, follow it as the outline. Use `photos[]` uploads alongside `culls/<id>` picks.
 
+### Trips Overview, clear path, shot plan push, trip import (added 26 Oct 2026, desk v65)
+- **Overview tab.** The default Trips view. Every trip is broken down trip › country › city › hotels, with:
+  - culled, edited and live counts per piece;
+  - pillars per city, from the Authority map;
+  - hotels reviewed;
+  - a need-to-do score.
+
+  It reads the desk data only.
+- **Where to start.** `settings/needle_call` `{headline, start[{trip_key, city, action, why, impact, effort}], quick_wins[], skip, at}`. When Coco says "do what the desk said", work through `start` in order.
+- **Clear path per trip.** `research/<trip id>.path` `{headline, steps[{kind: photos|edit|write|share, do, piece_title, why, minutes}], cull_first[], skip, at}`. Photos always come first.
+- **Piece brief.** `jobs/<pipeline id>.piece_brief` `{angle, outline[{h2, covers, photo_slot}], answer_these[], first_hand[], photos{needed, have_culled, verdict, why, slots[]}, title_options[], meta, next_steps[], at}`. A job with `from_pipeline` follows its pipeline job's `piece_brief` as the outline, and uses `answer_these` as the questions it must answer.
+- **Trip import (`type: trip_import`).** The Overview's "Import now" button queues it, or it runs by itself monthly.
+  - **Every run:** if `settings/trip_import.auto_monthly` is not false and `last_run_at` is more than 30 days ago (or missing), run it before the rest of the queue.
+  - **Passport side:** read the Passport's `trips` (https://claude.ai/artifact/TecDEdRmvTRrcU4vysqRJ2) and refresh `travel/pp-*`, using the existing Travel history rules and the same fields only.
+  - **Agency Studio side:** re-mirror fam trips and inspections (the Agency Studio mirror rules).
+  - **When done:** write `settings/trip_import` `{auto_monthly, status: "done", last_run_at, last_result{added, updated, removed, sources[], notes}}`, keep 12 `history[]` entries, and mark the job done.
+  - **Security:** never copy passport numbers, dates of birth, addresses, booking references or traveller names.
+- **Shot plan push (`type: shot_push`).** Read `trip_shots/<trip id>` `{shots[{id, date, place, spot, what, when, medium, done, src}]}`.
+  - Write each shot into the Agency Studio famtrip with the same id: `days[].shots` on the day whose `date` matches, as `{id: "d_<shot id>", text: "★ <spot>: <what> (<when>, <medium>)", timing: <when>, done}`. A shot with no date goes on the first day.
+  - Update shots with the same `d_` id in place. Remove `d_` shots that were deleted from the plan. Never touch Coco's own shots or the `r_` research shots.
+  - Write with `if_version`.
+  - Then set `pushed_at`, `push_status: "done"` and `push_count` on the `trip_shots` doc, and mark the job done.
+  - If the trip isn't an Agency Studio famtrip, set `push_status: "failed"` and explain why in `push_note`.
+
+## Hotels and the master list (`type: master_index` · `accom_add`; added 26 Oct 2026)
+
+Queued from Trips. The sources are a trip's hotels card ("add to master list", "link", "Add a hotel from your master list", "add all missing") and the hotel rows in the Trips overview. Coco asked for this, so this job may create master-list pages. The usual rules still apply: never copy phone numbers, emails, booking references, rates, GM names or traveller names into the desk, a job, a post or the repo.
+
+1. **`master_index` (refresh the index).** The job id is `master-index-<date>`.
+   - Query the Notion **Accommodation Master List** (`collection://fffece75-bb28-812b-bb4b-000bd96df58b`).
+   - For every record, write `master_index/<notion id without dashes>` = `{name, city, country, type, notion_id, notion_url, own}`. Here `own` = the id contains `ece75bb28`.
+   - Copy only those fields. Delete `master_index` docs whose record is gone.
+   - Set `settings/master_index` = `{status: "done", refreshed_at, count}`.
+   - Run it whenever asked, and also at the end of any run that created master-list pages, so search stays current.
+2. **`accom_add` (add a trip's hotel to the master list).** The job id is `accom-add-<slug>`. The job carries `accom_id`, `hotel{name, city, country, kind, type}`, `trip_id`, `trip_name` and `month`.
+   - First, search the master list by name and aliases. If the property is already there, don't make a duplicate: link it as in step 3 and say so in `worker_notes`.
+   - Otherwise create one page in the Accommodation Master List. Fill these properties where the database has them:
+     - name
+     - location/city
+     - country
+     - property type: hotel, lodge, camp, villa, resort or train; infer it from the name when `type` is empty
+     - a note: "Added from the Studio Desk · <trip_name> · <month> · stayed | site inspection | visited"
+     - source "Studio Desk"
+   - Nothing else: no contacts, no rates, no booking details.
+   - Then link it (step 3). Set the job `status: "done"` and the accommodation's `add_request.status: "done"`.
+   - On failure, set `add_request.status: "failed"` with a one-line `note`. The desk shows a retry button.
+3. **Linking (also what the desk does itself when Coco picks a record).**
+   - The linked record is `accommodations/n-<notion id>` = `{name, aliases[], trips[], stays{<trip id>: "stay" | "inspected" | ""}, city, country, notion_id, notion_url, status: "linked", source: "Accommodation Master List"}`.
+   - Merge `trips[]`, `aliases[]` and `stays` from the old `x-<slug>` doc. Set the old doc to `status: "merged", merged_into: "n-<id>"`; never delete it.
+   - Also add the new record to `master_index` so desk search finds it straight away.
+   - The Agency Studio `accomMaster` rule from **Accommodations and the photo list** still applies on the next run: set it on the matching review when empty.
+4. **Hotels Coco adds by hand** are `accommodations/x-<slug>` docs with `status: "missing"`, `source: "Studio Desk"`, `trips[]` and `stays`. If she ticked "also add it to my master list", an `accom_add` job is queued with it.
+   - Treat `stays[<trip id>]` like a Passport hotel's `kind`. `"stay"` means a stay she can review: Verdict rules and the rate floor apply. `"inspected"` means "I toured it" wording only.
+   - Records with `status: "merged"` are ignored everywhere.
+
 ### Ideas queue: keyword ideas for past trips (separate agent, added 25 Oct 2026)
 `ideas_queue/<trip id>` holds trips sent from the desk's **Content bank** (Trips → Content bank).
 Each doc is `{trip_key, trip_id, src, name, start, end, kind, places[], hotels[{name,city,kind,nights,rating}], on_site[], old_posts[], status, score}`.
