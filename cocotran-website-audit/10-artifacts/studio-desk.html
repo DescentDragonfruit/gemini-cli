@@ -548,12 +548,13 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
 <section class="desk" id="desk-trips">
   <div class="deskhead"><div><div class="eyebrow">Make</div><h2>Trips</h2><p class="lead">Every trip from Agency Studio and your Passport, from plan to video. The desk ranks the work by search demand and timing, tells you how many photos each piece needs, culls the shoot for you, and keeps the rest out of sight. Three things at a time.</p></div></div>
   <div class="row" style="align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap">
-    <div class="views" id="pp-views"><button data-pv="next" aria-selected="true">Next 3</button><button data-pv="board">Board</button><button data-pv="list">By priority</button><button data-pv="trip">Trip</button><button data-pv="eye">Your eye</button></div>
+    <div class="views" id="pp-views"><button data-pv="next" aria-selected="true">Next 3</button><button data-pv="board">Board</button><button data-pv="bank">Content bank</button><button data-pv="list">By priority</button><button data-pv="trip">Trip</button><button data-pv="eye">Your eye</button></div>
     <button class="copy" data-go="plan">Calendar →</button><button class="copy" data-go="authority">Places →</button>
     <span class="note" id="pp-note" style="margin-left:auto"></span>
   </div>
   <div id="pp-next"></div>
   <div id="pp-board" hidden></div>
+  <div id="pp-bank" hidden></div>
   <div id="pp-list" hidden></div>
   <div id="pp-trip" hidden></div>
   <div id="pp-eye" hidden></div>
@@ -2746,8 +2747,8 @@ function ppAllActions(){const out=[];ppTripsAll().forEach(t=>{if(ppPrio("trip:"+
  return out.sort((a,b)=>b.score.s-a.score.s)}
 function renderPipe(){const el=$("#desk-trips");if(!el)return;$("#pp-quiet").style.display=db?"none":"block";
  $("#pp-views").querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.pv===ppView)));
- ["next","board","list","trip","eye"].forEach(v=>{$("#pp-"+v).hidden=v!==ppView});
- try{({next:ppRenderNext,board:ppRenderBoard,list:ppRenderList,trip:ppRenderTrip,eye:ppRenderEye}[ppView]||ppRenderNext)()}catch(e){console.warn("pipe",e)}
+ ["next","board","bank","list","trip","eye"].forEach(v=>{$("#pp-"+v).hidden=v!==ppView});
+ try{({next:ppRenderNext,board:ppRenderBoard,bank:ppRenderBank,list:ppRenderList,trip:ppRenderTrip,eye:ppRenderEye}[ppView]||ppRenderNext)()}catch(e){console.warn("pipe",e)}
  try{ppRenderToday()}catch(e){}}
 function ppActCard(a,i){return `<div class="card"><div class="n">${i+1}</div><div><div class="meta"><span class="pstage">${esc(a.st)}</span> ${esc(a.trip.name)}</div><h4 style="margin:4px 0 2px">${esc(a.text)}</h4><div class="note">${esc(a.sub||"")}</div><div class="note" style="margin-top:4px;color:var(--muted)">Why now: ${esc(a.score.why.slice(0,3).join(" · ")||"next in line")}</div></div><div><button class="btn" data-ppact="${esc(a.act)}" data-trip="${esc(a.trip.key)}" data-job="${esc(a.j?a.j.id:"")}">${esc(a.btn)}</button></div></div>`}
 function ppRenderNext(){const acts=ppAllActions();const more=$("#pp-next").dataset.more==="1";const show=acts.slice(0,more?6:3);
@@ -2769,8 +2770,8 @@ function ppRenderBoard(){const all=ppTripsAll().filter(t=>ppPrio("trip:"+t.key)!
  const active=ranked.filter(x=>x.ps.length||(x.t.start&&x.t.status!=="past")||ppPrio("trip:"+x.t.key));const backlog=ranked.filter(x=>!active.includes(x)).sort((a,b)=>(b.t.end||"").localeCompare(a.t.end||""));
  const card=x=>`<button class="ptrip" data-open="${esc(x.t.key)}"><b>${esc(x.t.name)}</b><span class="note">${esc(x.t.start||"")}${x.t.end?" → "+esc(x.t.end):""}${x.t.src==="agency"?" · fam":""}</span>${x.ps.length?`<span class="note" style="display:block">${x.live}/${x.ps.length} pieces live</span><div class="pbar"><i style="width:${Math.round(100*x.live/x.ps.length)}%"></i></div>`:""}${ppPrio("trip:"+x.t.key)?`<span class="pill">${esc(ppPrio("trip:"+x.t.key))}</span>`:""}</button>`;
  $("#pp-board").innerHTML=`<div class="pboard">${PP_COLS.map(([h,sts])=>{const xs=active.filter(x=>sts.includes(x.st)).sort((a,b)=>b.sc-a.sc);return `<div class="pcol"><h5><span>${esc(h)}</span><span>${xs.length}</span></h5>${xs.map(card).join("")||'<div class="note">—</div>'}</div>`}).join("")}</div>
- <div class="fs"><div class="fsh"><span class="num">Older</span><span class="fst">${backlog.length} past trips with no pieces yet</span><button class="copy" id="pp-bl" style="margin-left:auto">${$("#pp-board").dataset.bl==="1"?"hide":"show them"}</button></div><p class="note" style="margin:0">They wait here so they don't crowd you. Open one and press "Find the pieces" when you want it; the desk works out what's worth writing and how many photos it needs.</p>${$("#pp-board").dataset.bl==="1"?`<div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${backlog.map(card).join("")}</div>`:""}</div>`;
- $("#pp-board").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>ppDo("trip",b.dataset.open));const bl=$("#pp-bl");if(bl)bl.onclick=()=>{$("#pp-board").dataset.bl=$("#pp-board").dataset.bl==="1"?"0":"1";ppRenderBoard()}}
+ <div class="fs"><div class="fsh"><span class="num">Older</span><span class="fst">${backlog.length} past trips with no pieces yet</span><button class="copy" id="pp-bl" style="margin-left:auto">${$("#pp-board").dataset.bl==="1"?"hide":"show them"}</button></div><p class="note" style="margin:0">They wait here so they don't crowd you. The <button class="copy" id="pp-tobank" style="margin:0">Content bank</button> shows what each one holds and sends them to the ideas agent.</p>${$("#pp-board").dataset.bl==="1"?`<div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${backlog.map(card).join("")}</div>`:""}</div>`;
+ $("#pp-board").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>ppDo("trip",b.dataset.open));const tb=$("#pp-tobank");if(tb)tb.onclick=()=>{ppView="bank";ls.set("ppView","bank");renderPipe()};const bl=$("#pp-bl");if(bl)bl.onclick=()=>{$("#pp-board").dataset.bl=$("#pp-board").dataset.bl==="1"?"0":"1";ppRenderBoard()}}
 function ppPrioSel(k){const v=ppPrio(k);return `<select class="prio" data-prio="${esc(k)}" aria-label="Priority">${[["","auto"],["now","Now"],["next","Next"],["later","Later"],["archive","Archive"]].map(([a,b])=>`<option value="${a}"${a===v?" selected":""}>${b}</option>`).join("")}</select>`}
 function ppWirePrio(root){root.querySelectorAll("[data-prio]").forEach(s=>s.onchange=async()=>{if(!canWrite)return;const k=s.dataset.prio;try{if(s.value)await db.doc("board/"+k.replace(/[/:]/g,"_")).set({key:k,priority:s.value,updatedAt:Date.now()});else await db.doc("board/"+k.replace(/[/:]/g,"_")).delete()}catch(e){}})}
 function ppRenderList(){const rows=[];ppTripsAll().forEach(t=>ppPieces(t).forEach(j=>rows.push({t,j,st:ppStage(j,t),sc:ppScore(j,t)})));rows.sort((a,b)=>b.sc.s-a.sc.s);
@@ -2792,7 +2793,7 @@ function ppRenderTrip(){const all=ppTripsAll();let t=all.find(x=>x.key===ppTrip)
  $("#pp-trip").querySelectorAll("[data-addpc]").forEach(b=>b.onclick=async()=>{if(!canWrite)return;const [pl,ti]=b.dataset.addpc.split("|");const P=(r.places||[]).find(x=>x.place===pl);const pc=P&&(P.pieces||[]).find(x=>x.title===ti);if(!pc)return;b.disabled=true;
   const id=("pp-"+String(t.id).slice(0,6)+"-"+ti.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-")).slice(0,80).replace(/-$/,"");
   try{await db.doc("jobs/"+id).set({id,pipeline:true,trip_id:t.id,type:"new",mode:pc.update?"update":"new",format:pc.format,title:pc.title,subject:pc.format==="verdict"?ti.replace(/^The Verdict:\s*/,"").replace(/,[^,]*$/,""):ti.replace(/^The [A-Z][a-z]+:\s*/,""),place:pl,primary_keyword:pc.keyword||"",demand:(String(pc.demand||"").match(/high|medium|low/i)||["low"])[0].toLowerCase(),why:pc.why||"",publish_by:pc.publish_by||"",photos_target:+pc.photos||0,needs:pc.needs||"",status:"planned",priority:0,trust:{},needs_coco:[],notes:"PIPELINE PIECE added from the trip research. Same rules as the other pipeline pieces: Coco's inspections, trip_notes and trips/"+t.id+" reflections for first-hand facts; photos from culls/"+id+".",idea:{q:pc.keyword||"",src:["trip-research"],questions:[],secondary:[]},createdAt:Date.now(),updatedAt:Date.now()})}catch(e){b.disabled=false}});
- $("#pp-find").onclick=()=>ppResearch(t,$("#pp-find"));$("#pp-granola").onclick=()=>ppGranola(t);ppWireActs($("#pp-trip"));ppWirePrio($("#pp-trip"))}
+ $("#pp-find").onclick=()=>t.status==="past"&&t.src==="passport"?ppQueueIdeas([t],$("#pp-find")):ppResearch(t,$("#pp-find"));$("#pp-granola").onclick=()=>ppGranola(t);ppWireActs($("#pp-trip"));ppWirePrio($("#pp-trip"))}
 async function ppResearch(t,btn){if(!t)return;const note=$("#pp-find-note")||$("#pp-note");if(!canWrite){note.textContent="The store is read-only in this view.";return}
  if(btn)btn.disabled=true;const id="research-"+String(t.id).replace(/[^a-z0-9-]/gi,"").slice(0,60);
  try{await db.doc("jobs/"+id).set({id,type:"research",mode:"trip-research",status:"queued",title:"Find the pieces · "+t.name,subject:t.name,trip_id:t.id,trip:{key:t.key,src:t.src,name:t.name,start:t.start,end:t.end,status:t.status,places:t.places,hotels:t.hotels},priority:Math.max(0,...jobsCache.map(x=>x.priority||0))+1,worker_instructions:"SKILL.md 'Trip research'. Keyword research for each place: the pieces this trip can fill per pillar (house title, primary keyword, demand, publish_by, photo slots); shot research for upcoming trips; write research/<trip id> and one pipeline job per piece (status planned).",createdAt:Date.now(),updatedAt:Date.now()});
@@ -2805,6 +2806,41 @@ async function ppGranola(t){const note=$("#pp-gnote");if(!mcp){note.textContent=
    for(const m of arr){const text=[m.summary,m.notes,m.private_notes,m.ai_summary,m.content].filter(Boolean).map(v=>typeof v==="string"?v:JSON.stringify(v)).join("\n\n").slice(0,12000);const mid=m.id||m.meeting_id;if(!mid||!canWrite)continue;
     await db.doc("trip_notes/"+(String(t.id)+"__"+mid).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,120)).set({trip_id:t.id,meeting_id:mid,title:m.title||"Meeting",date:String(m.meeting_at||m.created_at||"").slice(0,10),notes:text,pulled_at:Date.now()});n++}}
   note.textContent=n?`${n} notes pulled. The writer uses them as your first-hand facts.`:"Already pulled."}catch(e){note.textContent=granolaErr(e)}}
+
+// ---------- Content bank: every trip of the last three years, what it holds, what it could become ----------
+// Ideas come from a separate agent: ideas_queue/<trip> docs are researched (keywords, People also ask, search timing)
+// into research/<trip> plus planned pipeline jobs. The main worker never touches this queue.
+let ideasQueue={};
+function ppNorm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim()}
+function bankFor(t){const places=(t.places||[]).map(ppNorm).filter(p=>p.length>=3);const hotels=(t.hotels||[]).map(h=>ppNorm(typeof h==="string"?h:h&&h.name)).filter(Boolean).map(h=>h.replace(/^(the|hotel|belmond) /,"").split(" ").slice(0,2).join(" "));
+ const hit=r=>{let ch=[];try{ch=libChain(r).map(c=>ppNorm(c.name))}catch(e){}const ti=ppNorm(r.title);return places.some(p=>ch.includes(p)||ti.includes(p))||hotels.some(h=>h.length>=5&&ti.includes(h))};
+ const rs=lib.filter(r=>/^live/.test(r.status||"")&&hit(r));const fresh=rs.filter(r=>(r.cpt||"post")!=="post"),old=rs.filter(r=>(r.cpt||"post")==="post");
+ const stays=(t.hotels||[]).filter(h=>h&&typeof h==="object"?h.kind!=="inspected":true).length;
+ return {fresh,old,stays,pieces:ppPieces(t),q:ideasQueue[ppQid(t)]||null,research:research[t.id]||null}}
+function ppQid(t){return String(t.id).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,80)}
+function ppBankScore(t,b){return (b.stays*2)+(t.places||[]).length+(b.old.length?2:0)-Math.min(6,b.fresh.length)+Math.max(0,3-Math.floor(-daysTo(t.end||t.start||today())/365))*2}
+async function ppQueueIdeas(list,btn){if(!canWrite||!list.length)return;if(btn)btn.disabled=true;let n=0;
+ for(const t of list){const b=bankFor(t);if((b.q&&b.q.status!=="failed")||b.research)continue;
+  try{await db.doc("ideas_queue/"+ppQid(t)).set({trip_key:t.key,trip_id:t.id,src:t.src,name:t.name,start:t.start||"",end:t.end||"",kind:t.kind||"",places:t.places||[],
+   hotels:(t.hotels||[]).map(h=>typeof h==="string"?{name:h}:{name:h.name||"",city:h.city||"",kind:h.kind||"",nights:h.nights||0,rating:h.rating||0}),
+   on_site:b.fresh.map(r=>({title:r.title,url:r.url,format:r.format})).slice(0,30),old_posts:b.old.map(r=>({title:r.title,url:r.url})).slice(0,30),
+   status:"queued",score:ppBankScore(t,b),requested_at:Date.now(),updatedAt:Date.now()});n++}catch(e){}}
+ $("#pp-note").textContent=n?`${n} trip${n===1?"":"s"} added to the ideas queue. The ideas agent researches them in order.`:"Already in the queue.";if(btn)btn.disabled=false}
+function ppRenderBank(){const all=ppTripsAll().filter(t=>t.start&&t.status==="past");const cut=new Date();cut.setFullYear(cut.getFullYear()-3);const c3=cut.toISOString().slice(0,10);
+ const recent=all.filter(t=>t.start>=c3).sort((a,b)=>b.start.localeCompare(a.start)),older=all.filter(t=>t.start<c3).sort((a,b)=>b.start.localeCompare(a.start));
+ const rows=recent.map(t=>({t,b:bankFor(t)}));const tot=k=>rows.reduce((a,x)=>a+k(x),0);const qs=Object.values(ideasQueue);
+ const qLine=qs.length?`Ideas queue: ${qs.filter(q=>q.status==="queued").length} waiting · ${qs.filter(q=>q.status==="running").length} researching · ${qs.filter(q=>q.status==="done").length} done`:"Ideas queue is empty";
+ const pill=(q,r)=>r&&!q?`<span class="pill ok">${((r.pieces||[]).length+(r.places||[]).reduce((a,p)=>a+(p.pieces||[]).length,0))} ideas</span>`:!q?"":q.status==="done"?`<span class="pill ok">${q.n_pieces||0} ideas</span>`:q.status==="running"?'<span class="pill warn">researching</span>':q.status==="failed"?'<span class="pill bad">retry</span>':'<span class="pill">queued</span>';
+ const card=({t,b})=>`<div class="prow"><div><div class="meta">${esc(t.start)}${t.end&&t.end!==t.start?" → "+esc(t.end):""}${t.kind==="fam"?" · fam":""} ${pill(b.q,b.research)}${ppPrio("trip:"+t.key)?`<span class="pill">${esc(ppPrio("trip:"+t.key))}</span>`:""}</div><b>${esc(t.name)}</b><div class="note">${esc((t.places||[]).slice(0,7).join(" · "))}</div><div class="note">${b.stays} stays · ${b.fresh.length} pieces on the site · ${b.old.length} old posts${b.pieces.length?` · <b>${b.pieces.length} planned</b>`:""}</div></div><div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-end">${ppPrioSel("trip:"+t.key)}${(b.q&&b.q.status!=="failed")||b.research?"":`<button class="copy" data-idea="${esc(t.key)}">find ideas</button>`}<button class="copy" data-open="${esc(t.key)}">open</button></div></div>`;
+ const years=[...new Set(rows.map(x=>x.t.start.slice(0,4)))];
+ $("#pp-bank").innerHTML=`<div class="card"><div class="row" style="gap:12px;flex-wrap:wrap;align-items:baseline"><b style="font-size:16px">${recent.length} trips in the last three years</b><span class="note">${tot(x=>(x.t.places||[]).length)} places · ${tot(x=>x.b.stays)} stays · ${tot(x=>x.b.fresh.length)} pieces on the site · ${tot(x=>x.b.pieces.length)} planned</span><span class="note" style="margin-left:auto">${esc(qLine)}</span></div>
+ <p class="note" style="margin:8px 0 0">Everything you've already lived, waiting to become content. "Find ideas" sends a trip to the ideas agent: keyword research for every place and stay, matched to a pillar, ranked by search demand and timing. The ideas land in the trip as planned pieces and in <b>By priority</b>; nothing reaches Next 3 until it's the best use of your time.</p>
+ <div class="row" style="margin-top:8px"><button class="btn alt" id="bank-all">Send every trip without ideas</button></div></div>
+ ${years.map(y=>`<div class="fs"><div class="fsh"><span class="num">${esc(y)}</span><span class="fst">${rows.filter(x=>x.t.start.startsWith(y)).length} trips</span></div><div class="card">${rows.filter(x=>x.t.start.startsWith(y)).map(card).join("")}</div></div>`).join("")}
+ ${older.length?`<details class="fs"><summary class="note" style="cursor:pointer">${older.length} trips from before ${esc(c3.slice(0,4))}</summary><div class="card">${older.map(t=>card({t,b:bankFor(t)})).join("")}</div></details>`:""}`;
+ $("#pp-bank").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>ppDo("trip",b.dataset.open));
+ $("#pp-bank").querySelectorAll("[data-idea]").forEach(b=>b.onclick=()=>{const t=all.find(x=>x.key===b.dataset.idea);if(t)ppQueueIdeas([t],b)});
+ $("#bank-all").onclick=()=>ppQueueIdeas(rows.filter(x=>!x.b.research&&(!x.b.q||x.b.q.status==="failed")).sort((a,b)=>ppBankScore(b.t,b.b)-ppBankScore(a.t,a.b)).map(x=>x.t),$("#bank-all"));ppWirePrio($("#pp-bank"))}
 
 // ---------- Cull ----------
 let cullState=null;
@@ -2941,6 +2977,7 @@ let ppTimer=null;function schedulePipe(){clearTimeout(ppTimer);ppTimer=setTimeou
   try{db.collection("research").limit(100).onSnapshot(sn=>{research={};sn.docs.forEach(x=>research[x.id]=x.data());schedulePipe()},()=>{})}catch(e){}
   try{db.collection("trip_notes").limit(500).onSnapshot(sn=>{tripNotes=sn.docs.map(x=>({id:x.id,...x.data()}));schedulePipe()},()=>{})}catch(e){}
   try{db.doc("taste/profile").onSnapshot(sn=>{tasteProfile=sn.exists?sn.data():null;if(document.querySelector("#desk-trips.on")&&ppView==="eye")ppRenderEye()},()=>{})}catch(e){}
+  try{db.collection("ideas_queue").limit(200).onSnapshot(sn=>{ideasQueue={};sn.docs.forEach(x=>ideasQueue[x.id]=x.data());schedulePipe()},()=>{})}catch(e){}
   try{db.collection("taste_choices").limit(400).onSnapshot(sn=>{tasteChoices=sn.docs.map(x=>x.data())},()=>{})}catch(e){}
   try{db.collection("travel").limit(400).onSnapshot(sn=>{travelCache=sn.docs.map(x=>({id:x.id,...x.data()}));schedulePipe();try{if(document.querySelector("#desk-authority.on"))renderAuthority()}catch(e){}},()=>{})}catch(e){}
   try{db.collection("inspections").limit(100).onSnapshot(sn=>{inspections=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderToday()}catch(e){}schedulePipe();},()=>{})}catch(e){}

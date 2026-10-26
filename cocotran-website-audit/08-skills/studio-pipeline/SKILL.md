@@ -173,6 +173,32 @@ The desk's **Trips** tab runs each trip from plan to video. Agency Studio is the
 - **Taste.** `taste/profile` is Coco's eye. `taste_choices` holds what she kept or overrode in culls and in Edit 1 vs Edit 2. Use the profile when choosing a hero or a social cover.
 - **Video.** `videos/<job id>` holds the clip list for the piece's YouTube video. Social kits for a pipeline piece reuse its hero and its `cull_tips`.
 
+### Ideas queue: keyword ideas for past trips (separate agent, added 25 Oct 2026)
+`ideas_queue/<trip id>` holds trips sent from the desk's **Content bank** (Trips → Content bank).
+Each doc is `{trip_key, trip_id, src, name, start, end, kind, places[], hotels[{name,city,kind,nights,rating}], on_site[], old_posts[], status, score}`.
+**Only the ideas agent works this queue. The scheduled worker never touches it.**
+
+1. **Claim the trip.** Take the highest `score` with `status: "queued"`. Set `status: "running"`, `started_at` and `claimed_by` (your session) with `if_version`. If the write conflicts, skip that trip.
+2. **Take stock.** Check what cocotran.com already has for each place and hotel: `/wp-json/wp/v2/search?search=<place>`. Also check the desk's `library` and the authority-map jobs `am-<place>-<pillar>`. Never propose a piece that already exists or is already queued. An old blog post on the same subject becomes `mode: "update"` with its `source_url`.
+3. **Keyword research.** For each place and each stay, look at autocomplete, People also ask and the strength of the ranking results. Each idea is one pillar, in the house title format, with:
+   - the primary keyword;
+   - demand (high, medium or low, as an estimate);
+   - `publish_by` (YYYY-MM, 6–8 weeks before that place's search peak; state the peak in `why`);
+   - `photos`, `slots[]` and `cull_tips` (what readers save for this piece).
+4. **Verdicts.** Only a Passport hotel with `kind: "stay"`, and only when it clears the rate floor: $700 a night, or $400 in a very low-cost country or for a very boutique, design-forward property. A hotel below the floor goes into the place's Shortlist or a Comparison instead.
+5. **Rank.** Order by what moves the needle: demand × timing × gap on the authority map. Keep at most 8 ideas per trip; add 10–12 only for a trip with 5 or more places.
+6. **Write the results.**
+   - `research/<trip id>` = `{pieces[{place,format,title,keyword,demand,why,publish_by,photos,slots,update,source_url}], cull_tips{title:[...]}, places:[], at, by:"ideas-agent"}`.
+   - One job per idea: `jobs/pp-<short trip>-<slug>` with `pipeline: true`, `trip_id` set to the queue doc's `trip_id`, and `status: "planned"`. Copy the field shape of `jobs/pp-br-the-verdict-janeiro-hotel-rio-de-janeiro`.
+7. **Trust fields.** These come from the Passport trip:
+   - A personal trip gets `disclosure: "Trip I took"`.
+   - A fam trip leaves `disclosure` empty and asks in `needs_coco`.
+   - A stay gets `visited: "Stayed · <Mon YYYY>"`. Anything else gets `"Visited · <Mon YYYY>"`.
+8. **Close the trip.** Set the queue doc to `status: "done"` with `n_pieces`, `top` (the 3 best titles) and `done_at`. On an error, set `status: "failed"` and `error`.
+
+**Never** build a post, touch WordPress, or set any job status other than `planned`. Coco moves planned pieces forward from the desk.
+**Pace.** Up to 3 trips in parallel (subagents are fine). Commit nothing to the repo.
+
 ### Opening-block backfill jobs (`mode: "backfill"`, added 25 Oct 2026)
 Element 30407 (The short answer · At a glance · visited · updated) is printed by every pillar template directly under the facts strip and hides itself while `short_answer` is empty. A backfill job carries `targets: [{cpt, wp_id, url, title}]` and, per target: read the live ACF text, write `short_answer` (≤420 characters, first person, standalone: what it is, where, what is distinctive, who it suits — from the piece's own words, no new facts), the five glance rows with the format's labels (stay: Setting / Best for / Standout / Consider / Stayed; comparison: Choose A if / Choose B if / Price difference / Both share / Stayed; guide, brief, shortlist, dispatch: Setting / Best for / Standout / Consider / Last visit) using only values the text states (an unknown row stays empty: the block hides empty rows), `primary_keyword` from the library record's keyword when empty, `secondary_keywords` / `ai_questions` from the record's `rank.queries` (question-shaped ones go to `ai_questions`), `updated_on` = the post's modified date (YYYYMMDD), `content_category` from CATEGORY_BY_FORMAT when empty. **Never** write `visited`, `visit_basis`, `disclosure`, `last_fact_check` or `booking_access` from inference: leave them and list the piece under `needs_coco` with the one question. Write straight to the live post (these fields render only when filled); purge SpeedyCache + Cloudflare once at the end; record `backfilled_at` on each library record and `done: [{wp_id, fields}]` on the job.
 
