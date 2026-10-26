@@ -492,6 +492,15 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
  .ppbar .btn{flex:1 1 140px;justify-content:center}
  #pp-bank .card{padding:12px}
 }
+
+.wpcard{margin:0 0 12px}
+.wpcard .wpst{margin-top:4px}
+.wpcard .wpst.bad{color:var(--bad)}
+.wplist{margin-top:10px;border-top:1px solid var(--line);max-height:520px;overflow:auto}
+.wplist .prow .meta .pill{margin-left:0;margin-right:6px}
+.pill.wpp{margin-left:6px}
+.lcard .pill.wpp{margin-left:0}
+@media (max-width:700px){.wpcard .row>.btn{flex:1 1 100%}.wplist .prow{grid-template-columns:1fr}.wplist .prow>.row{justify-content:flex-start!important}}
 </style>
 
 <header class="topbar">
@@ -742,12 +751,14 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
     <div><label for="l-pillar">Pillar</label><select id="l-pillar"><option value="">All pillars</option><option>The Property</option><option>The Guide</option><option>The Brief</option><option>The Shortlist</option><option>The Dispatch</option><option>Old blog post</option></select></div>
     <div><label for="l-cat">Category</label><select id="l-cat"><option value="">All categories</option><option>Commercial</option><option>Decision-support</option><option>Informational</option><option>Specialist intel</option><option>Authority</option></select></div>
     <div><label for="l-health">Health</label><select id="l-health"><option value="">Any</option><option>ok</option><option>decaying</option><option>stale</option><option>thin</option><option>duplicate</option><option value="unset">not checked</option></select></div>
+    <div><label for="l-wpf">WordPress</label><select id="l-wpf"><option value="">Any</option><option value="outside">Updated outside the desk</option><option value="new">New from WordPress</option><option value="gone">Not live on WordPress</option><option value="unchecked">Never checked</option></select></div>
     <div><label for="l-from">Updated from</label><input type="date" id="l-from"></div>
     <div><label for="l-to">Updated to</label><input type="date" id="l-to"></div>
     <div><label for="l-sort">Sort</label><select id="l-sort"><option value="priority">Priority · what moves the needle</option><option value="updated">Last updated ↓</option><option value="title">Title A–Z</option><option value="clicks">Clicks 28d ↓</option><option value="health">Needs attention first</option><option value="pillar">Grouped by pillar</option></select></div>
     <div style="align-self:end"><button class="btn alt" id="l-clear">Clear</button></div>
   </div>
   <div class="stats" id="l-stats"></div>
+  <div id="l-wp"></div>
   <div class="lib-list lib-cards" id="l-list"></div>
   <div class="quiet" id="l-quiet">The shared store isn't available in this view.</div>
 </section>
@@ -1904,6 +1915,42 @@ function oppScore(r){
  return {score,why:why.length?why:["informational, no signal yet"],basis:"predicted — connect Search Console for real numbers"};
 }
 
+// ---------- Library · WordPress check: what changed on cocotran.com outside the desk ----------
+// The page can't reach cocotran.com itself (self-hosted, not on the WordPress.com connector), so the check runs in the worker:
+// the button queues a wp_check job and starts a worker run; the worker compares WordPress with the library and writes settings/wp_check.
+let wpCheck=null, wpNoteText="";
+const WP_KIND={updated:["Updated outside the desk","warn"],new:["New on WordPress","ok"],unpublished:["Not published","bad"],missing:["Gone from WordPress","bad"]};
+function libWpOk(r){const v=$("#l-wpf")?.value||"";if(!v)return true;if(v==="outside")return !!r.updated_outside;if(v==="new")return !!r.new_from_wp;if(v==="gone")return !!r.wp_status&&r.wp_status!=="publish";if(v==="unchecked")return !r.last_wp_check;return true}
+function libWpPill(r){return r.updated_outside?'<span class="pill warn wpp">updated on WP</span>':r.new_from_wp?'<span class="pill ok wpp">new from WP</span>':r.wp_status&&r.wp_status!=="publish"?`<span class="pill bad wpp">${esc(r.wp_status==="missing"?"gone from WP":r.wp_status)}</span>`:""}
+function wpAgo(ms){if(!ms)return "";const t=typeof ms==="number"?ms:Date.parse(ms);if(!t)return String(ms);const m=Math.round((Date.now()-t)/6e4);return m<2?"just now":m<90?m+" min ago":m<36*60?Math.round(m/60)+" h ago":new Date(t).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}
+function renderLibWp(){const el=$("#l-wp");if(!el)return;const c=wpCheck||{};const n=c.counts||{};const flagged=lib.filter(r=>r.updated_outside).length;
+ const waiting=c.status==="requested"||c.status==="running";if(!waiting&&c.checked_at&&wpNoteText&&/^(Started|Queued)/.test(wpNoteText))wpNoteText="";const stale=waiting&&c.requested_at&&Date.now()-c.requested_at>6*36e5;
+ const head=c.checked_at?`Last checked <b>${esc(wpAgo(c.checked_at))}</b> · ${n.checked||0} checked · <b>${n.updated||0}</b> updated outside the desk · ${n.new||0} new · ${(n.unpublished||0)+(n.missing||0)} not live`:"Never checked against WordPress yet.";
+ const st=waiting?`<div class="note wpst">${c.status==="running"?"The worker is checking now":"Queued "+esc(wpAgo(c.requested_at))}${stale?" · still waiting: the scheduled worker picks it up at "+esc(nextWorkerRun().label):""}</div>`:c.status==="failed"?`<div class="note wpst bad">Last check failed: ${esc(c.error||"no reason given")}</div>`:"";
+ const items=(c.items||[]);const open=el.dataset.open==="1";
+ el.innerHTML=`<div class="card wpcard"><div class="row" style="gap:10px;flex-wrap:wrap;align-items:center"><div style="flex:1 1 260px"><div class="meta">WORDPRESS · COCOTRAN.COM</div><div class="note" style="margin-top:4px">${head}</div>${st}</div>
+ <div class="row" style="gap:6px;flex-wrap:wrap">${flagged?`<button class="copy" id="wp-show">show ${flagged} updated outside</button>`:""}${items.length?`<button class="copy" id="wp-toggle">${open?"hide results":"see results"}</button>`:""}<button class="btn" id="wp-run" ${waiting&&!stale?"disabled":""}>${waiting&&!stale?"Checking…":"Check WordPress for updates"}</button></div></div>
+ <div class="note" id="wp-note">${esc(wpNoteText)}</div>
+ ${open&&items.length?`<div class="wplist">${items.slice(0,150).map((x,i)=>{const k=WP_KIND[x.kind]||[x.kind,""];const r=x.library_id?lib.find(y=>y.id===x.library_id):null;return `<div class="prow"><div><div class="meta"><span class="pill ${k[1]}" style="margin-left:0">${esc(k[0])}</span> ${esc(x.cpt||"")}${x.wp_modified?" · WP modified "+esc(String(x.wp_modified).slice(0,10)):""}${x.desk_last_updated?" · desk had "+esc(x.desk_last_updated):""}</div><b>${esc(x.title||x.url||"")}</b>${(x.changes||[]).length?`<div class="note">${esc(x.changes.slice(0,6).join(" · "))}</div>`:""}</div><div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-end">${r?`<button class="copy" data-wpopen="${esc(r.id)}">open</button>`:""}${x.url?`<a class="copy" href="${esc(x.url)}" target="_blank" rel="noopener">view ↗</a>`:""}${r&&r.updated_outside&&canWrite?`<button class="copy" data-wpseen="${esc(r.id)}">seen</button>`:""}</div></div>`}).join("")}${items.length>150?`<div class="note">+${items.length-150} more · use the WordPress filter</div>`:""}${flagged&&canWrite?`<div class="row" style="margin-top:8px"><button class="copy" id="wp-seenall">mark all ${flagged} as seen</button></div>`:""}</div>`:""}
+ ${open&&(c.history||[]).length>1?`<div class="note" style="margin-top:8px">Earlier checks: ${(c.history||[]).slice(1,6).map(h=>`${esc(String(h.checked_at||"").slice(0,10))} (${(h.counts||{}).updated||0} updated, ${(h.counts||{}).new||0} new)`).join(" · ")}</div>`:""}</div>`;
+ $("#wp-run").onclick=()=>wpCheckRun($("#wp-run"));
+ const tg=$("#wp-toggle");if(tg)tg.onclick=()=>{el.dataset.open=open?"0":"1";renderLibWp()};
+ const sh=$("#wp-show");if(sh)sh.onclick=()=>{$("#l-wpf").value="outside";const f=$("#l-filters");if(f.hidden){f.hidden=false;$("#l-filters-toggle").setAttribute("aria-expanded","true")}renderLib()};
+ el.querySelectorAll("[data-wpopen]").forEach(b=>b.onclick=()=>openLib(b.dataset.wpopen));
+ el.querySelectorAll("[data-wpseen]").forEach(b=>b.onclick=async()=>{b.disabled=true;try{await db.doc("library/"+b.dataset.wpseen).update({updated_outside:false,wp_seen_at:Date.now()})}catch(e){b.disabled=false}});
+ const sa=$("#wp-seenall");if(sa)sa.onclick=async()=>{sa.disabled=true;for(const r of lib.filter(x=>x.updated_outside)){try{await db.doc("library/"+r.id).update({updated_outside:false,wp_seen_at:Date.now()})}catch(e){}}sa.textContent="done"}}
+async function wpCheckRun(btn){const note={set textContent(v){wpNoteText=v;const e=$("#wp-note");if(e)e.textContent=v}};if(!db||!canWrite){note.textContent="The shared store isn't writable in this view.";return}
+ btn.disabled=true;btn.textContent="Queuing…";const id="wp-check-"+today()+"-"+Date.now().toString(36).slice(-4);const since=(wpCheck&&wpCheck.checked_at)||null;
+ try{const max=Math.max(0,...jobsCache.map(x=>x.priority||0));
+  await db.doc("jobs/"+id).set({id,type:"wp_check",mode:"wp_check",title:"Check WordPress for updates",subject:"cocotran.com",status:"queued",since,library_count:lib.length,priority:max+1,run_requested_at:Date.now(),createdAt:Date.now(),updatedAt:Date.now(),notes:"Compare every post, page and pillar CPT on cocotran.com with the desk's library and write the results to settings/wp_check (SKILL: WordPress check)."});
+  await db.doc("settings/wp_check").set({...(wpCheck||{}),status:"requested",requested_at:Date.now(),request_job:id,error:null});
+ }catch(e){note.textContent="Couldn't queue the check: "+(e&&e.code||e&&e.message||"error");try{renderLibWp()}catch(x){}return}
+ const nx=nextWorkerRun();
+ if(!mcp){note.textContent=`Queued. Connectors aren't available in this view, so the scheduled worker runs it ${nx.label}.`;return}
+ try{await mcp.callTool("Claude Code Remote","fire_trigger",{trigger_id:WORKER_TRIGGER,text:`PRIORITY RUN requested from the Studio Desk Library at ${new Date().toISOString()}. Do job "${id}" (type wp_check) FIRST: follow SKILL.md "WordPress check" — compare cocotran.com (posts, pages and every pillar CPT, published and not) with the library collection${since?` (changes since ${new Date(since).toISOString()}, but list every record's current state)`:""}, update the library records and write settings/wp_check with checked_at, counts, items and history. Read only on WordPress: never write to the site in this job. Then continue with the rest of the queue by priority.`},{cache:false});
+  note.textContent="Started. A worker is checking WordPress now; results land here when it finishes (usually a few minutes)."}
+ catch(e){const code=e&&e.code||"error";note.textContent=`Queued. Couldn't start a worker right now (${code}); the scheduled worker runs it ${nx.label}.`}}
+
 // ---------- Library ----------
 let lib=[], libSel=null;
 // Place filters: every record is placed on the destination chain (continent › country › city) from its title, URL and queries.
@@ -1916,7 +1963,7 @@ function libPlaceOptions(){const sel={cont:$("#l-cont"),country:$("#l-country"),
 function libPlaceOk(r){const v=[$("#l-cont")?.value,$("#l-country")?.value,$("#l-city")?.value].filter(Boolean);if(!v.length)return true;const ids=libChain(r).map(t=>String(t.id));return v.every(x=>ids.includes(x))}
 function libFilter(){
  const q=$("#l-q").value.trim().toLowerCase(), p=$("#l-pillar").value, c=$("#l-cat").value, hl=$("#l-health").value, from=$("#l-from").value, to=$("#l-to").value, sort=$("#l-sort").value;
- let rows=lib.filter(r=>(!q||[r.title,r.url,r.keyword,r.seo_title,(r.secondary_keywords||[]).join(" ")].join(" ").toLowerCase().includes(q))&&(!p||r.pillar===p)&&(!c||r.category===c)&&(!hl||(hl==="unset"?!r.health:r.health===hl))&&(!from||(r.last_updated||"")>=from)&&(!to||(r.last_updated||"")<=to)&&libPlaceOk(r));
+ let rows=lib.filter(r=>(!q||[r.title,r.url,r.keyword,r.seo_title,(r.secondary_keywords||[]).join(" ")].join(" ").toLowerCase().includes(q))&&(!p||r.pillar===p)&&(!c||r.category===c)&&(!hl||(hl==="unset"?!r.health:r.health===hl))&&(!from||(r.last_updated||"")>=from)&&(!to||(r.last_updated||"")<=to)&&libPlaceOk(r)&&libWpOk(r));
  const hRank={decaying:0,stale:1,duplicate:2,thin:3,ok:5};
  if(sort==="priority"){rows.forEach(r=>{r._opp=oppScore(r)});rows.sort((a,b)=>b._opp.score-a._opp.score);return rows}
  rows.sort((a,b)=>sort==="title"?String(a.title).localeCompare(b.title):sort==="clicks"?((b.rank?.clicks28||0)-(a.rank?.clicks28||0)):sort==="health"?((hRank[a.health]??4)-(hRank[b.health]??4)):sort==="pillar"?(String(a.pillar).localeCompare(b.pillar)||String(a.title).localeCompare(b.title)):String(b.last_updated||"").localeCompare(a.last_updated||""));
@@ -1929,7 +1976,7 @@ function renderLib(){
  const rows=libFilter(); const list=$("#l-list"); list.innerHTML="";
  const sort=$("#l-sort").value; let lastGroup=null;
  list.className="lib-list lib-"+libView;
- document.querySelectorAll(".views button").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===libView?"true":"false"));
+ document.querySelectorAll(".views button[data-view]").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===libView?"true":"false"));
  if(libView==="map"){
   const byP={}; rows.forEach(r=>{(byP[r.pillar||"Unfiled"]=byP[r.pillar||"Unfiled"]||{})[fmtLabel(r.format)||r.format||"—"]=((byP[r.pillar||"Unfiled"]||{})[fmtLabel(r.format)||r.format||"—"]||[]).concat(r)});
   const order=["The Property","The Guide","The Brief","The Shortlist","The Dispatch","Old blog post","Unfiled"];
@@ -1942,31 +1989,32 @@ function renderLib(){
  } else if(libView==="cards"){
   rows.slice(0,300).forEach(r=>{const opp=sort==="priority"?(r._opp||oppScore(r)):null; const el=document.createElement("div"); el.className="lcard"; el.tabIndex=0;
    const img=heroOf(r);
-   el.innerHTML=`<div class="img" style="${img?`background-image:url('${esc(img)}')`:""}">${r.health&&r.health!=="ok"?`<span class="pill warn">${esc(r.health)}</span>`:""}</div><div class="body"><div class="t">${esc(r.title)}</div><div class="m"><span>${esc(r.pillar||"")}</span><span>${esc(fmtLabel(r.format)||r.format||"")}</span>${r.category?`<span>${esc(r.category)}</span>`:""}<span>updated ${esc(r.last_updated||"?")}</span>${r.rank?.clicks28!=null?`<span>${r.rank.clicks28} clicks/28d</span>`:""}</div>${r.keyword?`<div class="m"><span>kw · ${esc(r.keyword)}</span></div>`:""}${opp?`<div class="why"><span class="pill ${opp.basis==="measured"?"ok":""}">${opp.basis==="measured"?"measured":"predicted"} ${opp.score.toFixed(1)}</span> ${esc(opp.why.slice(0,2).join(" · "))}</div>`:""}</div>`;
+   el.innerHTML=`<div class="img" style="${img?`background-image:url('${esc(img)}')`:""}">${r.health&&r.health!=="ok"?`<span class="pill warn">${esc(r.health)}</span>`:""}</div>${libWpPill(r)?`<div style="padding:8px 12px 0">${libWpPill(r)}</div>`:""}<div class="body"><div class="t">${esc(r.title)}</div><div class="m"><span>${esc(r.pillar||"")}</span><span>${esc(fmtLabel(r.format)||r.format||"")}</span>${r.category?`<span>${esc(r.category)}</span>`:""}<span>updated ${esc(r.last_updated||"?")}</span>${r.rank?.clicks28!=null?`<span>${r.rank.clicks28} clicks/28d</span>`:""}</div>${r.keyword?`<div class="m"><span>kw · ${esc(r.keyword)}</span></div>`:""}${opp?`<div class="why"><span class="pill ${opp.basis==="measured"?"ok":""}">${opp.basis==="measured"?"measured":"predicted"} ${opp.score.toFixed(1)}</span> ${esc(opp.why.slice(0,2).join(" · "))}</div>`:""}</div>`;
    el.onclick=()=>openLib(r.id); el.onkeydown=e=>{if(e.key==="Enter")openLib(r.id)}; list.append(el)});
  } else {
   rows.slice(0,500).forEach(r=>{
    if(sort==="pillar"&&r.pillar!==lastGroup){lastGroup=r.pillar;const g=document.createElement("div");g.className="lib-group";g.textContent=r.pillar;list.append(g)}
    const el=document.createElement("div"); el.className="lib-item"; el.tabIndex=0; el.dataset.id=r.id;
    const opp=sort==="priority"?(r._opp||oppScore(r)):null;
-   el.innerHTML=`<div><div class="t">${esc(r.title)}</div>${opp?`<div class="m"><span class="pill ${opp.basis==="measured"?"ok":""}">${opp.basis==="measured"?"measured":"predicted"} · ${opp.score.toFixed(1)}</span><span>${esc(opp.why.slice(0,2).join(" · "))}</span></div>`:""}<div class="m"><span>${esc(r.pillar)}</span><span>${esc(fmtLabel(r.format)||r.format)}</span><span>updated ${esc(r.last_updated||"?")}</span>${r.keyword?`<span>${esc(r.keyword)}</span>`:""}</div></div><div class="chips">${r.category?`<span class="pill">${esc(r.category)}</span>`:""}${r.health?`<span class="pill ${r.health==="ok"?"ok":"warn"}">${esc(r.health)}</span>`:""}</div>`;
+   el.innerHTML=`<div><div class="t">${esc(r.title)}</div>${opp?`<div class="m"><span class="pill ${opp.basis==="measured"?"ok":""}">${opp.basis==="measured"?"measured":"predicted"} · ${opp.score.toFixed(1)}</span><span>${esc(opp.why.slice(0,2).join(" · "))}</span></div>`:""}<div class="m"><span>${esc(r.pillar)}</span><span>${esc(fmtLabel(r.format)||r.format)}</span><span>updated ${esc(r.last_updated||"?")}</span>${r.keyword?`<span>${esc(r.keyword)}</span>`:""}</div></div><div class="chips">${libWpPill(r)}${r.category?`<span class="pill">${esc(r.category)}</span>`:""}${r.health?`<span class="pill ${r.health==="ok"?"ok":"warn"}">${esc(r.health)}</span>`:""}</div>`;
    el.onclick=()=>openLib(r.id); el.onkeydown=e=>{if(e.key==="Enter")openLib(r.id)}; list.append(el)});
  }
+ try{renderLibWp()}catch(e){console.warn("wp",e)}
  $("#l-count").textContent=`${rows.length} of ${lib.length}`;
  const cnt=k=>lib.filter(r=>r.health===k).length;
  $("#l-stats").innerHTML=`<span class="stat"><b>${lib.length}</b>pieces</span><span class="stat"><b>${lib.filter(r=>r.pillar!=="Old blog post").length}</b>pillar pieces</span><span class="stat"><b>${lib.filter(r=>r.pillar==="Old blog post").length}</b>old posts</span><span class="stat"><b>${cnt("decaying")+cnt("stale")}</b>need attention</span>`;
  const sel=$("#s-pick"); const cur=sel.value; sel.innerHTML='<option value="">Choose a piece…</option>'+lib.slice().sort((a,b)=>String(a.title).localeCompare(b.title)).map(r=>`<option value="${esc(r.id)}">${esc(r.title)}</option>`).join(""); sel.value=cur;
 }
-document.querySelectorAll(".views button").forEach(b=>b.onclick=()=>{libView=b.dataset.view;ls.set("libView",libView);renderLib()});
+document.querySelectorAll(".views button[data-view]").forEach(b=>b.onclick=()=>{libView=b.dataset.view;ls.set("libView",libView);renderLib()});
 $("#l-filters-toggle").onclick=()=>{const f=$("#l-filters");f.hidden=!f.hidden;$("#l-filters-toggle").setAttribute("aria-expanded",String(!f.hidden))};
-["l-q","l-pillar","l-cat","l-health","l-from","l-to","l-sort","l-cont","l-country","l-city"].forEach(id=>$("#"+id).addEventListener("input",renderLib));$("#l-cont").addEventListener("change",()=>{$("#l-country").value="";$("#l-city").value="";renderLib()});$("#l-country").addEventListener("change",()=>{$("#l-city").value="";renderLib()});
-$("#l-clear").onclick=()=>{["l-q","l-pillar","l-cat","l-health","l-from","l-to","l-cont","l-country","l-city"].forEach(id=>$("#"+id).value="");$("#l-sort").value="updated";renderLib()};
+["l-q","l-pillar","l-cat","l-health","l-wpf","l-from","l-to","l-sort","l-cont","l-country","l-city"].forEach(id=>$("#"+id).addEventListener("input",renderLib));$("#l-cont").addEventListener("change",()=>{$("#l-country").value="";$("#l-city").value="";renderLib()});$("#l-country").addEventListener("change",()=>{$("#l-city").value="";renderLib()});
+$("#l-clear").onclick=()=>{["l-q","l-pillar","l-cat","l-health","l-wpf","l-from","l-to","l-cont","l-country","l-city"].forEach(id=>$("#"+id).value="");$("#l-sort").value="updated";renderLib()};
 function openLib(id){
  const r=lib.find(x=>x.id===id); if(!r)return; libSel=r; const s=r.suggestions||{}; const rk=r.rank;
  $("#l-detail").innerHTML=`<div class="piece">
   <div class="kicker">${esc(r.pillar)} · ${esc(fmtLabel(r.format)||r.format)} · ${esc(r.category||"")}</div>
   <h2 class="title">${esc(r.title)}</h2>
-  <div class="byline"><a href="${esc(r.url)}" target="_blank" rel="noopener">open on cocotran.com ↗</a> · updated ${esc(r.last_updated||"?")} · ${r.paywalled?"gated":"free"} · ${esc(String(r.visible_words||"?"))} visible words</div>
+  <div class="byline"><a href="${esc(r.url)}" target="_blank" rel="noopener">open on cocotran.com ↗</a> · updated ${esc(r.last_updated||"?")} · ${r.paywalled?"gated":"free"} · ${esc(String(r.visible_words||"?"))} visible words${r.last_wp_check?` · WordPress ${r.wp_modified?"modified "+esc(String(r.wp_modified).slice(0,10)):"checked"} (checked ${esc(wpAgo(r.last_wp_check))})`:""}${libWpPill(r)}</div>${r.updated_outside&&(r.wp_changes||[]).length?`<div class="note" style="margin:-4px 0 10px">Changed on WordPress: ${esc(r.wp_changes.slice(0,8).join(" · "))}</div>`:""}
   <div class="two">
    <div><label>Category</label><select id="d-cat" ${canWrite?"":"disabled"}>${["Commercial","Decision-support","Informational","Specialist intel","Authority"].map(c=>`<option ${c===r.category?"selected":""}>${c}</option>`).join("")}</select></div>
    <div><label>Primary keyword</label><input type="text" id="d-kw" value="${esc(r.keyword||"")}" ${canWrite?"":"disabled"}></div>
@@ -3351,6 +3399,7 @@ let ppTimer=null,resultsTicked=false;function schedulePipe(){clearTimeout(ppTime
   try{db.doc("voice/allow").onSnapshot(sn=>{const x=sn.exists?sn.data():null;ALLOW=Array.isArray(x?.items)?x.items.map(String):[];renderAllow()},()=>{})}catch(e){}
   try{db.collection("jobs").orderBy("updatedAt","desc").limit(200).onSnapshot(renderQueue,()=>{})}catch(e){}
   try{db.doc("settings/respin").onSnapshot(d=>{try{const v=d&&d.exists&&(typeof d.data==="function"?d.data():d.data);respinParked=(v&&v.parked)||{};renderRespin()}catch(e){}},()=>{})}catch(e){}
+  try{db.doc("settings/wp_check").onSnapshot(sn=>{wpCheck=sn.exists?sn.data():null;try{renderLibWp()}catch(e){}},()=>{})}catch(e){}
   try{db.collection("library").limit(1000).onSnapshot(snap=>{lib=snap.docs.map(x=>({id:x.id,...x.data()}));renderLib();try{renderToday();renderSuggest();renderKwData()}catch(e){}scheduleIdeas();try{renderRespin()}catch(e){console.warn("respin",e)}if(libSel){const r=lib.find(x=>x.id===libSel.id);if(r)libSel=r}},()=>{})}catch(e){}
   try{db.collection("social").orderBy("createdAt","desc").limit(100).onSnapshot(renderSocialList,()=>{})}catch(e){}
   try{db.collection("pitches").orderBy("createdAt","desc").limit(200).onSnapshot(renderPitches,()=>{})}catch(e){}
