@@ -454,6 +454,44 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
 .ab img{width:100%;border-radius:8px;display:block}
 #pp-views{max-width:100%;overflow-x:auto;scrollbar-width:none}#pp-views button{white-space:nowrap;flex:0 0 auto}
 .shotl{margin:6px 0 0;padding-left:18px}.shotl li{margin:0 0 6px;font-size:13.5px;line-height:1.45}
+
+#pp-views{flex-wrap:wrap;border-radius:14px}
+#pp-views button{position:relative}
+.tabn{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:999px;background:var(--accent-soft);color:var(--fg);font:600 10.5px var(--body);line-height:17px;text-align:center}
+#pp-views button[aria-selected=true] .tabn{background:var(--accent-ink);color:var(--accent)}
+.ppbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.ppbar .btn{display:inline-flex;align-items:center;gap:6px}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.tcard{border:1px solid var(--line);border-radius:var(--r);background:var(--bg2);overflow:hidden;display:flex;flex-direction:column}
+.tband{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;font:600 10.5px var(--body);letter-spacing:.08em;text-transform:uppercase;color:#2A241D}
+.tscore{font:600 13px var(--body);letter-spacing:0;background:rgba(255,255,255,.55);border-radius:999px;padding:1px 8px}
+.tbody{padding:12px;display:flex;flex-direction:column;flex:1}
+.tbody h4{margin:4px 0 2px;font-size:17px;line-height:1.25}
+.tbody>.row{margin-top:auto!important;padding-top:10px}
+.tstats{display:grid;grid-template-columns:repeat(4,auto);gap:4px 10px;margin-top:8px;font-size:12px;color:var(--muted)}
+.tstats b{color:var(--fg);font-size:14px}
+.tline{position:relative;padding-left:22px;border-left:2px solid var(--line2);margin-left:6px}
+.tyear{font-family:var(--display);font-size:24px;margin:14px 0 6px -22px;padding-left:22px;background:var(--bg);position:relative}
+.tyear:first-child{margin-top:0}
+.titem{display:grid;grid-template-columns:44px 1fr;gap:8px;position:relative;padding:8px 0;border-top:1px solid var(--line)}
+.tdot{position:absolute;left:-29px;top:14px;width:12px;height:12px;border-radius:50%;border:2px solid var(--bg)}
+.tmon{font:600 11px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.bkview{display:inline-flex}
+.card>.fsh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.card>.fsh .num{font:600 11px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--gold,var(--muted))}
+.card>.fsh .fst{font-family:var(--display);font-size:19px;font-weight:500}
+.tcard .prio{width:auto;max-width:120px}
+@media (max-width:700px){
+ #pp-views{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;max-width:100%;border-radius:999px}
+ #pp-views::-webkit-scrollbar{display:none}
+ #pp-views button{white-space:nowrap;padding:9px 13px;flex:0 0 auto}
+ #desk-trips .prow{grid-template-columns:1fr}
+ #desk-trips .prow>.row{justify-content:flex-start!important}
+ .tgrid{grid-template-columns:1fr}
+ .tstats{grid-template-columns:repeat(2,auto)}
+ .ppbar .btn{flex:1 1 140px;justify-content:center}
+ #pp-bank .card{padding:12px}
+}
 </style>
 
 <header class="topbar">
@@ -548,13 +586,18 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
 <section class="desk" id="desk-trips">
   <div class="deskhead"><div><div class="eyebrow">Make</div><h2>Trips</h2><p class="lead">Every trip from Agency Studio and your Passport, from plan to video. The desk ranks the work by search demand and timing, tells you how many photos each piece needs, culls the shoot for you, and keeps the rest out of sight. Three things at a time.</p></div></div>
   <div class="row" style="align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap">
-    <div class="views" id="pp-views"><button data-pv="next" aria-selected="true">Next 3</button><button data-pv="board">Board</button><button data-pv="bank">Content bank</button><button data-pv="list">By priority</button><button data-pv="trip">Trip</button><button data-pv="eye">Your eye</button></div>
+    <div class="views" id="pp-views"><button data-pv="next" aria-selected="true">Next 3</button><button data-pv="bank">Trips</button><button data-pv="photos">Photos</button><button data-pv="ideas">Ideas</button><button data-pv="week">This week</button><button data-pv="writing">Writing</button><button data-pv="board">Board</button><button data-pv="trip">Trip</button><button data-pv="eye">Your eye</button></div>
     <button class="copy" data-go="plan">Calendar →</button><button class="copy" data-go="authority">Places →</button>
     <span class="note" id="pp-note" style="margin-left:auto"></span>
   </div>
+  <div class="ppbar"><button class="btn" id="pp-brief">Run the brief</button><button class="btn alt" id="pp-gsc">More ideas from Search Console</button><span class="note" id="pp-brief-note"></span></div>
   <div id="pp-next"></div>
   <div id="pp-board" hidden></div>
   <div id="pp-bank" hidden></div>
+  <div id="pp-photos" hidden></div>
+  <div id="pp-ideas" hidden></div>
+  <div id="pp-week" hidden></div>
+  <div id="pp-writing" hidden></div>
   <div id="pp-list" hidden></div>
   <div id="pp-trip" hidden></div>
   <div id="pp-eye" hidden></div>
@@ -1497,7 +1540,8 @@ let ctl=null;
 async function saveJob(job){
  if(!db||!canWrite) return null;
  const id=(job.seo?.slug||job.subject||"piece").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60)+"-"+Date.now().toString(36);
- await db.doc("jobs/"+id).set({...job,id,createdAt:Date.now(),updatedAt:Date.now()});
+ await db.doc("jobs/"+id).set({...job,id,...(npFromPipeline?{from_pipeline:npFromPipeline}:{}),createdAt:Date.now(),updatedAt:Date.now()});
+ if(npFromPipeline){try{await db.doc("jobs/"+npFromPipeline).update({status:"drafting",draft_job:id,updatedAt:Date.now()})}catch(e){}npFromPipeline=null}
  return id;
 }
 $("#n-queueonly").onclick=async()=>{
@@ -2719,7 +2763,7 @@ function ppTripsAll(){const out=[];const seen=new Set();
 function ppStatus(s,e){const td=today();if(!s)return "past";if(s>td)return "upcoming";if(e&&e<td)return "past";return "live"}
 function ppPlaces(t){const set=[];(t.days||[]).forEach(d=>{const p=String(d.place||"").split(",")[0].trim();if(p&&!set.includes(p))set.push(p)});if(!set.length&&t.destination)String(t.destination).split(/[·,()]/).map(x=>x.trim()).filter(Boolean).forEach(p=>{if(!set.includes(p))set.push(p)});return set.slice(0,12)}
 function ppPieces(trip){return pipeJobs.filter(j=>j.trip_id===trip.id||j.trip_id===("pp-a"+trip.id)).filter(j=>ppPrio("job:"+j.id)!=="archive")}
-function ppLive(j){return ["published","done","live"].includes(j.status)||!!j.live_url}
+function ppLive(j){if(["published","done","live"].includes(j.status)||!!j.live_url)return true;const d=j.draft_job&&typeof jobsCache!=="undefined"?jobsCache.find(x=>x.id===j.draft_job):null;return !!(d&&(["published","done","live"].includes(d.status)||d.live_url))}
 function ppPrio(k){return (boardPrio[k]&&boardPrio[k].priority)||""}
 function ppSocialDone(j){if(j.social_kit_made)return true;const r=lib.find(x=>(j.live_url&&x.url===j.live_url)||(j.seo_slug&&x.id===j.seo_slug)||(j.draft&&j.draft.seo&&x.id===j.draft.seo.slug));return !!(r&&r.social_kit_made)}
 function ppStage(j,trip){if(trip&&trip.status==="upcoming")return "Plan";if(trip&&trip.status==="live")return "On trip";const c=culls[j.id]||{};
@@ -2749,15 +2793,15 @@ function ppAllActions(){const out=[];ppTripsAll().forEach(t=>{if(ppPrio("trip:"+
  return out.sort((a,b)=>b.score.s-a.score.s)}
 function renderPipe(){const el=$("#desk-trips");if(!el)return;$("#pp-quiet").style.display=db?"none":"block";
  $("#pp-views").querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.pv===ppView)));
- ["next","board","bank","list","trip","eye"].forEach(v=>{$("#pp-"+v).hidden=v!==ppView});
- try{({next:ppRenderNext,board:ppRenderBoard,bank:ppRenderBank,list:ppRenderList,trip:ppRenderTrip,eye:ppRenderEye}[ppView]||ppRenderNext)()}catch(e){console.warn("pipe",e)}
- try{ppRenderToday()}catch(e){}}
+ if(ppView==="list")ppView="ideas";["next","board","bank","list","photos","ideas","week","writing","trip","eye"].forEach(v=>{const e=$("#pp-"+v);if(e)e.hidden=v!==ppView});
+ try{({next:ppRenderNext,board:ppRenderBoard,bank:ppRenderBank,list:ppRenderList,photos:ppRenderPhotos,ideas:ppRenderIdeas,week:ppRenderWeekView,writing:ppRenderWriting,trip:ppRenderTrip,eye:ppRenderEye}[ppView]||ppRenderNext)()}catch(e){console.warn("pipe",e)}
+ try{ppRenderToday()}catch(e){}ppTabCounts();const bb=$("#pp-brief");if(bb){const t=ppView==="trip"&&ppTrip?ppTripsAll().find(x=>x.key===ppTrip):null;bb.textContent=t?"Brief: "+t.name.slice(0,28):"Run this week's brief"}}
 function ppActCard(a,i){return `<div class="card"><div class="n">${i+1}</div><div><div class="meta"><span class="pstage">${esc(a.st)}</span> ${esc(a.trip.name)}</div><h4 style="margin:4px 0 2px">${esc(a.text)}</h4><div class="note">${esc(a.sub||"")}</div><div class="note" style="margin-top:4px;color:var(--muted)">Why now: ${esc(a.score.why.slice(0,3).join(" · ")||"next in line")}</div></div><div><button class="btn" data-ppact="${esc(a.act)}" data-trip="${esc(a.trip.key)}" data-job="${esc(a.j?a.j.id:"")}" data-k="${esc(a.k||"")}">${esc(a.btn)}</button></div></div>`}
 function ppRenderNext(){const acts=ppAllActions();const more=$("#pp-next").dataset.more==="1";const show=acts.slice(0,more?6:3);
  $("#pp-next").innerHTML=acts.length?`<div class="pnext">${show.map(ppActCard).join("")}</div><div class="row" style="margin-top:10px"><span class="note">${acts.length>3?`${acts.length-3} more wait out of sight. Finish one and the next moves up.`:"That's everything for now."}</span>${acts.length>3?`<button class="copy" id="pp-more">${more?"show 3":"show 3 more"}</button>`:""}</div>`:`<div class="note">Nothing needs you. When a trip's research lands or photos are due, it shows up here.</div>`;
  const m=$("#pp-more");if(m)m.onclick=()=>{$("#pp-next").dataset.more=more?"0":"1";ppRenderNext()};ppWireActs($("#pp-next"));
  const wa=ppWindowAlerts();if(wa.length){const bn=document.createElement("div");bn.className="card";bn.style.marginBottom="12px";bn.innerHTML=`<details><summary class="note" style="cursor:pointer"><b>${wa.length} search window${wa.length===1?" is":"s are"} open now.</b> They're already ranked into your three; tap to see them all.</summary><div class="note" style="margin-top:6px">${wa.map(x=>`${esc(x.j.title)} · by ${esc(x.w.next)} · ${esc(x.st.toLowerCase())}`).join("<br>")}</div></details>`;$("#pp-next").prepend(bn);ppNotifyWindows(wa)}
- $("#pp-next").prepend(ppRenderWeek())}
+ const wd=document.createElement("div");wd.innerHTML=ppWeekCard(false);$("#pp-next").prepend(wd);ppWireWeek(wd)}
 function ppRenderToday(){const el=$("#t-next3");if(!el)return;const acts=ppAllActions().slice(0,3);el.innerHTML=acts.length?`<div class="fs" style="margin-top:0;border-top:0;padding-top:0"><div class="fsh"><span class="num">Trips</span><span class="fst">Your next three</span><button class="copy" data-go="trips" style="margin-left:auto">all trips →</button></div><div class="pnext">${acts.map(ppActCard).join("")}</div></div>`:"";ppWireActs(el);el.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go))}
 function ppWireActs(root){root.querySelectorAll("[data-ppact]").forEach(b=>b.onclick=()=>ppDo(b.dataset.ppact,b.dataset.trip,b.dataset.job,b,b.dataset.k))}
 async function ppDo(act,tkey,jid,btn,k){const t=ppTripsAll().find(x=>x.key===tkey);const j=pipeJobs.find(x=>x.id===jid);
@@ -2832,6 +2876,67 @@ async function ppQueueIdeas(list,btn){if(!canWrite||!list.length)return;if(btn)b
    on_site:b.fresh.map(r=>({title:r.title,url:r.url,format:r.format})).slice(0,30),old_posts:b.old.map(r=>({title:r.title,url:r.url})).slice(0,30),
    status:"queued",score:ppBankScore(t,b),requested_at:Date.now(),updatedAt:Date.now()});n++}catch(e){}}
  $("#pp-note").textContent=n?`${n} trip${n===1?"":"s"} added to the ideas queue. The ideas agent researches them in order.`:"Already in the queue.";if(btn)btn.disabled=false}
+// ---------- Trips, round four: card / list / timeline views, tab counts, Brief, more ideas from Search Console ----------
+let gscIdeas=null;
+const REGION_TINT={"Europe":"#C9B79C","Asia":"#B7C4B0","Africa":"#D4B08C","Middle East":"#D9C29A","South America":"#B9C9B5","North America":"#B8C2CC","Central America & Caribbean":"#A9C9C6","Oceania & Pacific":"#A8BFD0","Other":"#CFC6B8"};
+function ppTabCounts(){try{const ideas=ppOpenIdeas();const photo=ideas.filter(x=>{const c=culls[x.j.id]||{};return x.t&&!c.approved}).length;const writing=ideas.filter(x=>x.j.draft_job||["queued","drafted","built","approved","needs-coco"].includes(x.j.status)).length;const wk=weekPlans[ppWeekKey()];
+ const set=(v,t)=>{const b=$(`#pp-views [data-pv="${v}"]`);if(!b)return;if(!b.dataset.label)b.dataset.label=b.textContent;b.innerHTML=esc(b.dataset.label)+(t!==""&&t!=null?` <span class="tabn">${esc(t)}</span>`:"")};
+ set("photos",photo||"");set("ideas",ideas.length||"");set("writing",writing||"");set("week",wk&&wk.accepted_at?"✓":"!");set("bank",ppTripsAll().filter(t=>t.status==="past"||t.src==="stash").length)}catch(e){}}
+function ppTripCard(t,b){const s=ppSignals(t);const sc=ppTripScore(t).score;const reg=ppTripRegion(t);const tint=REGION_TINT[reg]||REGION_TINT.Other;
+ return `<div class="tcard"><div class="tband" style="background:${tint}"><span>${esc(reg)}</span><span class="tscore" title="Desk priority score">${sc}</span></div><div class="tbody"><div class="meta">${t.undated?"dates to add":esc(t.start||"")}${t.end&&t.end!==t.start?" → "+esc(t.end):""} · ${esc(ppTripType(t))}${ppPrio("trip:"+t.key)?` · <b>${esc(ppPrio("trip:"+t.key))}</b>`:""}</div><h4>${esc(t.name)}</h4><div class="note">${esc((t.places||[]).slice(0,4).join(" · "))}</div>
+ <div class="tstats"><span><b>${b.pieces.length}</b> ideas</span><span><b>${b.stays}</b> stays</span><span><b>${s.paa.length}</b> questions</span><span>${s.open?`<b>${s.open}</b> in season`:s.next?"next "+esc(s.next):"—"}</span></div>
+ ${s.topKw.length?`<div class="note" style="margin-top:6px">“${esc(s.topKw[0])}”</div>`:""}
+ <div class="row" style="gap:6px;margin-top:10px;flex-wrap:wrap"><button class="btn alt sm" data-open="${esc(t.key)}">Open</button><button class="copy" data-brief="${esc(t.key)}">brief</button>${(b.q&&b.q.status!=="failed")||b.research?"":`<button class="copy" data-idea="${esc(t.key)}">find ideas</button>`}${ppPrioSel("trip:"+t.key)}</div></div></div>`}
+function ppTimeline(rows){const by={};rows.forEach(x=>{const y=(x.t.start||"").slice(0,4)||"Dates to add";(by[y]=by[y]||[]).push(x)});const ys=Object.keys(by).sort((a,b)=>a==="Dates to add"?-1:b==="Dates to add"?1:b.localeCompare(a));
+ return `<div class="tline">${ys.map(y=>`<div class="tyear">${esc(y)}</div>${by[y].sort((a,b)=>(b.t.start||"").localeCompare(a.t.start||"")).map(({t,b})=>{const s=ppSignals(t);const reg=ppTripRegion(t);return `<div class="titem"><span class="tdot" style="background:${REGION_TINT[reg]||REGION_TINT.Other}"></span><div class="tmon">${t.start?new Date(t.start+"T12:00:00").toLocaleDateString("en-US",{month:"short"}):"—"}</div><div class="tcontent"><b>${esc(t.name)}</b> <span class="note">${esc(reg)} · ${esc(ppTripType(t))} · ${b.pieces.length} ideas · score ${ppTripScore(t).score}${s.open?` · <b>${s.open} in season</b>`:""}</span><div class="row" style="gap:6px;margin-top:4px"><button class="copy" data-open="${esc(t.key)}">open</button><button class="copy" data-brief="${esc(t.key)}">brief</button></div></div></div>`}).join("")}`).join("")}</div>`}
+// ----- Brief: the week across all trips, or one trip -----
+async function ppRunBrief(tripKey){if(!sample){openPanel('<p class="note">Claude isn\'t available in this view.</p>');return}const t=tripKey?ppTripsAll().find(x=>x.key===tripKey):null;
+ openPanel(`<h4>${t?"Brief · "+esc(t.name):"This week's brief"}</h4><div id="br-body" class="note">Reading your trips, ideas, photos, search signals and calendar…</div>`,true);
+ try{let r;if(t){const ps=ppPieces(t).map(j=>({j,sc:ppIdeaScore(j,t)})).sort((a,b)=>b.sc.total-a.sc.total);const sg=(research[t.id]||{}).signals||{};
+   r=await sample.json(`You are the editor of Coco Tran's luxury travel magazine (cocotran.com); she is also a luxury travel advisor and a film and digital photographer. Today is ${today()}. Write a short, practical content brief for ONE trip so she knows exactly what to do and in what order. Plain words, no hype.
+TRIP: ${t.name} · ${t.start||"undated"} · ${ppTripType(t)} · places ${(t.places||[]).join(", ")} · stays ${bankFor(t).stays}
+SEARCH SIGNALS: peak ${(sg.peak_months||[]).join(",")||"?"} · best window ${sg.best_window||"?"} · competition ${sg.competition||"?"} · ${sg.summary||""}
+KEYWORDS: ${(sg.keywords||[]).map(k=>k.q+" ("+k.demand+")").join("; ")}
+QUESTIONS PEOPLE ASK: ${(sg.paa||[]).map(p=>typeof p==="string"?p:p.q).join(" | ")}
+PIECES (title · format · stage · score · publish by): ${ps.map(x=>`${x.j.title} · ${x.j.format} · ${ppStage(x.j,t)} · ${x.sc.total} · ${x.j.publish_by||"-"}`).join(" || ")}
+HER MATERIAL: ${ppNotesFor({subject:t.name}).length} inspections with notes, ${tripNotes.filter(n=>n.trip_id===t.id).length} Granola notes, ${ppStashFor(t).length} photo-list entries: ${ppStashFor(t).map(s=>s.text).join(" · ").slice(0,800)}
+Return JSON {"headline":"one sentence: why this trip, why now","order":[{"title":"piece title from the list","why":"one line","by":"YYYY-MM"}] (the first 3–5, in order),"photos":["the 3–5 photo jobs first, e.g. cull the hotel set for X"],"answer_these":["3–5 questions from the list the pieces must answer"],"social":["2–3 post ideas from this trip"],"youtube":"one video idea","skip":"what can wait and why"}.`,{cache:false})}
+  else{const ideas=ppOpenIdeas().sort((a,b)=>b.sc.total-a.sc.total).slice(0,10);const ph=ideas.filter(x=>!(culls[x.j.id]||{}).approved).slice(0,5);const wk=weekPlans[ppWeekKey()];const wa=ppWindowAlerts().slice(0,8);
+   r=await sample.json(`You are the editor of Coco Tran's luxury travel magazine (cocotran.com) and her studio manager. Today is ${today()}. She gets overwhelmed by long lists, so write a SHORT weekly brief. Pace: ${planPace.articles} articles and ${planPace.social} social posts a week.
+TOP IDEAS (title · trip · stage · score · why): ${ideas.map(x=>`${x.j.title} · ${x.t?x.t.name:""} · ${ppStage(x.j,x.t)} · ${x.sc.total} · ${x.sc.why.join(", ")}`).join(" || ")}
+PHOTO WORK WAITING: ${ph.map(x=>x.j.title+" ("+ppSlots(x.j).length+" photos)").join("; ")||"none"}
+SEARCH WINDOWS OPEN: ${wa.map(x=>x.j.title+" by "+x.w.next).join("; ")||"none"}
+THIS WEEK'S PLAN: ${wk&&wk.accepted_at?(wk.items||[]).map(i=>i.text+" ("+i.date+")").join("; "):"not approved yet"}
+THE DESK'S TRIP PICKS: ${(tripPrioCall&&tripPrioCall.picks||[]).map(p=>p.trip_key+": "+p.start_with).join("; ")||"not asked yet"}
+UPCOMING TRIPS: ${ppTripsAll().filter(x=>x.status==="upcoming").map(x=>x.name+" "+x.start).join("; ")||"none"}
+Return JSON {"headline":"one sentence","do_this_week":["3–5 concrete actions in order, each one line"],"photos":["1–3 photo jobs"],"watch":["1–2 deadlines or windows"],"skip":"one line on what can wait"}.`,{cache:false})}
+  if(canWrite){try{if(t)await db.doc("research/"+String(t.id).replace(/[^a-zA-Z0-9_-]/g,"")).set({...(research[t.id]||{}),brief:{...r,at:Date.now()}});else await db.doc("settings/brief_latest").set({...r,at:Date.now()})}catch(e){}}
+  const li=(xs,f)=>(xs||[]).length?`<ol class="shotl">${xs.map(x=>`<li>${f?f(x):esc(typeof x==="string"?x:JSON.stringify(x))}</li>`).join("")}</ol>`:"";
+  $("#br-body").innerHTML=`<p style="margin:0 0 8px"><b>${esc(r.headline||"")}</b></p>${t?`<div class="meta">Write, in this order</div>${li(r.order,o=>`<b>${esc(o.title)}</b> <span class="note">· ${esc(o.why||"")}${o.by?" · by "+esc(o.by):""}</span>`)}<div class="meta">Photos first</div>${li(r.photos)}<div class="meta">Questions to answer</div>${li(r.answer_these)}<div class="meta">Social</div>${li(r.social)}${r.youtube?`<div class="meta">YouTube</div><p class="note" style="margin:0 0 6px">${esc(r.youtube)}</p>`:""}`:`<div class="meta">Do this week</div>${li(r.do_this_week)}<div class="meta">Photos</div>${li(r.photos)}<div class="meta">Watch</div>${li(r.watch)}`}${r.skip?`<p class="note" style="margin:8px 0 0">Can wait: ${esc(r.skip)}</p>`:""}`}
+ catch(e){$("#br-body").textContent="Couldn't write the brief: "+(e&&e.code||e&&e.message||"error")}}
+// ----- More ideas from Search Console: queries you already get impressions for, turned into pieces -----
+function ppGscQueries(){const out=[];((insightsLatest&&insightsLatest.content_gaps)||[]).forEach(g=>out.push({q:g.query,impr:g.impressions||0,landing:g.landing_id||"",src:"gap"}));
+ lib.forEach(r=>{const k=(r.rank||{});const tq=k.top_queries||k.queries||[];tq.forEach(q=>{q=typeof q==="string"?q:q&&q.query;if(q)out.push({q,impr:Math.round((+k.impressions28||0)/Math.max(1,tq.length)),landing:r.id,pos:k.position28||k.position||null,src:"page"})})});
+ const seen=new Set();return out.filter(x=>{const n=ppNorm(x.q);if(!n||seen.has(n))return false;seen.add(n);return true}).sort((a,b)=>b.impr-a.impr).slice(0,90)}
+async function ppGscIdeas(btn){const note=$("#gsc-note");if(!sample){note.textContent="Claude isn't available in this view.";return}const qs=ppGscQueries();if(!qs.length){note.textContent="No Search Console queries in the desk yet. The Monday analytics run brings them in.";return}
+ if(btn)btn.disabled=true;note.textContent=`Reading ${qs.length} Search Console queries…`;
+ const trips=ppTripsAll().filter(t=>t.status==="past"||t.src==="stash").map(t=>`${t.key} = ${t.name}: ${(t.places||[]).slice(0,8).join(", ")}`).join("\n");const have=pipeJobs.map(j=>j.title).concat(lib.filter(r=>(r.cpt||"post")!=="post").map(r=>r.title)).slice(0,400);
+ try{const r=await sample.json(`Coco Tran's magazine (cocotran.com) already shows up in Google for the queries below (Search Console, last 28 days; "gap" means no page really answers it, "page" means it lands on that page). Turn the best opportunities into NEW pieces she can write from her own trips. Match each to the trip she has first-hand material from (only if the place matches). Use the house pillars and title formats: The Verdict: [Hotel], [Place] · The Comparison: A vs B · The Primer: [Place] · The Rolodex: [Place] · The Route: [N Days] in [Place] · [Place] : The Dossier · [Place] [Theme]: The Shortlist · Postcard From [Place] · A Table At: [Restaurant], [City] · The Take: … · The Answer: …?
+Don't repeat anything she already has.
+QUERIES (query · impressions · source · landing): ${qs.map(x=>`${x.q} · ${x.impr} · ${x.src} · ${x.landing}`).join(" | ")}
+HER TRIPS (key = name: places):
+${trips}
+ALREADY PLANNED OR LIVE: ${have.join(" | ")}
+Return JSON {"ideas":[{"query":"the Search Console query","impressions":number,"trip_key":"a key from the list or null","format":"verdict|comparison|primer|rolodex|route|dossier|shortlist|postcard|fieldnotes|take|answer","title":"house-format title","keyword":"primary keyword","why":"one line: the traffic already there and what the piece wins"}]} with 8–15 ideas, best first.`,{cache:false});
+  gscIdeas={ideas:(r.ideas||[]).slice(0,20),at:Date.now()};if(canWrite){try{await db.doc("settings/gsc_ideas").set(gscIdeas)}catch(e){}}note.textContent="";ppRenderIdeas()}catch(e){note.textContent="Couldn't read them: "+(e&&e.code||"error")}finally{if(btn)btn.disabled=false}}
+function ppGscCard(){const g=gscIdeas;const all=ppTripsAll();const have=new Set(pipeJobs.map(j=>ppNorm(j.title)));
+ return `<div class="card" style="margin-bottom:12px"><div class="fsh" style="margin:0 0 6px"><span class="num">GSC</span><span class="fst">More ideas from your Search Console</span><button class="btn alt sm" id="gsc-run" style="margin-left:auto">${g?"refresh":"get ideas"}</button></div><p class="note" style="margin:0">Queries Google already shows you for, from Search Console, turned into pieces from your own trips.${g&&g.at?" Updated "+new Date(g.at).toLocaleDateString():""}</p><div class="note" id="gsc-note"></div>
+ ${g&&(g.ideas||[]).length?(g.ideas||[]).map((x,i)=>{const t=all.find(tt=>tt.key===x.trip_key);const added=have.has(ppNorm(x.title));return `<div class="prow"><div><div class="meta">${esc((FORMATS[x.format]||{}).label||x.format||"")} · “${esc(x.query)}” · ${esc(String(x.impressions||0))} impressions${t?" · "+esc(t.name):""}</div><b>${esc(x.title)}</b><div class="note">${esc(x.why||"")}</div></div><div class="row" style="gap:6px">${added?'<span class="pill ok">added</span>':t?`<button class="copy" data-gscadd="${i}">add to ${esc(t.name.slice(0,18))}</button>`:`<button class="copy" data-gscnew="${i}">start in New piece</button>`}</div></div>`}).join(""):""}</div>`}
+async function ppGscAdd(i){const x=(gscIdeas&&gscIdeas.ideas||[])[i];if(!x||!canWrite)return;const t=ppTripsAll().find(tt=>tt.key===x.trip_key);if(!t)return;const id=("pp-gsc-"+ppNorm(x.title).replace(/ /g,"-")).slice(0,80);
+ await db.doc("jobs/"+id).set({id,pipeline:true,trip_id:t.id,type:"new",mode:"new",format:x.format,title:x.title,subject:x.format==="verdict"?String(x.title).replace(/^The Verdict:\s*/,"").replace(/,[^,]*$/,""):String(x.title).replace(/^The [A-Z][a-z]+:\s*/,""),primary_keyword:x.keyword||x.query,demand:(x.impressions||0)>=500?"high":(x.impressions||0)>=100?"medium":"low",why:"Search Console: “"+x.query+"” · "+(x.impressions||0)+" impressions. "+(x.why||""),status:"planned",priority:0,trust:{},needs_coco:[],notes:"PIPELINE PIECE from Search Console (query “"+x.query+"”). Same rules as the other pipeline pieces: Coco's inspections, trip_notes and trip reflections for first-hand facts; photos from culls/"+id+".",idea:{q:x.query,src:["search-console"],questions:[],secondary:[]},createdAt:Date.now(),updatedAt:Date.now()})}
+function ppGscNew(i){const x=(gscIdeas&&gscIdeas.ideas||[])[i];if(!x)return;const set=(id,v)=>{const e=$("#"+id);if(e){e.value=v;ls.set(id,v)}};set("n-mode","new");try{syncMode()}catch(e){}if($("#n-format")&&[...$("#n-format").options].some(o=>o.value===x.format))set("n-format",x.format);set("n-subject",String(x.title).replace(/^The [A-Z][a-z]+:\s*/,""));set("n-goal",x.why||"");set("n-notes","FROM SEARCH CONSOLE: “"+x.query+"” · "+(x.impressions||0)+" impressions in 28 days.\nTitle idea: "+x.title+"\nPrimary keyword: "+(x.keyword||x.query));try{renderGoalChips();renderFmtPick()}catch(e){}show("new");window.scrollTo({top:0})}
+function ppWireViewsCommon(root){root.querySelectorAll("[data-brief]").forEach(b=>b.onclick=()=>ppRunBrief(b.dataset.brief));const gr=root.querySelector("#gsc-run");if(gr)gr.onclick=()=>ppGscIdeas(gr);root.querySelectorAll("[data-gscadd]").forEach(b=>b.onclick=async()=>{b.disabled=true;try{await ppGscAdd(+b.dataset.gscadd);b.textContent="added"}catch(e){b.disabled=false}});root.querySelectorAll("[data-gscnew]").forEach(b=>b.onclick=()=>ppGscNew(+b.dataset.gscnew))}
+
 function ppRenderBank(){const all=ppTripsAll().filter(t=>(t.start||t.src==="stash")&&t.status==="past");const cut=new Date();cut.setFullYear(cut.getFullYear()-3);const c3=cut.toISOString().slice(0,10);
  const recent=all.filter(t=>!t.start||t.start>=c3).sort((a,b)=>(b.start||"9").localeCompare(a.start||"9")),older=all.filter(t=>t.start&&t.start<c3).sort((a,b)=>b.start.localeCompare(a.start));
  const rows=recent.map(t=>({t,b:bankFor(t)}));const tot=k=>rows.reduce((a,x)=>a+k(x),0);const qs=Object.values(ideasQueue);
@@ -2841,12 +2946,15 @@ function ppRenderBank(){const all=ppTripsAll().filter(t=>(t.start||t.src==="stas
  const years=[...new Set(rows.map(x=>(x.t.start||"").slice(0,4)))];const F=ppBankFilters();const filtering=!!(F.q||F.region||F.year||F.type||F.only)||F.sort!=="recent";
  const shown=filtering?ppBankSort(ppBankFilterRows(rows.concat((F.q||F.region||F.year||F.type||F.only)?older.map(t=>({t,b:bankFor(t)})):[]))):[];
  const sortName={ai:"desk priority",recent:"most recent",demand:"search demand",paa:"questions asked",window:"window opening soonest",ideas:"most ideas"}[F.sort]||"";
+ const bv=ls.get("bk-view")||"cards";const viewOf=rs=>bv==="cards"?`<div class="tgrid">${rs.map(x=>ppTripCard(x.t,x.b)).join("")}</div>`:bv==="timeline"?ppTimeline(rs):`<div class="card">${rs.map(card).join("")}</div>`;
+ const vsw=`<div class="views bkview" id="bk-view">${[["cards","Cards"],["list","List"],["timeline","Timeline"]].map(([k,n])=>`<button data-bv="${k}" aria-selected="${k===bv}">${n}</button>`).join("")}</div>`;
  $("#pp-bank").innerHTML=`<div class="card"><div class="row" style="gap:12px;flex-wrap:wrap;align-items:baseline"><b style="font-size:16px">${recent.length} trips in the last three years</b><span class="note">${tot(x=>(x.t.places||[]).length)} places · ${tot(x=>x.b.stays)} stays · ${tot(x=>x.b.fresh.length)} pieces on the site · ${tot(x=>x.b.pieces.length)} planned</span><span class="note" style="margin-left:auto">${esc(qLine)}</span></div>
  <p class="note" style="margin:8px 0 0">Everything you've already lived, waiting to become content. "Find ideas" sends a trip to the ideas agent: keyword research for every place and stay, matched to a pillar, ranked by search demand and timing. The ideas land in the trip as planned pieces and in <b>By priority</b>; nothing reaches Next 3 until it's the best use of your time.</p>
  ${(()=>{const best=rows.map(x=>({t:x.t,r:ppTripResults(x.t)})).filter(x=>x.r.clicks).sort((a,b)=>b.r.clicks-a.r.clicks).slice(0,3);return best.length?`<div class="note" style="margin-top:8px"><b>Earning the most (last 28 days):</b> ${best.map(x=>`${esc(x.t.name)} · ${x.r.clicks} clicks${x.r.inq?" · "+x.r.inq+" inquiries":""}`).join(" · ")}</div>`:""})()}<div class="row" style="margin-top:8px"><button class="btn alt" id="bank-all">Send every trip without ideas</button></div></div>${ppPrioCallCard()}${ppRenderStash()}
- <div class="fs"><div class="fsh"><span class="num">Trips</span><span class="fst">${filtering?`${shown.length} trips · sorted by ${esc(sortName)}`:"By year"}</span></div>${ppBankToolbar(rows.map(x=>x.t).concat(older))}</div>
- ${filtering?`<div class="card">${shown.map(card).join("")||'<div class="note">No trips match.</div>'}</div>`:years.map(y=>`<div class="fs"><div class="fsh"><span class="num">${esc(y||"Dates to add")}</span><span class="fst">${rows.filter(x=>(x.t.start||"").slice(0,4)===y).length} trips</span></div><div class="card">${rows.filter(x=>(x.t.start||"").slice(0,4)===y).map(card).join("")}</div></div>`).join("")}
- ${older.length?`<details class="fs"><summary class="note" style="cursor:pointer">${older.length} trips from before ${esc(c3.slice(0,4))}</summary><div class="card">${older.map(t=>card({t,b:bankFor(t)})).join("")}</div></details>`:""}`;
+ <div class="fs"><div class="fsh"><span class="num">Trips</span><span class="fst">${filtering?`${shown.length} trips · sorted by ${esc(sortName)}`:bv==="timeline"?"Timeline":"By year"}</span><span style="margin-left:auto">${vsw}</span></div>${ppBankToolbar(rows.map(x=>x.t).concat(older))}</div>
+ ${filtering?(shown.length?viewOf(shown):'<div class="card"><div class="note">No trips match.</div></div>'):bv==="timeline"?ppTimeline(rows):years.map(y=>`<div class="fs"><div class="fsh"><span class="num">${esc(y||"Dates to add")}</span><span class="fst">${rows.filter(x=>(x.t.start||"").slice(0,4)===y).length} trips</span></div>${viewOf(rows.filter(x=>(x.t.start||"").slice(0,4)===y))}</div>`).join("")}
+ ${older.length?`<details class="fs"><summary class="note" style="cursor:pointer">${older.length} trips from before ${esc(c3.slice(0,4))}</summary>${viewOf(older.map(t=>({t,b:bankFor(t)})))}</details>`:""}`;
+ $("#bk-view").querySelectorAll("[data-bv]").forEach(b=>b.onclick=()=>{ls.set("bk-view",b.dataset.bv);ppRenderBank()});ppWireViewsCommon($("#pp-bank"));
  $("#pp-bank").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>ppDo("trip",b.dataset.open));ppWireStash($("#pp-bank"));ppWireBankTools($("#pp-bank"));
  $("#pp-bank").querySelectorAll("[data-idea]").forEach(b=>b.onclick=()=>{const t=all.find(x=>x.key===b.dataset.idea);if(t)ppQueueIdeas([t],b)});
  $("#bank-all").onclick=()=>ppQueueIdeas(rows.filter(x=>!x.b.research&&(!x.b.q||x.b.q.status==="failed")).sort((a,b)=>ppBankScore(b.t,b.b)-ppBankScore(a.t,a.b)).map(x=>x.t),$("#bank-all"));ppWirePrio($("#pp-bank"))}
@@ -3003,6 +3111,89 @@ function ppWireBankTools(root){["q","region","year","type","only","sort"].forEac
  const a=root.querySelector("#bk-ask");if(a)a.onclick=ppAskPriority;
  root.querySelectorAll("[data-callnow]").forEach(b=>b.onclick=async()=>{if(!canWrite)return;const k="trip:"+b.dataset.callnow;try{await db.doc("board/"+k.replace(/[/:]/g,"_")).set({key:k,priority:"now",updatedAt:Date.now()})}catch(e){}})}
 
+// ---------- Trips, round three: Photos · Ideas · This week · Writing (2 articles + 3 social a week) ----------
+let planPace={articles:2,social:3,auto:false}, npFromPipeline=null;
+const ROI_FMT={verdict:5,shortlist:5,comparison:4,tradeoff:4,roundup:3,rolodex:3,route:3,dossier:2,primer:2,answer:2,fieldnotes:2,postcard:1,take:1};
+const EASY_FMT={answer:2,postcard:2,take:2,fieldnotes:1,comparison:0,verdict:0,shortlist:0,primer:0,route:-1,rolodex:-1,dossier:-1,roundup:0,tradeoff:0};
+function ppTripOf(j){return ppTripsAll().find(t=>t.id===j.trip_id||("pp-a"+t.id)===j.trip_id)||null}
+function ppDraftJob(j){return j.draft_job?jobsCache.find(x=>x.id===j.draft_job)||null:null}
+function ppIdeaScore(j,t){const why=[];const dem={high:3,medium:2,low:1}[String(j.demand||"").toLowerCase()]||1;const sg=(research[j.trip_id]||{}).signals||{};
+ const kw=ppNorm(j.primary_keyword||"");const kwHit=(sg.keywords||[]).find(k=>kw&&(ppNorm(k.q).includes(kw)||kw.includes(ppNorm(k.q))));const paaHit=(sg.paa||[]).filter(p=>{const q=ppNorm(typeof p==="string"?p:p.q);return kw&&kw.split(" ").filter(w=>w.length>3).some(w=>q.includes(w))}).length;
+ const seo=dem*2+(kwHit?({high:3,medium:2,low:1}[String(kwHit.demand).toLowerCase()]||0):0)+Math.min(3,paaHit);if(dem>=3)why.push("high search demand");if(paaHit)why.push(paaHit+" questions people ask");
+ const w=ppWindow(j);const season=w.state==="open"?4:w.state==="soon"?2:0;if(season)why.push(w.state==="open"?"in season now (by "+w.next+")":"season opens soon ("+w.next+")");
+ const roi=(ROI_FMT[j.format]||1)+((j.hotel||j.format==="verdict"||j.format==="shortlist"||j.format==="comparison")?1:0);if(roi>=5)why.push("books clients");
+ const c=culls[j.id]||{};const notes=ppNotesFor(j).length>0||tripNotes.some(n=>n.trip_id===j.trip_id);const ease=(EASY_FMT[j.format]||0)+(c.approved?2:0)+(c.edited?2:0)+(notes?2:0)+((j.needs_coco||[]).length?-1:1);if(ease>=4)why.push("quick to do");
+ const call=(tripPrioCall&&tripPrioCall.picks||[]).some(p=>t&&p.trip_key===t.key);const bp=ppPrio("job:"+j.id)||(t?ppPrio("trip:"+t.key):"");const prio=(call?3:0)+(bp==="now"?10:bp==="next"?3:bp==="later"?-5:0);if(call)why.push("the desk's pick");
+ const total=Math.round((seo*1.2+season*1.5+roi*1.1+ease+prio)*10)/10;return {seo,season,roi,ease,prio,total,why,w}}
+function ppOpenIdeas(){return pipeJobs.filter(j=>!ppLive(j)&&ppPrio("job:"+j.id)!=="archive").map(j=>{const t=ppTripOf(j);return {j,t,sc:ppIdeaScore(j,t)}}).filter(x=>!x.t||x.t.status!=="upcoming")}
+function ppPlanned(j){return plans.find(p=>p.job_id===j.id&&!p.publish_target)}
+// ----- Ideas -----
+function ppRenderIdeas(){const lens=ls.get("ideaLens")||"best";const all=ppOpenIdeas();
+ const L={best:["Best right now",x=>-x.sc.total],quick:["Quick wins",x=>-(x.sc.ease*10+x.sc.total)],roi:["Highest return",x=>-(x.sc.roi*10+x.sc.total)],season:["In season",x=>((x.sc.w.mt??99)*100)-x.sc.total],seo:["Search demand",x=>-(x.sc.seo*10+x.sc.total)]};
+ let rows=all.slice();if(lens==="season")rows=rows.filter(x=>x.sc.season);rows.sort((a,b)=>L[lens][1](a)-L[lens][1](b));const more=$("#pp-ideas").dataset.more==="1";const shown=rows.slice(0,more?60:15);
+ const chip=(l,v,max)=>`<span class="pill" title="${esc(l)}">${esc(l)} ${v}${max?"/"+max:""}</span>`;
+ $("#pp-ideas").innerHTML=ppGscCard()+`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:10px"><div class="views" id="idea-lens">${Object.entries(L).map(([k,[n]])=>`<button data-lens="${k}" aria-selected="${k===lens}">${esc(n)}</button>`).join("")}</div><span class="note">${rows.length} ideas · scored on search demand and questions asked, season, return (agency inquiries), ease and your priorities</span></div>
+ <div class="card">${shown.map(({j,t,sc})=>{const pl=ppPlanned(j);const st=ppStage(j,t);return `<div class="prow"><div><div class="meta"><span class="pstage">${esc(st)}</span> ${esc(t?t.name:"")} · ${esc((FORMATS[j.format]||{}).label||j.format||"")}${j.publish_by?" · by "+esc(j.publish_by):""}</div><b>${esc(j.title||j.subject)}</b><div class="note">${esc(j.primary_keyword||"")}${sc.why.length?" · "+esc(sc.why.slice(0,3).join(" · ")):""}</div><div style="margin-top:4px">${chip("Score",sc.total)}${chip("SEO",sc.seo)}${chip("Season",sc.season)}${chip("Return",sc.roi)}${chip("Ease",sc.ease)}</div></div>
+ <div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-end">${pl?`<span class="pill ok">on plan ${esc(pl.date)}</span>`:`<button class="copy" data-plan="${esc(j.id)}">put on my plan</button>`}<button class="copy" data-wwm="${esc(j.id)}">write it with me</button>${t?`<button class="copy" data-open="${esc(t.key)}">trip</button>`:""}</div></div>`}).join("")||'<div class="note">Nothing here for this lens.</div>'}</div>${rows.length>15?`<div class="row" style="margin-top:8px"><button class="copy" id="idea-more">${more?"show fewer":"show all "+rows.length}</button></div>`:""}`;
+ $("#idea-lens").querySelectorAll("[data-lens]").forEach(b=>b.onclick=()=>{ls.set("ideaLens",b.dataset.lens);ppRenderIdeas()});const m=$("#idea-more");if(m)m.onclick=()=>{$("#pp-ideas").dataset.more=more?"0":"1";ppRenderIdeas()};ppWireIdeaBtns($("#pp-ideas"));ppWireViewsCommon($("#pp-ideas"))}
+function ppWireIdeaBtns(root){root.querySelectorAll("[data-plan]").forEach(b=>b.onclick=()=>{const j=pipeJobs.find(x=>x.id===b.dataset.plan);if(j)ppPlanAdd(j,b)});root.querySelectorAll("[data-wwm]").forEach(b=>b.onclick=()=>{const j=pipeJobs.find(x=>x.id===b.dataset.wwm);if(j)ppWriteWithMe(j)});root.querySelectorAll("[data-wwk]").forEach(b=>b.onclick=()=>{const j=pipeJobs.find(x=>x.id===b.dataset.wwk);if(j)ppDo("write",(ppTripOf(j)||{}).key,j.id,b)});root.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>ppDo("trip",b.dataset.open))}
+function ppSlotDates(kind,weeksAhead){const out=[];const base=new Date();base.setHours(12,0,0,0);const mon=new Date(base);mon.setDate(base.getDate()-((base.getDay()+6)%7));const offs=kind==="article"?[1,3]:[0,2,4];const td=today();
+ for(let w=0;w<(weeksAhead||1);w++)offs.forEach(o=>{const d=new Date(mon);d.setDate(mon.getDate()+o+7*w);const iso=d.toISOString().slice(0,10);if(iso>=td)out.push(iso)});return out}
+async function ppPlanAdd(j,btn){if(!canWrite)return;const taken=new Set(plans.filter(p=>p.kind==="article"&&!p.publish_target).map(p=>p.date));const free=ppSlotDates("article",6).find(d=>!taken.has(d))||today();if(btn)btn.disabled=true;
+ try{await db.collection("plan").add({kind:"article",title:"Write & publish: "+(j.title||j.subject),date:free,status:"planned",job_id:j.id,createdAt:Date.now(),updatedAt:Date.now()});if(btn)btn.textContent="on plan "+free}catch(e){if(btn)btn.disabled=false}}
+// ----- Photos -----
+function ppRenderPhotos(){const ideas=ppOpenIdeas();const by={};ideas.forEach(x=>{if(!x.t)return;const c=culls[x.j.id]||{};const need=!c.approved?"cull":!c.edited?"edit":(c.slots||[]).some(s=>s.film)?"film":"";if(!need)return;(by[x.t.key]=by[x.t.key]||{t:x.t,cull:[],edit:[],film:[],score:0})[need].push(x);by[x.t.key].score=Math.max(by[x.t.key].score,x.sc.total)});
+ const trips=Object.values(by).sort((a,b)=>b.score-a.score);const more=$("#pp-photos").dataset.more==="1";const shown=trips.slice(0,more?40:3);
+ const n=xs=>xs.reduce((a,x)=>a+ppSlots(x.j).length,0);
+ $("#pp-photos").innerHTML=`<p class="note" style="margin:0 0 10px">Your photo work, ordered by what the pieces are worth right now. Cull a whole trip in one drop; edit only the selects; film slots wait for your scans.</p>${shown.map(g=>`<div class="card" style="margin-bottom:12px"><div class="row" style="gap:8px;flex-wrap:wrap;align-items:baseline"><b style="font-size:16px">${esc(g.t.name)}</b><span class="note">${g.cull.length} to cull (${n(g.cull)} photos) · ${g.edit.length} to edit · ${g.film.length} waiting on film</span><span style="margin-left:auto" class="row">${g.cull.length>1?`<button class="btn alt" data-ppact="culltrip" data-trip="${esc(g.t.key)}" data-job="">Cull the whole trip</button>`:""}<button class="copy" data-open="${esc(g.t.key)}">trip</button></span></div>
+ ${g.cull.concat(g.edit).sort((a,b)=>b.sc.total-a.sc.total).slice(0,6).map(x=>{const c=culls[x.j.id]||{};const cul=!c.approved;return `<div class="prow"><div><div class="meta"><span class="pstage">${cul?"cull":"edit"}</span> ${ppSlots(x.j).length} photos · score ${x.sc.total}</div><b>${esc(x.j.title)}</b>${!cul&&c.edit_list?`<div class="note">Edit list: ${esc(String(c.edit_list).slice(0,140))}${String(c.edit_list).length>140?"…":""}</div>`:""}</div><div>${cul?`<button class="copy" data-ppact="cull" data-trip="${esc(g.t.key)}" data-job="${esc(x.j.id)}">cull</button>`:`<button class="copy" data-ppact="edited" data-trip="${esc(g.t.key)}" data-job="${esc(x.j.id)}">edited ✓</button>`}</div></div>`}).join("")}</div>`).join("")||'<div class="note">No photo work waiting.</div>'}${trips.length>3?`<button class="copy" id="ph-more">${more?"show fewer":"show all "+trips.length+" trips"}</button>`:""}`;
+ const m=$("#ph-more");if(m)m.onclick=()=>{$("#pp-photos").dataset.more=more?"0":"1";ppRenderPhotos()};ppWireActs($("#pp-photos"));$("#pp-photos").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>ppDo("trip",b.dataset.open))}
+// ----- This week: 2 articles + 3 social, proposed every Monday, approved in one tap (or automatically) -----
+function ppWeekProposal2(){const art=[],soc=[];const ideas=ppOpenIdeas().filter(x=>!ppPlanned(x.j)&&!(x.j.draft_job));
+ const ready=ideas.filter(x=>{const c=culls[x.j.id]||{};return c.approved}).sort((a,b)=>b.sc.total-a.sc.total);const rest=ideas.filter(x=>!ready.includes(x)).sort((a,b)=>b.sc.total-a.sc.total);
+ ready.concat(rest).slice(0,planPace.articles).forEach(x=>art.push({type:"article",job:x.j.id,title:x.j.title,text:"Write & publish: "+x.j.title,why:x.sc.why.slice(0,2).join(" · ")||"next in line",photos:!!(culls[x.j.id]||{}).approved}));
+ pipeJobs.filter(ppLive).forEach(j=>{ppShareLeft(j).slice(0,2).forEach(([k,l])=>{if(soc.length<planPace.social&&k!=="youtube")soc.push({type:"social",job:j.id,channel:k,title:j.title,text:`${l}: ${j.title}`})})});
+ const pLib=new Set(pipeJobs.filter(ppLive).map(ppLibFor).filter(Boolean).map(r=>r.id));if(soc.length<planPace.social){lib.filter(r=>/^live/.test(r.status||"")&&(r.cpt||"post")!=="post"&&!r.social_kit_made&&!pLib.has(r.id)).sort((a,b)=>ppRank(b).clicks-ppRank(a).clicks).slice(0,planPace.social-soc.length).forEach(r=>soc.push({type:"social",lib:r.id,channel:"carousel",title:r.title,text:"Carousel: "+r.title}))}
+ return {items:art.concat(soc)}}
+function ppWeekCard(full){const wk=ppWeekKey();const doc=weekPlans[wk];
+ if(doc&&doc.accepted_at&&doc.v===2){const done=it=>{if(it.type==="article"){const j=pipeJobs.find(x=>x.id===it.job);return j&&(ppLive(j)||!!ppDraftJob(j)||["queued","drafted","built","approved"].includes(j.status))}const j=pipeJobs.find(x=>x.id===it.job);return j?ppShareDone(j,it.channel):!!(lib.find(r=>r.id===it.lib)||{}).social_kit_made};
+  return `<div class="card" style="margin-bottom:12px"><div class="meta">This week · ${esc(wk)} · ${planPace.articles} articles + ${planPace.social} social</div><ol class="shotl">${(doc.items||[]).map(it=>`<li>${done(it)?"✓ ":""}${esc(it.text)} <span class="note">· ${esc(it.date||"")}</span></li>`).join("")}</ol><div class="note">${(doc.items||[]).filter(done).length} of ${(doc.items||[]).length} under way. It's on your Plan calendar.</div></div>`}
+ const p=ppWeekProposal2();if(!p.items.length)return "";
+ return `<div class="card" style="margin-bottom:12px"><div class="meta">${new Date().getDay()===1?"Monday plan":"Plan for this week"} · ${esc(wk)} · ${planPace.articles} articles + ${planPace.social} social</div>${full?`<ol class="shotl">${p.items.map(it=>`<li><b>${esc(it.type==="article"?"Article":"Social")}</b> ${esc(it.text)}${it.why?` <span class="note">· ${esc(it.why)}</span>`:""}${it.type==="article"&&!it.photos?' <span class="note">· photos to cull</span>':""}</li>`).join("")}</ol>`:`<div class="note">${p.items.filter(x=>x.type==="article").map(x=>esc(x.title)).join(" · ")} + ${p.items.filter(x=>x.type==="social").length} posts</div>`}<div class="row"><button class="btn" data-wk-ok>Approve the week</button><label class="note" style="display:flex;gap:6px;align-items:center;margin:0;text-transform:none;letter-spacing:0"><input type="checkbox" data-wk-auto${planPace.auto?" checked":""}> approve automatically every Monday</label><span class="note" data-wk-note></span></div></div>`}
+function ppWireWeek(root){const ok=root.querySelector("[data-wk-ok]");if(ok)ok.onclick=()=>ppWeekAccept2(false,ok);const au=root.querySelector("[data-wk-auto]");if(au)au.onchange=async()=>{planPace.auto=au.checked;if(canWrite){try{await db.doc("settings/plan_pace").set({...planPace,updatedAt:Date.now()})}catch(e){}}}}
+async function ppWeekAccept2(auto,b){if(!canWrite)return;const wk=ppWeekKey();const p=ppWeekProposal2();const aD=ppSlotDates("article",1),sD=ppSlotDates("social",1);const td=today();let ai=0,si=0;const items=[];
+ if(b)b.disabled=true;
+ try{for(const it of p.items){const date=it.type==="article"?(aD[ai++]||td):(sD[si++]||td);items.push({...it,date});
+   await db.collection("plan").add({kind:it.type==="article"?"article":"social",title:it.text,date,status:"planned",job_id:it.job||"",lib_id:it.lib||"",channel:it.channel||"",week:wk,auto:!!auto,createdAt:Date.now(),updatedAt:Date.now()})}
+  await db.doc("weekplan/"+wk).set({v:2,week:wk,pace:planPace,items,accepted_at:Date.now(),auto:!!auto,updatedAt:Date.now()})}catch(e){if(b)b.disabled=false;const n=b&&b.parentElement.querySelector("[data-wk-note]");if(n)n.textContent="Couldn't save the week."}}
+let weekAutoTried=false;async function ppWeekAuto(){if(weekAutoTried||!planPace.auto||!canWrite||!pipeJobs.length)return;const wk=ppWeekKey();if(weekPlans[wk]&&weekPlans[wk].accepted_at)return;weekAutoTried=true;let owner=false;try{const u=await claude.use("user");owner=u?.isOwner?.()??false}catch(e){}if(owner)await ppWeekAccept2(true)}
+function ppRenderWeekView(){$("#pp-week").innerHTML=ppWeekCard(true)+`<div class="card"><div class="meta">Pace</div><div class="row" style="gap:10px;flex-wrap:wrap"><label class="note" style="margin:0;text-transform:none;letter-spacing:0">Articles a week <input type="number" id="pace-a" min="0" max="7" value="${planPace.articles}" style="width:60px"></label><label class="note" style="margin:0;text-transform:none;letter-spacing:0">Social posts a week <input type="number" id="pace-s" min="0" max="14" value="${planPace.social}" style="width:60px"></label><button class="copy" id="pace-save">save</button><button class="copy" data-go="plan">open the Plan calendar →</button></div><p class="note" style="margin:8px 0 0">Articles land on Tuesday and Thursday, posts on Monday, Wednesday and Friday. The desk picks from the best ideas whose photos are ready, then the best of the rest; posts come from live pieces that haven't gone out on every channel.</p></div>`;
+ ppWireWeek($("#pp-week"));$("#pace-save").onclick=async()=>{planPace={...planPace,articles:Math.max(0,+$("#pace-a").value||0),social:Math.max(0,+$("#pace-s").value||0)};if(canWrite){try{await db.doc("settings/plan_pace").set({...planPace,updatedAt:Date.now()})}catch(e){}}ppRenderWeekView()};$("#pp-week").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go))}
+// ----- Writing: into New piece, or the worker -----
+function ppRenderWriting(){const wk=weekPlans[ppWeekKey()];const planIds=new Set(plans.filter(p=>p.job_id&&p.kind==="article"&&!p.publish_target).map(p=>p.job_id));
+ const rows=ppOpenIdeas().filter(x=>planIds.has(x.j.id)||x.j.draft_job||["queued","drafted","built","approved","needs-coco"].includes(x.j.status)).sort((a,b)=>{const pa=ppPlanned(a.j),pb=ppPlanned(b.j);return (pa?pa.date:"9")<(pb?pb.date:"9")?-1:1});
+ const label=j=>{const d=ppDraftJob(j);if(d)return "drafting in New piece · "+(d.status||"");return {queued:"with the worker",drafted:"draft ready",built:"built · ready to review",approved:"approved","needs-coco":"needs your answers",planned:"not started"}[j.status]||j.status};
+ $("#pp-writing").innerHTML=`<p class="note" style="margin:0 0 10px">Everything on your plan or being written. "Write it with me" opens New piece filled in: subject, pillar, keyword, the questions people ask, trust, your Agency Studio and Granola notes, and the photo picks. "Let the worker draft it" hands it to the worker.</p><div class="card">${rows.map(({j,t})=>{const pl=ppPlanned(j);return `<div class="prow"><div><div class="meta"><span class="pstage">${esc(label(j))}</span> ${esc(t?t.name:"")}${pl?" · planned "+esc(pl.date):""}</div><b>${esc(j.title)}</b></div><div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-end">${j.status==="planned"&&!j.draft_job?`<button class="copy" data-wwm="${esc(j.id)}">write it with me</button><button class="copy" data-wwk="${esc(j.id)}">let the worker draft it</button>`:`<button class="copy" data-go="queue">open the Queue</button>`}</div></div>`}).join("")||'<div class="note">Nothing planned yet. Approve the week, or put ideas on your plan.</div>'}</div>`;
+ ppWireIdeaBtns($("#pp-writing"));$("#pp-writing").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go))}
+function ppWriteWithMe(j){const t=ppTripOf(j);const set=(id,v)=>{const e=$("#"+id);if(e&&v!=null){e.value=v;ls.set(id,String(v))}};
+ set("n-mode",j.mode==="update"?"update":"new");try{syncMode()}catch(e){}
+ if($("#n-format")&&[...$("#n-format").options].some(o=>o.value===j.format))set("n-format",j.format);
+ set("n-subject",j.subject||j.title);set("n-dest",j.dest||j.place||"");if(j.source_url)set("n-url",j.source_url);
+ const tr=j.trust||{};set("n-basis",tr.visit_basis||"");const v=String(tr.visited||"");set("n-visited",/^Stayed/.test(v)?"Stayed":/inspect/i.test(v)?"Site inspection":/^Visited/.test(v)?"Visited, did not stay":"");
+ const mm=(v.match(/(\d{4})-(\d{2})/)||[]);if(mm[0])set("n-visitmonth",mm[0]);if(tr.disclosure&&$("#n-disclosure")&&[...$("#n-disclosure").options].some(o=>o.text===tr.disclosure))set("n-disclosure",tr.disclosure);
+ set("n-goal",j.why||"");
+ const sg=(research[j.trip_id]||{}).signals||{};const c=culls[j.id]||{};const ins=ppNotesFor(j);const tn=tripNotes.filter(n=>n.trip_id===j.trip_id).slice(0,6);const st=t?ppStashFor(t):[];const days=t?(t.days||[]).filter(d=>d.reflect&&Object.keys(d.reflect).length):[];
+ const notes=[`FROM THE TRIPS DESK · ${j.title}`,`Primary keyword: ${j.primary_keyword||""}${j.publish_by?" · publish by "+j.publish_by:""}`,
+  (sg.paa||[]).length?"People also ask:\n- "+(sg.paa||[]).slice(0,8).map(p=>typeof p==="string"?p:p.q).join("\n- "):"",
+  (j.needs_coco||[]).length?"Open questions for me: "+j.needs_coco.join(" | "):"",
+  c.approved?"Photo picks (slot · file · what it shows):\n- "+(c.slots||[]).filter(s=>s.pick).map(s=>`${s.slot} · ${s.pick} · ${s.d||""}${s.film?" (film pending)":""}`).join("\n- "):"Photos: not culled yet.",
+  ins.length?"MY SITE INSPECTION NOTES (Agency Studio):\n"+ins.map(i=>`${i.name}: ${String(i.free||"").slice(0,600)}\n${String(i.answers_text||"").slice(0,2500)}`).join("\n\n"):"",
+  tn.length?"MY GRANOLA NOTES:\n"+tn.map(n=>`${n.title} (${n.date}): ${String(n.notes).slice(0,1200)}`).join("\n\n"):"",
+  days.length?"MY DAY REFLECTIONS:\n"+days.map(d=>`${d.date}: ${Object.entries(d.reflect).map(([k,x])=>k+": "+x).join(" / ")}`).join("\n"):"",
+  st.length?"ALSO ON MY PHOTO LIST: "+st.map(s=>s.text).join(" · "):""].filter(Boolean).join("\n\n");
+ set("n-notes",notes.slice(0,20000));if(c.approved)set("n-photos",(c.slots||[]).filter(s=>s.pick).map(s=>s.d||s.slot).join(" · "));
+ npFromPipeline=j.id;try{renderGoalChips();renderFmtPick();renderLinkPlan();renderTrustNote()}catch(e){}show("new");window.scrollTo({top:0,behavior:"smooth"});const n=$("#n-note");if(n)n.textContent="Filled in from the Trips desk: "+(j.title||"")+". Add your photos below, check the details, then draft."}
+
 // ---------- Cull ----------
 let cullState=null;
 function hamming(a,b){let d=0;for(let i=0;i<a.length;i++)if(a[i]!==b[i])d++;return d}
@@ -3111,9 +3302,11 @@ Return JSON {"title":"search-led YouTube title ≤70 chars","title_options":["2 
    if(canWrite)await db.doc("videos/"+j.id).set({...r,job:j.id,cut:false,updatedAt:Date.now()});$("#vd-body").innerHTML=body(r);$("#vd-note").textContent="Saved."}catch(e){$("#vd-note").textContent="Couldn't write it: "+(e&&e.code||"error")}};
  const c=$("#vd-cut");if(c)c.onclick=async()=>{if(!canWrite)return;try{await db.doc("videos/"+j.id).update({cut:!v.cut,cut_at:Date.now()});closePanel()}catch(e){}}}
 
-$("#pp-views").querySelectorAll("button").forEach(b=>b.onclick=()=>{ppView=b.dataset.pv;ls.set("ppView",ppView);renderPipe()});
+$("#pp-views").querySelectorAll("button").forEach(b=>b.onclick=()=>{ppView=b.dataset.pv;ls.set("ppView",ppView);renderPipe();try{b.scrollIntoView({block:"nearest",inline:"center"})}catch(e){}});
+$("#pp-brief").onclick=()=>ppRunBrief(ppView==="trip"&&ppTrip?ppTrip:null);
+$("#pp-gsc").onclick=()=>{ppView="ideas";ls.set("ppView","ideas");renderPipe();ppGscIdeas($("#gsc-run"))};
 document.querySelectorAll("#desk-trips [data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
-let ppTimer=null,resultsTicked=false;function schedulePipe(){clearTimeout(ppTimer);ppTimer=setTimeout(()=>{if(!resultsTicked&&lib.length&&pipeJobs.length&&canWrite){resultsTicked=true;setTimeout(()=>ppResultsTick().catch(()=>{}),3000)}try{if(document.querySelector("#desk-trips.on"))renderPipe();else ppRenderToday()}catch(e){console.warn("pipe",e)}},200)}
+let ppTimer=null,resultsTicked=false;function schedulePipe(){clearTimeout(ppTimer);ppTimer=setTimeout(()=>{try{ppWeekAuto()}catch(e){}if(!resultsTicked&&lib.length&&pipeJobs.length&&canWrite){resultsTicked=true;setTimeout(()=>ppResultsTick().catch(()=>{}),3000)}try{if(document.querySelector("#desk-trips.on"))renderPipe();else ppRenderToday()}catch(e){console.warn("pipe",e)}},200)}
 (async()=>{
  setStatus();
  const [s,d,u,m,a,dl]=await Promise.all([claude.use("sample"),claude.use("db"),claude.use("user"),claude.use("mcp"),claude.use("assets"),claude.use("downloads")]);
@@ -3141,7 +3334,9 @@ let ppTimer=null,resultsTicked=false;function schedulePipe(){clearTimeout(ppTime
   try{db.doc("taste/profile").onSnapshot(sn=>{tasteProfile=sn.exists?sn.data():null;if(document.querySelector("#desk-trips.on")&&ppView==="eye")ppRenderEye()},()=>{})}catch(e){}
   try{db.collection("accommodations").limit(500).onSnapshot(sn=>{accoms=sn.docs.map(x=>({id:x.id,...x.data()}));schedulePipe()},()=>{})}catch(e){}
   try{db.collection("photo_stash").limit(500).onSnapshot(sn=>{photoStash=sn.docs.map(x=>({id:x.id,...x.data()})).sort((a,b)=>(b.added_at||0)-(a.added_at||0));schedulePipe()},()=>{})}catch(e){}
+  try{db.doc("settings/plan_pace").onSnapshot(sn=>{if(sn.exists)planPace={articles:2,social:3,auto:false,...sn.data()};schedulePipe()},()=>{})}catch(e){}
   try{db.doc("settings/trip_priority").onSnapshot(sn=>{tripPrioCall=sn.exists?sn.data():null;schedulePipe()},()=>{})}catch(e){}
+  try{db.doc("settings/gsc_ideas").onSnapshot(sn=>{gscIdeas=sn.exists?sn.data():null;schedulePipe()},()=>{})}catch(e){}
   try{db.collection("weekplan").limit(20).onSnapshot(sn=>{weekPlans={};sn.docs.forEach(x=>weekPlans[x.id]=x.data());schedulePipe()},()=>{})}catch(e){}
   try{db.collection("share").limit(500).onSnapshot(sn=>{shareDocs={};sn.docs.forEach(x=>shareDocs[x.id]=x.data());schedulePipe()},()=>{})}catch(e){}
   try{db.collection("results").limit(500).onSnapshot(sn=>{results={};sn.docs.forEach(x=>results[x.id]=x.data());schedulePipe()},()=>{})}catch(e){}

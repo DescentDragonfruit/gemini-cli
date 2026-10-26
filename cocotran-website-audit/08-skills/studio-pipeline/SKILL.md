@@ -209,6 +209,26 @@ The Content bank ranks past trips by a desk priority score, and "ask the desk" p
   - The ideas agent then adds only the new ideas the extras open up, for example a Verdict for the Hiram Bingham train or a Lima piece. It never duplicates existing planned pieces.
   - An entry without a trip is its own trip for ideas: use its region, places and month.
 
+### Trips, rounds three and four: sections, the week, the brief, Search Console ideas (added 26 Oct 2026, desk v61)
+- **Tabs.** Next 3 · Trips · Photos · Ideas · This week · Writing · Board · Trip · Your eye. The Trips tab offers Cards, List and Timeline (`ls bk-view`).
+- **Pace.** `settings/plan_pace` `{articles, social, auto}` starts at 2 articles and 3 social posts a week.
+  - The week proposal is `weekplan/<YYYY-Www>` with `v:2`, `items[]` and `accepted_at`.
+  - Approving it writes `plan` docs with `kind: "article"|"social"`, `job_id`, `lib_id`, `channel`, `week`.
+  - Articles go on Tue/Thu. Social goes on Mon/Wed/Fri.
+- **Write it with me.** This button prefills New piece from a pipeline job. Its source is the keyword, PAA, cull picks, inspections, Granola, reflections and the photo list.
+  - The saved job gets `from_pipeline: <pipeline job id>`.
+  - The pipeline job becomes `status: "drafting"` with `draft_job: <new job id>`.
+  - A job with `from_pipeline` takes its photos from `culls/<from_pipeline>`, not `culls/<its own id>`.
+  - When the draft job goes live, the pipeline piece counts as live.
+- **When a pipeline piece goes live:**
+  - Append one line, `Live on cocotran.com: <url>`, to the matching Agency Studio review's `free` field. Never overwrite that field.
+  - Add the URL to `live[]` on the matching `accommodations` doc.
+- **Brief.** "Run this week's brief" saves `settings/brief_latest`. The per-trip brief saves `research/<trip id>.brief` `{headline, order[], photos[], answer_these[], social[], youtube, skip, at}`.
+  - Read-only for the worker. Use it as the order of work when Coco says "do what the brief says".
+- **More ideas from Search Console.** Saved in `settings/gsc_ideas` `{ideas[{query, impressions, trip_key, format, title, keyword, why}], at}`.
+  - The sources are `insights.content_gaps` and the library's `rank.top_queries`.
+  - "Add to <trip>" creates a planned pipeline job `pp-gsc-<slug>` with `idea.src: ["search-console"]`. Treat it like any other planned pipeline piece.
+
 ### Ideas queue: keyword ideas for past trips (separate agent, added 25 Oct 2026)
 `ideas_queue/<trip id>` holds trips sent from the desk's **Content bank** (Trips → Content bank).
 Each doc is `{trip_key, trip_id, src, name, start, end, kind, places[], hotels[{name,city,kind,nights,rating}], on_site[], old_posts[], status, score}`.
