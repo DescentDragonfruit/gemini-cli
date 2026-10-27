@@ -368,6 +368,25 @@ After any piece goes live, is retired or merged, and at the end of the Monday ru
 
 One short message: pieces drafted / researched / built with preview links, anything `needs-coco` and why, VERIFY items left. Lead with corrections that matter to her business (a closure, a rebrand, a rule change found in research).
 
+## Published pieces on the Plan calendar (`settings/published_index`, added 27 Oct 2026)
+Coco wants everything she publishes on cocotran.com to show on her Plan calendar by itself, whoever published it.
+- **The index.** `settings/published_index` = `{items:{<wp id>:{d:"YYYY-MM-DD", t:title, u:url, y:post type}}, synced_at (ms), count}`. The desk shows every item as a green "published" event on its date, so nothing needs to be written to `plan`.
+- **Every run, before the queue:**
+  1. Read the doc.
+  2. Fetch what's been published since `synced_at`, using an unauthenticated GET of `https://cocotran.com/wp-json/wp/v2/<type>?after=<synced_at as ISO>&per_page=100&_fields=id,date,link,title,type`. The types are posts, property, guide, shortlist, brief and dispatch. Page while 100 come back.
+  3. Merge each one in by wp id: `d` is the date's first 10 characters, `t` is the HTML-decoded title, `u` is the link, `y` is the type.
+  4. Write the doc back with `synced_at` = now and `count`, pinning `if_version`.
+- **A new library record for anything new.** If a published item has no `library` record (matched by `wp_id`, then by URL), add one: `{id: <slug>, title, url, wp_id, cpt: type, format: from the title prefix ("The Rolodex:" → rolodex, ": The Dossier" → dossier, "Postcard From" → postcard, "A Table At" → fieldnotes, and so on), status: "live", new_from_wp: true, published_at: d, source: "published-index <date>"}`. Never overwrite an existing record. Set `published_at` on it only if it has none.
+- **Unpublished or deleted posts.** A post that is no longer published stays in the index. The WordPress check marks it in the library instead.
+- **Security.** Only titles, URLs, dates and types go in. Nothing from drafts or private posts.
+
+## Notes, reminders and Google Calendar (desk only)
+- **`reminders/<id>`** = `{title, date, time, note, remind: none|at|1h|1d, kind: note|reminder, done, gcal:{on, id, cal, synced_at}}`, written by the Plan page. The worker doesn't touch them.
+- **Google Calendar runs from the page.** It uses the viewer's own Google Calendar connector (create_event, update_event, delete_event, list_calendars).
+  - `settings/gcal` holds the chosen calendar.
+  - `settings/gcal_map` maps the ids of synced posts and articles to their Google event ids.
+- **The worker never creates or changes Google Calendar events.**
+
 ## Warmth rewrites (`type: warmth_rewrite`, added 27 Oct 2026)
 Coco found the recent articles too matter-of-fact. The voice was rewritten (`05-editorial-system/voice.md`, the desk's `const VOICE`), and recent pieces are being rewritten to match. Every rewrite keeps every fact, number, name, link, [VERIFY] and [Coco to fill] marker, and invents no experience she didn't report.
 - **The job carries the rewritten text.** It is `draft.voice_pass{at, note}`, with the old text kept in `draft_prev{short_answer, glance, fields}` and the new text in `draft`.

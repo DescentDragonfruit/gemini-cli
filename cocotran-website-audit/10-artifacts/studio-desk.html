@@ -787,6 +787,33 @@ body.focus-on{overflow:hidden}
 .qgrp .qcard .qa{gap:6px}
 .qgrp .qcard .qa .btn{padding:6px 12px;font-size:12.5px}
 @media (hover:hover){.qgrp .qcard .qa [data-top],.qgrp .qcard .qa [data-del],.qgrp .qcard .qa [data-remove],.qgrp .qcard .qa .copy{opacity:0;transition:opacity .15s}.qgrp .qcard:hover .qa .copy,.qgrp .qcard:focus-within .qa .copy{opacity:1}}
+
+/* ===== Plan: filters, published, notes & reminders ===== */
+.calfilters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;flex:1 1 100%;margin-top:4px}
+.calchips{display:flex;gap:6px;flex-wrap:wrap}
+.calchip{all:unset;cursor:pointer;box-sizing:border-box;display:inline-flex;align-items:center;gap:6px;font:500 12.5px var(--body);padding:6px 11px;border-radius:999px;border:1px solid var(--line2);background:var(--bg2);color:var(--muted)}
+.calchip i{width:9px;height:9px;border-radius:2px;display:inline-block;background:var(--line2)}
+.calchip[aria-pressed="true"]{color:var(--fg);border-color:var(--fg)}
+.calchip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.c-planned i{background:transparent;border:1px dashed var(--muted)}.c-articles i{background:var(--gold)}.c-published i{background:var(--ok)}.c-posts i{background:var(--fg)}.c-youtube i{background:var(--warn)}.c-notes i{background:var(--bad)}.c-trips i{background:var(--info)}
+.calchip[aria-pressed="false"] i{opacity:.35}
+.calpill{display:inline-flex;align-items:center;gap:6px;margin:0;font:500 12.5px var(--body);color:var(--muted);text-transform:none;letter-spacing:0}
+.calpill select{width:auto;padding:5px 8px;font-size:12.5px}
+.calacts{gap:8px;margin:0 0 10px;flex-wrap:wrap;align-items:center}
+.calhow{margin:-4px 0 12px}.calhow>summary{cursor:pointer;font:500 12.5px var(--body);color:var(--muted);list-style:none;display:inline-block;border-bottom:1px solid var(--line2)}.calhow>summary::-webkit-details-marker{display:none}.calhow p{max-width:72ch;margin:6px 0 0}
+.ev.published{border-left:3px solid var(--ok);background:var(--ok-bg,var(--bg2));color:var(--ok)}
+.ev.reminder{border-left:3px solid var(--bad);background:var(--bg2);color:var(--fg)}
+.ev.note{border-left:3px solid var(--faint);background:var(--panel);color:var(--muted);border-style:dashed;border-left-style:solid}
+.ev.done{opacity:.5;text-decoration:line-through}
+.ev.published.posted,.ev.article.posted{text-decoration:none;opacity:1}
+.wcard.published.posted{opacity:1}.wcard.published.posted .wt{text-decoration:none}
+.wcard.published .pill{background:var(--ok-bg,var(--bg2));color:var(--ok)}.wcard.reminder .pill{background:var(--bad-bg);color:var(--bad)}.wcard.note .pill{background:var(--panel);color:var(--muted)}
+.wcard.done{opacity:.55}
+.rm-g{display:flex;align-items:center;gap:8px;margin:10px 0 0;font:500 13.5px var(--body);text-transform:none;letter-spacing:0;color:var(--fg)}
+.calpick{display:inline-block;margin:4px 0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ev.article{background:#2E2617;color:#E3C58F}}
+:root[data-theme="dark"] .ev.article{background:#2E2617;color:#E3C58F}
+@media (max-width:700px){.calchip{padding:6px 9px;font-size:12px}.calfilters{gap:8px}}
 </style>
 
 <header class="topbar">
@@ -1135,10 +1162,12 @@ body.focus-on{overflow:hidden}
   <div class="row" style="align-items:center;gap:14px;margin-bottom:12px">
     <div class="views" id="plan-views"><button data-pv="week" aria-selected="true">Week</button><button data-pv="month">Month</button><button data-pv="board">Board</button></div>
     <div class="row" id="cal-nav" style="gap:6px;align-items:center"><button class="copy" id="cal-prev">‹ prev</button><b id="cal-title" style="font-family:var(--display);font-size:20px;min-width:190px;text-align:center"></b><button class="copy" id="cal-next">next ›</button><button class="copy" id="cal-today">today</button></div>
-    <div class="row" style="gap:12px;font-size:13px"><label style="display:inline-flex;gap:6px;align-items:center;margin:0;text-transform:none;letter-spacing:0;font:inherit"><input type="checkbox" id="cal-f-social" checked> posts</label><label style="display:inline-flex;gap:6px;align-items:center;margin:0;text-transform:none;letter-spacing:0;font:inherit"><input type="checkbox" id="cal-f-articles" checked> articles</label><label style="display:inline-flex;gap:6px;align-items:center;margin:0;text-transform:none;letter-spacing:0;font:inherit"><input type="checkbox" id="cal-f-trips" checked> trips</label><label style="display:inline-flex;gap:6px;align-items:center;margin:0;text-transform:none;letter-spacing:0;font:inherit"><input type="checkbox" id="cal-f-todos" checked> to-dos</label></div>
-    <div class="legend"><span><i style="background:#F3EBDD;border-left:3px solid var(--gold)"></i>article</span><span><i style="background:var(--accent-soft);border-left:3px solid var(--fg)"></i>post</span><span><i style="background:var(--warn-bg);border-left:3px solid var(--warn)"></i>YouTube</span><span><i style="background:var(--panel);border:1px dashed var(--line2);border-left:3px solid var(--muted)"></i>planned</span><span><i style="background:var(--bad-bg);border-left:3px solid var(--bad)"></i>to-do</span><span><i style="background:var(--info-bg);border-left:3px solid var(--info)"></i>trip</span></div>
+    <span hidden><div class="row" style="gap:12px;font-size:13px"><label style="display:inline-flex;gap:6px;align-items:center;margin:0;text-transform:none;letter-spacing:0;font:inherit"><input type="checkbox" id="cal-f-social" checked> posts</label><label style="display:inline-flex;gap:6px;align-items:center;margin:0;text-transform:none;letter-spacing:0;font:inherit"><input type="checkbox" id="cal-f-articles" checked> articles</label><label style="display:inline-flex;gap:6px;align-items:center;margin:0;text-transform:none;letter-spacing:0;font:inherit"><input type="checkbox" id="cal-f-trips" checked> trips</label><label style="display:inline-flex;gap:6px;align-items:center;margin:0;text-transform:none;letter-spacing:0;font:inherit"><input type="checkbox" id="cal-f-todos" checked> to-dos</label></div></span>
+    <div class="calfilters" id="cal-filters"></div>
   </div>
-  <div class="row" style="gap:8px;margin:-4px 0 12px"><button class="copy" id="cal-ics-month">Month → iPhone calendar (.ics)</button><button class="copy" id="cal-ics-week">Week → iPhone (.ics)</button><span class="note">Each item lands in Calendar with an alert; that is what rings on your phone.</span></div>
+  <div class="row calacts"><button class="btn sm" id="cal-addnote">+ Note or reminder</button><button class="copy" id="cal-ics-month">Month → iPhone calendar (.ics)</button><button class="copy" id="cal-ics-week">Week → iPhone (.ics)</button></div>
+  <div class="row calacts" id="cal-gline"></div>
+  <details class="how calhow"><summary>How the calendars work</summary><p class="note">Send to Google Calendar puts a reminder or a planned item straight into your Google Calendar, with its alert. Your iPhone shows those too when your Google account is added to the phone (Settings → Calendar → Accounts). Add to iPhone calendar downloads an .ics file that opens in Apple Calendar with the alert set; use it when Google isn't connected. Everything you publish on cocotran.com shows on its day in green, by itself.</p></details>
   <div id="cal-due"></div>
   <div id="plan-month" class="planwrap">
     <div><div class="cal" id="cal-grid"></div></div>
@@ -3105,11 +3134,12 @@ function openPanel(html,wide){let m=$("#modal");if(!m){m=document.createElement(
  m.querySelector(".box").innerHTML=html; m.querySelector(".box").classList.toggle("wide",!!wide); m.hidden=false; const f=m.querySelector("input[type=text],input[type=search],select,input[type=date]"); if(f) setTimeout(()=>f.focus(),30)}
 function closePanel(){const m=$("#modal");if(m)m.hidden=true}
 function dayPanel(iso){const ev=planEvents().filter(e=>e.date===iso);const d=new Date(iso+"T12:00:00");
- openPanel(`<h4>${d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</h4><div id="dp-list"></div><div class="row" style="gap:6px;margin-top:8px"><button class="btn" id="dp-add">+ Add to this day</button><button class="copy" id="dp-close">close</button></div>`);
+ openPanel(`<h4>${d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</h4><div id="dp-list"></div><div class="row" style="gap:6px;margin-top:8px"><button class="btn" id="dp-add">+ Add to this day</button><button class="copy" id="dp-note">+ note or reminder</button><button class="copy" id="dp-close">close</button></div>`);
  const list=$("#dp-list"); if(!ev.length)list.innerHTML='<div class="note">Nothing planned.</div>'; ev.forEach(e=>{const el=evEl(e);el.style.fontSize="13px";el.style.height="auto";el.style.padding="6px 8px";el.style.marginTop="6px";list.append(el)});
- $("#dp-add").onclick=()=>addPanel(iso); $("#dp-close").onclick=closePanel;}
-function addPanel(dateIso){openPanel(`<h4>Add to ${esc(dateIso)}</h4><label>Kind</label><select id="ap-kind"><option value="article">Article to write</option><option value="post">Post (Instagram / Pinterest)</option><option value="youtube">YouTube video</option><option value="todo">To-do with a reminder</option></select><label>Title</label><input type="text" id="ap-title" placeholder="Hoshinoya Kyoto Verdict · or · reel: the onsen question"><label>Date</label><input type="date" id="ap-date" value="${esc(dateIso)}"><div class="row" style="gap:10px"><button class="copy" id="ap-cancel">Cancel</button><button class="btn" id="ap-save">Add to the plan</button></div>`);
+ $("#dp-add").onclick=()=>addPanel(iso); $("#dp-note").onclick=()=>remPanel(null,iso); $("#dp-close").onclick=closePanel;}
+function addPanel(dateIso){openPanel(`<h4>Add to ${esc(dateIso)}</h4><label>Kind</label><select id="ap-kind"><option value="article">Article to write</option><option value="post">Post (Instagram / Pinterest)</option><option value="youtube">YouTube video</option><option value="todo">To-do on the board</option><option value="reminder">Note or reminder (time, alert, Google)</option></select><label>Title</label><input type="text" id="ap-title" placeholder="Hoshinoya Kyoto Verdict · or · reel: the onsen question"><label>Date</label><input type="date" id="ap-date" value="${esc(dateIso)}"><div class="row" style="gap:10px"><button class="copy" id="ap-cancel">Cancel</button><button class="btn" id="ap-save">Add to the plan</button></div>`);
  $("#ap-cancel").onclick=closePanel;
+ $("#ap-kind").onchange=()=>{if($("#ap-kind").value==="reminder"){const d=$("#ap-date").value,t=$("#ap-title").value;remPanel(null,d);setTimeout(()=>{const x=$("#rm-title");if(x&&t)x.value=t},20)}};
  $("#ap-save").onclick=async()=>{const kind=$("#ap-kind").value,title=$("#ap-title").value.trim(),date=$("#ap-date").value;if(!title||!date)return;if(!db||!canWrite)return;try{if(kind==="todo")await db.collection("todo").add({text:title,group:"Board",lane:"next",due:date,order:999,done:false,createdAt:Date.now()});else await db.collection("plan").add({kind,title,date,status:"planned",createdAt:Date.now(),updatedAt:Date.now()});closePanel()}catch(e){}}}
 function planPanel(e){const p=e.p;const th=thumbFor(e);openPanel(`${th?`<img class="ph" src="${esc(th)}" alt="">`:""}<div class="meta">${esc(p.kind)} · planned</div><h4>${esc(p.title)}</h4><label>Date</label><input type="date" id="pp-date" value="${esc(p.date||"")}"><label>Notes</label><input type="text" id="pp-notes" value="${esc(p.notes||"")}" placeholder="angle, photos, who it's for"><div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn" id="pp-start">${p.kind==="article"?"Start the piece":p.kind==="youtube"?"Make the YouTube kit":"Make the post"}</button><button class="copy" id="pp-save">save</button><button class="copy" id="pp-ics">iPhone reminder</button><button class="copy del" id="pp-del">remove</button></div>`);
  $("#pp-save").onclick=async()=>{try{await db.doc("plan/"+p.id).update({date:$("#pp-date").value,notes:$("#pp-notes").value,updatedAt:Date.now()});closePanel()}catch(err){}};
@@ -3119,15 +3149,7 @@ function planPanel(e){const p=e.p;const th=thumbFor(e);openPanel(`${th?`<img cla
 const cal={y:new Date().getFullYear(),m:new Date().getMonth(),view:ls.get("planView")||"week",ref:new Date()};
 const MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
 function isoOf(d){const z=new Date(d);return new Date(z.getTime()-z.getTimezoneOffset()*60000).toISOString().slice(0,10)}
-function planEvents(){
- const ev=[];
- if($("#cal-f-social").checked) socialCache.forEach(k=>{if(k.scheduled_for)ev.push({kind:"social",cls:(k.type==="youtube"||/youtube/i.test(k.platform||""))?"youtube":"social",id:k.id,date:k.scheduled_for,title:(k.piece||k.hook||"post"),sub:`${k.type||"kit"} · ${k.platform||"Instagram"} · ${k.status||"drafted"}`,posted:k.status==="posted",k})});
- plans.forEach(p=>{if(!p.date)return;const on=p.kind==="article"?$("#cal-f-articles").checked:$("#cal-f-social").checked;if(on)ev.push({kind:"plan",cls:"plan",id:p.id,date:p.date,title:p.title,sub:(p.kind==="youtube"?"YouTube":p.kind)+" · planned",p})});
- if($("#cal-f-todos").checked) todos.forEach(t=>{if(t.due&&!t.done)ev.push({kind:"todo",cls:"task",id:t.id,date:t.due,title:t.text.slice(0,60),sub:t.group||"",t})});
- if($("#cal-f-articles").checked) jobsCache.forEach(j=>{const d=j.target_date||(j.status==="published"&&j.publishedAt?isoOf(j.publishedAt):"");if(d)ev.push({kind:"article",id:j.id,date:d,title:j.title||j.subject,sub:`${fmtLabel(j.format)||j.format||""} · ${j.status}`,posted:j.status==="published",j})});
- if($("#cal-f-trips").checked) trips.forEach(t=>{if(!t.startDate||!t.endDate)return;const a=new Date(t.startDate+"T12:00:00"),b=new Date(t.endDate+"T12:00:00");for(let d=new Date(a);d<=b;d.setDate(d.getDate()+1)){const lab=isoOf(d)===t.startDate||d.getDay()===1;ev.push({kind:"trip",id:t.id,date:isoOf(d),title:lab?((isoOf(d)===t.startDate?"✈ ":"")+t.name):"·",sub:"",t})}});
- return ev;
-}
+
 function evEl(e){const el=document.createElement("div");el.className="ev "+(e.cls||e.kind)+(e.posted?" posted":"");el.draggable=e.kind!=="trip";const th=thumbFor(e);el.innerHTML=`${th?`<img src="${esc(th)}" alt="" loading="lazy">`:""}<span class="evt">${esc(e.title)}${e.sub?`<small>${esc(e.sub)}</small>`:""}</span>`;el.title=e.title;
  if(e.kind!=="trip"){el.addEventListener("dragstart",ev=>{ev.dataTransfer.setData("text/plain",e.kind+"|"+e.id);ev.dataTransfer.effectAllowed="move"})}
  el.onclick=()=>{if(e.kind==="social"){show("social");renderKit($("#s-kit"),e.k,e.id);setTimeout(()=>$("#s-kit").scrollIntoView({behavior:"smooth"}),50)}else if(e.kind==="article"){show("queue");const b=document.querySelector(`[data-open="${e.id}"]`);if(b)b.click()}else if(e.kind==="plan"){planPanel(e)}else if(e.kind==="todo"){openPanel(`<div class="meta">TO-DO · ${esc(e.t.group||"")}</div><h4>${esc(e.t.text)}</h4><label>Due</label><input type="date" id="td-date" value="${esc(e.t.due||"")}"><div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn" id="td-done">Done ✓</button><button class="copy" id="td-save">save date</button><button class="copy" id="td-ics">iPhone reminder</button></div>`);$("#td-done").onclick=async()=>{try{await db.doc("todo/"+e.t.id).update({done:true,lane:"done",doneAt:Date.now()});closePanel()}catch(err){}};$("#td-save").onclick=async()=>{try{await db.doc("todo/"+e.t.id).update({due:$("#td-date").value});closePanel()}catch(err){}};$("#td-ics").onclick=()=>downloadIcs("todo-"+e.t.id+".ics",[{id:e.t.id,title:"To-do: "+e.t.text,date:$("#td-date").value||e.t.due,time:"09:00",alarms:["-PT0M"]}])}};
@@ -3161,8 +3183,9 @@ function renderCalendar(){
   for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const iso=isoOf(d);const col=document.createElement("div");col.className="wd"+(iso===td?" today":"");
    col.innerHTML=`<div class="wh"><b>${d.getDate()}</b><span>${d.toLocaleDateString("en-US",{weekday:"short"})}</span></div>`;
    ev.filter(e=>e.date===iso).forEach(e=>{const c=document.createElement("div");c.className="wcard "+(e.cls||e.kind)+(e.posted?" posted":"");c.draggable=e.kind!=="trip";const th=thumbFor(e);
-    const label=e.kind==="social"?(e.cls==="youtube"?"YouTube":(e.k?.type||"post")):e.kind==="article"?"article":e.kind==="plan"?"planned":e.kind==="todo"?"to-do":"trip";
-    c.innerHTML=`<div class="wimg" style="${th?`background-image:url('${esc(th)}')`:""}"><span class="pill">${esc(label)}</span></div><div class="wb"><div class="wt">${esc(e.title.replace(/^✈ /,""))}</div>${e.sub?`<div class="ws">${esc(e.sub)}</div>`:""}<div class="wa">${e.kind==="social"?`<button class="copy" data-ig="${esc(e.id)}">copy for IG</button><button class="copy" data-rem="${esc(e.id)}">reminder</button>${canWrite&&!e.posted?`<button class="copy" data-posted="${esc(e.id)}">posted ✓</button>`:""}`:e.kind==="todo"?`<button class="copy" data-tdone="${esc(e.id)}">done ✓</button>`:""}</div></div>`;
+    const label=calLabel(e);
+    c.innerHTML=`<div class="wimg" style="${th?`background-image:url('${esc(th)}')`:""}"><span class="pill" data-sw="1">${esc(label)}</span></div><div class="wb"><div class="wt">${esc(e.title.replace(/^✈ /,""))}</div>${e.sub?`<div class="ws">${esc(e.sub)}</div>`:""}<div class="wa">${e.kind==="social"?`<button class="copy" data-ig="${esc(e.id)}">copy for IG</button><button class="copy" data-rem="${esc(e.id)}">reminder</button>${canWrite&&!e.posted?`<button class="copy" data-posted="${esc(e.id)}">posted ✓</button>`:""}`:e.kind==="todo"?`<button class="copy" data-tdone="${esc(e.id)}">done ✓</button>`:e.kind==="reminder"?`<button class="copy" data-rdone="${esc(e.id)}">${e.r.done?"reopen":"done ✓"}</button>`:""}</div></div>`;
+    {const rd=c.querySelector("[data-rdone]");if(rd)rd.onclick=async ev3=>{ev3.stopPropagation();try{await db.doc("reminders/"+e.id).update({done:!e.r.done,doneAt:!e.r.done?Date.now():null,updatedAt:Date.now()})}catch(err){}}}
     if(e.kind!=="trip")c.addEventListener("dragstart",ev2=>{ev2.dataTransfer.setData("text/plain",e.kind+"|"+e.id)});
     c.addEventListener("click",ev2=>{if(ev2.target.closest("button"))return;evEl(e).click()});
     col.append(c)});
@@ -3179,10 +3202,119 @@ document.querySelectorAll("#plan-views button").forEach(b=>b.onclick=()=>{cal.vi
 $("#cal-prev").onclick=()=>{if(cal.view==="week"){cal.ref.setDate(cal.ref.getDate()-7)}else{cal.m--;if(cal.m<0){cal.m=11;cal.y--}}renderCalendar()};
 $("#cal-next").onclick=()=>{if(cal.view==="week"){cal.ref.setDate(cal.ref.getDate()+7)}else{cal.m++;if(cal.m>11){cal.m=0;cal.y++}}renderCalendar()};
 $("#cal-today").onclick=()=>{const n=new Date();cal.y=n.getFullYear();cal.m=n.getMonth();cal.ref=new Date();renderCalendar()};
-function icsItemsFor(ev){return ev.filter(e=>e.kind!=="trip"||e.title.startsWith("✈")).map(e=>({id:e.kind+"-"+e.id,title:(e.kind==="social"?"Post: ":e.kind==="article"?"Write: ":e.kind==="todo"?"To-do: ":e.kind==="plan"?"Planned: ":"Trip: ")+e.title.replace(/^✈ /,""),date:e.date,time:e.kind==="trip"?"":"09:00",desc:e.kind==="social"?igText(e.k).slice(0,900):(e.sub||""),alarms:e.kind==="social"?["-P1D","-PT0M"]:["-PT0M"]}))}
+function icsItemsFor(ev){return ev.filter(e=>e.kind!=="trip"||e.title.startsWith("✈")).map(e=>({id:e.kind+"-"+e.id,title:(e.kind==="social"?"Post: ":e.kind==="article"?(e.posted?"Published: ":"Write: "):e.kind==="published"?"Published: ":e.kind==="reminder"?"":e.kind==="todo"?"To-do: ":e.kind==="plan"?"Planned: ":"Trip: ")+(e.kind==="reminder"?e.r.title:e.title.replace(/^✈ /,"")),date:e.date,time:e.kind==="trip"||e.kind==="published"?"":e.kind==="reminder"?(e.r.time||""):"09:00",desc:e.kind==="social"?igText(e.k).slice(0,900):e.kind==="reminder"?(e.r.note||""):e.kind==="published"?(e.it&&e.it.u||""):(e.sub||""),url:e.kind==="published"&&e.it?e.it.u:"",alarms:e.kind==="social"?["-P1D","-PT0M"]:e.kind==="reminder"?[(e.r.remind&&e.r.remind!=="none")?REMIND_ICS[e.r.remind]:"-PT0M"]:e.kind==="published"?[]:["-PT0M"]}))}
 $("#cal-ics-month").onclick=()=>{const pre=`${cal.y}-${String(cal.m+1).padStart(2,"0")}`;const items=icsItemsFor(planEvents().filter(e=>e.date.startsWith(pre)));if(!items.length)return;downloadIcs(`cocotran-${pre}.ics`,items)};
 $("#cal-ics-week").onclick=()=>{const ref=cal.ref;const mon=new Date(ref);mon.setDate(ref.getDate()-((ref.getDay()+6)%7));const days=[...Array(7)].map((_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return isoOf(d)});const items=icsItemsFor(planEvents().filter(e=>days.includes(e.date)));if(!items.length)return;downloadIcs(`cocotran-week-${days[0]}.ics`,items)};
 ["cal-f-social","cal-f-articles","cal-f-trips"].forEach(i=>$("#"+i).addEventListener("change",renderCalendar));
+// ================= Plan, round two: published pieces on the calendar, type + pillar filters, notes & reminders, Google + iPhone calendars =================
+let pubIndex={}, reminders=[], gcalCfg=null, gcalMap={};
+const CAL_TYPES=[["planned","Planned"],["articles","Articles"],["published","Published"],["posts","Posts"],["youtube","YouTube"],["notes","Notes & reminders"],["trips","Trips"]];
+const CAL_PILLARS=[["verdict","The Verdict"],["rolodex","The Rolodex"],["primer","The Primer"],["route","The Route"],["dossier","The Dossier"],["shortlist","The Shortlist"],["postcard","Postcard From"],["fieldnotes","Field Notes"],["tableat","A Table At"],["comparison","The Comparison"],["roundup","The Roundup"],["answer","The Answer"],["take","The Take"],["tradeoff","The Tradeoff"]];
+const PILLAR_RX=[[/^the verdict/i,"verdict"],[/^the comparison|\bvs\.?\b/i,"comparison"],[/^the primer/i,"primer"],[/^the rolodex/i,"rolodex"],[/^the roundup/i,"roundup"],[/^the route/i,"route"],[/dossier/i,"dossier"],[/shortlist/i,"shortlist"],[/^field notes/i,"fieldnotes"],[/^postcards? from/i,"postcard"],[/^a table at/i,"tableat"],[/^the take/i,"take"],[/^the tradeoff/i,"tradeoff"],[/^the answer/i,"answer"]];
+function calF(){let types;try{types=JSON.parse(ls.get("calf-types")||"null")}catch(e){types=null}if(!Array.isArray(types))types=CAL_TYPES.map(t=>t[0]);return {types:new Set(types),pillar:ls.get("calf-pillar")||""}}
+function calSetTypes(set){ls.set("calf-types",JSON.stringify([...set]))}
+function pillarOfTitle(t){t=String(t||"").replace(/^(write( &| and)? publish|write|planned|publish|post):\s*/i,"").trim();for(const [rx,k] of PILLAR_RX)if(rx.test(t))return k;return ""}
+function pillarOfFormat(f){f=String(f||"").toLowerCase();if(!f)return "";if(CAL_PILLARS.some(p=>p[0]===f))return f;if(f==="dispatch")return "postcard";if(f==="property")return "verdict";return ""}
+function pillarOfJob(j){if(!j)return "";if(/^a table at/i.test(j.title||j.subject||"")||/a table at/i.test((j.draft&&j.draft.kicker)||""))return "tableat";return pillarOfFormat(j.format)||pillarOfTitle(j.title||j.subject)}
+function pillarOfLib(r){return r?(pillarOfTitle(r.title)||pillarOfFormat(r.format)):""}
+function pillarLabel(k){return (CAL_PILLARS.find(p=>p[0]===k)||[,""])[1]}
+function libForPub(id,it){return lib.find(r=>String(r.wp_id||"")===String(id))||lib.find(r=>r.url&&it.u&&r.url.replace(/\/$/,"")===it.u.replace(/\/$/,""))||null}
+function remKind(r){return (r.time||(r.remind&&r.remind!=="none"))?"reminder":"note"}
+function planEvents(){const F=calF();const T=F.types;const ev=[];const P=F.pillar;
+ const okP=k=>!P||k===P;
+ // posts and YouTube kits
+ socialCache.forEach(k=>{if(!k.scheduled_for)return;const yt=k.type==="youtube"||/youtube/i.test(k.platform||"");if(!(yt?T.has("youtube"):T.has("posts")))return;
+  const r=k.lib_id?lib.find(x=>x.id===k.lib_id):null;const pk=pillarOfLib(r)||pillarOfTitle(k.piece);if(!okP(pk))return;
+  ev.push({kind:"social",cls:yt?"youtube":"social",id:k.id,date:k.scheduled_for,title:(k.piece||k.hook||"post"),sub:`${k.type||"kit"} · ${k.platform||"Instagram"} · ${k.status||"drafted"}`,posted:k.status==="posted",pillar:pk,k})});
+ // planned items
+ plans.forEach(p=>{if(!p.date)return;const yt=p.kind==="youtube";if(!(T.has("planned")||(yt&&T.has("youtube"))))return;const j=p.job_id?jobsCache.find(x=>x.id===p.job_id):null;const pk=pillarOfJob(j)||pillarOfTitle(p.title);if(!okP(pk))return;
+  ev.push({kind:"plan",cls:"plan",id:p.id,date:p.date,title:p.title,sub:(yt?"YouTube":p.kind)+" · planned"+(p.gcal&&p.gcal.id?" · in Google":""),pillar:pk,p})});
+ // notes, reminders and board to-dos
+ if(T.has("notes")){reminders.forEach(r=>{if(!r.date)return;const k=remKind(r);ev.push({kind:"reminder",cls:k+(r.done?" done":""),id:r.id,date:r.date,title:(r.time?r.time+" ":"")+r.title,sub:(k==="reminder"?"reminder":"note")+(r.gcal&&r.gcal.id?" · in Google":""),posted:!!r.done,r})});
+  todos.forEach(t=>{if(t.due&&!t.done)ev.push({kind:"todo",cls:"task",id:t.id,date:t.due,title:t.text.slice(0,60),sub:t.group||"",t})})}
+ // articles (dated jobs) and published jobs
+ const shownPub=new Set();
+ jobsCache.forEach(j=>{const pub=j.status==="published"||j.status==="done";const d=j.target_date||(pub&&j.publishedAt?isoOf(j.publishedAt):pub&&j.live_at?isoOf(j.live_at):"");if(!d)return;if(pub?!T.has("published"):!T.has("articles"))return;const pk=pillarOfJob(j);if(!okP(pk))return;
+  if(pub){if(j.wp_id||j.live_wp_id)shownPub.add(d+"|"+(j.live_wp_id||j.wp_id));if(j.live_url)shownPub.add(d+"|"+String(j.live_url).replace(/\/$/,""))}
+  ev.push({kind:"article",id:j.id,date:d,title:j.title||j.subject,sub:`${fmtLabel(j.format)||j.format||""} · ${pub?"live":j.status}`,posted:pub,pillar:pk,j})});
+ if(T.has("published"))Object.entries((pubIndex&&pubIndex.items)||{}).forEach(([id,it])=>{if(!it||!it.d)return;if(shownPub.has(it.d+"|"+id)||shownPub.has(it.d+"|"+String(it.u||"").replace(/\/$/,"")))return;const pk=pillarOfTitle(it.t)||pillarOfFormat(it.y==="property"?"verdict":"");if(!okP(pk))return;
+  ev.push({kind:"published",cls:"published",id,date:it.d,title:it.t||"Published",sub:"live"+(pk?" · "+pillarLabel(pk):""),posted:true,pillar:pk,it})});
+ // trips (not filtered by pillar)
+ if(T.has("trips")) trips.forEach(t=>{if(!t.startDate||!t.endDate)return;const a=new Date(t.startDate+"T12:00:00"),b=new Date(t.endDate+"T12:00:00");for(let d=new Date(a);d<=b;d.setDate(d.getDate()+1)){const lab=isoOf(d)===t.startDate||d.getDay()===1;ev.push({kind:"trip",id:t.id,date:isoOf(d),title:lab?((isoOf(d)===t.startDate?"✈ ":"")+t.name):"·",sub:"",t})}});
+ return ev;
+}
+function calLabel(e){return e.kind==="social"?(e.cls==="youtube"?"YouTube":(e.k&&e.k.type||"post")):e.kind==="article"?(e.posted?"published":"article"):e.kind==="published"?"published":e.kind==="plan"?"planned":e.kind==="reminder"?(remKind(e.r)==="reminder"?"reminder":"note"):e.kind==="todo"?"to-do":"trip"}
+// ----- filter bar -----
+function calFilterHtml(){const F=calF();const off=CAL_TYPES.filter(t=>!F.types.has(t[0])).length;
+ return `<div class="calchips" role="group" aria-label="Show on the calendar">${CAL_TYPES.map(([k,n])=>`<button class="calchip c-${k}" data-calt="${k}" aria-pressed="${F.types.has(k)}"><i></i>${esc(n)}</button>`).join("")}</div>
+ <label class="calpill">Pillar<select id="cal-pillar"><option value="">All pillars</option>${CAL_PILLARS.map(([k,n])=>`<option value="${k}"${k===F.pillar?" selected":""}>${esc(n)}</option>`).join("")}</select></label>${off||F.pillar?`<button class="copy" id="cal-fall">show everything</button>`:""}`}
+function calWireFilters(){const h=$("#cal-filters");if(!h)return;h.innerHTML=calFilterHtml();
+ h.querySelectorAll("[data-calt]").forEach(b=>b.onclick=()=>{const F=calF();const k=b.dataset.calt;if(F.types.has(k))F.types.delete(k);else F.types.add(k);calSetTypes(F.types);calWireFilters();renderCalendar()});
+ const ps=$("#cal-pillar");if(ps)ps.onchange=()=>{ls.set("calf-pillar",ps.value);calWireFilters();renderCalendar()};
+ const a=$("#cal-fall");if(a)a.onclick=()=>{calSetTypes(new Set(CAL_TYPES.map(t=>t[0])));ls.set("calf-pillar","");calWireFilters();renderCalendar()}}
+// ----- event clicks / drops for the new kinds -----
+const _evElBase=evEl;
+evEl=function(e){const el=_evElBase(e);if(e.kind==="published"){el.draggable=false;el.onclick=()=>{const r=libForPub(e.id,e.it);if(r&&typeof openLib==="function"){show("library");openLib(r.id)}else if(e.it&&e.it.u){const a=document.createElement("a");a.href=e.it.u;a.target="_blank";a.rel="noopener";document.body.append(a);a.click();a.remove()}}}
+ else if(e.kind==="reminder"){el.onclick=()=>remPanel(e.r)}return el};
+const _dropOnBase=dropOn;
+dropOn=async function(dateIso,data){const [kind,id]=String(data).split("|");if(kind==="reminder"){const r=reminders.find(x=>x.id===id);if(r&&db&&canWrite){try{await db.doc("reminders/"+id).update({date:dateIso,updatedAt:Date.now()});if(r.gcal&&r.gcal.id)gcalUpsert({...r,date:dateIso},"reminders/"+id).catch(()=>{})}catch(e){}}return}if(kind==="published")return;return _dropOnBase(dateIso,data)};
+// ----- notes & reminders -----
+const REMIND=[["none","No reminder"],["at","At the time"],["1h","1 hour before"],["1d","1 day before"]];
+const REMIND_MIN={at:0,"1h":60,"1d":1440};const REMIND_ICS={at:"-PT0M","1h":"-PT1H","1d":"-P1D"};
+function remPanel(r,dateIso){const x=r||{title:"",date:dateIso||today(),time:"",note:"",remind:"none",gcal:{on:false}};const isNew=!r;
+ openPanel(`<div class="meta">${isNew?"New note or reminder":remKind(x)==="reminder"?"Reminder":"Note"}</div><h4>${isNew?"Add a note or reminder":esc(x.title)}</h4>
+ <label>Title</label><input type="text" id="rm-title" value="${esc(x.title)}" placeholder="Email the GM at Caruso · or · pitch the Puglia story">
+ <div class="row" style="gap:10px;flex-wrap:wrap"><div style="flex:1;min-width:140px"><label>Date</label><input type="date" id="rm-date" value="${esc(x.date||"")}"></div><div style="flex:1;min-width:120px"><label>Time (optional)</label><input type="time" id="rm-time" value="${esc(x.time||"")}"></div></div>
+ <label>Note (optional)</label><textarea id="rm-note" rows="3" placeholder="anything you want to remember">${esc(x.note||"")}</textarea>
+ <label>Remind me</label><select id="rm-remind">${REMIND.map(([k,n])=>`<option value="${k}"${k===(x.remind||"none")?" selected":""}>${n}</option>`).join("")}</select>
+ <label class="rm-g"><input type="checkbox" id="rm-gcal"${x.gcal&&x.gcal.on?" checked":""}> Send to Google Calendar${x.gcal&&x.gcal.id?' <span class="pill ok">in Google</span>':""}</label>
+ <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" id="rm-save">${isNew?"Add it":"Save"}</button>${isNew?"":`<button class="copy" id="rm-done">${x.done?"reopen":"done ✓"}</button>`}<button class="copy" id="rm-ics">Add to iPhone calendar</button>${isNew?"":`<button class="copy del" id="rm-del">delete</button>`}<button class="copy" id="rm-cancel">cancel</button></div><div class="note" id="rm-msg" style="margin-top:6px"></div>`);
+ const val=()=>({title:$("#rm-title").value.trim(),date:$("#rm-date").value,time:$("#rm-time").value,note:$("#rm-note").value.trim(),remind:$("#rm-remind").value,gcalOn:$("#rm-gcal").checked});
+ $("#rm-cancel").onclick=closePanel;
+ $("#rm-ics").onclick=()=>{const v=val();if(!v.title||!v.date){$("#rm-msg").textContent="Add a title and a date first.";return}remIcs({...x,...v})};
+ $("#rm-save").onclick=async()=>{const v=val();if(!v.title||!v.date){$("#rm-msg").textContent="Add a title and a date.";return}if(!db||!canWrite){$("#rm-msg").textContent="The shared store isn't writable in this view.";return}
+  const doc={title:v.title,date:v.date,time:v.time,note:v.note,remind:v.remind,kind:(v.time||v.remind!=="none")?"reminder":"note",done:!!x.done,gcal:{...(x.gcal||{}),on:v.gcalOn},updatedAt:Date.now()};$("#rm-save").disabled=true;
+  try{let path;if(isNew){doc.createdAt=Date.now();const ref=await db.collection("reminders").add(doc);path="reminders/"+ref.id}else{path="reminders/"+x.id;await db.doc(path).update(doc)}
+   const msg=await gcalApply({...doc,id:path.split("/")[1]},path);$("#rm-msg").textContent=msg||"Saved.";if(!msg)closePanel();else{$("#rm-save").disabled=false}}catch(e){$("#rm-msg").textContent="Couldn't save: "+(e&&e.code||e&&e.message||"error");$("#rm-save").disabled=false}};
+ const dn=$("#rm-done");if(dn)dn.onclick=async()=>{try{await db.doc("reminders/"+x.id).update({done:!x.done,doneAt:!x.done?Date.now():null,updatedAt:Date.now()});closePanel()}catch(e){}};
+ const del=$("#rm-del");if(del)del.onclick=async()=>{try{if(x.gcal&&x.gcal.id)await gcalDelete(x.gcal.id).catch(()=>{});await db.doc("reminders/"+x.id).delete();closePanel()}catch(e){$("#rm-msg").textContent="Couldn't delete."}}}
+function remIcs(r){const alarms=r.remind&&r.remind!=="none"?[REMIND_ICS[r.remind]]:["-PT0M"];downloadIcs("reminder-"+(r.id||"new")+".ics",[{id:"rem-"+(r.id||Date.now()),title:r.title,date:r.date,time:r.time||"",desc:r.note||"",alarms}])}
+// ----- Google Calendar (the viewer's own connector) -----
+const GCAL="Google Calendar";
+function gcalPayload(res){let p=res&&res.payload!==undefined?res.payload:res;if(typeof p==="string"){try{p=JSON.parse(p)}catch(e){}}return p||{}}
+function gcalIdOf(res){const p=gcalPayload(res);return p.id||p.eventId||(p.event&&(p.event.id||p.event.eventId))||(Array.isArray(p.content)&&p.content[0]&&p.content[0].id)||""}
+function gcalTimes(x){const d=x.date;if(!x.time){const n=new Date(d+"T12:00:00");n.setDate(n.getDate()+1);return {allDay:true,startTime:d+"T00:00:00",endTime:isoOf(n)+"T00:00:00"}}
+ const [h,m]=x.time.split(":").map(Number);const s=new Date(d+"T00:00:00");s.setHours(h,m,0,0);const e=new Date(s.getTime()+30*60000);const f=t=>isoOf(t)+"T"+String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0")+":00";return {startTime:f(s),endTime:f(e)}}
+function gcalArgs(x){const a={summary:x.title,...gcalTimes(x)};if(x.note||x.desc)a.description=x.note||x.desc;const mins=x.remind&&x.remind!=="none"?REMIND_MIN[x.remind]:(x.alarmMin!=null?x.alarmMin:null);if(mins!=null&&!(a.allDay&&mins===0))a.overrideReminders=[{method:"popup",minutes:a.allDay&&mins<60?720:mins}];if(gcalCfg&&gcalCfg.calendarId)a.calendarId=gcalCfg.calendarId;return a}
+async function gcalCall(tool,args){if(!mcp)throw {code:"no_mcp"};return await mcp.callTool(GCAL,tool,args,{cache:false})}
+function gcalErr(e){const c=e&&e.code;if(c==="no_mcp")return "Google Calendar isn't connected in this view. Use Add to iPhone calendar (.ics) instead.";if(c==="server_not_connected"||c==="not_granted"||c==="denied")return "Connect Google Calendar for this page (claude.ai → Settings → Connectors), or use Add to iPhone calendar (.ics) instead.";return "Google Calendar didn't answer ("+(c||"error")+"). It's saved here; use Add to iPhone calendar (.ics) if you need it now."}
+async function gcalUpsert(x,path){const args=gcalArgs(x);let id=x.gcal&&x.gcal.id;if(id){await gcalCall("update_event",{eventId:id,...args});}else{const res=await gcalCall("create_event",args);id=gcalIdOf(res)}
+ if(path&&db&&canWrite)await db.doc(path).update({gcal:{on:true,id:id||"",cal:(gcalCfg&&gcalCfg.calendarId)||"primary",synced_at:Date.now()}});return id}
+async function gcalDelete(id){const a={eventId:id};if(gcalCfg&&gcalCfg.calendarId)a.calendarId=gcalCfg.calendarId;return gcalCall("delete_event",a)}
+async function gcalApply(x,path){try{if(x.gcal&&x.gcal.on){await gcalUpsert(x,path);return ""}if(x.gcal&&x.gcal.id){await gcalDelete(x.gcal.id);if(db&&canWrite)await db.doc(path).update({gcal:{on:false,id:""}})}return ""}catch(e){return gcalErr(e)}}
+// planned items get the same Google toggle
+const _planPanelBase=planPanel;
+planPanel=function(e){_planPanelBase(e);const p=e.p;const row=document.querySelector("#pp-save");if(!row)return;const wrap=document.createElement("div");wrap.innerHTML=`<label class="rm-g" style="margin-top:8px"><input type="checkbox" id="pp-gcal"${p.gcal&&p.gcal.on?" checked":""}> Send to Google Calendar${p.gcal&&p.gcal.id?' <span class="pill ok">in Google</span>':""}</label><div class="note" id="pp-gmsg"></div>`;row.parentElement.after(wrap);
+ const cb=$("#pp-gcal");cb.onchange=async()=>{const x={title:(p.kind==="article"?"Write: ":p.kind==="youtube"?"Film/edit: ":"Post: ")+p.title,date:$("#pp-date").value||p.date,time:"09:00",note:p.notes||"",remind:"at",gcal:{...(p.gcal||{}),on:cb.checked}};const m=await gcalApply(x,"plan/"+p.id);$("#pp-gmsg").textContent=m||(cb.checked?"In your Google Calendar.":"Removed from Google Calendar.")}};
+// sync the visible week
+async function gcalSyncWeek(btn){const note=$("#cal-gnote");if(!mcp){note.textContent=gcalErr({code:"no_mcp"});return}btn.disabled=true;note.textContent="Sending this week to Google Calendar…";
+ const ref=cal.ref;const mon=new Date(ref);mon.setDate(ref.getDate()-((ref.getDay()+6)%7));const days=[...Array(7)].map((_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return isoOf(d)});
+ const ev=planEvents().filter(e=>days.includes(e.date)&&["plan","article","social","reminder"].includes(e.kind)&&!e.posted);let n=0,fail=0;const map={...(gcalMap||{})};
+ for(const e of ev){try{if(e.kind==="reminder"){await gcalUpsert({...e.r,gcal:{...(e.r.gcal||{}),on:true}},"reminders/"+e.id);n++;continue}
+   if(e.kind==="plan"&&e.p){const p=e.p;await gcalUpsert({title:(p.kind==="article"?"Write: ":p.kind==="youtube"?"Film/edit: ":"Post: ")+p.title,date:e.date,time:"09:00",note:p.notes||"",remind:"at",gcal:{...(p.gcal||{}),on:true}},"plan/"+e.id);n++;continue}
+   const key=e.kind+":"+e.id;const x={title:calLabel(e).replace(/^./,c=>c.toUpperCase())+": "+e.title.replace(/^✈ /,""),date:e.date,time:"09:00",note:e.sub||"",remind:"at"};const prev=map[key];
+   if(prev&&prev.id){if(prev.date!==e.date)await gcalCall("update_event",{eventId:prev.id,...gcalArgs(x)})}else{const res=await gcalCall("create_event",gcalArgs(x));map[key]={id:gcalIdOf(res),date:e.date}}map[key]={...(map[key]||{}),date:e.date};n++}catch(err){fail++;if(err&&err.code==="no_mcp")break}}
+ try{if(db&&canWrite)await db.doc("settings/gcal_map").set(map)}catch(e){}gcalMap=map;const nb=$("#cal-gweek");if(nb)nb.disabled=false;($("#cal-gnote")||note).textContent=fail?`${n} sent, ${fail} didn't go (${gcalErr({}).split(" (")[0]}). Try again, or use the .ics.`:n?`${n} items are in your Google Calendar.`:"Nothing to send this week."}
+async function gcalPickCalendar(){const note=$("#cal-gnote");if(!mcp){note.textContent=gcalErr({code:"no_mcp"});return}note.textContent="Reading your calendars…";
+ try{const res=await gcalCall("list_calendars",{});const p=gcalPayload(res);const items=p.calendars||p.items||p.calendarList||(Array.isArray(p)?p:[]);note.textContent="";
+  openPanel(`<h4>Which Google calendar?</h4><div class="note" style="margin-bottom:8px">New reminders and synced items go here.</div>${(items||[]).map((c,i)=>`<button class="copy calpick" data-gi="${i}">${esc(c.summary||c.summaryOverride||c.id||c.calendarId)}${c.primary?" · primary":""}</button>`).join("<br>")||'<div class="note">No calendars came back.</div>'}<div class="row" style="margin-top:10px"><button class="copy" id="gc-primary">Use my primary calendar</button></div>`);
+  document.querySelectorAll("[data-gi]").forEach(b=>b.onclick=async()=>{const c=items[+b.dataset.gi];gcalCfg={calendarId:c.id||c.calendarId,summary:c.summary||c.id};try{await db.doc("settings/gcal").set(gcalCfg)}catch(e){}closePanel();calRenderGLine()});
+  $("#gc-primary").onclick=async()=>{gcalCfg={calendarId:"",summary:"primary"};try{await db.doc("settings/gcal").set(gcalCfg)}catch(e){}closePanel();calRenderGLine()}}catch(e){note.textContent=gcalErr(e)}}
+function calRenderGLine(){const g=$("#cal-gline");if(!g)return;const keep=($("#cal-gnote")||{}).textContent||"";g.innerHTML=`<span class="note">Google Calendar: <b>${esc((gcalCfg&&gcalCfg.summary)||"primary")}</b></span><button class="copy" id="cal-gpick">change</button><button class="copy" id="cal-gweek">Sync my week to Google</button><span class="note" id="cal-gnote"></span>`;
+ $("#cal-gnote").textContent=keep;$("#cal-gpick").onclick=gcalPickCalendar;$("#cal-gweek").onclick=()=>gcalSyncWeek($("#cal-gweek"))}
+function calBootV2(){const ad=$("#cal-addnote");if(ad)ad.onclick=()=>remPanel(null,today());calWireFilters();calRenderGLine()}
+
+calBootV2();
 const LANES=[["now","Now"],["next","Next"],["later","Later"],["done","Done"]];
 function laneOf(t){return t.lane||(t.done?"done":((t.order||99)<=8?"now":(t.order||99)<=16?"next":"later"))}
 function renderBoard(){const b=$("#board");if(!b)return;b.innerHTML="";
@@ -4192,6 +4324,10 @@ let ppTimer=null,resultsTicked=false;function schedulePipe(){clearTimeout(ppTime
   try{db.collection("settings").doc("analytics").onSnapshot(d=>{analyticsSettings=d.exists?d.data():null;renderKwData()},()=>{})}catch(e){}
   try{db.collection("settings").doc("ideas").onSnapshot(d=>{const x=d.exists?d.data():{};ideaStore={imported:x.imported||[],paa:x.paa||[]};if(x.summary_fields)summaryFields={...SUMMARY_DEFAULT,...x.summary_fields};scheduleIdeas()},()=>{})}catch(e){}
   try{db.collection("plan").limit(300).onSnapshot(sn=>{plans=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderCalendar()}catch(e){}},()=>{})}catch(e){}
+  try{db.doc("settings/published_index").onSnapshot(sn=>{pubIndex=sn.exists?sn.data():{};try{renderCalendar()}catch(e){}},()=>{})}catch(e){}
+  try{db.collection("reminders").limit(500).onSnapshot(sn=>{reminders=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderCalendar()}catch(e){}},()=>{})}catch(e){}
+  try{db.doc("settings/gcal").onSnapshot(sn=>{gcalCfg=sn.exists?sn.data():null;try{calRenderGLine()}catch(e){}},()=>{})}catch(e){}
+  try{db.doc("settings/gcal_map").onSnapshot(sn=>{gcalMap=sn.exists?sn.data():{}},()=>{})}catch(e){}
   try{db.collection("trips").limit(50).onSnapshot(sn=>{trips=sn.docs.map(x=>({id:x.id,...x.data()}));try{renderToday();renderCalendar()}catch(e){}schedulePipe()},()=>{})}catch(e){}
   try{db.collection("jobs").where("pipeline","==",true).limit(300).onSnapshot(sn=>{pipeJobs=sn.docs.map(x=>({id:x.id,...x.data()}));schedulePipe()},()=>{})}catch(e){}
   try{db.collection("board").limit(500).onSnapshot(sn=>{boardPrio={};sn.docs.forEach(x=>{const v=x.data();if(v&&v.key)boardPrio[v.key]=v});schedulePipe()},()=>{})}catch(e){}
