@@ -633,6 +633,104 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
 .hxres{max-height:52vh;overflow:auto;border-top:1px solid var(--line);margin-top:6px}
 .hxres .prow{padding:9px 0}
 @media (max-width:700px){.hxres{max-height:46vh}}
+
+/* ===== Redesign: one navigation ===== */
+.hero,.tb-nav,.tb-more,.tb-primary,.wfbar,.jump{display:none!important}
+.topbar{gap:18px;padding:12px max(24px,env(safe-area-inset-left,0px)) 12px max(24px,env(safe-area-inset-left,0px));top:env(safe-area-inset-top,0px)}
+.tb-brand b{font-size:24px}.tb-brand span{font-size:9.5px;margin-top:4px}
+.rn-nav{display:flex;gap:2px;flex:1;min-width:0;flex-wrap:wrap}
+.rn-nav button,.rn-sub button,.rn-tab button,.rn-new,.rn-gear,.rn-sheet button{all:unset;cursor:pointer;box-sizing:border-box}
+.rn-nav button{font:500 14px var(--body);color:var(--muted);padding:8px 13px;border-radius:999px;position:relative;white-space:nowrap}
+.rn-nav button:hover{color:var(--fg);background:var(--bg2)}
+.rn-nav button[aria-current="page"]{color:var(--fg);background:var(--bg2);box-shadow:inset 0 0 0 1px var(--line2)}
+.rnb{display:inline-block;margin-left:6px;min-width:16px;padding:0 5px;border-radius:999px;background:var(--warn-bg);color:var(--warn);font:600 10.5px/16px var(--body);text-align:center}
+.rn-new{font:500 14px var(--body);background:var(--fg);color:var(--bg2);padding:9px 16px;border-radius:999px;white-space:nowrap}
+.rn-gear{font-size:17px;color:var(--muted);padding:6px 8px;border-radius:999px}.rn-gear[aria-current="page"],.rn-gear:hover{color:var(--fg);background:var(--bg2)}
+.rn-sub{position:sticky;top:calc(env(safe-area-inset-top,0px) + 63px);z-index:39;background:var(--bg);border-bottom:1px solid var(--line)}
+.rn-subin{max-width:calc(var(--maxw) + 56px);margin:0 auto;display:flex;gap:4px;align-items:center;padding:8px 28px;overflow-x:auto;scrollbar-width:none}
+.rn-subin::-webkit-scrollbar{display:none}
+.rn-room{font:600 10.5px var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-right:10px;white-space:nowrap}
+.rn-sub button{font:500 13px var(--body);color:var(--muted);padding:6px 12px;border-radius:999px;white-space:nowrap}
+.rn-sub button[aria-current="page"]{background:var(--fg);color:var(--bg2)}
+.rn-tab{display:none}
+.rn-sheet{position:fixed;inset:0;z-index:80;background:rgba(20,18,15,.35);display:flex;align-items:flex-end}
+.rn-sheet[hidden]{display:none}
+.rn-sheetin{background:var(--bg);width:100%;max-height:80vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px max(18px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px))}
+.rn-sheeth{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.rn-sheeth b{font-family:var(--display);font-weight:400;font-size:22px}
+.rn-sheetg{padding:10px 0;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px;align-items:center}.rn-sheetg .rn-room{flex:1 0 100%;margin-bottom:2px}
+.rn-sheet button{font:500 14px var(--body);padding:8px 14px;border:1px solid var(--line2);border-radius:999px;background:var(--bg2)}
+.rn-status{margin-top:10px;font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:900px){
+ .topbar{flex-wrap:nowrap;padding:10px max(16px,env(safe-area-inset-left,0px))}
+ .rn-nav,.rn-gear{display:none}
+ .rn-sub{top:calc(env(safe-area-inset-top,0px) + 53px)}.rn-subin{padding:8px 16px}
+ .rn-tab{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--bg);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+ .rn-tab button{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 2px;font:500 10.5px var(--body);color:var(--muted);position:relative}
+ .rn-tab button i{font-style:normal;font-family:var(--display);font-size:18px;line-height:1.1;color:var(--fg)}
+ .rn-tab button[aria-current="page"]{color:var(--fg);font-weight:600}
+ .rn-tab button[aria-current="page"]::before{content:"";position:absolute;top:-7px;left:25%;right:25%;border-top:2px solid var(--gold)}
+ .rn-tab .rnb{position:absolute;top:0;right:12%;margin:0}
+ .content{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}
+}
+/* ===== Short headers ===== */
+section.desk:not(#desk-today) .deskhead h2,section.desk:not(#desk-today) .deskhead .eyebrow{display:block}
+section.desk{padding-top:22px}
+.deskhead{margin-bottom:18px;display:block}
+.deskhead .eyebrow{font-size:10.5px;letter-spacing:.18em;margin-bottom:6px}
+.deskhead h2{font-family:var(--title,var(--display));font-weight:400;font-size:clamp(30px,4vw,40px);line-height:1.05;letter-spacing:-.01em;margin:0}
+.deskhead .purpose{margin:6px 0 0;color:var(--muted);font-size:15px}
+.deskhead .how{margin-top:6px}
+.deskhead .how>summary{cursor:pointer;font:500 12.5px var(--body);color:var(--muted);list-style:none;display:inline-block;border-bottom:1px solid var(--line2)}
+.deskhead .how>summary::-webkit-details-marker{display:none}
+.deskhead .how[open]>summary{margin-bottom:6px}
+.deskhead .how .lead{font-size:14px;max-width:70ch}
+/* ===== Calm buttons ===== */
+.btn{font-size:14px;padding:10px 18px}
+.btn.calm{background:transparent}
+/* ===== One status language: the stepper ===== */
+.stepper{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg2);width:max-content;max-width:100%;margin-top:8px}
+.stepper span{padding:5px 10px;font:500 12px var(--body);color:var(--faint);border-right:1px solid var(--line);white-space:nowrap}
+.stepper span:last-child{border-right:0}
+.stepper .done{color:var(--ok)}
+.stepper .now{background:var(--fg);color:var(--bg2)}
+.stepper.sm span{padding:3px 8px;font-size:11px}
+@media (max-width:700px){.stepper span.done:not(:first-child){display:none}.stepper span.now~span:not(.now+span){display:none}}
+#t-one,#t-one>*,#t-one .one>*{min-width:0}#t-one .one{grid-template-columns:minmax(0,1fr)}
+#today-sum{display:none}
+/* ===== Today ===== */
+#t-one{display:grid;gap:12px;margin-bottom:22px}
+#t-one .one{background:var(--bg2);border:1px solid var(--line2);border-radius:var(--r);padding:22px;display:grid;gap:8px}
+#t-one .one.extra{border-style:dashed}
+#t-one .eb{font:600 10.5px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+#t-one .t{font-family:var(--title,var(--display));font-size:clamp(24px,3.2vw,32px);line-height:1.12;text-wrap:balance}
+#t-one .why{color:var(--muted);font-size:14.5px;max-width:70ch}
+#t-one .mini{display:grid;gap:8px}
+#t-one .li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;background:var(--bg2);border:1px solid var(--line);border-radius:12px}
+#t-one .li .k{font-family:var(--display);font-size:18px;color:var(--faint)}
+#t-one .li b{font-weight:500;display:block;line-height:1.3}
+#t-one .li small{color:var(--muted);font-size:12.5px}
+.weekline{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px}
+.wk2{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;font-size:12.5px;color:var(--muted);min-width:0}
+.wk2 b{font-family:var(--title,var(--display));font-weight:400;font-size:24px;color:var(--fg);line-height:1.1}
+.wk2.act{justify-content:center;align-items:flex-start;gap:6px}
+.dots{display:flex;gap:4px;margin-top:6px}.dots i{width:20px;height:6px;border-radius:3px;background:var(--line2)}.dots i.f{background:var(--ok)}
+.card.finish{background:var(--ok-bg,var(--bg2));border-color:transparent;color:var(--ok);padding:14px 18px}
+.more-today{margin-top:8px;border-top:1px solid var(--line);padding-top:10px}
+.more-today>summary{cursor:pointer;font:500 13px var(--body);color:var(--muted);list-style:none;padding:6px 0}
+.more-today>summary::before{content:"▸ "}.more-today[open]>summary::before{content:"▾ "}
+@media (max-width:700px){.weekline{grid-template-columns:1fr 1fr}.wk2.act{grid-column:1/-1}#t-one .li{grid-template-columns:20px minmax(0,1fr)}#t-one .li>.row{grid-column:2}#t-one .one{padding:16px}}
+/* ===== Show five ===== */
+.s5h{display:none!important}
+.s5more{display:block;margin:10px 0 0}
+/* ===== Focus mode ===== */
+.focus{position:fixed;inset:0;z-index:90;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
+.focus[hidden]{display:none}
+.focusin{max-width:640px;width:100%;text-align:center;display:grid;gap:12px;justify-items:center}
+.focusin .eb{font:600 11px var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.focusin .t{font-family:var(--title,var(--display));font-size:clamp(28px,5vw,44px);line-height:1.1;text-wrap:balance}
+.focusin .why{color:var(--muted);max-width:52ch}
+.timer{font-family:var(--title,var(--display));font-size:clamp(56px,12vw,96px);font-variant-numeric:tabular-nums;line-height:1;margin:8px 0}
+body.focus-on{overflow:hidden}
 </style>
 
 <header class="topbar">
@@ -728,10 +826,10 @@ ul.plain{list-style:none;margin:0;padding:0}ul.plain li{padding:8px 0;border-bot
   <div class="deskhead"><div><div class="eyebrow">Make</div><h2>Trips</h2><p class="lead">Every trip from Agency Studio and your Passport, from plan to video. The desk ranks the work by search demand and timing, tells you how many photos each piece needs, culls the shoot for you, and keeps the rest out of sight. Three things at a time.</p></div></div>
   <div class="row" style="align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap">
     <div class="views" id="pp-views"><button data-pv="overview">Overview</button><button data-pv="next" aria-selected="true">Next 3</button><button data-pv="bank">Trips</button><button data-pv="photos">Photos</button><button data-pv="ideas">Ideas</button><button data-pv="week">This week</button><button data-pv="writing">Writing</button><button data-pv="board">Board</button><button data-pv="trip">Trip</button><button data-pv="eye">Your eye</button></div>
-    <button class="copy" data-go="plan">Calendar →</button><button class="copy" data-go="authority">Places →</button>
+    
     <span class="note" id="pp-note" style="margin-left:auto"></span>
   </div>
-  <div class="ppbar"><button class="btn" id="pp-brief">Run the brief</button><button class="btn alt" id="pp-gsc">More ideas from Search Console</button><span class="note" id="pp-brief-note"></span><span class="secbtns"><button class="copy" id="pp-fold">fold all</button><button class="copy" id="pp-unfold">open all</button></span></div>
+  <div class="ppbar"><button class="btn alt" id="pp-brief">Run the brief</button><button class="btn alt" id="pp-gsc">More ideas from Search Console</button><span class="note" id="pp-brief-note"></span><span class="secbtns"><button class="copy" id="pp-fold">fold all</button><button class="copy" id="pp-unfold">open all</button></span></div>
   <div id="pp-overview" hidden></div>
   <div id="pp-next"></div>
   <div id="pp-board" hidden></div>
@@ -1346,7 +1444,7 @@ function buildJump(){const m=$("#jump-menu"),j=$("#jump");if(!m||!j)return;const
  j.style.display=items.length>2?"":"none"; m.innerHTML=items.map((x,i)=>`<button data-j="${i}">${esc(x.t)}</button>`).join("")+`<button class="top" data-j="top">↑ Top</button>`;
  m.querySelectorAll("[data-j]").forEach(b=>b.onclick=()=>{m.hidden=true;$("#jump-btn").setAttribute("aria-expanded","false");if(b.dataset.j==="top"){window.scrollTo({top:0,behavior:"smooth"});return}const el=items[+b.dataset.j].el;const y=el.getBoundingClientRect().top+window.scrollY-(window.innerWidth<=900?130:90);window.scrollTo({top:y,behavior:"smooth"})});}
 (function(){const b=$("#jump-btn"),m=$("#jump-menu");if(!b||!m)return;b.onclick=e=>{e.stopPropagation();buildJump();m.hidden=!m.hidden;b.setAttribute("aria-expanded",String(!m.hidden))};document.addEventListener("click",e=>{if(!m.hidden&&!e.target.closest("#jump")){m.hidden=true;b.setAttribute("aria-expanded","false")}})})();
-function show(id){ try{document.querySelector(".hero")?.classList.toggle("hero-today",id==="today");const hk=$("#hero-k");if(hk)hk.textContent=(DESK_NUM[id]||"")+" · "+(DESK_TITLES[id]||id);const mm=$("#tb-menu");if(mm)mm.hidden=true;closeMenu()}catch(e){}navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id)); try{const jm=$("#jump-menu");if(jm)jm.hidden=true;setTimeout(buildJump,60)}catch(e){}const ht=$("#hero-title");if(ht)ht.textContent=DESK_TITLES[id]||id;ls.set("desk",id);if(id==="authority"){try{renderAuthority()}catch(e){console.warn(e)}}if(id==="trips"){try{renderPipe()}catch(e){console.warn(e)}}window.scrollTo({top:0})}
+function show(id){ try{document.querySelector(".hero")?.classList.toggle("hero-today",id==="today");const hk=$("#hero-k");if(hk)hk.textContent=(DESK_NUM[id]||"")+" · "+(DESK_TITLES[id]||id);const mm=$("#tb-menu");if(mm)mm.hidden=true;closeMenu()}catch(e){}navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id)); try{const jm=$("#jump-menu");if(jm)jm.hidden=true;setTimeout(buildJump,60)}catch(e){}const ht=$("#hero-title");if(ht)ht.textContent=DESK_TITLES[id]||id;ls.set("desk",id);if(id==="authority"){try{renderAuthority()}catch(e){console.warn(e)}}if(id==="trips"){try{renderPipe()}catch(e){console.warn(e)}}try{navRender(id);ls.set("room-last-"+roomOf(id).k,id);if(MOVED_PAGES[id]||id==="today")navRenderPage(id)}catch(e){}window.scrollTo({top:0})}
 navBtns.forEach(b=>b.addEventListener("click",()=>show(b.dataset.desk)));
 document.querySelectorAll(".tile[data-go]").forEach(t=>t.onclick=()=>show(t.dataset.go));
 const h=(location.hash||"").slice(1);show(navBtns.some(b=>b.dataset.desk===h)?h:(ls.get("desk")||"today"));
@@ -1548,7 +1646,7 @@ function amPFilter(rows){const f=amPF();amPInfo.gen++;return rows.filter(x=>{con
  if(f.photos&&(f.photos==="has"?n.photos<5:n.photos>=5))return false;
  if(f.work==="queued"&&!n.queued)return false;if(f.work==="none"&&(n.queued||!n.missing))return false;return true})}
 function amPSort(rows){const s=amPF().sort;const by={gaps:(a,b)=>amPInfo(b).missing-amPInfo(a).missing,live:(a,b)=>amPInfo(b).live-amPInfo(a).live,recent:(a,b)=>amPInfo(b).last.localeCompare(amPInfo(a).last),ready:(a,b)=>(amPInfo(b).photos+(amPInfo(b).recency!=="never"?20:0))-(amPInfo(a).photos+(amPInfo(a).recency!=="never"?20:0)),az:(a,b)=>a.p.name.localeCompare(b.p.name)}[s]||null;return by?rows.slice().sort((a,b)=>by(a,b)||a.p.name.localeCompare(b.p.name)):rows}
-function amFoldOpen(id){const v=ls.get(id);return v?v==="1":!(window.matchMedia&&matchMedia("(max-width:700px)").matches)}
+function amFoldOpen(id){const v=ls.get(id);return v==="1"}
 function amPToolbar(all){const f=amPF();amPInfo.gen++;const infos=all.map(amPInfo);const regions=[...new Set(infos.map(n=>n.region).filter(Boolean))].sort();const countries=[...new Set(infos.filter(n=>!f.region||n.region===f.region).map(n=>n.country).filter(Boolean))].sort();
  const on=AMP.filter(k=>k!=="sort"&&f[k]).length;const sel=(k,label,opts)=>`<label class="amfl">${label}<select data-amp-f="${k}">${opts.map(([a,b])=>`<option value="${esc(a)}"${a===(f[k]||"")?" selected":""}>${esc(b)}</option>`).join("")}</select></label>`;
  return `<details class="amfold" data-fold="amp-open"${amFoldOpen("amp-open")?" open":""}><summary>Filters${on?` · <b>${on} on</b>`:""}</summary><div class="amfbar"><label class="amfl">Location<input type="text" data-amp-f="q" value="${esc(f.q)}" placeholder="place or country"></label>
@@ -3087,7 +3185,7 @@ function setStatus(){
 // Proposal Studio itinerary marked "Coco") and from the Passport (travel/). Pieces are jobs with pipeline:true.
 // Culling runs on this device: grouping and sharpness are computed here, only small previews go to Claude.
 let pipeJobs=[], boardPrio={}, culls={}, videos={}, research={}, tripNotes=[], tasteProfile=null, tasteChoices=[];
-let ppView=ls.get("ppView")||"overview", ppTrip=ls.get("ppTrip")||"";if(!ls.get("ov-intro")){ls.set("ov-intro","1");ppView="overview";ls.set("ppView","overview")}
+let ppView=ls.get("ppView")||"overview", ppTrip=ls.get("ppTrip")||"";if(["photos","eye","ideas","writing","week","next","board","list"].includes(ppView))ppView="overview";if(!ls.get("ov-intro")){ls.set("ov-intro","1");ppView="overview";ls.set("ppView","overview")}
 const PP_STAGES=["Plan","On trip","Cull","Edit","Write","Share","Done"];
 const PP_COLS=[["Upcoming",["Plan","On trip"]],["Cull",["Cull"]],["Edit",["Edit"]],["Write",["Write"]],["Share",["Share"]],["Done",["Done"]]];
 const PP_SLOTS={
@@ -3148,16 +3246,16 @@ function ppAllActions(){const out=[];ppTripsAll().forEach(t=>{if(ppPrio("trip:"+
  return out.sort((a,b)=>b.score.s-a.score.s)}
 function renderPipe(){const el=$("#desk-trips");if(!el)return;$("#pp-quiet").style.display=db?"none":"block";
  $("#pp-views").querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.pv===ppView)));
- if(ppView==="list")ppView="ideas";["overview","next","board","bank","list","photos","ideas","week","writing","trip","eye"].forEach(v=>{const e=$("#pp-"+v);if(e)e.hidden=v!==ppView});
+ if(ppView==="list")ppView="ideas";{const MV={photos:"photos",eye:"eye",ideas:"ideas",writing:"writing",week:"week",next:"today",board:"ideas"};if(MV[ppView]){const d=MV[ppView];ppView="overview";ls.set("ppView","overview");show(d);return}}["overview","next","board","bank","list","trip"].forEach(v=>{const e=$("#pp-"+v);if(e)e.hidden=v!==ppView});
  try{({overview:ppRenderOverview,next:ppRenderNext,board:ppRenderBoard,bank:ppRenderBank,list:ppRenderList,photos:ppRenderPhotos,ideas:ppRenderIdeas,week:ppRenderWeekView,writing:ppRenderWriting,trip:ppRenderTrip,eye:ppRenderEye}[ppView]||ppRenderNext)()}catch(e){console.warn("pipe",e)}
  try{ppRenderToday()}catch(e){}ppTabCounts();const bb=$("#pp-brief");if(bb){const t=ppView==="trip"&&ppTrip?ppTripsAll().find(x=>x.key===ppTrip):null;bb.textContent=t?"Brief: "+t.name.slice(0,28):"Run this week's brief"}}
-function ppActCard(a,i){return `<div class="card"><div class="n">${i+1}</div><div><div class="meta"><span class="pstage">${esc(a.st)}</span> ${esc(a.trip.name)}</div><h4 style="margin:4px 0 2px">${esc(a.text)}</h4><div class="note">${esc(a.sub||"")}</div><div class="note" style="margin-top:4px;color:var(--muted)">Why now: ${esc(a.score.why.slice(0,3).join(" · ")||"next in line")}</div></div><div><button class="btn" data-ppact="${esc(a.act)}" data-trip="${esc(a.trip.key)}" data-job="${esc(a.j?a.j.id:"")}" data-k="${esc(a.k||"")}">${esc(a.btn)}</button></div></div>`}
+function ppActCard(a,i){return `<div class="card"><div class="n">${i+1}</div><div><div class="meta"><span class="pstage">${esc(a.st)}</span> ${esc(a.trip.name)}</div><h4 style="margin:4px 0 2px">${esc(a.text)}</h4><div class="note">${esc(a.sub||"")}</div><div class="note" style="margin-top:4px;color:var(--muted)">Why now: ${esc(a.score.why.slice(0,3).join(" · ")||"next in line")}</div>${a.j?ppStepper(a.j,a.trip,true):""}</div><div><button class="btn" data-ppact="${esc(a.act)}" data-trip="${esc(a.trip.key)}" data-job="${esc(a.j?a.j.id:"")}" data-k="${esc(a.k||"")}">${esc(a.btn)}</button></div></div>`}
 function ppRenderNext(){const acts=ppAllActions();const more=$("#pp-next").dataset.more==="1";const show=acts.slice(0,more?6:3);
  $("#pp-next").innerHTML=acts.length?`<div class="pnext">${show.map(ppActCard).join("")}</div><div class="row" style="margin-top:10px"><span class="note">${acts.length>3?`${acts.length-3} more wait out of sight. Finish one and the next moves up.`:"That's everything for now."}</span>${acts.length>3?`<button class="copy" id="pp-more">${more?"show 3":"show 3 more"}</button>`:""}</div>`:`<div class="note">Nothing needs you. When a trip's research lands or photos are due, it shows up here.</div>`;
  const m=$("#pp-more");if(m)m.onclick=()=>{$("#pp-next").dataset.more=more?"0":"1";ppRenderNext()};ppWireActs($("#pp-next"));
  const wa=ppWindowAlerts();if(wa.length){const bn=document.createElement("div");bn.className="card";bn.style.marginBottom="12px";bn.innerHTML=`<details><summary class="note" style="cursor:pointer"><b>${wa.length} search window${wa.length===1?" is":"s are"} open now.</b> They're already ranked into your three; tap to see them all.</summary><div class="note" style="margin-top:6px">${wa.map(x=>`${esc(x.j.title)} · by ${esc(x.w.next)} · ${esc(x.st.toLowerCase())}`).join("<br>")}</div></details>`;$("#pp-next").prepend(bn);ppNotifyWindows(wa)}
  const wd=document.createElement("div");wd.innerHTML=ppWeekCard(false);$("#pp-next").prepend(wd);ppWireWeek(wd)}
-function ppRenderToday(){const el=$("#t-next3");if(!el)return;const acts=ppAllActions().slice(0,3);el.innerHTML=acts.length?`<div class="fs" style="margin-top:0;border-top:0;padding-top:0"><div class="fsh"><span class="num">Trips</span><span class="fst">Your next three</span><button class="copy" data-go="trips" style="margin-left:auto">all trips →</button></div><div class="pnext">${acts.map(ppActCard).join("")}</div></div>`:"";ppWireActs(el);el.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go))}
+function ppRenderToday_v1(){const el=$("#t-next3");if(!el)return;const acts=ppAllActions().slice(0,3);el.innerHTML=acts.length?`<div class="fs" style="margin-top:0;border-top:0;padding-top:0"><div class="fsh"><span class="num">Trips</span><span class="fst">Your next three</span><button class="copy" data-go="trips" style="margin-left:auto">all trips →</button></div><div class="pnext">${acts.map(ppActCard).join("")}</div></div>`:"";ppWireActs(el);el.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go))}
 function ppWireActs(root){root.querySelectorAll("[data-ppact]").forEach(b=>b.onclick=()=>ppDo(b.dataset.ppact,b.dataset.trip,b.dataset.job,b,b.dataset.k))}
 async function ppDo(act,tkey,jid,btn,k){const t=ppTripsAll().find(x=>x.key===tkey);const j=pipeJobs.find(x=>x.id===jid);
  if(act==="trip"){ppTrip=tkey;ls.set("ppTrip",tkey);ppView="trip";ls.set("ppView","trip");show("trips");renderPipe();return}
@@ -3358,8 +3456,8 @@ function ovCountries(rows){const g={};rows.forEach(o=>o.cities.forEach(c=>{const
   <div class="note" style="margin:0 0 6px">Trips: ${esc([...e.trips].join(" · "))}</div>${cs.map(c=>`<div class="amcrow"><div style="min-width:0"><b>${esc(c.city)}</b> ${ovSegs(c)} <span class="note">${c.have}/${c.tot} pillars · ${c.live} live${c.hotels.length?" · "+esc(c.hotels.map(h=>h.name).join(", ")):""}</span>${c.missing.length?`<div class="note">Missing: ${c.missing.map(k2=>esc(AM_SHORT[k2]||k2)).join(" · ")}</div>`:""}</div><div>${c.x?`<button class="copy" data-ovam="${esc(c.city)}">pillars ›</button>`:""}</div></div>`).join("")}</details>`}).join("")||'<div class="card"><div class="note">No places yet.</div></div>'}
 // ----- AI: what moves the needle most -----
 function ovNeedleCard(){const c=needleCall;const all=ppTripsAll();const tn=k=>(all.find(t=>t.key===k)||{}).name||k;
- return `<div class="card ovneedle"><div class="fsh" style="margin:0 0 6px"><span class="num">AI</span><span class="fst">Where to start: what moves the needle most</span><button class="btn sm" id="ov-needle" style="margin-left:auto">${c?"ask again":"ask the desk"}</button></div>
- <p class="note" style="margin:0">The desk weighs every trip's search demand and season, what's already earning clicks and agency inquiries, unfinished photos and articles, missing pillars and unreviewed hotels, then picks where your next hours do the most for the agency and for cocotran.com.${c&&c.at?" Asked "+new Date(c.at).toLocaleDateString():""}</p><div class="note" id="ov-needle-note"></div>
+ return `<div class="card ovneedle"><div class="fsh" style="margin:0 0 6px"><span class="num">AI</span><span class="fst">The desk's call: what moves the needle most</span><button class="btn sm" id="ov-needle" style="margin-left:auto">${c?"ask again":"ask the desk"}</button></div>
+ <p class="note" style="margin:0">Weighs search demand, season, clicks, inquiries and unfinished work across every trip. Its picks move to the top of Today.${c&&c.at?" Asked "+new Date(c.at).toLocaleDateString():""}</p><div class="note" id="ov-needle-note"></div>
  ${c?`<p style="margin:10px 0 6px"><b>${esc(c.headline||"")}</b></p><ol class="ovstart">${(c.start||[]).map(s=>`<li><div><b>${esc(s.action||"")}</b><div class="note">${esc(tn(s.trip_key))}${s.city?" · "+esc(s.city):""} · ${esc(s.impact||"")}${s.effort?" · "+esc(s.effort)+" effort":""}</div><div class="note">${esc(s.why||"")}</div></div>${s.trip_key&&all.some(t=>t.key===s.trip_key)?`<div class="row" style="gap:6px"><button class="copy" data-open="${esc(s.trip_key)}">open</button><button class="copy" data-brief="${esc(s.trip_key)}">brief</button></div>`:""}</li>`).join("")}</ol>
  ${(c.quick_wins||[]).length?`<div class="meta">Quick wins</div><ul class="shotl">${c.quick_wins.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}${c.skip?`<p class="note" style="margin:6px 0 0">Can wait: ${esc(c.skip)}</p>`:""}`:""}</div>`}
 async function ovAskNeedle(btn){const note=$("#ov-needle-note");if(!sample){note.textContent="Claude isn't available in this view.";return}btn.disabled=true;note.textContent="Weighing every trip…";
@@ -3385,7 +3483,7 @@ async function ovImportRun(btn){const note=$("#ov-imp-note");if(!db||!canWrite){
 function ppRenderOverview(){const host=$("#pp-overview");if(!host)return;const all=ovAll();const rows=ovSort(ovFilter(all));const v=ls.get("ov-view")||"map";
  const vsw=`<div class="views bkview" id="ov-views">${[["map","Map"],["table","Table"],["country","By country"]].map(([k,n])=>`<button data-ov="${k}" aria-selected="${k===v}">${n}</button>`).join("")}</div>`;
  const body=!rows.length?'<div class="card"><div class="note">No trips match.</div></div>':v==="table"?ovTable(rows):v==="country"?ovCountries(rows):rows.map(ovTripCard).join("");
- host.innerHTML=`${ovSummary(rows)}${ovNeedleCard()}${ovImportCard()}<div class="fs"><div class="fsh"><span class="num">Map</span><span class="fst">${rows.length} of ${all.length} trips · trip › country › city › hotels</span><span style="margin-left:auto">${vsw}</span></div>${ovToolbar(all)}</div>${body}`;
+ host.innerHTML=`${ovSummary(rows)}${ovNeedleCard()}<div class="fs"><div class="fsh"><span class="num">Map</span><span class="fst">${rows.length} of ${all.length} trips · trip › country › city › hotels</span><span style="margin-left:auto">${vsw}</span></div>${ovToolbar(all)}</div>${body}${ovImportCard()}`;
  host.querySelectorAll("[data-ov]").forEach(b=>b.onclick=()=>{ls.set("ov-view",b.dataset.ov);ppRenderOverview()});
  host.querySelectorAll("[data-ovf]").forEach(el=>{const k=el.dataset.ovf;el[k==="q"?"oninput":"onchange"]=()=>{ls.set("ov-"+k,el.value);clearTimeout(ppRenderOverview.t);ppRenderOverview.t=setTimeout(()=>{ppRenderOverview();if(k==="q"){const q=host.querySelector('[data-ovf="q"]');if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}},k==="q"?250:0)}});
  const cl=host.querySelector("[data-ovclear]");if(cl)cl.onclick=()=>{OVF.forEach(k=>ls.set("ov-"+k,""));ppRenderOverview()};
@@ -3998,7 +4096,7 @@ $("#pp-views").querySelectorAll("button").forEach(b=>b.onclick=()=>{ppView=b.dat
 $("#pp-brief").onclick=()=>ppRunBrief(ppView==="trip"&&ppTrip?ppTrip:null);$("#pp-fold").onclick=()=>ppSecAll(true);$("#pp-unfold").onclick=()=>ppSecAll(false);
 $("#pp-gsc").onclick=()=>{ppView="ideas";ls.set("ppView","ideas");renderPipe();ppGscIdeas($("#gsc-run"))};
 document.querySelectorAll("#desk-trips [data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
-let ppTimer=null,resultsTicked=false;function schedulePipe(){clearTimeout(ppTimer);ppTimer=setTimeout(()=>{try{ppWeekAuto()}catch(e){}if(!resultsTicked&&lib.length&&pipeJobs.length&&canWrite){resultsTicked=true;setTimeout(()=>ppResultsTick().catch(()=>{}),3000)}try{if(document.querySelector("#desk-trips.on"))renderPipe();else ppRenderToday()}catch(e){console.warn("pipe",e)}},200)}
+let ppTimer=null,resultsTicked=false;function schedulePipe(){clearTimeout(ppTimer);ppTimer=setTimeout(()=>{try{ppWeekAuto()}catch(e){}if(!resultsTicked&&lib.length&&pipeJobs.length&&canWrite){resultsTicked=true;setTimeout(()=>ppResultsTick().catch(()=>{}),3000)}try{const on=document.querySelector("section.desk.on");const oid=on?on.id.replace("desk-",""):"";if(oid==="trips")renderPipe();else if(typeof MOVED_PAGES!=="undefined"&&MOVED_PAGES[oid])navRenderPage(oid);else ppRenderToday();try{const fo=document.activeElement;if(!(fo&&fo.closest&&fo.closest("#rn-sub,#rn-nav")))navRender(oid)}catch(e){}}catch(e){console.warn("pipe",e)}},200)}
 (async()=>{
  setStatus();
  const [s,d,u,m,a,dl]=await Promise.all([claude.use("sample"),claude.use("db"),claude.use("user"),claude.use("mcp"),claude.use("assets"),claude.use("downloads")]);
@@ -4063,5 +4161,96 @@ function ppSecToggles(root){(root||document).querySelectorAll("#desk-trips .card
  h.addEventListener("click",tog);h.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();tog(e)}})})}
 function ppSecAll(collapse){document.querySelectorAll("#desk-trips .sech").forEach(h=>{const box=h.parentElement;box.classList.toggle("secc",collapse);ls.set(ppSecKey(h),collapse?"1":"");h.setAttribute("aria-expanded",String(!collapse))})}
 (function(){const el=document.getElementById("desk-trips");if(!el||!window.MutationObserver)return;let t;new MutationObserver(()=>{clearTimeout(t);t=setTimeout(()=>ppSecToggles(el),30)}).observe(el,{childList:true,subtree:true})})();
+
+// ================= Redesign: rooms, one navigation, short headers, one status language, calm buttons, Today as the one answer, focus mode =================
+const ROOMS=[
+ {k:"today",n:"Today",pages:[["today","Today"]]},
+ {k:"trips",n:"Trips",pages:[["trips","Trips"]]},
+ {k:"photos",n:"Photos",pages:[["photos","Cull & edit"],["eye","Your eye"]]},
+ {k:"write",n:"Write",pages:[["ideas","Board"],["writing","Ready to write"],["new","New piece"],["queue","With the worker"]]},
+ {k:"publish",n:"Publish",pages:[["library","Library"],["respin","Respin"]]},
+ {k:"share",n:"Share",pages:[["social","Social"]]},
+ {k:"plan",n:"Plan",pages:[["plan","Calendar"],["week","This week"]]},
+ {k:"grow",n:"Grow",pages:[["authority","Authority map"],["keywords","Keywords"],["questions","Reader questions"],["cite","Citations"],["bench","AI benchmark"]]},
+ {k:"settings",n:"Settings",pages:[["rules","House rules"],["playbooks","Playbooks"],["process","Process"]]}];
+const PURPOSE={trips:"Every trip, what it holds and what it still needs.",photos:"Every photo set waiting on you, best first. The desk picks; you approve.",eye:"Edit 1 or Edit 2: teach the desk your eye.",ideas:"Every piece from your trips, by its next step.",writing:"Pieces whose photos are ready. Write one with its brief.",new:"Write a piece with the desk. The worker builds the draft.",queue:"What Claude is working on, in order.",library:"Everything on cocotran.com and how it's doing.",respin:"Old posts worth rewriting into the new formats.",social:"This week's posts, made from your pieces.",plan:"Your calendar: articles, posts and trips.",week:"This week's 2 articles and 3 posts.",authority:"Which pillars each place has, and which it's missing.",keywords:"What people search for, and what to write next.",questions:"What readers ask you.",cite:"Where AI answers cite cocotran.com.",bench:"How often AI tools mention you.",rules:"Your voice and the house style.",playbooks:"How the desk and the worker build each piece.",process:"Checks every piece goes through."};
+const MOVED_PAGES={photos:"pp-photos",eye:"pp-eye",ideas:"pp-ideas",writing:"pp-writing",week:"pp-week"};
+function roomOf(id){return ROOMS.find(r=>r.pages.some(p=>p[0]===id))||ROOMS[0]}
+function navPageTitle(id){for(const r of ROOMS)for(const p of r.pages)if(p[0]===id)return p[1];return DESK_TITLES[id]||id}
+function navBadge(k){try{if(k==="photos"){const n=ppOpenIdeas().filter(x=>x.t&&!(culls[x.j.id]||{}).approved).length;return n||""}if(k==="write"){const n=jobsCache.filter(j=>j.status==="needs-coco").length;return n?n+"!":""}}catch(e){}return ""}
+function navRender(id){const room=roomOf(id);const nb=$("#rn-nav");if(nb)nb.innerHTML=ROOMS.filter(r=>r.k!=="settings").map(r=>{const b=navBadge(r.k);return `<button data-room="${r.k}"${r.k===room.k?' aria-current="page"':""}>${esc(r.n)}${b?`<span class="rnb">${esc(String(b))}</span>`:""}</button>`}).join("");
+ const sb=$("#rn-sub");if(sb){sb.hidden=room.pages.length<2;sb.innerHTML=`<div class="rn-subin"><span class="rn-room">${esc(room.n)}</span>${room.pages.map(([p,n])=>`<button data-page="${p}"${p===id?' aria-current="page"':""}>${esc(n)}</button>`).join("")}</div>`}
+ const tb=$("#rn-tab");if(tb){const main=["today","trips","photos","write"];tb.innerHTML=main.map(k=>{const r=ROOMS.find(x=>x.k===k);const b=navBadge(k);return `<button data-room="${k}"${k===room.k?' aria-current="page"':""}><i>${k==="today"?"◆":String(main.indexOf(k))}</i>${esc(r.n)}${b?`<span class="rnb">${esc(String(b))}</span>`:""}</button>`}).join("")+`<button data-room="__more"${main.includes(room.k)?"":' aria-current="page"'}><i>···</i>More</button>`}
+ const st=$("#rn-settings");if(st)st.setAttribute("aria-current",room.k==="settings"?"page":"false");
+ document.querySelectorAll("[data-room]").forEach(b=>b.onclick=()=>{if(b.dataset.room==="__more"){navSheet(true);return}navGoRoom(b.dataset.room)});
+ document.querySelectorAll("#rn-sub [data-page]").forEach(b=>b.onclick=()=>show(b.dataset.page))}
+function navGoRoom(k){const r=ROOMS.find(x=>x.k===k);if(!r)return;navSheet(false);const last=ls.get("room-last-"+k);show(r.pages.some(p=>p[0]===last)?last:r.pages[0][0])}
+function navSheet(open){const s=$("#rn-sheet");if(!s)return;s.hidden=!open;if(open){s.querySelector(".rn-sheetin").innerHTML=`<div class="rn-sheeth"><b>More</b><button class="copy" data-sheetx>close</button></div>${ROOMS.filter(r=>!["today","trips","photos","write"].includes(r.k)).map(r=>`<div class="rn-sheetg"><span class="rn-room">${esc(r.n)}</span>${r.pages.map(([p,n])=>`<button data-page2="${p}">${esc(n)}</button>`).join("")}</div>`).join("")}<div class="rn-status">${($("#tb-status")||{}).innerHTML||""}</div>`;
+ s.querySelectorAll("[data-page2]").forEach(b=>b.onclick=()=>{navSheet(false);show(b.dataset.page2)});s.querySelector("[data-sheetx]").onclick=()=>navSheet(false)}}
+// pages that used to live inside Trips get their own sections
+function navBuildPages(){const main=document.querySelector("main");if(!main)return;Object.entries(MOVED_PAGES).forEach(([id,cid])=>{if($("#desk-"+id))return;const c=$("#"+cid);if(!c)return;const s=document.createElement("section");s.className="desk";s.id="desk-"+id;s.innerHTML=`<div class="deskhead"><div><div class="eyebrow"></div><h2>${esc(navPageTitle(id))}</h2></div></div>`;main.appendChild(s);s.appendChild(c);c.hidden=false})}
+function navRenderPage(id){try{({photos:ppRenderPhotos,eye:ppRenderEye,ideas:ppRenderIdeas,writing:ppRenderWriting,week:ppRenderWeekView,today:ppRenderToday}[id]||(()=>{}))()}catch(e){console.warn("page",id,e)}
+ if(id==="ideas"){const h=$("#pp-ideas"),g=$("#gsc-run");const c=g&&g.closest(".card");if(h&&c&&c.parentElement===h)h.appendChild(c)}}
+// short headers: room label, page title, one line; the long explanation folds behind "How this works"
+function navHeaders(){document.querySelectorAll("section.desk").forEach(s=>{const id=s.id.replace("desk-","");const dh=s.querySelector(".deskhead");if(!dh||dh.dataset.calm)return;dh.dataset.calm="1";const eb=dh.querySelector(".eyebrow");if(eb&&id!=="today")eb.textContent=roomOf(id).n;const h=dh.querySelector("h2");if(h&&id!=="today")h.textContent=navPageTitle(id);
+ if(id==="today")return;const lead=dh.querySelector(".lead");const p=document.createElement("p");p.className="purpose";p.textContent=PURPOSE[id]||"";if(h)h.after(p);
+ if(lead){const d=document.createElement("details");d.className="how";d.innerHTML="<summary>How this works</summary>";lead.parentNode.insertBefore(d,lead);d.appendChild(lead);const sib=d.nextElementSibling;if(sib&&sib.tagName==="DETAILS")d.appendChild(sib)}})}
+// one status language
+const STATUS_WORDS={planned:"Idea",missing:"Idea",idea:"Idea",queued:"With the worker",running:"With the worker",researching:"With the worker",drafting:"Writing",drafted:"Review",built:"Review",approved:"Review","needs-coco":"Needs you","needs coco":"Needs you","needs you":"Needs you",published:"Live",live:"Live",done:"Live",failed:"Stuck",plan:"Upcoming","on trip":"On trip"};
+const STEPS=["Idea","Cull","Edit","Write","With the worker","Review","Live"];
+function ppStepIdx(j,t){if(!j)return 0;if(ppLive(j))return 6;const st=ppStage(j,t);if(st==="Plan"||st==="On trip")return 0;if(st==="Cull")return 1;if(st==="Edit")return 2;const d=j.draft_job&&jobsCache.find(x=>x.id===j.draft_job);const s=(d||j).status;if(["queued","running"].includes(s))return 4;if(["drafted","built","approved","needs-coco"].includes(s)&&(d||s!=="needs-coco"))return 5;return 3}
+function ppStepper(j,t,small){const i=ppStepIdx(j,t);return `<div class="stepper${small?" sm":""}" aria-label="Step ${i+1} of 7: ${STEPS[i]}">${STEPS.map((s,k)=>`<span class="${k<i?"done":k===i?"now":""}">${k<i?"✓ ":""}${s}</span>`).join("")}</div>`}
+function navStatusWords(root){(root||document).querySelectorAll("main .pill, main .pstage, .modal .pill, .modal .pstage").forEach(e=>{if(e.children.length||e.dataset.sw)return;const k=e.textContent.trim().toLowerCase();const w=STATUS_WORDS[k];if(w){e.textContent=w;e.dataset.sw="1"}})}
+// one primary button per list: the first row keeps its solid button, the rest go quiet
+const CALM_ROWS=".card,.prow,.li,.tcard,.ovtrip,.qcard,.amc,.lcard,.amcrow,.titem,.amti,.wcard,.bcard";
+function navCalmButtons(root){(root||document).querySelectorAll("main section.desk.on").forEach(sec=>{const solid=[...sec.querySelectorAll(".btn:not(.alt):not(.keep)")].filter(b=>b.offsetParent!==null&&!b.closest(".one,.tpath,.ask,.focus"));const byList=new Map();
+ solid.forEach(b=>{const row=b.closest(CALM_ROWS);if(!row||!row.parentElement)return;const L=row.parentElement;if(!byList.has(L))byList.set(L,[]);byList.get(L).push({b,row})});
+ byList.forEach(arr=>{const rows=[...new Set(arr.map(x=>x.row))];if(rows.length<2)return;arr.forEach(x=>{if(x.row!==rows[0])x.b.classList.add("alt","calm")})});
+ sec.querySelectorAll(CALM_ROWS).forEach(row=>{const bs=[...row.querySelectorAll(":scope .btn:not(.alt)")].filter(b=>b.closest(CALM_ROWS)===row);bs.slice(1).forEach(b=>b.classList.add("alt","calm"))})})}
+let navObsT;function navObserve(){const m=document.querySelector("main");if(!m||!window.MutationObserver)return;new MutationObserver(()=>{clearTimeout(navObsT);navObsT=setTimeout(()=>{navStatusWords();navCalmButtons();navShowFive()},60)}).observe(m,{childList:true,subtree:true});const mo=document.body;new MutationObserver(()=>{const md=$("#modal");if(md&&!md.hidden)navStatusWords(md)}).observe(mo,{childList:true})}
+// show five: long lists open short
+const SHOW5=[["#pp-overview",".ovtrip",8],["#q-cards",":scope > *",7],["#pp-bank .tgrid",".tcard",9]];
+function navShowFive(){SHOW5.forEach(([sel,item,n])=>{document.querySelectorAll(sel).forEach(c=>{if(c.dataset.s5all==="1")return;const items=[...c.querySelectorAll(item)].filter(x=>!x.classList.contains("s5more"));if(items.length<=n+2){c.querySelector(":scope > .s5more")?.remove();return}items.forEach((x,i)=>x.classList.toggle("s5h",i>=n));let m=[...c.children].find(x=>x.classList.contains("s5more"));if(!m){m=document.createElement("button");m.className="copy s5more";c.appendChild(m)}else c.appendChild(m);m.textContent=`show all ${items.length}`;m.onclick=()=>{c.dataset.s5all="1";items.forEach(x=>x.classList.remove("s5h"));m.remove()}})})}
+// ----- Today: the one answer -----
+function ppSkipKey(a){return a.j?a.j.id:"trip:"+a.trip.key+":"+a.act}
+function ppSkipped(a){return ls.get("skip:"+ppSkipKey(a))===today()}
+function ppTodayActions(){const acts=ppAllActions();const nc=needleCall&&needleCall.at&&(Date.now()-needleCall.at)<10*864e5?(needleCall.start||[]):[];
+ acts.forEach(a=>{const i=nc.findIndex(s=>s.trip_key===a.trip.key);a.rank=a.score.s+(i>=0?(5-i)*6:0)+(ppPrio(a.j?"job:"+a.j.id:"")==="now"?40:0);if(i>=0&&!a.score.why.includes("the desk's call"))a.score.why=["the desk's call"].concat(a.score.why)});
+ return acts.sort((x,y)=>y.rank-x.rank).sort((x,y)=>ppSkipped(x)-ppSkipped(y))}
+function ppWeekProgress(){const wk=ppWeekKey();const doc=weekPlans[wk];const out={accepted:!!(doc&&doc.accepted_at),aDone:0,aTot:planPace.articles,sDone:0,sTot:planPace.social};if(!out.accepted)return out;
+ const items=doc.items||[];const done=it=>{const j=pipeJobs.find(x=>x.id===it.job);if(it.type==="article")return !!(j&&(ppLive(j)||!!ppDraftJob(j)||["queued","drafted","built","approved"].includes(j.status)));return j?ppShareDone(j,it.channel):!!(lib.find(r=>r.id===it.lib)||{}).social_kit_made};
+ const a=items.filter(i=>i.type==="article"),s=items.filter(i=>i.type!=="article");out.aTot=a.length||out.aTot;out.sTot=s.length||out.sTot;out.aDone=a.filter(done).length;out.sDone=s.filter(done).length;return out}
+function ppMinutes(a){return a.st==="Cull"?20:a.st==="Edit"?25:a.st==="Write"?60:a.st==="Share"?10:15}
+function ppRenderToday(){const el=$("#t-one");if(!el)return;const acts=ppTodayActions();const w=ppWeekProgress();const fin=w.accepted&&w.aDone>=w.aTot&&w.sDone>=w.sTot;const needs=jobsCache.filter(j=>j.status==="needs-coco").length;
+ const one=acts[0];const rest=acts.slice(1,3);const dots=(d,t)=>`<span class="dots">${Array.from({length:t},(_,i)=>`<i class="${i<d?"f":""}"></i>`).join("")}</span>`;
+ el.innerHTML=`${fin?`<div class="card finish"><b>You're done for the week.</b> ${w.aDone} articles and ${w.sDone} posts are under way. Anything below is extra, only if you want it.</div>`:""}
+ ${one?`<div class="one${fin?" extra":""}"><div class="eb">${fin?"Extra · ":"Your one thing · "}${esc(one.trip.name)} · about ${ppMinutes(one)} min${ppSkipped(one)?" · skipped today":""}</div><div class="t">${esc(one.text)}</div><div class="why">${esc(one.sub||"")}${one.score.why.length?" Why now: "+esc(one.score.why.slice(0,3).join(" · "))+".":""}</div>
+  ${one.j?ppStepper(one.j,one.trip):""}<div class="row" style="gap:10px;margin-top:4px"><button class="btn keep" data-ppact="${esc(one.act)}" data-trip="${esc(one.trip.key)}" data-job="${esc(one.j?one.j.id:"")}" data-k="${esc(one.k||"")}">${esc(one.btn)}</button><button class="btn alt" data-focus="0">Focus mode</button><button class="copy" data-skip="0">not today</button></div></div>`:`<div class="one"><div class="eb">Your one thing</div><div class="t">Nothing needs you right now.</div><div class="why">When a trip's photos or research are ready, the next step shows up here.</div></div>`}
+ ${rest.length?`<div class="mini">${rest.map((a,i)=>`<div class="li"><span class="k">${i+2}</span><div><b>${esc(a.text)}</b><small>${esc(a.trip.name)} · ${esc(STATUS_WORDS[String(a.st).toLowerCase()]||a.st)} · about ${ppMinutes(a)} min</small></div><div class="row" style="gap:6px"><button class="copy" data-ppact="${esc(a.act)}" data-trip="${esc(a.trip.key)}" data-job="${esc(a.j?a.j.id:"")}" data-k="${esc(a.k||"")}">${esc(a.btn)}</button><button class="copy" data-skip="${i+1}">not today</button></div></div>`).join("")}</div>`:""}
+ <div class="weekline"><div class="wk2"><b>${w.aDone} of ${w.aTot}</b><span>articles this week</span>${dots(w.aDone,w.aTot)}</div><div class="wk2"><b>${w.sDone} of ${w.sTot}</b><span>social posts</span>${dots(w.sDone,w.sTot)}</div><div class="wk2 act">${w.accepted?`<button class="copy" data-go="week">see the week</button>`:`<span>This week isn't planned yet.</span><button class="copy" data-go="week">plan the week</button>`}${needs?`<button class="copy" data-go="queue">${needs} waiting on your call</button>`:""}</div></div>`;
+ ppWireActs(el);el.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
+ el.querySelectorAll("[data-skip]").forEach(b=>b.onclick=()=>{const a=acts[+b.dataset.skip];if(a){ls.set("skip:"+ppSkipKey(a),today());ppRenderToday()}});
+ el.querySelectorAll("[data-focus]").forEach(b=>b.onclick=()=>ppFocus(0));
+ const t3=$("#t-next3");if(t3)t3.innerHTML=""}
+// ----- Focus mode: the task, a timer, nothing else -----
+let focusT=null,focusLeft=25*60,focusRun=false;
+function ppFocus(i){const acts=ppTodayActions().filter(a=>!ppSkipped(a));const a=acts[i||0];let f=$("#focus");if(!f){f=document.createElement("div");f.id="focus";f.className="focus";document.body.appendChild(f)}
+ if(!a){f.innerHTML=`<div class="focusin"><div class="eb">Focus</div><div class="t">That's everything for today.</div><button class="btn keep" data-fx>Close</button></div>`;f.hidden=false;f.querySelector("[data-fx]").onclick=ppFocusClose;return}
+ const mm=()=>`${String(Math.floor(focusLeft/60)).padStart(2,"0")}:${String(focusLeft%60).padStart(2,"0")}`;
+ f.innerHTML=`<div class="focusin"><div class="eb">Focus · ${esc(a.trip.name)}</div><div class="t">${esc(a.text)}</div><div class="why">${esc(a.sub||"")}</div>${a.j?ppStepper(a.j,a.trip):""}<div class="timer" id="fx-time">${mm()}</div>
+ <div class="row" style="justify-content:center;gap:10px"><button class="btn alt" id="fx-run">${focusRun?"Pause":"Start the timer"}</button><button class="btn keep" data-ppact="${esc(a.act)}" data-trip="${esc(a.trip.key)}" data-job="${esc(a.j?a.j.id:"")}" data-k="${esc(a.k||"")}">${esc(a.btn)}</button></div>
+ <div class="row" style="justify-content:center;gap:14px;margin-top:18px"><button class="copy" id="fx-done">done, show the next one</button><button class="copy" id="fx-close">leave focus mode</button></div></div>`;f.hidden=false;document.body.classList.add("focus-on");
+ f.querySelectorAll("[data-ppact]").forEach(b=>b.onclick=()=>{ppFocusClose();ppDo(b.dataset.ppact,b.dataset.trip,b.dataset.job,b,b.dataset.k)});
+ $("#fx-run").onclick=()=>{focusRun=!focusRun;$("#fx-run").textContent=focusRun?"Pause":"Start the timer";clearInterval(focusT);if(focusRun)focusT=setInterval(()=>{focusLeft=Math.max(0,focusLeft-1);const e=$("#fx-time");if(e)e.textContent=mm();if(!focusLeft){clearInterval(focusT);focusRun=false;if(e)e.textContent="Time. Take a break."}},1000)};
+ $("#fx-done").onclick=()=>{ls.set("skip:"+ppSkipKey(a),today());focusLeft=25*60;focusRun=false;clearInterval(focusT);ppFocus(0);ppRenderToday()};$("#fx-close").onclick=ppFocusClose}
+function ppFocusClose(){const f=$("#focus");if(f)f.hidden=true;document.body.classList.remove("focus-on");clearInterval(focusT);focusRun=false}
+// ----- boot -----
+function navBoot(){const tb=document.querySelector("header.topbar");if(tb&&!$("#rn-nav")){tb.insertAdjacentHTML("beforeend",`<nav class="rn-nav" id="rn-nav" aria-label="Rooms"></nav><button class="rn-new" data-desk="new" id="rn-new">+ New</button><button class="rn-gear" data-room="settings" id="rn-settings" aria-label="Settings" title="Settings">⚙</button>`);tb.insertAdjacentHTML("afterend",`<div class="rn-sub" id="rn-sub" hidden></div>`);document.body.insertAdjacentHTML("beforeend",`<nav class="rn-tab" id="rn-tab" aria-label="Rooms"></nav><div class="rn-sheet" id="rn-sheet" hidden><div class="rn-sheetin"></div></div>`);$("#rn-new").onclick=()=>show("new")}
+ navBuildPages();navHeaders();
+ const td=$("#desk-today");if(td&&!$("#t-one")){const dh=td.querySelector(".deskhead");const one=document.createElement("div");one.id="t-one";dh.after(one);const more=document.createElement("details");more.className="more-today";more.innerHTML="<summary>More on today</summary>";[...td.children].filter(c=>c!==dh&&c!==one&&c.id!=="t-due"&&c.id!=="t-next3").forEach(c=>more.appendChild(c));td.appendChild(more);if(ls.get("more-today")==="1")more.open=true;more.addEventListener("toggle",()=>ls.set("more-today",more.open?"1":""))}
+ const v=$("#pp-views");if(v){v.innerHTML=`<button data-pv="overview">Overview</button><button data-pv="bank">All trips</button><button data-pv="trip">One trip</button>`;v.querySelectorAll("button").forEach(b=>b.onclick=()=>{ppView=b.dataset.pv;ls.set("ppView",ppView);renderPipe()})}
+ const g=$("#pp-gsc");if(g)g.hidden=true;
+ navObserve();navRender(ls.get("desk")||"today");document.addEventListener("keydown",e=>{if(e.key==="Escape"){ppFocusClose();navSheet(false)}})}
+try{navBoot();const h0=(location.hash||"").slice(1);show(document.getElementById("desk-"+h0)?h0:(ls.get("desk")||"today"))}catch(e){console.warn("nav boot",e)}
 
 </script>
