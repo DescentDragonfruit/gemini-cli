@@ -737,6 +737,56 @@ body.focus-on{overflow:hidden}
 .rn-theme span[aria-hidden]{font-size:14px;line-height:1}
 .rn-sheet button[aria-pressed="true"]{background:var(--fg);color:var(--bg2);border-color:var(--fg)}
 @media (max-width:900px){.rn-theme .rn-tl{display:none}.rn-theme{padding:7px 10px}}
+
+/* ===== Write room: To approve ===== */
+.apsum{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 16px}
+.apsum>div{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 16px;display:flex;align-items:baseline;gap:8px}
+.apsum b{font-family:var(--title,var(--display));font-weight:400;font-size:28px;line-height:1}
+.apsum span{color:var(--muted);font-size:13px}
+.apgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.apcard{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:18px 18px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.apcard:hover{border-color:var(--line2)}
+.apeb{font:600 10.5px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.apcard h3{font-family:var(--title,var(--display));font-weight:400;font-size:22px;line-height:1.15;margin:0;text-wrap:balance}
+.appv{margin:0;color:var(--muted);font-size:14px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.apneeds{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.apnl{font:600 10.5px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--faint);width:100%}
+.apn{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--warn-bg);color:var(--warn);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.apn.ok{background:var(--ok-bg,var(--accent-soft));color:var(--ok)}.apn.more{background:transparent;border:1px dashed var(--line2);color:var(--muted)}
+.apact{margin-top:auto;padding-top:6px}
+.apwait{margin-top:22px;border-top:1px solid var(--line);padding-top:12px}
+.apwait>summary{cursor:pointer;font:500 14px var(--body);color:var(--fg);list-style:none}
+.apwait>summary::before{content:"▸ ";color:var(--muted)}.apwait[open]>summary::before{content:"▾ "}
+.apwg{padding:10px 0;border-top:1px solid var(--line);display:grid;gap:2px}
+.aphead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 12px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 110px);z-index:5;background:var(--bg);padding:8px 0}
+/* ===== With the worker: groups ===== */
+.qgrp{border:1px solid var(--line);border-radius:var(--r);background:var(--bg2);margin:0 0 10px;padding:0 14px}
+.qgrp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:13px 0;font:500 15px var(--body)}
+.qgrp>summary::-webkit-details-marker{display:none}
+.qgrp>summary::before{content:"▸";color:var(--muted);font-size:12px}.qgrp[open]>summary::before{content:"▾"}
+.qgrp .qn{font:600 11px var(--body);background:var(--accent-soft);color:var(--fg);border-radius:999px;padding:1px 8px}
+.qgrp>summary .copy{margin-left:auto}
+.qgrp .qgl{display:grid;gap:8px;padding:0 0 14px}
+.qgrp .qcard{background:var(--bg)}
+@media (max-width:700px){.apgrid{grid-template-columns:1fr}.aphead{top:calc(env(safe-area-inset-top,0px) + 96px)}}
+
+/* ===== Drag to order ===== */
+.dragitem{position:relative}
+.dragh{cursor:grab;color:var(--faint);font-size:13px;letter-spacing:-2px;user-select:none;margin-right:6px;display:inline-block}
+.prow.dragitem{grid-template-columns:auto 1fr auto}
+.titem.dragitem .dragh{position:absolute;left:-14px;top:12px}
+.dragging{opacity:.45;outline:2px dashed var(--gold);outline-offset:2px}
+.dragmv{display:inline-flex;gap:2px;margin-left:6px}.dragmv .copy{padding:2px 6px;font-size:11px}
+.dragnote{margin:-2px 0 8px}
+@media (pointer:coarse){.dragh{display:none}.prow.dragitem{grid-template-columns:1fr auto}}
+
+.qgrp .qcard{padding:9px 12px;grid-template-columns:30px minmax(0,1fr) auto;gap:4px 12px;border-radius:10px}
+.qgrp .qcard .rank{font-size:17px}
+.qgrp .qcard .qt{font-size:17px;line-height:1.25}
+.qgrp .qcard .qm{font-size:12px;gap:6px}
+.qgrp .qcard .qa{gap:6px}
+.qgrp .qcard .qa .btn{padding:6px 12px;font-size:12.5px}
+@media (hover:hover){.qgrp .qcard .qa [data-top],.qgrp .qcard .qa [data-del],.qgrp .qcard .qa [data-remove],.qgrp .qcard .qa .copy{opacity:0;transition:opacity .15s}.qgrp .qcard:hover .qa .copy,.qgrp .qcard:focus-within .qa .copy{opacity:1}}
 </style>
 
 <header class="topbar">
@@ -1471,7 +1521,7 @@ function buildJump(){const m=$("#jump-menu"),j=$("#jump");if(!m||!j)return;const
  j.style.display=items.length>2?"":"none"; m.innerHTML=items.map((x,i)=>`<button data-j="${i}">${esc(x.t)}</button>`).join("")+`<button class="top" data-j="top">↑ Top</button>`;
  m.querySelectorAll("[data-j]").forEach(b=>b.onclick=()=>{m.hidden=true;$("#jump-btn").setAttribute("aria-expanded","false");if(b.dataset.j==="top"){window.scrollTo({top:0,behavior:"smooth"});return}const el=items[+b.dataset.j].el;const y=el.getBoundingClientRect().top+window.scrollY-(window.innerWidth<=900?130:90);window.scrollTo({top:y,behavior:"smooth"})});}
 (function(){const b=$("#jump-btn"),m=$("#jump-menu");if(!b||!m)return;b.onclick=e=>{e.stopPropagation();buildJump();m.hidden=!m.hidden;b.setAttribute("aria-expanded",String(!m.hidden))};document.addEventListener("click",e=>{if(!m.hidden&&!e.target.closest("#jump")){m.hidden=true;b.setAttribute("aria-expanded","false")}})})();
-function show(id){ try{document.querySelector(".hero")?.classList.toggle("hero-today",id==="today");const hk=$("#hero-k");if(hk)hk.textContent=(DESK_NUM[id]||"")+" · "+(DESK_TITLES[id]||id);const mm=$("#tb-menu");if(mm)mm.hidden=true;closeMenu()}catch(e){}navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id)); try{const jm=$("#jump-menu");if(jm)jm.hidden=true;setTimeout(buildJump,60)}catch(e){}const ht=$("#hero-title");if(ht)ht.textContent=DESK_TITLES[id]||id;ls.set("desk",id);if(id==="authority"){try{renderAuthority()}catch(e){console.warn(e)}}if(id==="trips"){try{renderPipe()}catch(e){console.warn(e)}}try{navRender(id);ls.set("room-last-"+roomOf(id).k,id);if(MOVED_PAGES[id]||id==="today")navRenderPage(id)}catch(e){}window.scrollTo({top:0})}
+function show(id){ try{document.querySelector(".hero")?.classList.toggle("hero-today",id==="today");const hk=$("#hero-k");if(hk)hk.textContent=(DESK_NUM[id]||"")+" · "+(DESK_TITLES[id]||id);const mm=$("#tb-menu");if(mm)mm.hidden=true;closeMenu()}catch(e){}navBtns.forEach(b=>b.setAttribute("aria-current",b.dataset.desk===id?"page":"false"));document.querySelectorAll("section.desk").forEach(s=>s.classList.toggle("on",s.id==="desk-"+id)); try{const jm=$("#jump-menu");if(jm)jm.hidden=true;setTimeout(buildJump,60)}catch(e){}const ht=$("#hero-title");if(ht)ht.textContent=DESK_TITLES[id]||id;ls.set("desk",id);if(id==="authority"){try{renderAuthority()}catch(e){console.warn(e)}}if(id==="trips"){try{renderPipe()}catch(e){console.warn(e)}}try{navRender(id);ls.set("room-last-"+roomOf(id).k,id);if(MOVED_PAGES[id]||id==="today"||id==="approve")navRenderPage(id)}catch(e){}window.scrollTo({top:0})}
 navBtns.forEach(b=>b.addEventListener("click",()=>show(b.dataset.desk)));
 document.querySelectorAll(".tile[data-go]").forEach(t=>t.onclick=()=>show(t.dataset.go));
 const h=(location.hash||"").slice(1);show(navBtns.some(b=>b.dataset.desk===h)?h:(ls.get("desk")||"today"));
@@ -2085,7 +2135,7 @@ async function markLive(job,id,url,btn){
 }
 function pieceText(job){const d=job.draft||{};const f=FORMATS[job.format]||{fields:[]};const fields=d.fields||{};const order=f.fields.filter(k=>fields[k]!=null).concat(Object.keys(fields).filter(k=>!f.fields.includes(k)));return [d.post_title,"",d.short_answer,"",...(d.glance||[]).map(g=>g.label+": "+g.value),"",...order.map(k=>k.toUpperCase()+"\n"+String(fields[k]).replace(/<[^>]+>/g,""))].join("\n")}
 
-const STATUS_LABEL={queued:"Queued",researched:"Draft ready · approve to build",drafted:"Draft ready · approve to build",approved:"Approved · worker builds it in WP",working:"Working…",built:"Publish · needs Coco",published:"Live",done:"Done","needs-coco":"Needs Coco","needs-site":"Needs site setup",failed:"Failed · open for notes"};
+const STATUS_LABEL={queued:"Queued",researched:"Draft ready · approve to build",drafted:"Draft ready · approve to build",approved:"Approved · worker builds it in WP",working:"Working…",built:"Publish · needs Coco",published:"Live",done:"Done","needs-coco":"Needs you","needs-site":"Needs site setup",failed:"Failed · open for notes"};
 function statusLabel(st){return STATUS_LABEL[st]||st||""}
 // The worker sometimes writes a sentence where the desk expects a list (report.gates, needs_coco, verify…). Never let that blank the piece.
 function asList(v){if(v==null||v==="")return [];if(Array.isArray(v))return v;if(typeof v==="object")return Object.values(v);return [v]}
@@ -2279,9 +2329,9 @@ function renderQueue(snap){
  if(!ordered.length) host.innerHTML='<div class="note">Nothing in the queue. Make a piece, or press "Fix this now" on a library record.</div>';
  ordered.forEach((j,i)=>{const working=j.run_requested_at&&!j.run?.finished_at&&(Date.now()-j.run_requested_at)<60*60*1000; const isLive=i<live.length;
   const st=j.status==="built"||j.status==="published"?"ok":(j.status==="needs-site"||j.status==="needs-coco"?"bad":"");
-  const card=document.createElement("div"); card.className="qcard"+(isLive?"":" done");
+  const card=document.createElement("div"); card.className="qcard"+(isLive?"":" done");card.dataset.qg=qGroupOf(j,working);
   card.innerHTML=`<div class="rank">${isLive?i+1:"·"}</div><div><div class="qt">${esc(j.title||j.subject)}</div><div class="qm"><span>${esc(fmtLabel(j.format)||j.format||"")}</span>${j.mode==="update"?'<span class="pill warn">update</span>':""}${j.type==="site-setup"?'<span class="pill">site setup</span>':""}<span class="pill ${st}">${esc(statusLabel(j.status))}</span>${j.reason?`<span class="pill warn">${esc(j.reason)}</span>`:""}${working?'<span class="pill ok">working…</span>':""}<span>${esc(new Date(j.updatedAt||j.createdAt||0).toLocaleDateString("en-US",{month:"short",day:"numeric"}))}</span>${j.run?.minutes?`<span>${j.run.minutes} min · ~${Math.round((j.run.tokens_estimate||0)/1000)}k</span>`:""}</div></div><div class="qa">${isLive&&canWrite&&j.status!=="built"?`<button class="btn alt" data-now="${esc(j.id)}">Work on it now</button><button class="copy" data-top="${esc(j.id)}" title="Move to the top">↑ top</button>`:""}<button class="btn alt" data-open="${esc(j.id)}">Open</button><button class="copy del" data-id="${esc(j.id)}">remove</button></div>`;
-  host.append(card)});
+  host.append(card)});try{qRegroup(host)}catch(e){console.warn("qgroup",e)}try{if(document.querySelector("#desk-approve.on"))apRender();navRender((document.querySelector("section.desk.on")||{id:""}).id.replace("desk-",""))}catch(e){}
  renderProcessStats(); try{renderToday();renderCalendar()}catch(e){}
  try{if(document.querySelector("#desk-respin")&&!document.querySelector("#desk-respin").hidden)renderRespin()}catch(e){}
  try{if(openPiece.id){const j=jobsCache.find(x=>x.id===openPiece.id);const qd=$("#q-detail");if(j&&qd&&!qd.querySelector("textarea")&&(j.updatedAt||0)!==openPiece.rev){renderPiece(qd,j,j.id)}}}catch(e){}
@@ -3880,15 +3930,15 @@ function idBtns(x){const j=x.j,t=x.t;const pl=ppPlanned(j);const n=idNext(x);ret
 function idWhere(x){const t=x.t,c=idCountry(x);const n=t?t.name:"";return ppNorm(n)===ppNorm(c)||!c?n:(n?n+" · "+c:c)}
 function idMeta(x){const j=x.j,t=x.t;return `<span class="pstage">${esc(ppStage(j,t))}</span> ${esc(idWhere(x))} · ${esc((FORMATS[j.format]||{}).label||j.format||"")}${j.publish_by?" · by "+esc(j.publish_by):""}`}
 function idScoreChips(sc){const chip=(l,v)=>`<span class="pill" title="${esc(l)}">${esc(l)} ${v}</span>`;return `${chip("Score",sc.total)}${chip("SEO",sc.seo)}${chip("Season",sc.season)}${chip("Return",sc.roi)}${chip("Ease",sc.ease)}`}
-function idRow(x){const {j,sc}=x;return `<div class="prow"><div><div class="meta">${idMeta(x)}</div><b>${esc(j.title||j.subject)}</b><div class="note">${esc(j.primary_keyword||"")}${sc.why.length?" · "+esc(sc.why.slice(0,3).join(" · ")):""}</div><div style="margin-top:4px">${idChip(x)}${idScoreChips(sc)}</div></div>${idBtns(x)}</div>`}
-function idCard(x){const {j,sc}=x;return `<div class="idcard"><div class="meta">${idMeta(x)}</div><h4>${esc(j.title||j.subject)}</h4><div class="note">${esc(j.primary_keyword||"")}</div><div>${idChip(x)}</div><div class="note" style="margin-top:4px">Score ${sc.total}${sc.why.length?" · "+esc(sc.why.slice(0,2).join(" · ")):""}</div><div class="idcf">${idBtns(x)}</div></div>`}
-function idBoardCard(x){const {j}=x;return `<div class="idbc"><div class="meta">${esc(idWhere(x))}</div><b>${esc(j.title||j.subject)}</b><div>${idChip(x)}</div><div class="row" style="gap:6px;flex-wrap:wrap;margin-top:6px">${idMain(x)}</div></div>`}
+function idRow(x){const {j,sc}=x;return `<div class="prow" data-jid="${esc(j.id)}"><div><div class="meta">${idMeta(x)}</div><b>${esc(j.title||j.subject)}</b><div class="note">${esc(j.primary_keyword||"")}${sc.why.length?" · "+esc(sc.why.slice(0,3).join(" · ")):""}</div><div style="margin-top:4px">${idChip(x)}${idScoreChips(sc)}</div></div>${idBtns(x)}</div>`}
+function idCard(x){const {j,sc}=x;return `<div class="idcard" data-jid="${esc(j.id)}"><div class="meta">${idMeta(x)}</div><h4>${esc(j.title||j.subject)}</h4><div class="note">${esc(j.primary_keyword||"")}</div><div>${idChip(x)}</div><div class="note" style="margin-top:4px">Score ${sc.total}${sc.why.length?" · "+esc(sc.why.slice(0,2).join(" · ")):""}</div><div class="idcf">${idBtns(x)}</div></div>`}
+function idBoardCard(x){const {j}=x;return `<div class="idbc" data-jid="${esc(j.id)}"><div class="meta">${esc(idWhere(x))}</div><b>${esc(j.title||j.subject)}</b><div>${idChip(x)}</div><div class="row" style="gap:6px;flex-wrap:wrap;margin-top:6px">${idMain(x)}</div></div>`}
 function idBoard(rows){const cols=ID_STAGES.filter(s=>rows.some(x=>ppStage(x.j,x.t)===s)||["Cull","Edit","Write"].includes(s));const hint={Plan:"before the trip","On trip":"shoot it",Cull:"start here: photos first",Edit:"after the cull",Write:"photos ready",Share:"live, now share",Done:""};
  return `<div class="idboard">${cols.map(s=>{const xs=rows.filter(x=>ppStage(x.j,x.t)===s);return `<div class="idcol"><div class="idch"><b>${esc(s)}</b> <span class="note">${xs.length}${hint[s]?" · "+esc(hint[s]):""}</span></div>${xs.slice(0,40).map(idBoardCard).join("")||'<div class="note">Nothing here.</div>'}${xs.length>40?`<div class="note">+${xs.length-40} more (narrow with the filters)</div>`:""}</div>`}).join("")}</div>`}
 function idTimeline(rows){const g={};rows.forEach(x=>{const m=idDate(x).slice(0,7);(g[m]=g[m]||[]).push(x)});const ks=Object.keys(g).sort((a,b)=>!a?1:!b?-1:a.localeCompare(b));
- return `<div class="tline">${ks.map(m=>`<div class="tyear" style="font-size:20px">${m?new Date(m+"-15T12:00:00").toLocaleDateString("en-US",{month:"long",year:"numeric"}):"No date yet"} <span class="note" style="font-size:13px">· ${g[m].length}</span></div>${g[m].map(x=>{const d=idDate(x);return `<div class="titem"><span class="tdot" style="background:${idNext(x).kind==="photo"?"var(--warn)":idNext(x).kind==="write"?"var(--ok)":"var(--line2)"}"></span><div class="tmon">${d&&d.length>=10?esc(d.slice(8,10)):"—"}</div><div class="tcontent"><div class="meta">${idMeta(x)}</div><b>${esc(x.j.title||x.j.subject)}</b><div>${idChip(x)}</div>${idBtns(x)}</div></div>`}).join("")}`).join("")}</div>`}
+ return `<div class="tline">${ks.map(m=>`<div class="tyear" data-month="${esc(m)}" style="font-size:20px">${m?new Date(m+"-15T12:00:00").toLocaleDateString("en-US",{month:"long",year:"numeric"}):"No date yet"} <span class="note" style="font-size:13px">· ${g[m].length}</span></div>${g[m].map(x=>{const d=idDate(x);return `<div class="titem" data-jid="${esc(x.j.id)}" data-month="${esc(m)}"><span class="tdot" style="background:${idNext(x).kind==="photo"?"var(--warn)":idNext(x).kind==="write"?"var(--ok)":"var(--line2)"}"></span><div class="tmon">${d&&d.length>=10?esc(d.slice(8,10)):"—"}</div><div class="tcontent"><div class="meta">${idMeta(x)}</div><b>${esc(x.j.title||x.j.subject)}</b><div>${idChip(x)}</div>${idBtns(x)}</div></div>`}).join("")}`).join("")}</div>`}
 function ppRenderIdeas(){const host=$("#pp-ideas");if(!host)return;const lens=ls.get("ideaLens")||"best";const view=ls.get("id-view")||"list";const all=ppOpenIdeas();
- const L={best:["Best right now",x=>-x.sc.total],quick:["Quick wins",x=>-(x.sc.ease*10+x.sc.total)],roi:["Highest return",x=>-(x.sc.roi*10+x.sc.total)],season:["In season",x=>((x.sc.w.mt??99)*100)-x.sc.total],seo:["Search demand",x=>-(x.sc.seo*10+x.sc.total)]};
+ const L={best:["Best right now",x=>-x.sc.total],quick:["Quick wins",x=>-(x.sc.ease*10+x.sc.total)],roi:["Highest return",x=>-(x.sc.roi*10+x.sc.total)],season:["In season",x=>((x.sc.w.mt??99)*100)-x.sc.total],seo:["Search demand",x=>-(x.sc.seo*10+x.sc.total)],mine:["My order",x=>idOrderIdx(x.j.id)*1000-x.sc.total]};
  let rows=idFilter(all);if(lens==="season")rows=rows.filter(x=>x.sc.season);rows.sort((a,b)=>L[lens][1](a)-L[lens][1](b));const more=host.dataset.more==="1";const lim=more?80:15;
  const nCull=rows.filter(x=>ppStage(x.j,x.t)==="Cull").length,nEdit=rows.filter(x=>ppStage(x.j,x.t)==="Edit").length,nWrite=rows.filter(x=>ppStage(x.j,x.t)==="Write").length;
  const first=rows.find(x=>idNext(x).kind==="photo")||rows.find(x=>idNext(x).kind==="write");
@@ -3904,7 +3954,8 @@ function ppRenderIdeas(){const host=$("#pp-ideas");if(!host)return;const lens=ls
  host.querySelectorAll("details[data-fold]").forEach(d=>{d._i=d.open;d.ontoggle=()=>{if(d.open!==d._i){d._i=d.open;ls.set(d.dataset.fold,d.open?"1":"0")}}});
  host.querySelectorAll("[data-idcull]").forEach(b=>b.onclick=()=>{const j=pipeJobs.find(x=>x.id===b.dataset.idcull);if(j)ppCullOpen(j,ppTripOf(j))});
  host.querySelectorAll("[data-idedit]").forEach(b=>b.onclick=()=>{const j=pipeJobs.find(x=>x.id===b.dataset.idedit);const t=j&&ppTripOf(j);if(t){ppTrip=t.key;ls.set("ppTrip",t.key)}ppView="eye";ls.set("ppView","eye");renderPipe()});
- ppWireIdeaBtns(host);ppWireViewsCommon(host)}
+ ppWireIdeaBtns(host);ppWireViewsCommon(host);try{idDragWire(host,view,rows)}catch(e){console.warn("drag",e)}
+ const hint=host.querySelector(".dragnote");if(!hint){const n=document.createElement("div");n.className="note dragnote";n.textContent=lens==="mine"?"Your order. Drag to change it; Today follows it.":"Drag any piece to put it in the order you want to do it.";const vs=host.querySelector("#id-views");if(vs&&vs.parentElement)vs.parentElement.after(n)}}
 function ppWireIdeaBtns(root){root.querySelectorAll("[data-plan]").forEach(b=>b.onclick=()=>{const j=pipeJobs.find(x=>x.id===b.dataset.plan);if(j)ppPlanAdd(j,b)});root.querySelectorAll("[data-wwm]").forEach(b=>b.onclick=()=>{const j=pipeJobs.find(x=>x.id===b.dataset.wwm);if(j)ppWriteWithMe(j)});root.querySelectorAll("[data-wwk]").forEach(b=>b.onclick=()=>{const j=pipeJobs.find(x=>x.id===b.dataset.wwk);if(j)ppDo("write",(ppTripOf(j)||{}).key,j.id,b)});root.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>ppDo("trip",b.dataset.open))}
 function ppSlotDates(kind,weeksAhead){const out=[];const base=new Date();base.setHours(12,0,0,0);const mon=new Date(base);mon.setDate(base.getDate()-((base.getDay()+6)%7));const offs=kind==="article"?[1,3]:[0,2,4];const td=today();
  for(let w=0;w<(weeksAhead||1);w++)offs.forEach(o=>{const d=new Date(mon);d.setDate(mon.getDate()+o+7*w);const iso=d.toISOString().slice(0,10);if(iso>=td)out.push(iso)});return out}
@@ -4123,7 +4174,7 @@ $("#pp-views").querySelectorAll("button").forEach(b=>b.onclick=()=>{ppView=b.dat
 $("#pp-brief").onclick=()=>ppRunBrief(ppView==="trip"&&ppTrip?ppTrip:null);$("#pp-fold").onclick=()=>ppSecAll(true);$("#pp-unfold").onclick=()=>ppSecAll(false);
 $("#pp-gsc").onclick=()=>{ppView="ideas";ls.set("ppView","ideas");renderPipe();ppGscIdeas($("#gsc-run"))};
 document.querySelectorAll("#desk-trips [data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
-let ppTimer=null,resultsTicked=false;function schedulePipe(){clearTimeout(ppTimer);ppTimer=setTimeout(()=>{try{ppWeekAuto()}catch(e){}if(!resultsTicked&&lib.length&&pipeJobs.length&&canWrite){resultsTicked=true;setTimeout(()=>ppResultsTick().catch(()=>{}),3000)}try{const on=document.querySelector("section.desk.on");const oid=on?on.id.replace("desk-",""):"";if(oid==="trips")renderPipe();else if(typeof MOVED_PAGES!=="undefined"&&MOVED_PAGES[oid])navRenderPage(oid);else ppRenderToday();try{const fo=document.activeElement;if(!(fo&&fo.closest&&fo.closest("#rn-sub,#rn-nav")))navRender(oid)}catch(e){}}catch(e){console.warn("pipe",e)}},200)}
+let ppTimer=null,resultsTicked=false;function schedulePipe(){clearTimeout(ppTimer);ppTimer=setTimeout(()=>{try{ppWeekAuto()}catch(e){}if(!resultsTicked&&lib.length&&pipeJobs.length&&canWrite){resultsTicked=true;setTimeout(()=>ppResultsTick().catch(()=>{}),3000)}try{const on=document.querySelector("section.desk.on");const oid=on?on.id.replace("desk-",""):"";if(oid==="trips")renderPipe();else if(typeof MOVED_PAGES!=="undefined"&&(MOVED_PAGES[oid]||oid==="approve"))navRenderPage(oid);else ppRenderToday();try{const fo=document.activeElement;if(!(fo&&fo.closest&&fo.closest("#rn-sub,#rn-nav")))navRender(oid)}catch(e){}}catch(e){console.warn("pipe",e)}},200)}
 (async()=>{
  setStatus();
  const [s,d,u,m,a,dl]=await Promise.all([claude.use("sample"),claude.use("db"),claude.use("user"),claude.use("mcp"),claude.use("assets"),claude.use("downloads")]);
@@ -4156,6 +4207,7 @@ let ppTimer=null,resultsTicked=false;function schedulePipe(){clearTimeout(ppTime
   try{db.doc("settings/plan_pace").onSnapshot(sn=>{if(sn.exists)planPace={articles:2,social:3,auto:false,...sn.data()};schedulePipe()},()=>{})}catch(e){}
   try{db.doc("settings/trip_priority").onSnapshot(sn=>{tripPrioCall=sn.exists?sn.data():null;schedulePipe()},()=>{})}catch(e){}
   try{db.doc("settings/gsc_ideas").onSnapshot(sn=>{gscIdeas=sn.exists?sn.data():null;schedulePipe()},()=>{})}catch(e){}
+  try{db.doc("settings/my_order").onSnapshot(sn=>{myOrder=sn.exists?((sn.data()||{}).ids||[]):[];schedulePipe()},()=>{})}catch(e){}
   try{db.doc("settings/needle_call").onSnapshot(sn=>{needleCall=sn.exists?sn.data():null;schedulePipe()},()=>{})}catch(e){}
   try{db.doc("settings/trip_import").onSnapshot(sn=>{tripImport=sn.exists?sn.data():null;schedulePipe()},()=>{})}catch(e){}
   try{db.collection("trip_shots").onSnapshot(sn=>{tripShots={};sn.docs.forEach(d=>tripShots[d.id]=d.data());schedulePipe()},()=>{})}catch(e){}
@@ -4182,8 +4234,8 @@ let ppTimer=null,resultsTicked=false;function schedulePipe(){clearTimeout(ppTime
 })();
 // ---------- Trips: fold any section (tap its header), remembered per section ----------
 function ppSecKey(h){const t=(h.querySelector(".fst")||h).textContent.replace(/\d+/g,"#").replace(/\s+/g," ").trim().slice(0,60);return "sec:"+t}
-function ppSecToggles(root){(root||document).querySelectorAll("#desk-trips .card>.fsh:first-child, #desk-trips .fs>.fsh:first-child").forEach(h=>{const box=h.parentElement;if(h._sec)return;h._sec=1;const k=ppSecKey(h);h.classList.add("sech");h.setAttribute("role","button");h.setAttribute("tabindex","0");
- if(ls.get(k)==="1")box.classList.add("secc");h.setAttribute("aria-expanded",String(!box.classList.contains("secc")));
+function ppSecToggles(root){(document).querySelectorAll("#desk-trips .card>.fsh:first-child, #desk-trips .fs>.fsh:first-child, #desk-new .fs>.fsh:first-child, #desk-ideas .card>.fsh:first-child, #desk-writing .card>.fsh:first-child").forEach(h=>{const box=h.parentElement;if(h._sec)return;h._sec=1;const k=ppSecKey(h);h.classList.add("sech");h.setAttribute("role","button");h.setAttribute("tabindex","0");
+ if(ls.get(k)==="1"||(ls.get(k)===""&&box.id==="n-ideas"&&!ls.get(k+":seen")))box.classList.add("secc");ls.set(k+":seen","1");h.setAttribute("aria-expanded",String(!box.classList.contains("secc")));
  const tog=e=>{if(e.target.closest("button,select,input,a,label,textarea"))return;box.classList.toggle("secc");const c=box.classList.contains("secc");ls.set(k,c?"1":"");h.setAttribute("aria-expanded",String(!c))};
  h.addEventListener("click",tog);h.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();tog(e)}})})}
 function ppSecAll(collapse){document.querySelectorAll("#desk-trips .sech").forEach(h=>{const box=h.parentElement;box.classList.toggle("secc",collapse);ls.set(ppSecKey(h),collapse?"1":"");h.setAttribute("aria-expanded",String(!collapse))})}
@@ -4194,17 +4246,17 @@ const ROOMS=[
  {k:"today",n:"Today",pages:[["today","Today"]]},
  {k:"trips",n:"Trips",pages:[["trips","Trips"]]},
  {k:"photos",n:"Photos",pages:[["photos","Cull & edit"],["eye","Your eye"]]},
- {k:"write",n:"Write",pages:[["ideas","Board"],["writing","Ready to write"],["new","New piece"],["queue","With the worker"]]},
+ {k:"write",n:"Write",pages:[["approve","To approve"],["ideas","Board"],["writing","Ready to write"],["new","New piece"],["queue","With the worker"]]},
  {k:"publish",n:"Publish",pages:[["library","Library"],["respin","Respin"]]},
  {k:"share",n:"Share",pages:[["social","Social"]]},
  {k:"plan",n:"Plan",pages:[["plan","Calendar"],["week","This week"]]},
  {k:"grow",n:"Grow",pages:[["authority","Authority map"],["keywords","Keywords"],["questions","Reader questions"],["cite","Citations"],["bench","AI benchmark"]]},
  {k:"settings",n:"Settings",pages:[["rules","House rules"],["playbooks","Playbooks"],["process","Process"]]}];
-const PURPOSE={trips:"Every trip, what it holds and what it still needs.",photos:"Every photo set waiting on you, best first. The desk picks; you approve.",eye:"Edit 1 or Edit 2: teach the desk your eye.",ideas:"Every piece from your trips, by its next step.",writing:"Pieces whose photos are ready. Write one with its brief.",new:"Write a piece with the desk. The worker builds the draft.",queue:"What Claude is working on, in order.",library:"Everything on cocotran.com and how it's doing.",respin:"Old posts worth rewriting into the new formats.",social:"This week's posts, made from your pieces.",plan:"Your calendar: articles, posts and trips.",week:"This week's 2 articles and 3 posts.",authority:"Which pillars each place has, and which it's missing.",keywords:"What people search for, and what to write next.",questions:"What readers ask you.",cite:"Where AI answers cite cocotran.com.",bench:"How often AI tools mention you.",rules:"Your voice and the house style.",playbooks:"How the desk and the worker build each piece.",process:"Checks every piece goes through."};
+const PURPOSE={approve:"Drafts waiting for your yes. Read one, approve it, and the worker builds it.",trips:"Every trip, what it holds and what it still needs.",photos:"Every photo set waiting on you, best first. The desk picks; you approve.",eye:"Edit 1 or Edit 2: teach the desk your eye.",ideas:"Every piece from your trips, by its next step.",writing:"Pieces whose photos are ready. Write one with its brief.",new:"Write a piece with the desk. The worker builds the draft.",queue:"What Claude is working on, in order.",library:"Everything on cocotran.com and how it's doing.",respin:"Old posts worth rewriting into the new formats.",social:"This week's posts, made from your pieces.",plan:"Your calendar: articles, posts and trips.",week:"This week's 2 articles and 3 posts.",authority:"Which pillars each place has, and which it's missing.",keywords:"What people search for, and what to write next.",questions:"What readers ask you.",cite:"Where AI answers cite cocotran.com.",bench:"How often AI tools mention you.",rules:"Your voice and the house style.",playbooks:"How the desk and the worker build each piece.",process:"Checks every piece goes through."};
 const MOVED_PAGES={photos:"pp-photos",eye:"pp-eye",ideas:"pp-ideas",writing:"pp-writing",week:"pp-week"};
 function roomOf(id){return ROOMS.find(r=>r.pages.some(p=>p[0]===id))||ROOMS[0]}
 function navPageTitle(id){for(const r of ROOMS)for(const p of r.pages)if(p[0]===id)return p[1];return DESK_TITLES[id]||id}
-function navBadge(k){try{if(k==="photos"){const n=ppOpenIdeas().filter(x=>x.t&&!(culls[x.j.id]||{}).approved).length;return n||""}if(k==="write"){const n=jobsCache.filter(j=>j.status==="needs-coco").length;return n?n+"!":""}}catch(e){}return ""}
+function navBadge(k){try{if(k==="photos"){const n=ppOpenIdeas().filter(x=>x.t&&!(culls[x.j.id]||{}).approved).length;return n||""}if(k==="write"){const n=jobsCache.filter(apReady).length;return n||""}}catch(e){}return ""}
 function navRender(id){const room=roomOf(id);const nb=$("#rn-nav");if(nb)nb.innerHTML=ROOMS.filter(r=>r.k!=="settings").map(r=>{const b=navBadge(r.k);return `<button data-room="${r.k}"${r.k===room.k?' aria-current="page"':""}>${esc(r.n)}${b?`<span class="rnb">${esc(String(b))}</span>`:""}</button>`}).join("");
  const sb=$("#rn-sub");if(sb){sb.hidden=room.pages.length<2;sb.innerHTML=`<div class="rn-subin"><span class="rn-room">${esc(room.n)}</span>${room.pages.map(([p,n])=>`<button data-page="${p}"${p===id?' aria-current="page"':""}>${esc(n)}</button>`).join("")}</div>`}
  const tb=$("#rn-tab");if(tb){const main=["today","trips","photos","write"];tb.innerHTML=main.map(k=>{const r=ROOMS.find(x=>x.k===k);const b=navBadge(k);return `<button data-room="${k}"${k===room.k?' aria-current="page"':""}><i>${k==="today"?"◆":String(main.indexOf(k))}</i>${esc(r.n)}${b?`<span class="rnb">${esc(String(b))}</span>`:""}</button>`}).join("")+`<button data-room="__more"${main.includes(room.k)?"":' aria-current="page"'}><i>···</i>More</button>`}
@@ -4217,7 +4269,7 @@ function navSheet(open){const s=$("#rn-sheet");if(!s)return;s.hidden=!open;if(op
  s.querySelectorAll("[data-page2]").forEach(b=>b.onclick=()=>{navSheet(false);show(b.dataset.page2)});s.querySelector("[data-sheetx]").onclick=()=>navSheet(false)}}
 // pages that used to live inside Trips get their own sections
 function navBuildPages(){const main=document.querySelector("main");if(!main)return;Object.entries(MOVED_PAGES).forEach(([id,cid])=>{if($("#desk-"+id))return;const c=$("#"+cid);if(!c)return;const s=document.createElement("section");s.className="desk";s.id="desk-"+id;s.innerHTML=`<div class="deskhead"><div><div class="eyebrow"></div><h2>${esc(navPageTitle(id))}</h2></div></div>`;main.appendChild(s);s.appendChild(c);c.hidden=false})}
-function navRenderPage(id){try{({photos:ppRenderPhotos,eye:ppRenderEye,ideas:ppRenderIdeas,writing:ppRenderWriting,week:ppRenderWeekView,today:ppRenderToday}[id]||(()=>{}))()}catch(e){console.warn("page",id,e)}
+function navRenderPage(id){if(id==="approve"){try{apRender()}catch(e){console.warn("approve",e)}return}try{({photos:ppRenderPhotos,eye:ppRenderEye,ideas:ppRenderIdeas,writing:ppRenderWriting,week:ppRenderWeekView,today:ppRenderToday}[id]||(()=>{}))()}catch(e){console.warn("page",id,e)}
  if(id==="ideas"){const h=$("#pp-ideas"),g=$("#gsc-run");const c=g&&g.closest(".card");if(h&&c&&c.parentElement===h)h.appendChild(c)}}
 // short headers: room label, page title, one line; the long explanation folds behind "How this works"
 function navHeaders(){document.querySelectorAll("section.desk").forEach(s=>{const id=s.id.replace("desk-","");const dh=s.querySelector(".deskhead");if(!dh||dh.dataset.calm)return;dh.dataset.calm="1";const eb=dh.querySelector(".eyebrow");if(eb&&id!=="today")eb.textContent=roomOf(id).n;const h=dh.querySelector("h2");if(h&&id!=="today")h.textContent=navPageTitle(id);
@@ -4235,15 +4287,15 @@ function navCalmButtons(root){(root||document).querySelectorAll("main section.de
  solid.forEach(b=>{const row=b.closest(CALM_ROWS);if(!row||!row.parentElement)return;const L=row.parentElement;if(!byList.has(L))byList.set(L,[]);byList.get(L).push({b,row})});
  byList.forEach(arr=>{const rows=[...new Set(arr.map(x=>x.row))];if(rows.length<2)return;arr.forEach(x=>{if(x.row!==rows[0])x.b.classList.add("alt","calm")})});
  sec.querySelectorAll(CALM_ROWS).forEach(row=>{const bs=[...row.querySelectorAll(":scope .btn:not(.alt)")].filter(b=>b.closest(CALM_ROWS)===row);bs.slice(1).forEach(b=>b.classList.add("alt","calm"))})})}
-let navObsT;function navObserve(){const m=document.querySelector("main");if(!m||!window.MutationObserver)return;new MutationObserver(()=>{clearTimeout(navObsT);navObsT=setTimeout(()=>{navStatusWords();navCalmButtons();navShowFive()},60)}).observe(m,{childList:true,subtree:true});const mo=document.body;new MutationObserver(()=>{const md=$("#modal");if(md&&!md.hidden)navStatusWords(md)}).observe(mo,{childList:true})}
+let navObsT;function navObserve(){const m=document.querySelector("main");if(!m||!window.MutationObserver)return;new MutationObserver(()=>{clearTimeout(navObsT);navObsT=setTimeout(()=>{navStatusWords();navCalmButtons();navShowFive();try{ppSecToggles()}catch(e){}},60)}).observe(m,{childList:true,subtree:true});const mo=document.body;new MutationObserver(()=>{const md=$("#modal");if(md&&!md.hidden)navStatusWords(md)}).observe(mo,{childList:true})}
 // show five: long lists open short
-const SHOW5=[["#pp-overview",".ovtrip",8],["#q-cards",":scope > *",7],["#pp-bank .tgrid",".tcard",9]];
+const SHOW5=[["#pp-overview",".ovtrip",8],["#q-cards .qgl",":scope > .qcard",7],["#pp-bank .tgrid",".tcard",9]];
 function navShowFive(){SHOW5.forEach(([sel,item,n])=>{document.querySelectorAll(sel).forEach(c=>{if(c.dataset.s5all==="1")return;const items=[...c.querySelectorAll(item)].filter(x=>!x.classList.contains("s5more"));if(items.length<=n+2){c.querySelector(":scope > .s5more")?.remove();return}items.forEach((x,i)=>x.classList.toggle("s5h",i>=n));let m=[...c.children].find(x=>x.classList.contains("s5more"));if(!m){m=document.createElement("button");m.className="copy s5more";c.appendChild(m)}else c.appendChild(m);m.textContent=`show all ${items.length}`;m.onclick=()=>{c.dataset.s5all="1";items.forEach(x=>x.classList.remove("s5h"));m.remove()}})})}
 // ----- Today: the one answer -----
 function ppSkipKey(a){return a.j?a.j.id:"trip:"+a.trip.key+":"+a.act}
 function ppSkipped(a){return ls.get("skip:"+ppSkipKey(a))===today()}
 function ppTodayActions(){const acts=ppAllActions();const nc=needleCall&&needleCall.at&&(Date.now()-needleCall.at)<10*864e5?(needleCall.start||[]):[];
- acts.forEach(a=>{const i=nc.findIndex(s=>s.trip_key===a.trip.key);a.rank=a.score.s+(i>=0?(5-i)*6:0)+(ppPrio(a.j?"job:"+a.j.id:"")==="now"?40:0);if(i>=0&&!a.score.why.includes("the desk's call"))a.score.why=["the desk's call"].concat(a.score.why)});
+ acts.forEach(a=>{const i=nc.findIndex(s=>s.trip_key===a.trip.key);a.rank=a.score.s+(i>=0?(5-i)*6:0)+(a.j&&myOrder.length&&myOrder.indexOf(a.j.id)>=0?Math.max(0,400-myOrder.indexOf(a.j.id)*2):0)+(ppPrio(a.j?"job:"+a.j.id:"")==="now"?40:0);if(i>=0&&!a.score.why.includes("the desk's call"))a.score.why=["the desk's call"].concat(a.score.why)});
  return acts.sort((x,y)=>y.rank-x.rank).sort((x,y)=>ppSkipped(x)-ppSkipped(y))}
 function ppWeekProgress(){const wk=ppWeekKey();const doc=weekPlans[wk];const out={accepted:!!(doc&&doc.accepted_at),aDone:0,aTot:planPace.articles,sDone:0,sTot:planPace.social};if(!out.accepted)return out;
  const items=doc.items||[];const done=it=>{const j=pipeJobs.find(x=>x.id===it.job);if(it.type==="article")return !!(j&&(ppLive(j)||!!ppDraftJob(j)||["queued","drafted","built","approved"].includes(j.status)));return j?ppShareDone(j,it.channel):!!(lib.find(r=>r.id===it.lib)||{}).social_kit_made};
@@ -4272,6 +4324,52 @@ function ppFocus(i){const acts=ppTodayActions().filter(a=>!ppSkipped(a));const a
  $("#fx-run").onclick=()=>{focusRun=!focusRun;$("#fx-run").textContent=focusRun?"Pause":"Start the timer";clearInterval(focusT);if(focusRun)focusT=setInterval(()=>{focusLeft=Math.max(0,focusLeft-1);const e=$("#fx-time");if(e)e.textContent=mm();if(!focusLeft){clearInterval(focusT);focusRun=false;if(e)e.textContent="Time. Take a break."}},1000)};
  $("#fx-done").onclick=()=>{ls.set("skip:"+ppSkipKey(a),today());focusLeft=25*60;focusRun=false;clearInterval(focusT);ppFocus(0);ppRenderToday()};$("#fx-close").onclick=ppFocusClose}
 function ppFocusClose(){const f=$("#focus");if(f)f.hidden=true;document.body.classList.remove("focus-on");clearInterval(focusT);focusRun=false}
+// ---------- Write room: the "To approve" inbox ----------
+let apOpenId="";
+function apReady(j){const d=j.draft||{};const hasText=!!(d.fields&&Object.keys(d.fields).length)||!!d.body;return (["researched","drafted"].includes(j.status)&&hasText)||(j.status==="needs-coco"&&hasText)}
+function apWaiting(j){return j.status==="needs-coco"&&!apReady(j)}
+function apPlace(j){const a=j.authority||{};return (a.chain||[]).slice(-1)[0]||j.dest||j.subject||""}
+function apNeeds(j){return (Array.isArray(j.needs_coco)?j.needs_coco:[]).map(x=>typeof x==="string"?x:(x&&(x.q||x.text||x.label))||"").filter(Boolean)}
+function apPreview(j){const d=j.draft||{};const t=String(d.short_answer||"").replace(/<[^>]+>/g,"");return t}
+function apCounts(){const r=jobsCache.filter(apReady),w=jobsCache.filter(apWaiting);return {ready:r,waiting:w}}
+function apRender(){const host=$("#ap-host");if(!host)return;const {ready,waiting}=apCounts();
+ if(apOpenId){const j=jobsCache.find(x=>x.id===apOpenId);if(j){host.innerHTML=`<div class="aphead"><button class="copy" id="ap-back">← All drafts to approve</button><span class="note">${esc(statusLabel(j.status))}</span></div><div id="ap-detail"></div>`;$("#ap-back").onclick=()=>{apOpenId="";apRender();window.scrollTo({top:0})};try{renderPiece($("#ap-detail"),j,j.id)}catch(e){$("#ap-detail").innerHTML=`<div class="card"><div class="note">This draft couldn't be drawn here (${esc(e.message)}). Open it from With the worker.</div></div>`}return}apOpenId=""}
+ ready.sort((a,b)=>((b.priority||0)-(a.priority||0))||((b.updatedAt||0)-(a.updatedAt||0)));
+ const groups={};waiting.forEach(j=>{const n=apNeeds(j)[0]||"Something from you";const k=n.replace(/^Photos of .*?:/,"Photos:").slice(0,60);(groups[k]=groups[k]||[]).push(j)});
+ host.innerHTML=`<div class="apsum"><div><b>${ready.length}</b><span>draft${ready.length===1?"":"s"} ready for your yes</span></div><div><b>${waiting.length}</b><span>waiting on your photos or notes</span></div></div>
+ ${ready.length?`<div class="apgrid">${ready.map(j=>{const nd=apNeeds(j);const pv=apPreview(j);return `<article class="apcard"><div class="apeb">${esc(fmtLabel(j.format)||j.format||"Piece")}${apPlace(j)?" · "+esc(apPlace(j)):""}</div><h3>${esc((j.title||j.subject||"").replace(/&#038;/g,"&"))}</h3>${pv?`<p class="appv">${esc(pv)}</p>`:""}
+  ${nd.length?`<div class="apneeds"><span class="apnl">Needs from you</span>${nd.slice(0,3).map(n=>`<span class="apn">${esc(n.length>70?n.slice(0,68)+"…":n)}</span>`).join("")}${nd.length>3?`<span class="apn more">+${nd.length-3} more</span>`:""}</div>`:`<div class="apneeds"><span class="apn ok">Nothing missing: read it and approve</span></div>`}
+  <div class="apact"><button class="btn" data-apo="${esc(j.id)}">Read &amp; approve</button></div></article>`}).join("")}</div>`:`<div class="card"><div class="note">Nothing waiting for your yes right now. New drafts land here as the worker finishes them.</div></div>`}
+ ${waiting.length?`<details class="apwait"><summary>Waiting on your photos or notes · ${waiting.length}</summary><p class="note">These can't be written until you add something. Grouped by what they need.</p>${Object.entries(groups).sort((a,b)=>b[1].length-a[1].length).map(([k,js])=>`<div class="apwg"><div><b>${esc(k)}</b> <span class="note">${js.length} piece${js.length>1?"s":""}</span></div><div class="note">${js.slice(0,6).map(j=>esc(j.title||j.subject)).join(" · ")}${js.length>6?" …":""}</div></div>`).join("")}</details>`:""}`;
+ host.querySelectorAll("[data-apo]").forEach(b=>b.onclick=()=>{apOpenId=b.dataset.apo;apRender();window.scrollTo({top:0})})}
+// ---------- With the worker: grouped instead of one long list ----------
+function qGroupOf(j,working){if(working)return "now";if(["published","done"].includes(j.status))return "done";if(apReady(j))return "drafts";if(j.status==="needs-coco")return "you";if(["needs-site","failed"].includes(j.status))return "stuck";if(j.status==="built")return "built";return "next"}
+const QGROUPS=[["now","Working on it now",true],["next","Up next",true],["built","Built, ready to publish",true],["drafts","Drafts ready for your yes",false],["you","Waiting on your photos or notes",false],["stuck","Stuck",true],["done","Done",false]];
+function qRegroup(host){const cards=[...host.querySelectorAll(":scope > .qcard")];if(!cards.length)return;const by={};cards.forEach(c=>{const g=c.dataset.qg||"next";(by[g]=by[g]||[]).push(c)});host.innerHTML="";
+ QGROUPS.forEach(([g,label,open])=>{const cs=by[g];if(!cs||!cs.length)return;const d=document.createElement("details");d.className="qgrp";d.dataset.qg=g;const saved=ls.get("qg-"+g);d.open=saved?saved==="1":open;
+  d.innerHTML=`<summary><span>${esc(label)}</span><span class="qn">${cs.length}</span>${g==="drafts"?'<button class="copy" data-go="approve">open To approve</button>':""}</summary><div class="qcards qgl"></div>`;const l=d.querySelector(".qgl");cs.forEach(c=>l.appendChild(c));host.appendChild(d);
+  d.addEventListener("toggle",()=>ls.set("qg-"+g,d.open?"1":"0"));const gb=d.querySelector("[data-go]");if(gb)gb.onclick=e=>{e.preventDefault();show("approve")}})}
+
+// ---------- Your own order: drag pieces (list, cards, board, timeline) into the order you want to do them ----------
+let myOrder=[];
+function idOrderIdx(id){const i=myOrder.indexOf(id);return i<0?1e6:i}
+function idSaveOrder(container,allRows){const C=[...container.querySelectorAll("[data-jid]")].map(e=>e.dataset.jid);if(!C.length)return;
+ const base=myOrder.filter(id=>allRows.some(x=>x.j.id===id));allRows.forEach(x=>{if(!base.includes(x.j.id))base.push(x.j.id)});
+ const pos=Math.min(...C.map(id=>{const i=base.indexOf(id);return i<0?base.length:i}));const rest=base.filter(id=>!C.includes(id));rest.splice(Math.min(pos,rest.length),0,...C);
+ myOrder=rest;ls.set("ideaLens","mine");if(canWrite){db.doc("settings/my_order").set({ids:myOrder.slice(0,800),updatedAt:Date.now()}).catch(()=>{})}}
+async function idMoveMonth(el){const jid=el.dataset.jid;let h=el.previousElementSibling;while(h&&!h.classList.contains("tyear"))h=h.previousElementSibling;const m=h?h.dataset.month:"";if(!jid||!m||m===el.dataset.month||!canWrite)return;
+ try{await db.doc("jobs/"+jid).update({publish_by:m,updatedAt:Date.now()});const pl=plans.find(p=>p.job_id===jid&&!p.publish_target);if(pl){await db.doc("plan/"+pl.id).update({date:m+"-15",updatedAt:Date.now()})}}catch(e){}}
+function idDragWire(host,view,allRows){const coarse=window.matchMedia&&matchMedia("(pointer:coarse)").matches;let dragEl=null;
+ const groupOf=el=>view==="board"?el.closest(".idcol"):view==="timeline"?el.closest(".tline"):el.parentElement;
+ host.querySelectorAll("[data-jid]").forEach(el=>{if(el.querySelector(":scope > .dragh"))return;const h=document.createElement("span");h.className="dragh";h.title="Drag to put it in your order";h.setAttribute("aria-hidden","true");h.textContent="⋮⋮";el.prepend(h);el.classList.add("dragitem");
+  if(coarse){const mv=document.createElement("span");mv.className="dragmv";mv.innerHTML='<button class="copy" data-mv="-1" aria-label="Move up">▲</button><button class="copy" data-mv="1" aria-label="Move down">▼</button>';el.appendChild(mv);
+   mv.querySelectorAll("[data-mv]").forEach(b=>b.onclick=e=>{e.stopPropagation();const g=groupOf(el);const sib=[...g.querySelectorAll("[data-jid]")];const i=sib.indexOf(el),k=i+(+b.dataset.mv);if(k<0||k>=sib.length)return;if(+b.dataset.mv<0)sib[k].before(el);else sib[k].after(el);if(view==="timeline")idMoveMonth(el);idSaveOrder(g,allRows);el.scrollIntoView({block:"nearest"})})}
+  el.draggable=true;
+  el.addEventListener("dragstart",e=>{if(e.target.closest("button,a,select,input"))return;dragEl=el;el.classList.add("dragging");try{e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",el.dataset.jid)}catch(x){}});
+  el.addEventListener("dragend",()=>{el.classList.remove("dragging");if(dragEl){const g=groupOf(dragEl);if(view==="timeline")idMoveMonth(dragEl);idSaveOrder(g,allRows)}dragEl=null});
+  el.addEventListener("dragover",e=>{if(!dragEl||dragEl===el)return;if(groupOf(dragEl)!==groupOf(el))return;e.preventDefault();const r=el.getBoundingClientRect();const horiz=view==="cards";const after=horiz?(e.clientX>r.left+r.width/2):(e.clientY>r.top+r.height/2);if(after)el.after(dragEl);else el.before(dragEl)})});
+ if(view==="timeline")host.querySelectorAll(".tline .tyear").forEach(h=>h.addEventListener("dragover",e=>{if(!dragEl)return;e.preventDefault();h.after(dragEl)}))}
+
 // ----- light / dark / auto -----
 const THEME_HOST=document.documentElement.getAttribute("data-theme");
 function themeGet(){const v=ls.get("theme");return v==="light"||v==="dark"?v:"auto"}
@@ -4283,7 +4381,7 @@ function themeBoot(){themeApply();const b=$("#rn-theme");if(b)b.onclick=()=>them
  try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",themeApply)}catch(e){}}
 // ----- boot -----
 function navBoot(){const tb=document.querySelector("header.topbar");if(tb&&!$("#rn-nav")){tb.insertAdjacentHTML("beforeend",`<nav class="rn-nav" id="rn-nav" aria-label="Rooms"></nav><button class="rn-new" data-desk="new" id="rn-new">+ New</button><button class="rn-theme" id="rn-theme" aria-label="Light or dark mode"></button><button class="rn-gear" data-room="settings" id="rn-settings" aria-label="Settings" title="Settings">⚙</button>`);tb.insertAdjacentHTML("afterend",`<div class="rn-sub" id="rn-sub" hidden></div>`);document.body.insertAdjacentHTML("beforeend",`<nav class="rn-tab" id="rn-tab" aria-label="Rooms"></nav><div class="rn-sheet" id="rn-sheet" hidden><div class="rn-sheetin"></div></div>`);$("#rn-new").onclick=()=>show("new")}
- navBuildPages();navHeaders();
+ navBuildPages();if(!$("#desk-approve")){const m=document.querySelector("main");const s=document.createElement("section");s.className="desk";s.id="desk-approve";s.innerHTML='<div class="deskhead"><div><div class="eyebrow"></div><h2>To approve</h2></div></div><div id="ap-host"></div>';m.appendChild(s)}navHeaders();
  const td=$("#desk-today");if(td&&!$("#t-one")){const dh=td.querySelector(".deskhead");const one=document.createElement("div");one.id="t-one";dh.after(one);const more=document.createElement("details");more.className="more-today";more.innerHTML="<summary>More on today</summary>";[...td.children].filter(c=>c!==dh&&c!==one&&c.id!=="t-due"&&c.id!=="t-next3").forEach(c=>more.appendChild(c));td.appendChild(more);if(ls.get("more-today")==="1")more.open=true;more.addEventListener("toggle",()=>ls.set("more-today",more.open?"1":""))}
  const v=$("#pp-views");if(v){v.innerHTML=`<button data-pv="overview">Overview</button><button data-pv="bank">All trips</button><button data-pv="trip">One trip</button>`;v.querySelectorAll("button").forEach(b=>b.onclick=()=>{ppView=b.dataset.pv;ls.set("ppView",ppView);renderPipe()})}
  const g=$("#pp-gsc");if(g)g.hidden=true;
