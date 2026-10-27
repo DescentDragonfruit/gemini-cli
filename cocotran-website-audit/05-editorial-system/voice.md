@@ -34,6 +34,9 @@ STILL TRUE
 - At least one named person, dish, designer, room number or detail only someone who was there would know. Anything not firsthand is attributed ("the hotel says"). Nothing invented; unknown facts are written [VERIFY: what] and never guessed. Client names never appear.
 - This holds for EVERYTHING written in Coco's name: pieces, short answers, site pages (About, How we review), emails to readers and GMs, captions, replies. Professional and on brand always; the warmth is the brand.
 
+SHORT ANSWER LIMIT
+- The short answer is 420 characters at most (the site's field cap). Two or three warm sentences.
+
 THE WARMTH CHECK (run on every paragraph before returning)
 1. Is there an "I" or a "you" in it? 2. Is there a feeling, a reaction or a reason, not just a fact? 3. Would Coco say it out loud to a friend? If any answer is no, rewrite the paragraph.
 ```

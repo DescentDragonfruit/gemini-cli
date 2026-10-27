@@ -381,6 +381,7 @@ Coco found the recent articles too matter-of-fact. The voice was rewritten (`05-
     - then clear the cache and set the job `published` with `voice_pushed_at` and the live URL.
 
     This is the one exception to "Never publish": it applies only to warm rewrites of posts that are already live, and never to new posts.
+  - **`short_answer` is capped at 420 characters** by the site's ACF field. A longer value is silently dropped and the old text stays. Trim it to 420 or under before pushing. After every write, confirm with an unauthenticated GET of `/wp-json/wp/v2/<type>/<id>?_fields=acf` that the live values equal the job's.
   - **Live-rewrite jobs** are `warm-live-<wp id>` and carry `wp_id`, `post_type`, `draft{short_answer, glance, fields}` and `draft_prev`. Map the glance rows back to `glance_N_label` / `glance_N_value` in order. Write only the fields in `draft.fields`.
 - **The text lives only on WordPress** (`warmth_rewrite` jobs with `wp_post_id` and no full `draft.fields`): read the post's ACF fields, rewrite every text field in the voice.md voice, and save the result on the job as `draft` with `draft_prev`. Then follow the rules above (draft → push; live → `needs-coco` for her approval).
 
