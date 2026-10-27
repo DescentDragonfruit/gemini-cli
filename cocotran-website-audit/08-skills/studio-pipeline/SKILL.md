@@ -368,6 +368,14 @@ After any piece goes live, is retired or merged, and at the end of the Monday ru
 
 One short message: pieces drafted / researched / built with preview links, anything `needs-coco` and why, VERIFY items left. Lead with corrections that matter to her business (a closure, a rebrand, a rule change found in research).
 
+## Warmth rewrites (`type: warmth_rewrite`, added 27 Oct 2026)
+Coco found the recent articles too matter-of-fact. The voice was rewritten (`05-editorial-system/voice.md`, the desk's `const VOICE`), and recent pieces are being rewritten to match. Every rewrite keeps every fact, number, name, link, [VERIFY] and [Coco to fill] marker, and invents no experience she didn't report.
+- **The job carries the rewritten text.** It is `draft.voice_pass{at, note}`, with the old text kept in `draft_prev{short_answer, glance, fields}` and the new text in `draft`.
+  - **Not built yet** (`drafted`, `queued`): build as usual from the new `draft`.
+  - **Built as a WordPress draft** (`built`, a `wp_post_id`, post status draft or pending): push the new `short_answer`, `glance` and `fields` into that post's ACF fields, keep it a draft, set `voice_pushed_at`, and keep the job `built`.
+  - **Live on the site:** don't change the live post. Set the job `needs-coco` with `needs_coco: ["Read the warm rewrite and approve it"]`. When she approves, update the live post; WordPress keeps the old revision.
+- **The text lives only on WordPress** (`warmth_rewrite` jobs with `wp_post_id` and no full `draft.fields`): read the post's ACF fields, rewrite every text field in the voice.md voice, and save the result on the job as `draft` with `draft_prev`. Then follow the rules above (draft → push; live → `needs-coco` for her approval).
+
 ## Approved jobs: Coco edits in the desk, the worker builds what she approved
 
 Coco resolves everything in the Studio Desk, not in WordPress. In the Queue piece view she edits any field in place, replaces every `[VERIFY …]` / `[Coco to fill …]` bracket with the fact, confirms / corrects / cuts each item of `draft.verify` (stored in `verify_notes[i] = {status: confirmed|corrected|cut, note, item}`), runs the writing checklist (the desk runs `deskPassPrompt`, writes `report.gates`, `checked_at`), and only then can press Approve (`status: "approved"`, `approved_at`, `approved_draft_rev`). So on an approved job:

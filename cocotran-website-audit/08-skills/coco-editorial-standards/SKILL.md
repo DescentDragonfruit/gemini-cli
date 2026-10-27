@@ -28,6 +28,18 @@ The narrative below the block is untouched: MOMENT opening, the fields in order,
 
 ## 3. Voice tests (fail one → rewrite the paragraph)
 
+**Warm and conversational first (updated 27 Oct 2026, Coco: "it's not warm or conversational, it's too matter of fact").** The full house voice, with before/after examples, is `05-editorial-system/voice.md` and the desk's `const VOICE`. Read it before drafting. The short version:
+- Coco is telling one friend about a place she loved, over a glass of wine, the day after. If a paragraph could sit on the hotel's website, a press release or Wikipedia, rewrite it.
+- "I" and "you" in the same breath. Contractions always. Her reactions are the point: what delighted, surprised or made her laugh, and what she'd do again.
+- Give every fact a feeling or a reason. Never a sentence that is only a spec ("The hotel has 41 rooms." → "With only 41 rooms, it feels like staying at a friend's very beautiful house…").
+- Rhythm: longer flowing sentences with the odd short one; never a run of clipped statements.
+- Talk to the reader: asides, questions, "here's what I tell my clients".
+- End with a warm send-off, never a summary.
+- Never invent a reaction or an experience she didn't have. Warmth comes from how she talks to you and from her real moments.
+- **The warmth check on every paragraph:** Is there an "I" or a "you"? Is there a feeling, a reaction or a reason, not just a fact? Would Coco say it out loud to a friend? If any answer is no, rewrite it.
+- The short answer and At a glance stay quotable, but the short answer is still in her warm first person.
+
+
 - Sounds like Coco telling you the day after, not a camera panning or a brochure.
 - No sentence that comments on the previous one ("That's the point." "…doesn't announce itself so much as…"). Give the next concrete thing instead.
 - Warm, positive, excited; let verdicts breathe. Never clipped ("Three nights. One shore."). Never cold or matter-of-fact. This holds for everything written in Coco's name: pieces, site pages (About, How we review), emails to readers and GMs, captions, replies. Professional and on brand always; the warmth is the brand.
