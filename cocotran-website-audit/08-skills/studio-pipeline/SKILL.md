@@ -374,6 +374,14 @@ Coco found the recent articles too matter-of-fact. The voice was rewritten (`05-
   - **Not built yet** (`drafted`, `queued`): build as usual from the new `draft`.
   - **Built as a WordPress draft** (`built`, a `wp_post_id`, post status draft or pending): push the new `short_answer`, `glance` and `fields` into that post's ACF fields, keep it a draft, set `voice_pushed_at`, and keep the job `built`.
   - **Live on the site:** don't change the live post. Set the job `needs-coco` with `needs_coco: ["Read the warm rewrite and approve it"]`. When she approves, update the live post; WordPress keeps the old revision.
+  - **Coco's standing approval (27 Oct 2026: "publishing automatically").** A `warmth_rewrite` job with `auto_publish: true` and `status: "approved"` is already approved. Update the live post right away:
+    - push the new short answer, glance values and text fields into the post's ACF fields;
+    - set `updated_on` to today;
+    - leave everything else as it is: title, slug, URL, images, links, SEO title and categories;
+    - then clear the cache and set the job `published` with `voice_pushed_at` and the live URL.
+
+    This is the one exception to "Never publish": it applies only to warm rewrites of posts that are already live, and never to new posts.
+  - **Live-rewrite jobs** are `warm-live-<wp id>` and carry `wp_id`, `post_type`, `draft{short_answer, glance, fields}` and `draft_prev`. Map the glance rows back to `glance_N_label` / `glance_N_value` in order. Write only the fields in `draft.fields`.
 - **The text lives only on WordPress** (`warmth_rewrite` jobs with `wp_post_id` and no full `draft.fields`): read the post's ACF fields, rewrite every text field in the voice.md voice, and save the result on the job as `draft` with `draft_prev`. Then follow the rules above (draft → push; live → `needs-coco` for her approval).
 
 ## Approved jobs: Coco edits in the desk, the worker builds what she approved
