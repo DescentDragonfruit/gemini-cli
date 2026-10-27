@@ -14,7 +14,7 @@
   --r:14px; --maxw:1180px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171411;--bg2:#1F1B17;--fg:#EFE9DF;--muted:#A79F93;--faint:#7A7368;--line:#332D26;--line2:#473F35;--panel:#231F1A;--accent:#EFE9DF;--accent-ink:#171411;--accent-soft:#2E2822;--gold:#C9AE7F;--band:#171411;--band-ink:#EFE9DF;--ok:#8CCBA6;--ok-bg:#1A2A21;--warn:#E3B06A;--warn-bg:#2E2517;--bad:#E58C7C;--bad-bg:#33211E;--info:#9DC3DE;--info-bg:#1B2A36;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#141310;--bg2:#1B1A15;--fg:#ECE8DE;--muted:#A8A393;--faint:#7E7968;--line:#2E2C24;--line2:#3E3B30;--panel:#1F1E18;--accent:#9FC08F;--accent-ink:#141310;--accent-soft:#22301F;--ok:#8FCB9A;--warn:#E0B35A;--bad:#E58C7C;color-scheme:dark}
+:root[data-theme="dark"]{--bg:#171411;--bg2:#1F1B17;--fg:#EFE9DF;--muted:#A79F93;--faint:#7A7368;--line:#332D26;--line2:#473F35;--panel:#231F1A;--accent:#EFE9DF;--accent-ink:#171411;--accent-soft:#2E2822;--gold:#C9AE7F;--band:#171411;--band-ink:#EFE9DF;--ok:#8CCBA6;--ok-bg:#1A2A21;--warn:#E3B06A;--warn-bg:#2E2517;--bad:#E58C7C;--bad-bg:#33211E;--info:#9DC3DE;--info-bg:#1B2A36;color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 a{color:var(--accent)}
@@ -731,6 +731,12 @@ section.desk{padding-top:22px}
 .focusin .why{color:var(--muted);max-width:52ch}
 .timer{font-family:var(--title,var(--display));font-size:clamp(56px,12vw,96px);font-variant-numeric:tabular-nums;line-height:1;margin:8px 0}
 body.focus-on{overflow:hidden}
+
+.rn-theme{all:unset;cursor:pointer;box-sizing:border-box;display:inline-flex;align-items:center;gap:6px;font:500 13px var(--body);color:var(--muted);padding:7px 12px;border-radius:999px;border:1px solid var(--line2);white-space:nowrap}
+.rn-theme:hover{color:var(--fg);border-color:var(--fg)}
+.rn-theme span[aria-hidden]{font-size:14px;line-height:1}
+.rn-sheet button[aria-pressed="true"]{background:var(--fg);color:var(--bg2);border-color:var(--fg)}
+@media (max-width:900px){.rn-theme .rn-tl{display:none}.rn-theme{padding:7px 10px}}
 </style>
 
 <header class="topbar">
@@ -4185,7 +4191,8 @@ function navRender(id){const room=roomOf(id);const nb=$("#rn-nav");if(nb)nb.inne
  document.querySelectorAll("[data-room]").forEach(b=>b.onclick=()=>{if(b.dataset.room==="__more"){navSheet(true);return}navGoRoom(b.dataset.room)});
  document.querySelectorAll("#rn-sub [data-page]").forEach(b=>b.onclick=()=>show(b.dataset.page))}
 function navGoRoom(k){const r=ROOMS.find(x=>x.k===k);if(!r)return;navSheet(false);const last=ls.get("room-last-"+k);show(r.pages.some(p=>p[0]===last)?last:r.pages[0][0])}
-function navSheet(open){const s=$("#rn-sheet");if(!s)return;s.hidden=!open;if(open){s.querySelector(".rn-sheetin").innerHTML=`<div class="rn-sheeth"><b>More</b><button class="copy" data-sheetx>close</button></div>${ROOMS.filter(r=>!["today","trips","photos","write"].includes(r.k)).map(r=>`<div class="rn-sheetg"><span class="rn-room">${esc(r.n)}</span>${r.pages.map(([p,n])=>`<button data-page2="${p}">${esc(n)}</button>`).join("")}</div>`).join("")}<div class="rn-status">${($("#tb-status")||{}).innerHTML||""}</div>`;
+function navSheet(open){const s=$("#rn-sheet");if(!s)return;s.hidden=!open;if(open){s.querySelector(".rn-sheetin").innerHTML=`<div class="rn-sheeth"><b>More</b><button class="copy" data-sheetx>close</button></div>${ROOMS.filter(r=>!["today","trips","photos","write"].includes(r.k)).map(r=>`<div class="rn-sheetg"><span class="rn-room">${esc(r.n)}</span>${r.pages.map(([p,n])=>`<button data-page2="${p}">${esc(n)}</button>`).join("")}</div>`).join("")}<div class="rn-sheetg"><span class="rn-room">Appearance</span>${[["auto","Auto"],["light","Light"],["dark","Dark"]].map(([k,n])=>`<button data-theme-set="${k}"${themeGet()===k?' aria-pressed="true"':""}>${n}</button>`).join("")}</div><div class="rn-status">${($("#tb-status")||{}).innerHTML||""}</div>`;
+ s.querySelectorAll("[data-theme-set]").forEach(b=>b.onclick=()=>{themeSet(b.dataset.themeSet);navSheet(true)});
  s.querySelectorAll("[data-page2]").forEach(b=>b.onclick=()=>{navSheet(false);show(b.dataset.page2)});s.querySelector("[data-sheetx]").onclick=()=>navSheet(false)}}
 // pages that used to live inside Trips get their own sections
 function navBuildPages(){const main=document.querySelector("main");if(!main)return;Object.entries(MOVED_PAGES).forEach(([id,cid])=>{if($("#desk-"+id))return;const c=$("#"+cid);if(!c)return;const s=document.createElement("section");s.className="desk";s.id="desk-"+id;s.innerHTML=`<div class="deskhead"><div><div class="eyebrow"></div><h2>${esc(navPageTitle(id))}</h2></div></div>`;main.appendChild(s);s.appendChild(c);c.hidden=false})}
@@ -4244,13 +4251,22 @@ function ppFocus(i){const acts=ppTodayActions().filter(a=>!ppSkipped(a));const a
  $("#fx-run").onclick=()=>{focusRun=!focusRun;$("#fx-run").textContent=focusRun?"Pause":"Start the timer";clearInterval(focusT);if(focusRun)focusT=setInterval(()=>{focusLeft=Math.max(0,focusLeft-1);const e=$("#fx-time");if(e)e.textContent=mm();if(!focusLeft){clearInterval(focusT);focusRun=false;if(e)e.textContent="Time. Take a break."}},1000)};
  $("#fx-done").onclick=()=>{ls.set("skip:"+ppSkipKey(a),today());focusLeft=25*60;focusRun=false;clearInterval(focusT);ppFocus(0);ppRenderToday()};$("#fx-close").onclick=ppFocusClose}
 function ppFocusClose(){const f=$("#focus");if(f)f.hidden=true;document.body.classList.remove("focus-on");clearInterval(focusT);focusRun=false}
+// ----- light / dark / auto -----
+const THEME_HOST=document.documentElement.getAttribute("data-theme");
+function themeGet(){const v=ls.get("theme");return v==="light"||v==="dark"?v:"auto"}
+function themeApply(){const v=themeGet(),r=document.documentElement;if(v==="auto"){if(THEME_HOST)r.setAttribute("data-theme",THEME_HOST);else r.removeAttribute("data-theme")}else if(r.getAttribute("data-theme")!==v)r.setAttribute("data-theme",v);
+ const b=$("#rn-theme");if(b){const dark=v==="dark"||(v==="auto"&&(THEME_HOST==="dark"||(!THEME_HOST&&window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)));b.innerHTML=`<span aria-hidden="true">${v==="auto"?"◐":dark?"☾":"☀"}</span><span class="rn-tl">${v==="auto"?"Auto":dark?"Dark":"Light"}</span>`;b.title=`Appearance: ${v==="auto"?"Auto (follows your device)":v==="dark"?"Dark":"Light"}. Tap to change.`}}
+function themeSet(v){ls.set("theme",v==="auto"?"":v);themeApply()}
+function themeBoot(){themeApply();const b=$("#rn-theme");if(b)b.onclick=()=>themeSet({auto:"light",light:"dark",dark:"auto"}[themeGet()]);
+ try{new MutationObserver(()=>{if(themeGet()!=="auto"&&document.documentElement.getAttribute("data-theme")!==themeGet())themeApply()}).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]})}catch(e){}
+ try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",themeApply)}catch(e){}}
 // ----- boot -----
-function navBoot(){const tb=document.querySelector("header.topbar");if(tb&&!$("#rn-nav")){tb.insertAdjacentHTML("beforeend",`<nav class="rn-nav" id="rn-nav" aria-label="Rooms"></nav><button class="rn-new" data-desk="new" id="rn-new">+ New</button><button class="rn-gear" data-room="settings" id="rn-settings" aria-label="Settings" title="Settings">⚙</button>`);tb.insertAdjacentHTML("afterend",`<div class="rn-sub" id="rn-sub" hidden></div>`);document.body.insertAdjacentHTML("beforeend",`<nav class="rn-tab" id="rn-tab" aria-label="Rooms"></nav><div class="rn-sheet" id="rn-sheet" hidden><div class="rn-sheetin"></div></div>`);$("#rn-new").onclick=()=>show("new")}
+function navBoot(){const tb=document.querySelector("header.topbar");if(tb&&!$("#rn-nav")){tb.insertAdjacentHTML("beforeend",`<nav class="rn-nav" id="rn-nav" aria-label="Rooms"></nav><button class="rn-new" data-desk="new" id="rn-new">+ New</button><button class="rn-theme" id="rn-theme" aria-label="Light or dark mode"></button><button class="rn-gear" data-room="settings" id="rn-settings" aria-label="Settings" title="Settings">⚙</button>`);tb.insertAdjacentHTML("afterend",`<div class="rn-sub" id="rn-sub" hidden></div>`);document.body.insertAdjacentHTML("beforeend",`<nav class="rn-tab" id="rn-tab" aria-label="Rooms"></nav><div class="rn-sheet" id="rn-sheet" hidden><div class="rn-sheetin"></div></div>`);$("#rn-new").onclick=()=>show("new")}
  navBuildPages();navHeaders();
  const td=$("#desk-today");if(td&&!$("#t-one")){const dh=td.querySelector(".deskhead");const one=document.createElement("div");one.id="t-one";dh.after(one);const more=document.createElement("details");more.className="more-today";more.innerHTML="<summary>More on today</summary>";[...td.children].filter(c=>c!==dh&&c!==one&&c.id!=="t-due"&&c.id!=="t-next3").forEach(c=>more.appendChild(c));td.appendChild(more);if(ls.get("more-today")==="1")more.open=true;more.addEventListener("toggle",()=>ls.set("more-today",more.open?"1":""))}
  const v=$("#pp-views");if(v){v.innerHTML=`<button data-pv="overview">Overview</button><button data-pv="bank">All trips</button><button data-pv="trip">One trip</button>`;v.querySelectorAll("button").forEach(b=>b.onclick=()=>{ppView=b.dataset.pv;ls.set("ppView",ppView);renderPipe()})}
  const g=$("#pp-gsc");if(g)g.hidden=true;
- navObserve();navRender(ls.get("desk")||"today");document.addEventListener("keydown",e=>{if(e.key==="Escape"){ppFocusClose();navSheet(false)}})}
+ navObserve();navRender(ls.get("desk")||"today");themeBoot();document.addEventListener("keydown",e=>{if(e.key==="Escape"){ppFocusClose();navSheet(false)}})}
 try{navBoot();const h0=(location.hash||"").slice(1);show(document.getElementById("desk-"+h0)?h0:(ls.get("desk")||"today"))}catch(e){console.warn("nav boot",e)}
 
 </script>
