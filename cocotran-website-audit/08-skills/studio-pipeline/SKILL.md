@@ -401,6 +401,38 @@ Agency Studio (https://claude.ai/artifact/7VMcx1iKdmvdtq6KT6cgix) and the desk d
 - A piece's `trip_id` can be either id. The desk treats both as the same trip, so never rewrite `trip_id`s just to tidy up.
 - If a famtrip's dates span more than 45 days and its Passport copy says otherwise, it's a typo in Agency Studio. Report it once; don't edit Agency's data.
 
+**The full link pass (every run, and first on any "PRIORITY RUN" from Passport, Agency Studio or the desk)**
+
+Coco starts it from three buttons: **Sync to Studio** in the Passport header, **Sync now** on an Agency Studio trip, and **Link & sync now** on the desk's Agency Studio card.
+
+1. **Keep every link Coco already made.** Read them from:
+   - `passportId` on famtrips, and `agencyId` on Passport trips;
+   - `settings/agency_link.links`, `alias`, `inspections` and `kept`;
+   - each inspection's `fromTrip`;
+   - each photo-list entry's `trip_key` and `trip_id`;
+   - each pipeline piece's `trip_id`.
+
+   Never undo one of these. A trip in `kept` stays its own trip.
+2. **Match what's still unlinked.** That's Agency famtrips, Passport trips, desk `travel/*`, photo-list trips (`photo_stash` `own_trip`) and inspections with no `fromTrip`. Try in this order:
+   1. Dates that overlap or start within 10 days, plus a matching name, city or country.
+   2. **No dates on one side: match by name.** Use the name, cities, and hotel or stop names.
+   - Exactly one strong match: link it. For a photo-list trip or a duplicate, that means `alias[<id>] = <trip id>`. For an inspection, `inspections[<inspection id>] = <agency trip id>`, when its name matches a hotel or stop on the trip and its visit date falls inside the trip.
+   - Two or more matches: add `{key, name, why, candidates[{id, name}]}` to `confirm` (the desk shows it under "Needs your pick").
+   - No match: note it in `no_match`.
+   - Never guess between two trips.
+3. **Duplicates.** Two Agency famtrips with the same dates and mostly the same stops are one trip. Alias the newer one to the older one, explain in `duplicates`, and never delete either; Coco deletes the copy herself. (Done 28 Oct 2026: "Untitled trip" `mvggm5c91mv` = Brazil `0e3lu7mazo0`.)
+4. **Dates both ways.** `settings/agency_link.dates[<agency id>]` = `{agency: [start, end], passport: [start, end], at}` is the baseline from the last pass.
+   - **A blank on one side** (no start, or no end): copy it from the other side.
+   - **One side changed since the baseline** and the other didn't: copy the change to the other side. Coco fixing a date in either app is the usual case.
+   - **Both changed, or they differed before any baseline:** list it in `date_conflicts[{agency_id, name, agency, passport}]` and change nothing. Desk buttons write `date_pick[<agency id>] = {use: "agency" | "passport"}` and queue a `trip_dates` job. Copy the chosen side over, then set `date_pick[id].done = true` and drop the conflict.
+   - **Where dates live:**
+     - Agency Studio famtrip: `data.startDate` / `data.endDate` (the whole JSON string with everything else kept, `if_version`);
+     - Passport trip: `start` / `end`;
+     - desk mirrors: `trips/<id>` `startDate` / `endDate`, and `travel/<id>` `start` / `end`.
+   - Write the new baseline after each change.
+5. **Keep every copy current.** Re-mirror the Passport into the desk's `travel/*` and into Agency Studio's `passport/*` mirror, including `agencyId`.
+6. **Report.** Write `link_pass_at` to `settings/agency_link`. Add one line per new link, pick or date change to `settings/agency_sync.last_result.notes`.
+
 **Agency trip → Passport entry (automatic; Coco doesn't type it twice)**
 - Coco may add a trip only in Agency Studio, from a PDF, a pasted itinerary, a link or Notion. Every run (Agency Studio fires one about 90 seconds after a change, at most every 30 minutes), check each famtrip that has dates and days.
 - It needs a Passport entry when none is linked: no `passportId`, no Passport trip with `agencyId` = its id, and no Passport trip with overlapping dates and a matching name or country. Create one in the Passport's database (https://claude.ai/artifact/TecDEdRmvTRrcU4vysqRJ2), collection `trips`, doc `a<agency id>`:

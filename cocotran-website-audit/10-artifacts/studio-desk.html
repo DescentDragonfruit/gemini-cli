@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Coco Tran Studio Desk</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -814,7 +815,7 @@ body.focus-on{overflow:hidden}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ev.article{background:#2E2617;color:#E3C58F}}
 :root[data-theme="dark"] .ev.article{background:#2E2617;color:#E3C58F}
 @media (max-width:700px){.calchip{padding:6px 9px;font-size:12px}.calfilters{gap:8px}}
-.aglink .aglist{display:grid;gap:6px;margin-top:8px}.aglink details summary{cursor:pointer;margin-top:8px}.aglinks a{font-size:13px}
+.aglink .aglist{display:grid;gap:6px;margin-top:8px}.aglink details summary{cursor:pointer;margin-top:8px}.aglinks a{font-size:13px}.agrev{display:grid;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line,#e5ddd0)}.agdc{color:var(--warn,#9a5b12)}
 </style>
 
 <header class="topbar">
@@ -3420,7 +3421,7 @@ function ppTripsAll(){const out=[];const seen=new Set();
  trips.forEach(t=>{seen.add("pp-a"+t.id);seen.add("pp-"+t.id);const tv=ppTravelOf(t);if(tv)seen.add(tv.id);out.push(agMerge({key:"a:"+t.id,id:t.id,src:"agency",name:String(t.name||"Trip").trim(),start:t.startDate||"",end:t.endDate||"",status:t.status||ppStatus(t.startDate,t.endDate),places:t.places||ppPlaces(t),hotels:t.hotels||[],days:t.days||[],itin:t.itin||null,kind:"fam",countries:t.countries||[]},tv))});
  travelCache.forEach(t=>{if(seen.has(t.id))return;out.push({key:"p:"+t.id,id:t.id,src:"passport",name:String(t.name||"Trip").trim(),start:t.start||"",end:t.end||"",status:t.status||ppStatus(t.start,t.end),places:t.places||[],hotels:(t.hotels||[]).map(h=>typeof h==="string"?h:h.name),days:[],itin:null,kind:t.kind||"personal"})});
  // Trips that live only on Coco's photo list (not in the Passport or Agency Studio), e.g. "Riviera Maya 2026".
- const own={};(typeof photoStash!=="undefined"?photoStash:[]).forEach(x=>{const o=x.own_trip;if(!o||!o.id)return;const m=String(o.month||x.month||"");const g=own[o.id]||(own[o.id]={key:"s:"+o.id,id:o.id,src:"stash",name:o.name||"Trip",start:/^\d{4}$/.test(m)?m+"-01-01":(/^\d{4}-\d{2}$/.test(m)?m+"-01":m),end:"",status:"past",places:[],hotels:[],days:[],itin:null,kind:"personal",undated:!/^\d{4}-\d{2}/.test(m)});(x.places||[]).forEach(pl=>{if(!g.places.includes(pl))g.places.push(pl)});(x.hotels||[]).forEach(h=>{if(!g.hotels.includes(h))g.hotels.push(h)})});
+ const own={};(typeof photoStash!=="undefined"?photoStash:[]).forEach(x=>{const o=x.own_trip;if(!o||!o.id)return;if(((typeof agencyLink!=="undefined"&&agencyLink&&agencyLink.alias)||{})[o.id])return;const m=String(o.month||x.month||"");const g=own[o.id]||(own[o.id]={key:"s:"+o.id,id:o.id,src:"stash",name:o.name||"Trip",start:/^\d{4}$/.test(m)?m+"-01-01":(/^\d{4}-\d{2}$/.test(m)?m+"-01":m),end:"",status:"past",places:[],hotels:[],days:[],itin:null,kind:"personal",undated:!/^\d{4}-\d{2}/.test(m)});(x.places||[]).forEach(pl=>{if(!g.places.includes(pl))g.places.push(pl)});(x.hotels||[]).forEach(h=>{if(!g.hotels.includes(h))g.hotels.push(h)})});
  Object.values(own).forEach(g=>out.push(g));
  return out}
 function ppStatus(s,e){const td=today();if(!s)return "past";if(s>td)return "upcoming";if(e&&e<td)return "past";return "live"}
@@ -4530,13 +4531,17 @@ function navBoot(){const tb=document.querySelector("header.topbar");if(tb&&!$("#
 // Studio (tripplans/<id>, "What this trip can publish") on every run. SKILL: "Agency Studio link".
 const AGENCY_URL="https://claude.ai/artifact/7VMcx1iKdmvdtq6KT6cgix";
 let agencyLink=null,agencySync=null,AGX=null;
-function agMaps(){if(AGX&&AGX.t===trips&&AGX.v===travelCache&&AGX.l===agencyLink)return AGX;
+function agMaps(){if(AGX&&AGX.t===trips&&AGX.v===travelCache&&AGX.l===agencyLink&&AGX.i===inspections)return AGX;
  const fwd={},rev={};const tv=new Set(travelCache.map(x=>x.id));const ids=new Set(trips.map(t=>t.id));
  Object.entries((agencyLink&&agencyLink.links)||{}).forEach(([a,p])=>{if(ids.has(a)&&p){fwd[a]=p}});
  trips.forEach(t=>{if(fwd[t.id])return;const c=[t.passportId?"pp-"+t.passportId:"","pp-a"+t.id,"pp-"+t.id].find(x=>x&&tv.has(x));if(c)fwd[t.id]=c});
  Object.entries(fwd).forEach(([a,p])=>{rev[p]=a});
- return AGX={t:trips,v:travelCache,l:agencyLink,fwd,rev,ids}}
-function ppCanon(id){id=String(id||"");if(!id)return id;const m=agMaps();if(m.ids.has(id))return id;if(m.rev[id])return m.rev[id];
+ // aliases: a duplicate Agency trip, a photo-list trip or anything else that is really the same trip as <target>
+ const alias={};Object.entries((agencyLink&&agencyLink.alias)||{}).forEach(([x,c])=>{if(x&&c&&x!==c)alias[x]=ids.has(c)?c:(rev[c]||c)});
+ // inspections with no trip that the link pass matched by name and date
+ const im=(agencyLink&&agencyLink.inspections)||{};inspections.forEach(i=>{if(!i.fromTrip&&im[i.id])i.fromTrip={id:im[i.id]}});
+ return AGX={t:trips,v:travelCache,l:agencyLink,i:inspections,fwd,rev,ids,alias}}
+function ppCanon(id){id=String(id||"");if(!id)return id;const m=agMaps();if(m.alias[id])return m.alias[id];if(m.ids.has(id))return id;if(m.rev[id])return m.rev[id];
  if(id.startsWith("pp-a")&&m.ids.has(id.slice(4)))return id.slice(4);if(id.startsWith("pp-")&&m.ids.has(id.slice(3)))return id.slice(3);return id}
 function ppTripHas(t,id){return !!(t&&id)&&ppCanon(id)===ppCanon(t.id)}
 function ppTravelOf(t){if(!t)return null;const p=agMaps().fwd[t.id];return travelCache.find(x=>x.id===t.id||x.id===p||x.id==="pp-a"+t.id)||null}
@@ -4546,7 +4551,9 @@ function agMerge(o,tv){if(!tv)return o;const uniq=a=>[...new Set(a.filter(Boolea
  o.alias=tv.id;o.keys=["a:"+o.id,"p:"+tv.id];o.ppName=String(tv.name||"").trim();o.countries=uniq([...(o.countries||[]),...(tv.countries||[])]);
  o.places=uniq([...(o.places||[]),...(tv.places||[])]).slice(0,16);o.hotels=uniq([...(o.hotels||[]),...(tv.hotels||[]).map(h=>typeof h==="string"?h:h.name)]);
  const span=o.start&&o.end?agDays(o.end)-agDays(o.start):null,pspan=tv.start&&tv.end?agDays(tv.end)-agDays(tv.start):null;
- if(!o.start&&tv.start){o.start=tv.start;o.end=tv.end||"";o.dateNote="dates from your Passport"}
+ const pick=((agencyLink&&agencyLink.date_pick)||{})[o.id];
+ if(pick&&pick.use==="passport"&&tv.start){o.start=tv.start;o.end=tv.end||o.end}
+ else if(!o.start&&tv.start){o.start=tv.start;o.end=tv.end||"";o.dateNote="dates from your Passport"}
  else if(span!=null&&pspan!=null&&span>45&&span>pspan+30){o.dateNote=`Agency Studio says ${o.start} → ${o.end}; using your Passport's ${tv.start} → ${tv.end}`;o.start=tv.start;o.end=tv.end}
  o.status=ppStatus(o.start,o.end);if(o.kind!=="fam"&&tv.kind)o.kind=tv.kind;
  // the Passport copy's research, ideas queue and board priority carry over when the Agency trip has none
@@ -4557,7 +4564,10 @@ function agMerge(o,tv){if(!tv)return o;const uniq=a=>[...new Set(a.filter(Boolea
 function agSrcLabel(t){if(!t)return "";if(t.src==="agency")return t.alias?"Agency Studio + Passport":"Agency Studio";return t.src==="passport"?"Passport only":t.src==="stash"?"Photo list":""}
 function agTripLinks(t){if(!t)return "";const parts=[];if(t.src==="agency")parts.push(`<a href="${AGENCY_URL}" target="_blank" rel="noopener">Open in Agency Studio ↗</a>`);
  else if(t.src==="passport"&&t.status==="past"){const j=(jobsCache||[]).find(x=>x.type==="agency_promote"&&x.travel_id===t.id&&x.status!=="done");parts.push(j?`<span class="note">On its way to Agency Studio (${esc(j.status)})</span>`:`<button class="btn sm ghost" data-agsend="${esc(t.id)}">Send to Agency Studio</button>`)}
- if(t.dateNote)parts.push(`<span class="note">${esc(t.dateNote)}</span>`);return parts.length?`<div class="row aglinks" style="gap:10px;flex-wrap:wrap;align-items:center;margin:-4px 0 10px">${parts.join("")}</div>`:""}
+ if(t.dateNote)parts.push(`<span class="note">${esc(t.dateNote)}</span>`);
+ const dc=agConflict(t);if(dc){const pk=((agencyLink&&agencyLink.date_pick)||{})[t.id];const r=x=>esc([x[0],x[1]].filter(Boolean).join(" → ")||"no dates");
+  parts.push(pk?`<span class="note">Dates: using ${pk.use==="passport"?"your Passport's":"Agency Studio's"} in both apps${pk.done?"":" (updating)"}</span>`:`<span class="note agdc">Dates differ · Agency Studio ${r(dc.agency)} · Passport ${r(dc.passport)}</span><button class="btn sm ghost" data-agdate="${esc(t.id)}" data-use="agency">Use Agency Studio's</button><button class="btn sm ghost" data-agdate="${esc(t.id)}" data-use="passport">Use Passport's</button>`)}return parts.length?`<div class="row aglinks" style="gap:10px;flex-wrap:wrap;align-items:center;margin:-4px 0 10px">${parts.join("")}</div>`:""}
+function agConflict(t){return t&&((agencyLink&&agencyLink.date_conflicts)||[]).find(c=>c.agency_id===t.id)||null}
 // Overview card: what's linked, what's waiting, one button to sync now
 function agCard(){const all=ppTripsAll();const ag=all.filter(t=>t.src==="agency"),linked=ag.filter(t=>t.alias);
  const ins=inspections.length,pieces=pipeJobs.filter(j=>ag.some(t=>ppTripHas(t,j.trip_id))).length;
@@ -4565,8 +4575,9 @@ function agCard(){const all=ppTripsAll();const ag=all.filter(t=>t.src==="agency"
  const pend=s.status==="requested"||s.status==="running";
  return `<div class="card aglink" id="ag-card"><div class="row" style="gap:10px;flex-wrap:wrap;align-items:center"><b>Agency Studio</b>
   <span class="note">${ag.length} trips · ${linked.length} matched to your Passport · ${ins} inspections · ${pieces} pieces shared both ways${at?` · synced ${new Date(at).toLocaleDateString(undefined,{month:"short",day:"numeric"})}`:""}${pend?` · <b>${s.status==="running"?"syncing now":"sync queued"}</b>`:""}</span>
-  <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap"><a class="btn sm ghost" href="${AGENCY_URL}" target="_blank" rel="noopener">Open ↗</a><button class="btn sm" id="ag-sync">Sync now</button></span></div>
-  <div class="note" style="margin-top:6px">Trips you add in Agency Studio show up here with their inspections and notes. Every piece the desk plans for a trip shows in Agency Studio under “What this trip can publish”. The worker keeps both in step on every run.</div>
+  <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap"><a class="btn sm ghost" href="${AGENCY_URL}" target="_blank" rel="noopener">Open ↗</a><button class="btn sm" id="ag-sync">Link &amp; sync now</button></span></div>
+  <div class="note" style="margin-top:6px">Add a trip once, in Passport or Agency Studio, and the other app gets it. Unlinked trips are matched by dates, or by name when there are none, and dates you add on one side copy to the other. The worker does it on every run; <b>Link &amp; sync now</b> starts it straight away.</div>
+  ${agReview()}
   ${pp.length?`<details class="agpp"${ls.get("ag-pp")==="1"?" open":""}><summary class="note">${pp.length} Passport trip${pp.length===1?"":"s"} not in Agency Studio yet</summary><div class="aglist">${pp.sort((a,b)=>(b.start||"").localeCompare(a.start||"")).map(t=>`<div class="row" style="gap:8px;align-items:center;flex-wrap:wrap"><span>${esc(t.name)}</span><span class="note">${esc((t.start||"").slice(0,7))} · ${ppPieces(t).length} pieces</span><span style="margin-left:auto">${agTripLinks(t).replace(/^<div[^>]*>|<\/div>$/g,"")}</span></div>`).join("")}</div></details>`:""}
   <div class="note" id="ag-note">${esc(agNote.msg||"")}</div></div>`}
 async function agFire(text,note){if(!mcp){note.textContent="Queued. The scheduled worker picks it up "+((typeof nextWorkerRun==="function"?nextWorkerRun():{label:"on its next run"}).label)+".";return}
@@ -4574,20 +4585,109 @@ async function agFire(text,note){if(!mcp){note.textContent="Queued. The schedule
  catch(e){note.textContent="Queued. Couldn't start a worker right now ("+(e&&e.code||"error")+"); it runs on its schedule."}}
 const agNote={set textContent(v){agNote.msg=v;const n=$("#ag-note");if(n)n.textContent=v}};
 async function agSyncRun(btn){const note=agNote;if(!db||!canWrite){note.textContent="The shared store isn't writable in this view.";return}btn.disabled=true;const id="agency-sync-"+today()+"-"+Date.now().toString(36).slice(-4);
- try{const max=Math.max(0,...(jobsCache||[]).map(x=>x.priority||0));await db.doc("jobs/"+id).set({id,type:"agency_sync",mode:"agency_sync",title:"Sync with Agency Studio",subject:"trips",status:"queued",priority:max+1,run_requested_at:Date.now(),createdAt:Date.now(),updatedAt:Date.now(),notes:"SKILL: Agency Studio link. Mirror famtrips, fieldrecords and reviews into trips/ and inspections/, refresh settings/agency_link, write every linked trip's pieces to Agency Studio tripplans/<id>, then write settings/agency_sync."});
+ try{const max=Math.max(0,...(jobsCache||[]).map(x=>x.priority||0));await db.doc("jobs/"+id).set({id,type:"agency_sync",mode:"agency_sync",title:"Sync with Agency Studio",subject:"trips",status:"queued",priority:max+1,run_requested_at:Date.now(),createdAt:Date.now(),updatedAt:Date.now(),notes:"SKILL: Agency Studio link, full pass. Link every unlinked trip across the Passport, Agency Studio, the desk and the photo list (dates, then names); fill and copy dates both ways; create missing Passport and Agency Studio trips; mirror trips and inspections; write tripplans; then write settings/agency_sync."});
   await db.doc("settings/agency_sync").set({...(agencySync||{}),status:"requested",requested_at:Date.now(),request_job:id})}catch(e){note.textContent="Couldn't queue it: "+(e&&e.code||"error");btn.disabled=false;return}
- await agFire(`PRIORITY RUN requested from the Studio Desk Trips overview at ${new Date().toISOString()}. Do job "${id}" (type agency_sync) FIRST: follow SKILL.md "Agency Studio link" — mirror Agency Studio trips and inspections into the desk, refresh settings/agency_link, and write each linked trip's pieces into Agency Studio tripplans/<trip id>. Then continue with the rest of the queue by priority.`,note);btn.disabled=false}
+ await agFire(`PRIORITY RUN requested from the Studio Desk Trips overview at ${new Date().toISOString()}. Do job "${id}" (type agency_sync) FIRST: run SKILL.md "Agency Studio link" in full — link every unlinked trip across the Passport, Agency Studio, the desk and the photo list (by dates, or by name when there are no dates; honour links Coco made before), fill and copy dates both ways, create any missing Passport or Agency Studio trip, mirror trips and inspections, and write each linked trip's pieces into Agency Studio tripplans/<trip id>. Then continue with the rest of the queue by priority.`,note);btn.disabled=false}
 async function agSend(id,btn){const t=ppTripsAll().find(x=>x.id===id);const note=$("#ag-note")?agNote:{set textContent(v){btn.title=v}};if(!t||!db||!canWrite){note.textContent="The shared store isn't writable in this view.";return}btn.disabled=true;
  const jid="agency-promote-"+String(id).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,40);
  try{const max=Math.max(0,...(jobsCache||[]).map(x=>x.priority||0));await db.doc("jobs/"+jid).set({id:jid,type:"agency_promote",mode:"agency_promote",title:"Send "+t.name+" to Agency Studio",subject:t.name,travel_id:t.id,status:"queued",priority:max+1,run_requested_at:Date.now(),createdAt:Date.now(),updatedAt:Date.now(),notes:"SKILL: Agency Studio link → Send a Passport trip to Agency Studio. Create the Agency Studio famtrip from its passport doc exactly as Agency Studio's own 'Write from this trip' does, link it, and write its tripplan."})}catch(e){note.textContent="Couldn't queue it: "+(e&&e.code||"error");btn.disabled=false;return}
  btn.textContent="Queued";await agFire(`PRIORITY RUN requested from the Studio Desk at ${new Date().toISOString()}. Do job "${jid}" (type agency_promote) FIRST: follow SKILL.md "Agency Studio link" → "Send a Passport trip to Agency Studio" for travel/${t.id}. Then continue with the queue.`,note)}
+// What the link pass couldn't decide alone: two possible matches, a duplicate, a trip found nowhere else
+function agReview(){const L=agencyLink||{};const cf=(L.confirm||[]).filter(c=>!(L.alias||{})[c.key]&&!(L.kept||{})[c.key]);
+ const du=Object.values(L.duplicates||{}),nm=Object.values(L.no_match||{}),dc=(L.date_conflicts||[]).filter(c=>!(L.date_pick||{})[c.agency_id]);
+ if(!cf.length&&!du.length&&!nm.length&&!dc.length)return "";
+ return `<div class="agrev"><div class="note"><b>Needs your pick</b></div>
+  ${cf.map(c=>`<div class="row" style="gap:8px;flex-wrap:wrap;align-items:center"><span>${esc(c.name)}</span><span class="note">${esc(c.why||"")}</span>${(c.candidates||[]).map(x=>`<button class="btn sm ghost" data-agpick="${esc(c.key)}" data-to="${esc(x.id)}">Same as ${esc(x.name)}</button>`).join("")}<button class="btn sm ghost" data-agkeep="${esc(c.key)}">Keep separate</button></div>`).join("")}
+  ${dc.map(c=>`<div class="row" style="gap:8px;flex-wrap:wrap;align-items:center"><span>${esc(c.name)}</span><span class="note">Agency Studio ${esc(c.agency.filter(Boolean).join(" → "))} · Passport ${esc(c.passport.filter(Boolean).join(" → ")||"no end date")}</span><button class="btn sm ghost" data-agdate="${esc(c.agency_id)}" data-use="agency">Use Agency Studio's</button><button class="btn sm ghost" data-agdate="${esc(c.agency_id)}" data-use="passport">Use Passport's</button></div>`).join("")}
+  ${du.map(x=>`<div class="note">${esc(x)}</div>`).join("")}${nm.map(x=>`<div class="note">${esc(x)}. Add it to Passport to bring it in.</div>`).join("")}</div>`}
+async function agLinkSet(patch,btn){if(!db||!canWrite){agNote.textContent="The shared store isn't writable in this view.";return false}if(btn)btn.disabled=true;
+ try{await db.doc("settings/agency_link").update(patch);return true}catch(e){agNote.textContent="Couldn't save that: "+(e&&e.code||"error");if(btn)btn.disabled=false;return false}}
+async function agPick(key,to,btn){const L=agencyLink||{};if(await agLinkSet({alias:{...(L.alias||{}),[key]:to}},btn))agNote.textContent="Linked. It shows on one trip now."}
+async function agKeep(key,btn){const L=agencyLink||{};if(await agLinkSet({kept:{...(L.kept||{}),[key]:Date.now()}},btn))agNote.textContent="Kept as its own trip."}
+async function agDate(id,use,btn){const L=agencyLink||{};if(!await agLinkSet({date_pick:{...(L.date_pick||{}),[id]:{use,at:Date.now()}}},btn))return;
+ const jid="trip-dates-"+String(id).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,40);
+ try{const max=Math.max(0,...(jobsCache||[]).map(x=>x.priority||0));await db.doc("jobs/"+jid).set({id:jid,type:"trip_dates",mode:"trip_dates",title:"Use "+(use==="passport"?"Passport":"Agency Studio")+" dates for "+id,subject:id,agency_id:id,use,status:"queued",priority:max+1,run_requested_at:Date.now(),createdAt:Date.now(),updatedAt:Date.now(),notes:"SKILL: Agency Studio link → Dates. Copy the chosen side's start and end to the other app, then mark date_pick done."})}catch(e){}
+ await agFire(`PRIORITY RUN requested from the Studio Desk at ${new Date().toISOString()}. Do job "${jid}" (type trip_dates) FIRST: copy the ${use==="passport"?"Passport":"Agency Studio"} dates of trip ${id} to the other app (SKILL.md "Agency Studio link" → Dates). Then continue with the queue.`,agNote)}
 function agWire(root){if(!root)return;const b=root.querySelector("#ag-sync");if(b)b.onclick=()=>agSyncRun(b);
+ root.querySelectorAll("[data-agpick]").forEach(x=>x.onclick=()=>agPick(x.dataset.agpick,x.dataset.to,x));
+ root.querySelectorAll("[data-agkeep]").forEach(x=>x.onclick=()=>agKeep(x.dataset.agkeep,x));
+ root.querySelectorAll("[data-agdate]").forEach(x=>x.onclick=()=>agDate(x.dataset.agdate,x.dataset.use,x));
  root.querySelectorAll("[data-agsend]").forEach(x=>x.onclick=()=>agSend(x.dataset.agsend,x));
  const d=root.querySelector("details.agpp");if(d)d.ontoggle=()=>ls.set("ag-pp",d.open?"1":"")}
 (function agBoot(n){if(!db){if((n||0)<120)setTimeout(()=>agBoot((n||0)+1),500);return}
  try{db.doc("settings/agency_link").onSnapshot(sn=>{agencyLink=sn.exists?sn.data():null;AGX=null;schedulePipe()},()=>{})}catch(e){}
  try{db.doc("settings/agency_sync").onSnapshot(sn=>{agencySync=sn.exists?sn.data():null;const c=$("#ag-card");if(c){c.outerHTML=agCard();agWire($("#ag-card"))}},()=>{})}catch(e){}})();
 
+// ================= Agency-style shell: left sidebar on desktop, icon tab bar on mobile (wraps navRender) =================
+const SD_IC={today:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',trips:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',photos:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',approve:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/>',ideas:'<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="7" rx="1.5"/>',writing:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',new:'<path d="M12 5v14M5 12h14"/>',queue:'<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',library:'<path d="M4 4h5v16H4zM10 4h4v16h-4z"/><path d="M15.5 5l3.8-.9 2.2 15.5-3.8.9z"/>',respin:'<path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v5h-5"/>',social:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',plan:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',week:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 15h8"/>',authority:'<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',keywords:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',questions:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6"/><path d="M12 17.5h.01"/>',cite:'<path d="M7 7h4v4c0 3-1.5 5-4 6M15 7h4v4c0 3-1.5 5-4 6"/>',bench:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',rules:'<path d="M5 4h11l3 3v13H5z"/><path d="M9 10h6M9 14h6M9 18h3"/>',playbooks:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',process:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.5 1.5L7 5M3.5 12l1.5 1.5L7 11M3.5 18l1.5 1.5L7 17"/>',more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>'};
+function sdIcon(k){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SD_IC[k]||SD_IC.more}</svg>`}
+function sdGroups(){return [["Studio",["today","trips"]],["Photos",["photos"]],["Write",["write"]],["Publish",["publish"]],["Share & plan",["share","plan"]],["Grow",["grow"]],["Settings",["settings"]]].map(([n,ks])=>[n,ks.flatMap(k=>{const r=ROOMS.find(x=>x.k===k);return r?r.pages.map((p,i)=>[p[0],p[1],i?"":navBadge(k)]):[]})])}
+function sdRender(id){document.body.classList.add("sd-on");const room=roomOf(id);
+ let s=$("#sd-side");if(!s){document.body.insertAdjacentHTML("afterbegin",`<aside class="sd-side" id="sd-side" aria-label="Studio Desk"></aside>`);s=$("#sd-side")}
+ const scroll=s.scrollTop;
+ s.innerHTML=`<div class="sd-brand"><span class="k">Coco Tran</span><span class="n">Studio Desk</span><span class="v">cocotran.com, the editorial desk</span></div>
+ <nav class="sd-nav" aria-label="Sections">${sdGroups().map(([n,items])=>`<div class="sd-h">${esc(n)}</div>`+items.map(([p,t,b])=>`<button class="sd-tab" type="button" data-sdgo="${p}"${p===id?' aria-current="page"':""}>${sdIcon(p)}<span class="t">${esc(t)}</span>${b?`<span class="ct">${esc(String(b))}</span>`:""}</button>`).join("")).join("")}</nav>
+ <div class="sd-foot"><div class="sd-theme" role="group" aria-label="Appearance">${[["auto","Auto"],["light","Light"],["dark","Dark"]].map(([k,n])=>`<button type="button" data-sdtheme="${k}" aria-pressed="${themeGet()===k}">${n}</button>`).join("")}</div><div class="sd-status">${(($("#tb-status")||{}).innerHTML||"").replace(/\sid="[^"]*"/g,"").trim()}</div></div>`;
+ s.scrollTop=scroll;
+ s.querySelectorAll("[data-sdgo]").forEach(b=>b.onclick=()=>show(b.dataset.sdgo));
+ s.querySelectorAll("[data-sdtheme]").forEach(b=>b.onclick=()=>{themeSet(b.dataset.sdtheme);sdRender(id)});
+ const tbar=document.querySelector("header.topbar");if(tbar){let c=$("#sd-crumb");if(!c){(tbar.querySelector(".tb-brand")||tbar.firstChild).insertAdjacentHTML("afterend",`<div class="sd-crumb" id="sd-crumb"></div>`);c=$("#sd-crumb")}const pt=navPageTitle(id);c.innerHTML=`<span>Studio Desk</span><span class="sep">/</span>${room.pages.length>1?`<span>${esc(room.n)}</span><span class="sep">/</span>`:""}<b>${esc(pt)}</b>`}
+ const tb=$("#rn-tab");if(tb){const main=["today","trips","photos","write"];tb.innerHTML=main.map(k=>{const r=ROOMS.find(x=>x.k===k),b=navBadge(k);return `<button data-room="${k}"${k===room.k?' aria-current="page"':""}>${sdIcon(r.pages[0][0])}<span>${esc(r.n)}</span>${b?`<span class="rnb">${esc(String(b))}</span>`:""}</button>`}).join("")+`<button data-room="__more"${main.includes(room.k)?"":' aria-current="page"'}>${sdIcon("more")}<span>More</span></button>`;
+  tb.querySelectorAll("[data-room]").forEach(b=>b.onclick=()=>{if(b.dataset.room==="__more")navSheet(true);else navGoRoom(b.dataset.room)})}}
+const sdNavRender0=navRender;navRender=function(id){sdNavRender0(id);try{sdRender(id)}catch(e){console.warn("side nav",e)}};
+
 try{navBoot();const h0=(location.hash||"").slice(1);show(document.getElementById("desk-"+h0)?h0:(ls.get("desk")||"today"))}catch(e){console.warn("nav boot",e)}
 
 </script>
+<style>
+/* ===== Agency-style shell: espresso sidebar on desktop, icon tab bar on mobile ===== */
+:root{--sidew:244px;--sd-a:#3B2D24;--sd-b:#2B211B;--sd-gold:#B48A4E}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sd-a:#1A1410;--sd-b:#0E0B09;--sd-gold:#D2AA6C}}
+:root[data-theme="dark"]{--sd-a:#1A1410;--sd-b:#0E0B09;--sd-gold:#D2AA6C}
+.sd-side,.sd-crumb{display:none}
+.drawer:not(.open){box-shadow:none}
+:where(.sd-side) button{all:unset;box-sizing:border-box;cursor:pointer}
+.sd-brand{display:flex;flex-direction:column;gap:2px;padding:0 8px 16px;border-bottom:1px solid rgba(255,255,255,.09)}
+.sd-brand .k{font:600 10.5px var(--body);letter-spacing:.24em;text-transform:uppercase;color:var(--sd-gold)}
+.sd-brand .n{font-family:var(--title,var(--display));font-size:27px;line-height:1.05;letter-spacing:-.005em;color:#FBF4E8}
+.sd-brand .v{font-family:var(--title,var(--display));font-style:italic;font-size:12px;color:#A9998A;margin-top:3px}
+.sd-nav{display:flex;flex-direction:column;gap:1px}
+.sd-h{font:600 10.5px var(--body);letter-spacing:.16em;text-transform:uppercase;color:#8F8172;padding:14px 10px 6px}
+.sd-nav .sd-h:first-child{padding-top:0}
+.sd-tab{display:flex;align-items:center;gap:11px;width:100%;border-radius:8px;padding:8px 10px;color:#E5DACB;font:500 14px var(--body);white-space:nowrap;position:relative}
+.sd-tab svg{width:17px;height:17px;flex:none;color:#9C8D7D}
+.sd-tab .t{overflow:hidden;text-overflow:ellipsis}
+.sd-tab:hover{background:rgba(255,255,255,.06)}
+.sd-side button:focus-visible{outline:2px solid var(--sd-gold);outline-offset:-2px}
+.sd-tab[aria-current="page"]{background:linear-gradient(180deg,rgba(255,248,236,.14),rgba(255,248,236,.07));color:#FFF8EE;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 6px 16px -8px rgba(0,0,0,.5)}
+.sd-tab[aria-current="page"]::before{content:"";position:absolute;left:-14px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--sd-gold)}
+.sd-tab[aria-current="page"] svg{color:var(--sd-gold)}
+.sd-tab .ct{margin-left:auto;min-width:18px;padding:0 6px;border-radius:999px;background:color-mix(in srgb,var(--sd-gold) 24%,transparent);color:#EBD3A6;font:600 11px/18px var(--body);text-align:center}
+.sd-foot{margin-top:auto;padding:12px 10px 0;border-top:1px solid rgba(255,255,255,.09);display:flex;flex-direction:column;gap:10px;font-size:11.5px;color:#8F8172}
+.sd-theme{display:flex;gap:2px;padding:2px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:9px}
+.sd-theme button{flex:1;text-align:center;padding:5px 0;border-radius:7px;font:500 12px var(--body);color:#B5A796}
+.sd-theme button:hover{color:#FBF4E8}
+.sd-theme button[aria-pressed="true"]{background:rgba(255,248,236,.14);color:#FFF8EE}
+.sd-status{display:flex;flex-wrap:wrap;gap:3px 12px;line-height:1.5}.sd-status:empty{display:none}.sd-status b{color:#CDBFAE;font-weight:600}
+@media (min-width:901px){
+ body.sd-on{padding-left:var(--sidew)}
+ body.sd-on .sd-side{display:flex;flex-direction:column;gap:18px;position:fixed;left:0;top:0;bottom:0;width:var(--sidew);z-index:45;padding:calc(22px + env(safe-area-inset-top,0px)) 14px 16px max(14px,env(safe-area-inset-left,0px));overflow-y:auto;background:linear-gradient(180deg,var(--sd-a),var(--sd-b) 70%);color:#EFE5D6;box-shadow:inset -1px 0 0 rgba(255,255,255,.05),8px 0 30px -18px rgba(30,18,10,.5);scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.14) transparent}
+ body.sd-on .rn-nav,body.sd-on .rn-gear,body.sd-on .rn-theme,body.sd-on .rn-sub,body.sd-on .tb-brand{display:none!important}
+ body.sd-on .topbar{min-height:58px;box-sizing:border-box;padding:0 24px 0 32px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.2) blur(10px);-webkit-backdrop-filter:saturate(1.2) blur(10px)}
+ body.sd-on .sd-crumb{display:flex;align-items:baseline;gap:8px;margin-right:auto;min-width:0;font:400 13px var(--body);color:var(--muted);white-space:nowrap;overflow:hidden}
+ body.sd-on .sd-crumb b{color:var(--fg);font-weight:600;overflow:hidden;text-overflow:ellipsis}
+ body.sd-on .sd-crumb .sep{opacity:.5}
+}
+@media (max-width:900px){
+ body.sd-on .topbar{background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:saturate(1.2) blur(10px);-webkit-backdrop-filter:saturate(1.2) blur(10px)}
+ body.sd-on .rn-tab{background:color-mix(in srgb,var(--bg2) 94%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:6px max(4px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(4px,env(safe-area-inset-left,0px))}
+ body.sd-on .rn-tab button{gap:3px;padding:5px 2px;border-radius:8px;font:600 10.5px var(--body);letter-spacing:.02em;color:var(--muted)}
+ body.sd-on .rn-tab button svg{width:21px;height:21px}
+ body.sd-on .rn-tab button[aria-current="page"]{color:var(--fg)}
+ body.sd-on .rn-tab button[aria-current="page"] svg{stroke-width:2.2}
+ body.sd-on .rn-tab button[aria-current="page"]::before{display:none}
+ body.sd-on .rn-tab .rnb{top:1px;right:calc(50% - 24px)}
+}
+</style>
+
+</body></html>
