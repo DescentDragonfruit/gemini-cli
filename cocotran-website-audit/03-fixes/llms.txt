@@ -1,0 +1,37 @@
+# Coco Tran
+
+> A luxury travel publication by Coco Tran — luxury travel advisor (Coco Tran Travel) and film photographer (Coco Tran Studio). First-hand hotel, camp and lodge reviews, destination guides, day-by-day routes and dispatches, all from stays and trips Coco Tran actually took and photographed.
+
+Everything here is written from first-hand experience. Properties are reviewed room by room after a real stay; guides are organised by neighbourhood the way the city actually works; routes are itineraries built for real clients. Some pieces are members-only; the opening section of each is public.
+
+## Formats
+
+- [The Verdict (Property reviews)](https://cocotran.com/property/): full hotel, camp and lodge reviews, plus side-by-side comparisons.
+- [The Primer and The Rolodex (Guides)](https://cocotran.com/guide/): what to know before you book, and where to stay, eat and go by neighbourhood.
+- [The Route and The Dossier (Briefs)](https://cocotran.com/brief/): day-by-day itineraries and destination planning files.
+- [The Shortlist](https://cocotran.com/shortlist/): curated picks — restaurants, cafés, beaches, hotels.
+- [The Dispatch](https://cocotran.com/dispatch/): postcards and field notes written days after a stay.
+
+## Destinations
+
+- [All destinations](https://cocotran.com/destinations/)
+- Japan: [Primer](https://cocotran.com/guide/japan-primer/), [Rolodex](https://cocotran.com/guide/japan-guide/), [Two weeks in Japan](https://cocotran.com/brief/two-weeks-in-japan/), [Tokyo](https://cocotran.com/guide/tokyo-guide/), [Kyoto](https://cocotran.com/guide/kyoto-guide/), [Kanazawa](https://cocotran.com/guide/kanazawa-guide/), [Takayama](https://cocotran.com/guide/takayama-guide/)
+- Italy: [Primer](https://cocotran.com/guide/regions-of-italy/), [Amalfi Coast](https://cocotran.com/guide/amalfi-coast-guide/), [Lake Como](https://cocotran.com/guide/lake-como-planning-guide/), [Tuscany](https://cocotran.com/guide/tuscany-guide/), [Rome](https://cocotran.com/guide/rome-guide/), [Dolomites](https://cocotran.com/guide/dolomites-guide/), [Cinque Terre](https://cocotran.com/guide/cinque-terre-guide/)
+- Mallorca: [Rolodex](https://cocotran.com/guide/mallorca-guide/), [Deià & the Tramuntana](https://cocotran.com/guide/deia-tramuntana-guide/), [One week in Mallorca](https://cocotran.com/brief/one-week-in-mallorca/)
+- Santorini: [Primer](https://cocotran.com/guide/santorini-primer/), [Rolodex](https://cocotran.com/guide/santorini-guide/)
+- Mexico City: [Hotels](https://cocotran.com/guide/mexico-city-hotels/), [Restaurants](https://cocotran.com/guide/best-restaurants-mexico-city/), [Three days](https://cocotran.com/brief/three-days-in-mexico-city/)
+- Vietnam: [Dossier](https://cocotran.com/brief/vietnam-the-dossier/), [Hanoi](https://cocotran.com/guide/hanoi-city-guide/), [Hoi An](https://cocotran.com/guide/hoi-an-travel-guide/), [Two weeks in Vietnam](https://cocotran.com/brief/two-weeks-in-vietnam/)
+- French Riviera: [Villefranche & Cap Ferrat](https://cocotran.com/guide/villefranche-cap-ferrat-guide/), [Menton](https://cocotran.com/guide/menton-france/)
+- Morocco: [Amanjena, Marrakech](https://cocotran.com/property/amanjena-marrakech/), [Marrakech shortlist](https://cocotran.com/shortlist/marrakech/)
+- Caribbean: [Four Seasons Anguilla](https://cocotran.com/property/four-seasons-anguilla-review/), [Cap Juluca](https://cocotran.com/property/belmond-cap-jaluca-review/), [Four Seasons vs Cap Juluca](https://cocotran.com/property/the-tradeoff-four-seasons-anguilla-vs-cap-juluca/)
+
+## About
+
+- [About Coco Tran](https://cocotran.com/about/)
+- [Disclosures and review policy](https://cocotran.com/disclosures/)
+- [Membership](https://cocotran.com/subscribe/)
+- Related: [Coco Tran Travel (advisory)](https://cocotrantravel.com), [Coco Tran Studio (photography)](https://cocotranstudio.com)
+
+## Optional
+
+- [Sitemap](https://cocotran.com/sitemap_index.xml)

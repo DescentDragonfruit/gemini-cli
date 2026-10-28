@@ -1,0 +1,34 @@
+<!-- Kadence Element: Booking box (Property) — paste into the Code Editor of a new Kadence Element.
+     Show on: Post Type = Property. Hook: after the content (or a custom hook under the verdict).
+     Needs mu-plugins/booking-box-shortcode.php installed first (it provides [ctt_book_perks] and [ctt_book_button]).
+     Alternative one-liner: a single Shortcode block containing [ctt_book] renders the whole box. -->
+<!-- wp:group {"className":"ctt-book","tagName":"aside"} -->
+<aside class="wp-block-group ctt-book">
+<!-- wp:kadence/advancedheading {"uniqueID":"_cttbk0","htmlTag":"p","className":"ctt-book__kicker"} -->
+<p class="kt-adv-heading_cttbk0 wp-block-kadence-advancedheading ctt-book__kicker" data-kb-block="kb-adv-heading_cttbk0">Book through Coco Tran Travel</p>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:kadence/advancedheading {"uniqueID":"_cttbk1","htmlTag":"h3","className":"ctt-book__title","kadenceDynamic":{"content":{"enable":true,"field":"post|post_title","para":"","before":"Book ","after":" through Coco Tran Travel — same rate, plus perks","fallback":"Book this hotel through Coco Tran Travel — same rate, plus perks","shouldReplace":true}}} -->
+<h3 class="kt-adv-heading_cttbk1 wp-block-kadence-advancedheading ctt-book__title" data-kb-block="kb-adv-heading_cttbk1"><span class="kb-inline-dynamic">dynamic text placeholder</span></h3>
+<!-- /wp:kadence/advancedheading -->
+<!-- wp:shortcode -->
+[ctt_book_perks]
+<!-- /wp:shortcode -->
+<!-- wp:shortcode -->
+[ctt_book_button]
+<!-- /wp:shortcode -->
+</aside>
+<!-- /wp:group -->
+<!-- wp:html -->
+<style id="ctt-book-css">.ctt-book{--ct-accent:var(--global-palette1,#8a6d3b);--ct-ink:var(--global-palette3,#1d1d1b);--ct-grey:var(--global-palette5,#6b6b66);--ct-hair:var(--global-palette7,#e3e0da);
+  max-width:var(--ct-ao-max,720px);margin:2.5rem auto;padding:1.5rem 0 1.6rem;border-top:1px solid var(--ct-ink);border-bottom:1px solid var(--ct-hair);
+  font-family:var(--global-body-font-family,Georgia,serif);color:var(--ct-ink);}
+.ctt-book .ctt-book__kicker{margin:0 0 .5rem;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-caps:all-small-caps;letter-spacing:.08em;font-size:.78rem;color:var(--ct-grey);}
+.ctt-book .ctt-book__title{margin:0 0 .75rem;font-family:var(--global-heading-font-family,Georgia,serif);font-weight:400;font-size:1.5rem;line-height:1.25;}
+.ctt-book .ctt-book__title em{font-style:normal;color:var(--ct-accent);}
+.ctt-book .ctt-book__perks{margin:0 0 1.1rem;font-size:1rem;line-height:1.55;}
+.ctt-book .ctt-book__cta{margin:0;display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;align-items:center;}
+.ctt-book .ctt-book__btn,.ctt-book a.button.ctt-book__btn{display:inline-block;padding:.7rem 1.4rem;border:1px solid var(--ct-ink);border-radius:0;background:transparent;color:var(--ct-ink);
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-caps:all-small-caps;letter-spacing:.1em;font-size:.85rem;text-decoration:none;transition:background .15s,color .15s;}
+.ctt-book .ctt-book__btn:hover,.ctt-book a.button.ctt-book__btn:hover{background:var(--ct-ink);color:#fff;}
+.ctt-book .ctt-book__note{font-size:.82rem;color:var(--ct-grey);}</style>
+<!-- /wp:html -->

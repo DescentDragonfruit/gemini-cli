@@ -1,0 +1,80 @@
+[
+  {
+    "key": "group_ct_booking_access",
+    "title": "Booking box",
+    "fields": [
+      {
+        "key": "field_ct_booking_access",
+        "label": "Booking access",
+        "name": "booking_access",
+        "aria-label": "",
+        "type": "select",
+        "instructions": "Which programme the perks come through at this hotel. Drives the perks line in the booking box; the default sentence per value lives in mu-plugins/booking-box-shortcode.php. Leave empty for the generic line.",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "50",
+          "class": "",
+          "id": ""
+        },
+        "choices": {
+          "virtuoso": "Virtuoso",
+          "fspp": "Four Seasons Preferred Partner",
+          "bellini": "Belmond Bellini Club",
+          "stars": "Marriott STARS",
+          "prive": "Hyatt Privé",
+          "direct": "Direct"
+        },
+        "default_value": "",
+        "return_format": "value",
+        "multiple": 0,
+        "allow_null": 1,
+        "allow_in_bindings": 0,
+        "ui": 0,
+        "ajax": 0,
+        "placeholder": "",
+        "create_options": 0,
+        "save_options": 0
+      },
+      {
+        "key": "field_ct_booking_perks_override",
+        "label": "Perks override",
+        "name": "booking_perks_override",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "Optional. Replaces the default perks sentence for this hotel only, e.g. \"upgrade, breakfast, $100 spa credit, a 4pm check-out\".",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "50",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "",
+        "prepend": "",
+        "append": ""
+      }
+    ],
+    "location": [
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "property"
+        }
+      ]
+    ],
+    "menu_order": 20,
+    "position": "side",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Feeds the \"Book [hotel] through Coco Tran Travel\" box on Properties.",
+    "show_in_rest": 1
+  }
+]

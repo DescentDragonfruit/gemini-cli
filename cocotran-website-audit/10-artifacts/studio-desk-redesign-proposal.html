@@ -1,0 +1,297 @@
+<title>Studio Desk Redesign</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column for the argument, wide frames for the mockups. Tokens are the Studio Desk's own, so the proposal previews the real thing. */
+:root{
+ --bg:#F4EFE7;--paper:#FFFDFA;--fg:#1B1A18;--muted:#6B6660;--faint:#9A948B;--line:#E6DED2;--line2:#D6CCBD;--soft:#EDE6DA;--gold:#A5875A;
+ --ok:#2F6B4C;--ok-bg:#E6EFE6;--warn:#9A5B12;--warn-bg:#F7EBD8;--bad:#B4483B;--bad-bg:#F8E7E2;--ink:#1B1A18;--ink-on:#FFFFFF;
+ --display:"Bodoni Moda",Georgia,"Times New Roman",serif;--body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+ --r:14px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171411;--paper:#1F1B17;--fg:#EFE9DF;--muted:#A79F93;--faint:#7A7368;--line:#332D26;--line2:#473F35;--soft:#2E2822;--gold:#C9AE7F;--ok:#8CCBA6;--ok-bg:#1A2A21;--warn:#E3B06A;--warn-bg:#2E2517;--bad:#E58C7C;--bad-bg:#33211E;--ink:#EFE9DF;--ink-on:#171411;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171411;--paper:#1F1B17;--fg:#EFE9DF;--muted:#A79F93;--faint:#7A7368;--line:#332D26;--line2:#473F35;--soft:#2E2822;--gold:#C9AE7F;--ok:#8CCBA6;--ok-bg:#1A2A21;--warn:#E3B06A;--warn-bg:#2E2517;--bad:#E58C7C;--bad-bg:#33211E;--ink:#EFE9DF;--ink-on:#171411;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.6 var(--body);margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 80px}
+.col{max-width:680px}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
+h1{font-size:clamp(40px,7vw,68px);line-height:1.02;letter-spacing:-.01em}
+h2{font-size:clamp(28px,4vw,36px);line-height:1.1;margin-bottom:10px}
+h3{font-size:20px;line-height:1.2}
+p{margin:0 0 12px}
+.kick{font:600 11px var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.lede{font-size:18px;color:var(--muted);max-width:620px;margin-top:16px}
+.note{color:var(--muted);font-size:13.5px}
+section{margin-top:72px}
+hr{border:0;border-top:1px solid var(--line);margin:56px 0 0}
+.mono{font-family:var(--mono);font-size:12.5px}
+/* diagnosis */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:22px}
+.fact{background:var(--paper);padding:18px 18px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.fact b{font-family:var(--display);font-weight:400;font-size:38px;line-height:1;font-variant-numeric:tabular-nums}
+.fact span{font-size:13.5px;color:var(--muted)}
+.fact em{font-style:normal;color:var(--fg);font-weight:500}
+/* the flow */
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:24px}
+.room{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:6px;position:relative;min-width:0}
+.room .n{font:500 11px var(--mono);color:var(--gold)}
+.room h3{font-size:21px}
+.room ul{margin:4px 0 0;padding-left:16px;font-size:13px;color:var(--muted);line-height:1.55}
+.room.home{grid-column:1/-1;flex-direction:row;align-items:center;gap:16px;flex-wrap:wrap;background:var(--ink);color:var(--ink-on);border-color:var(--ink)}
+.room.home h3{font-size:24px}.room.home .n{color:var(--gold)}.room.home p{margin:0;opacity:.8;font-size:14px;flex:1;min-width:220px}
+.side{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.room.quiet{background:transparent;border-style:dashed}
+.arrow{display:none}
+@media (min-width:861px){.flow .room:not(.home):not(:last-child)::after{content:"→";position:absolute;right:-10px;top:16px;transform:translateX(50%);color:var(--faint);font-size:15px;z-index:1}}
+@media (max-width:860px){.flow{grid-template-columns:1fr 1fr}.side{grid-template-columns:1fr}}
+@media (max-width:480px){.flow{grid-template-columns:1fr}}
+/* table */
+.tbl{overflow-x:auto;margin-top:18px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 11px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--muted)}
+/* status stepper */
+.steps{display:flex;flex-wrap:wrap;gap:0;margin-top:20px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--paper);width:max-content;max-width:100%}
+.steps span{padding:9px 14px;font-size:13px;color:var(--muted);border-right:1px solid var(--line);white-space:nowrap}
+.steps span:last-child{border-right:0}
+.steps .done{color:var(--ok)}
+.steps .now{background:var(--ink);color:var(--ink-on);font-weight:500}
+.was{margin-top:14px;font-size:13.5px;color:var(--muted)}
+.was s{color:var(--faint)}
+/* mockups */
+.frames{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:18px;margin-top:24px;align-items:start}
+@media (max-width:860px){.frames{grid-template-columns:1fr}}
+.frame{border:1px solid var(--line2);border-radius:18px;background:var(--bg);overflow:hidden;min-width:0}
+.frame .cap{font:500 11px var(--mono);color:var(--muted);padding:8px 14px;border-bottom:1px solid var(--line);background:var(--paper);display:flex;justify-content:space-between;gap:8px}
+.screen{padding:16px}
+.phone{max-width:340px;justify-self:center;width:100%}
+.mnav{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.mnav .logo{font-family:var(--display);font-size:17px;margin-right:auto}
+.mnav a{font-size:12px;padding:5px 10px;border-radius:999px;color:var(--muted);text-decoration:none}
+.mnav a.on{background:var(--ink);color:var(--ink-on)}
+.mnav .new{border:1px solid var(--line2);color:var(--fg)}
+.mh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.mh h4{font-family:var(--display);font-weight:400;font-size:26px;margin:0;line-height:1.1}
+.mh .note{font-size:12.5px}
+.one{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:8px}
+.one .eb{font:600 10.5px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.one .t{font-family:var(--display);font-size:22px;line-height:1.15}
+.one .why{font-size:12.5px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;font:500 13px var(--body);padding:8px 16px;border-radius:999px;background:var(--ink);color:var(--ink-on);border:1px solid var(--ink);width:max-content}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line2)}
+.link{font-size:12.5px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mini{display:grid;gap:8px;margin-top:10px}
+.li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;background:var(--paper);border:1px solid var(--line);border-radius:12px;font-size:13px}
+.li .k{font:500 11px var(--mono);color:var(--faint)}
+.li b{font-weight:500;display:block;line-height:1.3}
+.li small{color:var(--muted);font-size:11.5px}
+.pill{font:500 10.5px var(--body);letter-spacing:.04em;padding:2px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--muted);white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok);border-color:transparent}.pill.warn{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+.week{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.wk{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:12.5px;color:var(--muted)}
+.wk b{display:block;font-family:var(--display);font-weight:400;font-size:22px;color:var(--fg);line-height:1.1}
+.dots{display:flex;gap:4px;margin-top:6px}.dots i{width:18px;height:6px;border-radius:3px;background:var(--line2)}.dots i.f{background:var(--ok)}
+.tabbar{display:flex;justify-content:space-around;border-top:1px solid var(--line);margin:14px -16px -16px;padding:10px 6px;background:var(--paper)}
+.tabbar span{font-size:10.5px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
+.tabbar span b{font-family:var(--display);font-weight:400;font-size:15px;color:var(--fg)}
+.tabbar span.on{color:var(--fg);font-weight:600}
+.sub{display:flex;gap:4px;border:1px solid var(--line2);border-radius:999px;padding:3px;width:max-content;max-width:100%;overflow-x:auto;margin-bottom:12px;background:var(--paper)}
+.sub span{font-size:12px;padding:5px 12px;border-radius:999px;color:var(--muted);white-space:nowrap}
+.sub span.on{background:var(--ink);color:var(--ink-on)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{font-size:12px;border:1px solid var(--line2);border-radius:999px;padding:4px 10px;background:var(--paper);color:var(--fg)}
+.chip.more{color:var(--muted);border-style:dashed}
+.board{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:8px;overflow-x:auto}
+.colm{background:var(--soft);border-radius:12px;padding:8px;display:grid;gap:6px;align-content:start;min-width:0}
+.colm h5{margin:0 2px 2px;font:600 10.5px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
+.cardm{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px;display:grid;gap:4px}
+.cardm b{font-family:var(--display);font-weight:400;font-size:14.5px;line-height:1.2}
+.cardm .nx{font-size:11px;color:var(--ok)}
+.thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.thumbs i{aspect-ratio:3/2;border-radius:6px;background:linear-gradient(135deg,var(--line2),var(--soft))}
+.thumbs i.p{outline:2px solid var(--ok);outline-offset:-2px}
+/* rules */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:22px}
+.rule{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.rule h3{font-size:19px}
+.rule p{font-size:14px;color:var(--muted);margin:0}
+.demo{margin-top:auto;padding-top:8px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.scale{display:grid;gap:2px}
+.scale .a{font-family:var(--display);font-size:30px;line-height:1.1}.scale .b{font-family:var(--display);font-size:21px}.scale .c{font-size:14px}.scale .d{font:600 10.5px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+/* phases */
+.phases{display:grid;gap:12px;margin-top:22px;counter-reset:ph}
+.ph{display:grid;grid-template-columns:120px minmax(0,1fr);gap:18px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.ph .lab{font:500 12px var(--mono);color:var(--gold)}
+.ph .lab b{display:block;font-family:var(--display);font-weight:400;font-size:26px;color:var(--fg);line-height:1.1;margin-top:4px}
+.ph ul{margin:6px 0 0;padding-left:18px;font-size:14px;line-height:1.6}
+.ph .gain{font-size:13px;color:var(--ok);margin-top:8px}
+@media (max-width:600px){.ph{grid-template-columns:1fr;gap:6px}}
+.ask{margin-top:28px;padding:22px;border-radius:var(--r);background:var(--ink);color:var(--ink-on)}
+.ask h3{font-size:24px;margin-bottom:6px}
+.ask p{opacity:.85;margin:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+</style>
+
+<div class="wrap">
+ <header class="col">
+  <div class="kick">UX review · Studio Desk · 27 October 2026</div>
+  <h1>One door for each job. One path for each piece.</h1>
+  <p class="lede">The desk can do a lot now, but every feature landed wherever it was asked for, so the same job shows up in five places and every screen asks you to decide something. This is a plan to make it feel like an editor's desk again: calm, in order, with one obvious next step.</p>
+ </header>
+
+ <section>
+  <div class="kick">What makes it feel busy</div>
+  <h2>The problem, measured</h2>
+  <div class="col"><p class="note">Counted in the current desk (version 65) with your sample data.</p></div>
+  <div class="facts">
+   <div class="fact"><b>4</b><span>ways to move around: the top pills, the More menu, the bottom bar and a floating Sections button. They use <em>three different numbering systems</em>: Trips is I in its heading, II in the bottom bar and ✦ in the menu.</span></div>
+   <div class="fact"><b>17</b><span>destinations, all weighted the same. House rules, Playbooks and the AI benchmark sit beside Today and Trips.</span></div>
+   <div class="fact"><b>13</b><span>tabs inside Trips alone, with <em>194 buttons and 49 dropdowns</em> on a page about 7,700 pixels tall.</span></div>
+   <div class="fact"><b>7</b><span>places answer "what do I do first": Today, Next 3, the Overview AI, the trip priority call, each trip's path, the Ideas path card and the weekly brief. They can disagree.</span></div>
+   <div class="fact"><b>5</b><span>different filter bars, each with 6–9 dropdowns and its own options.</span></div>
+   <div class="fact"><b>12</b><span>words for where a piece is: planned, queued, needs-coco, needs you, drafting, Cull, Edit, Write, Share, Done, missing, live.</span></div>
+   <div class="fact"><b>~350px</b><span>of title, date and explanation before any work on most pages. The Authority map opens with a 650-character paragraph.</span></div>
+   <div class="fact"><b>1</b><span>button style for almost everything. "Open", "Cull now", "Ask the desk" and "Import now" are all solid black, so nothing stands out as the next step.</span></div>
+  </div>
+ </section>
+
+ <section>
+  <div class="kick">The new map</div>
+  <h2>Rooms in the order the work happens</h2>
+  <div class="col"><p>Your real flow is trip → photos → writing → publishing → sharing. The desk should be laid out the same way, left to right, with Today as the front door that only ever shows your next step. Everything that exists today keeps a home; it just stops competing for attention.</p></div>
+  <div class="flow">
+   <div class="room home"><span class="n">Home</span><h3>Today</h3><p>Your one thing, the two after it, and this week's 2 articles + 3 posts. The only place that answers "what first". Every other room links back here.</p></div>
+   <div class="room"><span class="n">1</span><h3>Trips</h3><ul><li>Overview: map, table, by country</li><li>One page per trip: path, cities, hotels, shot plan, notes</li><li>Import from Passport and Agency Studio</li></ul></div>
+   <div class="room"><span class="n">2</span><h3>Photos</h3><ul><li>One cull queue across every trip, best first</li><li>Edit 1 vs Edit 2 (Your eye)</li><li>Ready for articles</li></ul></div>
+   <div class="room"><span class="n">3</span><h3>Write</h3><ul><li>Ideas board: Idea → Photos ready → Writing → With the worker → Review</li><li>New piece with its brief window</li><li>The queue lives here as a column</li></ul></div>
+   <div class="room"><span class="n">4</span><h3>Publish</h3><ul><li>Library and the WordPress check</li><li>Respin old posts</li><li>Results after 30, 60, 90 days</li></ul></div>
+   <div class="room"><span class="n">5</span><h3>Share</h3><ul><li>Social kits and the week's 3 posts</li><li>YouTube outlines</li><li>Canva</li></ul></div>
+  </div>
+  <div class="side">
+   <div class="room quiet"><span class="n">Weekly, not daily</span><h3>Grow</h3><ul><li>Authority map</li><li>Keywords and Search Console ideas</li><li>Reader questions, Citations, AI benchmark</li></ul></div>
+   <div class="room quiet"><span class="n">Calendar and settings</span><h3>Plan · Settings</h3><ul><li>Plan: week, month, pace (2 + 3)</li><li>Settings: House rules, Playbooks, Process, imports, connections</li></ul></div>
+  </div>
+
+  <div class="tbl"><table>
+   <thead><tr><th>Today it lives in</th><th>It moves to</th></tr></thead>
+   <tbody>
+    <tr><td>Trips → Next 3, Today → Your next three, Overview AI, trip priority call</td><td><b>Today</b>, one ranked list from one engine</td></tr>
+    <tr><td>Trips → This week, Plan → Week</td><td><b>Today</b> shows the week; <b>Plan</b> edits it</td></tr>
+    <tr><td>Trips → Photos, Trips → Your eye, cull panels inside trips</td><td><b>Photos</b></td></tr>
+    <tr><td>Trips → Ideas, Trips → Writing, Trips → Board, New piece, Queue</td><td><b>Write</b></td></tr>
+    <tr><td>Trips → Trips (bank), Overview, Trip</td><td><b>Trips</b> (Overview, then one page per trip)</td></tr>
+    <tr><td>Library, Respin</td><td><b>Publish</b></td></tr>
+    <tr><td>Social</td><td><b>Share</b></td></tr>
+    <tr><td>Authority map, Keywords, Reader questions, Citations, AI benchmark</td><td><b>Grow</b></td></tr>
+    <tr><td>House rules, Playbooks, Process</td><td><b>Settings</b></td></tr>
+   </tbody>
+  </table></div>
+ </section>
+
+ <section>
+  <div class="kick">One language</div>
+  <h2>Every piece moves through the same seven steps</h2>
+  <div class="col"><p>One stepper, the same on every card, panel and board. Photos always come before writing, and the step that's lit is the only button on the card.</p></div>
+  <div class="steps" role="img" aria-label="Example: a piece at the Edit step"><span class="done">✓ Idea</span><span class="done">✓ Cull</span><span class="now">Edit</span><span>Write</span><span>With the worker</span><span>Review</span><span>Live</span></div>
+  <p class="was">Replaces <s>planned</s> <s>queued</s> <s>needs-coco</s> <s>drafting</s> <s>missing</s> <s>built</s> and the rest. "Needs you" becomes a flag on any step, not a step of its own. Shared is a checkmark on Live.</p>
+ </section>
+
+ <section>
+  <div class="kick">What it looks like</div>
+  <h2>Today: one thing, then the rest waits</h2>
+  <div class="frames">
+   <div class="frame"><div class="cap"><span>Today · desktop</span><span>1 primary button on the screen</span></div><div class="screen">
+    <div class="mnav"><span class="logo">Studio Desk</span><a class="on">Today</a><a>Trips</a><a>Photos</a><a>Write</a><a>Publish</a><a>Share</a><a>Grow</a><a class="new">+ New</a></div>
+    <div class="mh"><h4>Good morning, Coco</h4><span class="note">Tuesday · 2 of 5 done this week</span></div>
+    <div class="one"><span class="eb">Your one thing · Brazil · about 20 min</span><div class="t">Cull 14 photos for The Verdict: Fasano, Rio</div><div class="why">It's in season now, gets 880 searches a month, and your inspection notes are in. The article can't start until the photos are picked.</div><div class="row"><span class="btn">Start the cull</span><span class="link">not today</span></div>
+     <div class="steps" style="margin-top:4px;transform:scale(.9);transform-origin:left"><span class="done">✓ Idea</span><span class="now">Cull</span><span>Edit</span><span>Write</span><span>…</span></div></div>
+    <div class="mini"><div class="li"><span class="k">2</span><div><b>Edit the Copacabana vs Ipanema picks</b><small>Brazil · Edit · 25 min</small></div><span class="pill">next</span></div><div class="li"><span class="k">3</span><div><b>Post the Iguazú reel</b><small>Share · 10 min</small></div><span class="pill">next</span></div></div>
+    <div class="week"><div class="wk"><b>1 of 2</b>articles this week<div class="dots"><i class="f"></i><i></i></div></div><div class="wk"><b>1 of 3</b>social posts<div class="dots"><i class="f"></i><i></i><i></i></div></div></div>
+   </div></div>
+   <div class="frame phone"><div class="cap"><span>Today · phone</span><span>5 tabs, same order</span></div><div class="screen">
+    <div class="mh"><h4>Today</h4><span class="note">2 of 5 done</span></div>
+    <div class="one"><span class="eb">Your one thing · 20 min</span><div class="t">Cull 14 photos for The Verdict: Fasano</div><div class="why">In season, 880 searches a month, notes are in.</div><span class="btn">Start the cull</span></div>
+    <div class="mini"><div class="li"><span class="k">2</span><div><b>Edit Copacabana vs Ipanema</b><small>Edit · 25 min</small></div><span></span></div></div>
+    <div class="tabbar"><span class="on"><b>◆</b>Today</span><span><b>1</b>Trips</span><span><b>2</b>Photos</span><span><b>3</b>Write</span><span><b>···</b>More</span></div>
+   </div></div>
+  </div>
+
+  <h2 style="margin-top:56px">Photos: the 30-trip backlog gets its own room</h2>
+  <div class="col"><p>Right now culling is spread across Trips tabs, trip pages and panels. One queue, ordered by what each set unlocks, is the fastest way through the backlog. The desk picks; you approve.</p></div>
+  <div class="frames">
+   <div class="frame"><div class="cap"><span>Photos · desktop</span><span>one search, three chips, "more filters" for the rest</span></div><div class="screen">
+    <div class="mh"><h4>Photos</h4><span class="note">11 sets to cull · 3 to edit · 40 photos ready</span></div>
+    <div class="sub"><span class="on">To cull · 11</span><span>To edit · 3</span><span>Your eye</span><span>Ready</span></div>
+    <div class="chips"><span class="chip">Country: Brazil</span><span class="chip">Priority: Now</span><span class="chip">In season</span><span class="chip more">More filters</span></div>
+    <div class="one"><span class="eb">Up next · unlocks The Verdict: Fasano, Rio</span><div class="t">14 photos needed from 212</div><div class="thumbs"><i class="p"></i><i class="p"></i><i></i><i class="p"></i></div><div class="row"><span class="btn">Let the desk pick</span><span class="btn ghost">Pick myself</span></div></div>
+    <div class="mini"><div class="li"><span class="k">2</span><div><b>Copacabana vs Ipanema · 10 photos</b><small>Brazil · high search demand</small></div><span class="pill warn">Cull</span></div><div class="li"><span class="k">3</span><div><b>Belmond Hotel das Cataratas · 14 photos</b><small>Brazil · publish by Nov</small></div><span class="pill warn">Cull</span></div></div>
+   </div></div>
+   <div class="frame phone"><div class="cap"><span>Trip page · phone</span><span>sections fold</span></div><div class="screen">
+    <div class="mh"><h4>Brazil</h4><span class="note">Oct 2026 · FAM</span></div>
+    <div class="one"><span class="eb">Your path · 1 of 4</span><div class="t">Cull 14 photos for The Verdict: Fasano</div><span class="btn">Start the cull</span></div>
+    <div class="mini">
+     <div class="li"><span class="k">▸</span><div><b>Cities and pillars</b><small>Rio 3/8 · Iguazú 1/8</small></div><span></span></div>
+     <div class="li"><span class="k">▸</span><div><b>Hotels</b><small>8 · 1 reviewed · 2 not on your master list</small></div><span></span></div>
+     <div class="li"><span class="k">▸</span><div><b>Shot plan</b><small>24 shots · pushed Oct 20</small></div><span></span></div>
+     <div class="li"><span class="k">▸</span><div><b>Your notes</b><small>6 inspections · 9 Granola notes</small></div><span></span></div>
+    </div>
+   </div></div>
+  </div>
+
+  <h2 style="margin-top:56px">Write: one board instead of five lists</h2>
+  <div class="col"><p>Ideas, Writing, Board, New piece and Queue become one room. Each card says its next step, and the worker's queue is just a column, so you can see what's with Claude and what's with you.</p></div>
+  <div class="frame" style="margin-top:20px"><div class="cap"><span>Write · desktop</span><span>the board scrolls inside its frame on a phone</span></div><div class="screen">
+   <div class="mh"><h4>Write</h4><span class="note">2 articles a week · this week: 1 of 2</span></div>
+   <div class="board">
+    <div class="colm"><h5>Photos ready <span>3</span></h5><div class="cardm"><b>Rio Hotels: The Shortlist</b><span class="nx">Next: write it with the brief</span></div><div class="cardm"><b>The Verdict: Janeiro Hotel</b><span class="nx">Next: write it</span></div></div>
+    <div class="colm"><h5>Writing <span>1</span></h5><div class="cardm"><b>The Comparison: Copacabana vs Ipanema</b><span class="note">Draft in New piece · brief filled</span></div></div>
+    <div class="colm"><h5>With the worker <span>2</span></h5><div class="cardm"><b>The Primer: Tokyo</b><span class="note">Building the WordPress draft</span></div><div class="cardm"><b>The Route: 10 Days in Japan</b><span class="note">Keyword research</span></div></div>
+    <div class="colm"><h5>Review <span>1</span></h5><div class="cardm"><b>Postcard From Iguazú</b><span class="nx">Next: read and publish</span></div></div>
+   </div>
+   <p class="note" style="margin:10px 0 0">Ideas still waiting on photos stay in Photos, so this board only shows what you can act on.</p>
+  </div></div>
+ </section>
+
+ <section>
+  <div class="kick">The editorial system</div>
+  <h2>Six rules every screen follows</h2>
+  <div class="rules">
+   <div class="rule"><h3>A short header</h3><p>A small label, a 40px title and one line saying what the page is for. The explanations move behind a "How this works" link.</p><div class="demo"><div class="scale"><span class="d">Write</span><span class="b">Write</span><span class="c" style="color:var(--muted)">What's ready to write, and what's with the worker.</span></div></div></div>
+   <div class="rule"><h3>One primary button</h3><p>A solid button is the next step. Everything else is outlined or a text link. If a card has two solid buttons, one of them is wrong.</p><div class="demo"><span class="btn">Start the cull</span><span class="btn ghost">Pick myself</span><span class="link">not today</span></div></div>
+   <div class="rule"><h3>One card shape</h3><p>Every card has a label (place · type), a serif title, one meta line, the stepper or a status pill, and one action, always in the same places.</p><div class="demo"><span class="pill">Brazil · Verdict</span><span class="pill warn">Cull</span><span class="pill ok">Live</span></div></div>
+   <div class="rule"><h3>One filter pattern</h3><p>A search box and three chips that matter for that room, then "More filters" in a sheet. Your filters are remembered per room, and you can save a view ("Brazil, in season").</p><div class="demo"><span class="chip">Country</span><span class="chip">Priority</span><span class="chip">Season</span><span class="chip more">More filters</span></div></div>
+   <div class="rule"><h3>Show five, hide the rest</h3><p>Lists open with the top five and a "show all 42". Archive and finished trips fold away by default, so long pages stop being long.</p><div class="demo"><span class="note">1 · 2 · 3 · 4 · 5</span><span class="link">show all 42</span></div></div>
+   <div class="rule"><h3>Type does the work</h3><p>Serif for titles only, sans for everything you operate. Four sizes, an 8-point spacing grid, and colour only for status: green done, amber waiting, red late.</p><div class="demo"><div class="scale"><span class="a">Title</span><span class="b">Card title</span><span class="c">Body and buttons</span><span class="d">Label</span></div></div></div>
+  </div>
+ </section>
+
+ <section>
+  <div class="kick">For the overwhelmed days</div>
+  <h2>Built to help you keep going</h2>
+  <div class="rules">
+   <div class="rule"><h3>Focus mode</h3><p>One tap hides the whole desk except the task in front of you, with a 25-minute timer. When you mark it done, the next one appears, and nothing else does.</p></div>
+   <div class="rule"><h3>A finish line each week</h3><p>When the week's 2 articles and 3 posts are done, Today says so and stops suggesting more. Stopping counts as done.</p></div>
+   <div class="rule"><h3>One engine, one answer</h3><p>The ranking that picks your one thing also orders every room, so Today, the trip path and the board always agree. No more seven answers to the same question.</p></div>
+   <div class="rule"><h3>"Not today" is allowed</h3><p>Skipping a task moves it down without guilt or a red badge. The desk only flags things that miss a real deadline, like a search season closing.</p></div>
+  </div>
+ </section>
+
+ <section>
+  <div class="kick">How we get there</div>
+  <h2>Four steps, each one a single update</h2>
+  <div class="col"><p>Nothing is deleted along the way. Every feature you asked for keeps working; it moves to its room and gets calmer.</p></div>
+  <div class="phases">
+   <div class="ph"><div class="lab">Phase 1<b>Calm</b></div><div><ul><li>One navigation: Today · Trips · Photos · Write · Publish · Share · Grow, plus "+ New". The same order on the phone's bottom bar. No roman numerals, no floating Sections button.</li><li>Short headers, with explanations behind "How this works".</li><li>The button hierarchy and the one status language everywhere.</li></ul><div class="gain">The biggest drop in noise for the least risk.</div></div></div>
+   <div class="ph"><div class="lab">Phase 2<b>One answer</b></div><div><ul><li>Today becomes the only "what first", fed by one ranking engine, with the weekly finish line.</li><li>Trips slims to Overview plus one page per trip; Next 3, This week, Writing and Board move out.</li></ul><div class="gain">You open the desk and know what to do in five seconds.</div></div></div>
+   <div class="ph"><div class="lab">Phase 3<b>Rooms</b></div><div><ul><li>The new Photos room: one cull queue, Your eye, Ready.</li><li>The Write board, with New piece and the queue folded in.</li><li>Publish, Share and Grow as their own rooms; House rules and Playbooks move to Settings.</li></ul><div class="gain">The desk follows your flow from trip to post.</div></div></div>
+   <div class="ph"><div class="lab">Phase 4<b>Polish</b></div><div><ul><li>Focus mode, the shared filter pattern and saved views.</li><li>"Show five" lists and folded archives everywhere, plus a phone pass on every room.</li></ul><div class="gain">The desk is pleasant to use every day.</div></div></div>
+  </div>
+  <div class="ask"><h3>Your call</h3><p>Say "go phase 1" and I'll start there. Or tell me what to change in this plan first, for example a room name, what goes on Today, or the order of the steps.</p></div>
+ </section>
+</div>

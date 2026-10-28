@@ -1,0 +1,18 @@
+# Install on cocotran.com — what to upload where (≈15 min)
+
+> **Working rule (Coco, 25 Oct 2026):** anything that can be a Code Snippets (WPCode) PHP snippet is delivered as a snippet, kept separate from the plugin — pasting a snippet is easier than re-uploading a zip. Plugin zips only for things that must live in a plugin (REST routes, template hooks, assets).
+
+> Zips handed to Coco always carry the version in the filename (`coco-tran-site-snippets-1.2.1.zip`); the canonical unversioned files here are what the docs reference. Current: Site Snippets **1.2.1**, Photo CMS **1.2.0**.
+
+> Multisite: upload from **Network Admin → Plugins → Add New → Upload**. If the plugin exists already, WordPress offers **Replace current with uploaded** — click it, or the old version stays (25 Oct: site reported Photo CMS 1.1.0 and Snippets 1.0.0 while the zips here are 1.2.0 and 1.2.0). Then activate on cocotran.com only (Sites → cocotran.com → Plugins).
+
+Nothing here is installed yet. Do it on staging first if you have one.
+
+1. **Plugins → Add New → Upload Plugin** → `coco-photo-cms.zip` → Activate. Then Settings → Coco Photo CMS: check max long edge (2000), keep originals, serve WebP (turn off LiteSpeed's own WebP replacement if you enable this). Run Bulk → "Regenerate WebP" and the missing-alt list. **Front-end size cap** (default 1600 px) is on: templates that ask for the full-size image get the largest generated size under 1600 instead — this alone takes the 24 MB homepage down to a few MB with no theme change.
+2. **Plugins → Add New → Upload Plugin** → `coco-tran-site-snippets.zip` → Activate. Gives you `[ctt_book hotel="…" access="bellini"]`, the paywall/dateModified schema on gated Briefs (set `ct_gated = 0` on the free sample Route), and puts every ACF-field photograph into Rank Math's image sitemap (Rank Math → Sitemap → Include Images must be on).
+3. **Custom Fields → Tools → Import** → `acf-answerable-opening.json`, `acf-content-system.json`, `acf-booking-access.json` (one at a time).
+4. **Kadence → Elements → Add New** → paste `11-builds/wordpress-assets/kadence-element-answerable-opening.html` in the code editor; show on Properties, Guides, Briefs, Dispatches, Shortlists; hook per its README. Same for the booking box Element (Properties only).
+5. **Rank Math titles**: run `resolve-ids.php --dry-run` then `--apply` per `11-builds/wordpress-assets/INSTALL.md`, or paste per page.
+6. **Delete all cache** (LiteSpeed) and **purge Cloudflare**.
+
+For the worker to do the WordPress builds itself: create an Application Password at `https://cocotran.com/wp-admin/authorize-application.php?app_name=studio-worker`, then add it to the cloud environment as a **Network secret** (type Basic, allowed website `cocotran.com`, path prefix `/wp-json/`). Steps in `05-editorial-system/rankings-integration.md` → One-time setup.

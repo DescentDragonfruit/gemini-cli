@@ -1,0 +1,347 @@
+{
+ "trip_id": "0e3lu7mazo0",
+ "existing": [],
+ "pieces": [
+  {
+   "place": "Rio de Janeiro",
+   "format": "shortlist",
+   "title": "Rio de Janeiro Hotels: The Shortlist",
+   "keyword": "best luxury hotels in rio de janeiro",
+   "demand": "high",
+   "why": "Biggest-volume hotel query, zero Brazil content on site. 5 picks she saw: Janeiro, Fasano, Copacabana Palace, Fairmont, Santa Teresa MGallery. Peak: NYE (Dec) + Carnival 5-10 Feb 2027.",
+   "publish_by": "2026-11",
+   "photos": 6,
+   "slots": [
+    "hero: Rio beachfront skyline",
+    "Janeiro Hotel",
+    "Fasano Rio rooftop pool",
+    "Copacabana Palace facade",
+    "Fairmont Copacabana suite view",
+    "Santa Teresa MGallery"
+   ],
+   "existing": null
+  },
+  {
+   "place": "Iguazú Falls",
+   "format": "answer",
+   "title": "The Answer: Brazil or Argentina Side of Iguazú Falls?",
+   "keyword": "iguazu falls brazil or argentina side",
+   "demand": "high",
+   "why": "Perennial top Iguazú question; she has the Brazil side from inside the park. Peak: Dec-Jan (summer high water, Jan holidays).",
+   "publish_by": "2026-11",
+   "photos": 4,
+   "slots": [
+    "hero: panorama from Brazil walkway",
+    "Devil's Throat platform in spray",
+    "trail/catwalk with people for scale",
+    "Argentina side or view across the river"
+   ],
+   "existing": null
+  },
+  {
+   "place": "Iguazú Falls",
+   "format": "verdict",
+   "title": "The Verdict: Belmond Hotel das Cataratas, Iguazú Falls",
+   "keyword": "belmond hotel das cataratas review",
+   "demand": "medium",
+   "why": "Stayed 1 night. ~US$740-860/night (Superior from BRL 2,590) clears $700 floor. Only hotel inside the Brazil park. Peak: Dec-Mar season.",
+   "publish_by": "2026-11",
+   "photos": 13,
+   "slots": [
+    "hero",
+    "arrival",
+    "lobby/public space",
+    "room wide",
+    "room detail",
+    "bathroom",
+    "view from room",
+    "pool",
+    "spa or gym",
+    "restaurant",
+    "plate",
+    "the one detail",
+    "Coco in frame",
+    "neighbourhood"
+   ],
+   "existing": null
+  },
+  {
+   "place": "Rio de Janeiro",
+   "format": "comparison",
+   "title": "The Comparison: Copacabana vs Ipanema",
+   "keyword": "copacabana or ipanema where to stay",
+   "demand": "high",
+   "why": "Classic where-to-stay query; she stayed both ends (Fairmont Copacabana, Janeiro Leblon) and toured Fasano Ipanema + Palace. Peak: NYE bookings Nov-Dec.",
+   "publish_by": "2026-11",
+   "photos": 10,
+   "slots": [
+    "hero: both beaches split",
+    "Copacabana promenade wave mosaic",
+    "Ipanema at sunset, Dois Irmãos",
+    "Fairmont view over Copacabana",
+    "Janeiro/Leblon view",
+    "Fasano rooftop",
+    "Copacabana Palace",
+    "street life Copacabana",
+    "street life Ipanema/Leblon",
+    "beach kiosk/caipirinha"
+   ],
+   "existing": null
+  },
+  {
+   "place": "Rio de Janeiro",
+   "format": "verdict",
+   "title": "The Verdict: Janeiro Hotel, Rio de Janeiro",
+   "keyword": "janeiro hotel rio review",
+   "demand": "medium",
+   "why": "Stayed room 131 ocean suite, rated 5. ~US$600-840/night; design-forward boutique, clears $400 floor. Little English-language depth. Peak: NYE/Carnival.",
+   "publish_by": "2026-11",
+   "photos": 13,
+   "slots": [
+    "hero",
+    "arrival",
+    "lobby/public space",
+    "room wide",
+    "room detail",
+    "bathroom",
+    "view from room",
+    "pool",
+    "spa or gym",
+    "restaurant",
+    "plate",
+    "the one detail",
+    "Coco in frame",
+    "neighbourhood"
+   ],
+   "existing": null
+  },
+  {
+   "place": "Rio de Janeiro",
+   "format": "primer",
+   "title": "The Primer: Rio de Janeiro",
+   "keyword": "rio de janeiro travel guide",
+   "demand": "high",
+   "why": "Hub page every Rio piece links into; high-volume head term. Peaks: NYE (Réveillon, Dec) then Carnival 5-10 Feb 2027 (Jan searches).",
+   "publish_by": "2026-11",
+   "photos": 8,
+   "slots": [
+    "hero: Sugarloaf/Christ the Redeemer",
+    "beaches",
+    "Santa Teresa streets",
+    "Escadaria Selarón or Centro",
+    "food/market",
+    "sunset at Arpoador",
+    "hotel row Av. Atlântica",
+    "Coco in frame"
+   ],
+   "existing": null
+  },
+  {
+   "place": "Brazil",
+   "format": "answer",
+   "title": "The Answer: Do Americans Need a Visa for Brazil?",
+   "keyword": "brazil visa for us citizens",
+   "demand": "high",
+   "why": "E-visa reinstated Apr 2025 (US$80.90, 10-yr); airlines deny boarding without it. Evergreen, high volume, catches pre-trip readers. Peak: Nov-Jan.",
+   "publish_by": "2026-11",
+   "photos": 4,
+   "slots": [
+    "hero: Rio from the air/arrival",
+    "airport/arrival moment",
+    "passport + film camera still life",
+    "first beach view"
+   ],
+   "existing": null
+  },
+  {
+   "place": "Rio de Janeiro",
+   "format": "route",
+   "title": "The Route: Five Days in Rio de Janeiro",
+   "keyword": "5 days in rio de janeiro itinerary",
+   "demand": "medium",
+   "why": "She had 6 days (30 Sep-5 Oct) to map day by day. Itinerary queries spike before Carnival 2027 (searches peak Jan); NYE readers too.",
+   "publish_by": "2026-12",
+   "photos": 9,
+   "slots": [
+    "hero",
+    "day 1: Copacabana arrival",
+    "day 1: sunset Arpoador",
+    "day 2: Sugarloaf",
+    "day 3: Santa Teresa",
+    "day 3: Centro/Selarón",
+    "day 4: Ipanema/Leblon",
+    "day 4: dinner Gero",
+    "day 5: Christ the Redeemer or Jardim Botânico"
+   ],
+   "existing": null
+  },
+  {
+   "place": "Rio de Janeiro",
+   "format": "dossier",
+   "title": "Rio de Janeiro : The Dossier",
+   "keyword": "rio de janeiro travel tips",
+   "demand": "medium",
+   "why": "Practicalities luxury readers ask: safety, which beach posto, e-visa, money, NYE beach closures, transfers. Peak: NYE/Carnival planning.",
+   "publish_by": "2026-11",
+   "photos": 6,
+   "slots": [
+    "hero",
+    "beach posto/flag",
+    "car/transfer on Av. Atlântica",
+    "beach kit/what to carry",
+    "Réveillon or nightscape",
+    "cafe/street scene"
+   ],
+   "existing": null
+  },
+  {
+   "place": "Rio de Janeiro",
+   "format": "comparison",
+   "title": "The Comparison: Copacabana Palace vs Fairmont Rio",
+   "keyword": "copacabana palace vs fairmont rio",
+   "demand": "medium",
+   "why": "Same beach, two icons: she stayed Fairmont suite (5) and inspected Palace with GM. Palace pool wing reopens Nov-Dec 2026, LVMH spa coming: timely.",
+   "publish_by": "2026-11",
+   "photos": 10,
+   "slots": [
+    "hero: both on the Copacabana curve",
+    "Palace facade",
+    "Palace pool/renovation",
+    "Palace public room",
+    "Fairmont lobby",
+    "Fairmont suite view",
+    "Fairmont rooftop pool",
+    "Palace dining",
+    "Fairmont dining",
+    "Coco in frame"
+   ],
+   "existing": null
+  },
+  {
+   "place": "Rio de Janeiro",
+   "format": "rolodex",
+   "title": "The Rolodex: Rio de Janeiro",
+   "keyword": "best restaurants rio de janeiro",
+   "demand": "medium",
+   "why": "Address book: Gero (Fasano), Palace dining, Santa Teresa, beach bars. Gero alone is low-demand, so it lives here. Peak: NYE/Carnival.",
+   "publish_by": "2026-12",
+   "photos": 10,
+   "slots": [
+    "hero",
+    "Gero dining room",
+    "Gero plate",
+    "Palace restaurant",
+    "beach kiosk",
+    "Santa Teresa bar",
+    "cocktail",
+    "shop/boutique",
+    "cafe",
+    "market/juice bar"
+   ],
+   "existing": null
+  },
+  {
+   "place": "Iguazú Falls",
+   "format": "postcard",
+   "title": "Postcard From Iguazú Falls",
+   "keyword": "iguazu falls",
+   "demand": "low",
+   "why": "Photo-led brand piece (film + digital) and social driver; supports the Verdict and Answer with internal links. Peak: Dec-Jan.",
+   "publish_by": "2026-12",
+   "photos": 6,
+   "slots": [
+    "hero: falls wide",
+    "Devil's Throat spray",
+    "rainbow in mist",
+    "coatis/butterflies/toucan",
+    "hotel facade at dawn",
+    "texture: water close-up"
+   ],
+   "existing": null
+  }
+ ],
+ "cull_tips": {
+  "Rio de Janeiro Hotels: The Shortlist": [
+   "One signature frame per hotel: Fasano rooftop pool over Ipanema, Palace white facade, Janeiro window to Leblon.",
+   "Prefer views with water/mountain in frame; readers save the view, not the lobby.",
+   "Consistent light/orientation across picks so the grid reads as a set."
+  ],
+  "The Answer: Brazil or Argentina Side of Iguazú Falls?": [
+   "The wide panorama only the Brazil side gives: whole horseshoe in one frame.",
+   "A people-for-scale shot on the Devil's Throat walkway, wet and dramatic.",
+   "Anything showing the river border/Argentina across helps answer the question visually."
+  ],
+  "The Verdict: Belmond Hotel das Cataratas, Iguazú Falls": [
+   "The pink colonial facade at first or last light, park empty: guests-only access is the story.",
+   "Room view toward the falls/forest; the pool with jungle edge.",
+   "Coco on the walkway before gates open; a dining plate at the terrace."
+  ],
+  "The Comparison: Copacabana vs Ipanema": [
+   "Matched pairs: same time of day on each beach so the contrast reads.",
+   "Copacabana's wave-mosaic promenade; Ipanema sunset with Dois Irmãos.",
+   "Street-level life frames that show the feel of each neighbourhood."
+  ],
+  "The Verdict: Janeiro Hotel, Rio de Janeiro": [
+   "The view from the bed in room 131 straight to the ocean: the save-worthy frame.",
+   "Design details: wood, linen, Osklen-style textures; rooftop pool at first light.",
+   "Coco in frame on the balcony; Leblon beach from the hotel."
+  ],
+  "The Primer: Rio de Janeiro": [
+   "Postcard-scale landmarks with her own angle (Sugarloaf from Urca, Christ through cloud).",
+   "Arpoador sunset crowd; Santa Teresa colour.",
+   "Pick frames that work as section openers, wide and uncluttered."
+  ],
+  "The Answer: Do Americans Need a Visa for Brazil?": [
+   "Arrival frames: wing over Guanabara Bay, first look at the beach.",
+   "A still life of passport, film camera, boarding pass (no readable personal data).",
+   "Keep it light: one strong Rio hero is enough."
+  ],
+  "The Route: Five Days in Rio de Janeiro": [
+   "One establishing frame per day plus one moment (meal, sunset).",
+   "Frames with time-of-day cues help readers sequence the route.",
+   "Favour places with addresses readers can actually go."
+  ],
+  "Rio de Janeiro : The Dossier": [
+   "Useful-looking frames: beach posto flags, chairs and umbrella rentals, transfers.",
+   "Night frames for NYE/safety context, never people's faces up close.",
+   "Calm, informative over glamorous."
+  ],
+  "The Comparison: Copacabana Palace vs Fairmont Rio": [
+   "Mirror the shots: pool vs pool, view vs view, dining vs dining.",
+   "Palace's pool and facade, Fairmont's rooftop and suite view over the curve.",
+   "Show renovation honestly only if tasteful; prefer finished spaces."
+  ],
+  "The Rolodex: Rio de Janeiro": [
+   "Plates and tables in good light (Gero's pasta, a caipirinha on the sand).",
+   "Interiors with character over generic dishes.",
+   "One frame per entry, recognisable as that place."
+  ],
+  "Postcard From Iguazú Falls": [
+   "Her best film frames: grain on mist, rainbow in spray.",
+   "Wildlife close-ups (coati, butterflies on skin) readers love to save.",
+   "A quiet abstract of water texture to close."
+  ]
+ },
+ "sources": [
+  "https://cocotran.com/wp-json/wp/v2/search?search=rio",
+  "https://www.kayak.com/Rio-de-Janeiro-Hotels-Janeiro-Hotel.13820.ksp",
+  "https://thebeachestates.com/property/janeiro-hotel/EP-25026439",
+  "https://pdfs.belmond.com/cop/Brazil_Package_GrandTour2026_ENG.pdf",
+  "https://www.dertour.de/hotel/das-cataratas-a-belmond-hotel-111Mo5",
+  "https://www.travelagewest.com/Hotels/Rio-de-Janeiro/Fairmont-Rio-de-Janeiro-Copacabana-p53001950",
+  "https://www.skylark.com/destinations/south-america/brazil/rio-de-janeiro/hotels/fairmont-rio-de-janeiro",
+  "https://www.mrandmrssmith.com/luxury-hotels/fasano-rio-de-janeiro",
+  "https://global.momondo.com/hotels/rio-de-janeiro/Santa-Teresa-Hotel-RJ---MGallery.mhd208198.ksp",
+  "https://www.kayak.com/Rio-de-Janeiro-Hotels-Copacabana-Palace.18912.ksp",
+  "https://www.belmond.com/en/hotels/south-america/brazil/copacabana-palace-rio-de-janeiro",
+  "https://rumemagazine.com/international/luxury-hotels/copacabana-palace-renovation/",
+  "https://brasilturis.com.br/2026/08/18/copacabana-palace-tera-68-suites-no-edificio-piscina-renovado/",
+  "https://riocarnaval.org/carnival-date/date",
+  "https://blog.wego.com/brazil-evisa-requirements-us-canada-australia-2026/",
+  "https://www.world-of-waterfalls.com/iguazu-falls-which-side-is-better/",
+  "https://www.rainforestcruises.com/guides/best-time-to-visit-iguazu-falls",
+  "https://www.outofoffice.com/?p=68778",
+  "https://www.maisgoias.com.br/brasil/noite-de-reveillon-tera-100-de-ocupacao-em-grandes-hoteis-do-rio/",
+  "https://fasano.com.br/en/gastronomy/gero-rio/"
+ ]
+}

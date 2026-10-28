@@ -1,0 +1,1085 @@
+{
+ "trip_id": "fam1a11bf14e4a30mbfr",
+ "places": [
+  {
+   "place": "Cape Town",
+   "country": "South Africa",
+   "shots": [
+    {
+     "spot": "The Silo Hotel, your room's pillowed window bay",
+     "what": "You seated inside one bulging faceted pane, coffee in hand, Table Mountain refracted through the glass grid behind you.",
+     "why": "The window IS the hotel; an inside-out frame with a person reads as 'I stayed here', which gets saved more than the facade.",
+     "when": "Sunrise ~05:45; first 40 min, soft side light. Ask for a mountain-facing room.",
+     "medium": "film: warm skin tones against cool glass, the grain flatters the backlight",
+     "vertical": true,
+     "avoid": "The glowing exterior at night from the quay, posted by every guest."
+    },
+    {
+     "spot": "The Silo rooftop pool deck",
+     "what": "Waterline-level frame: glass pool edge, harbour cranes, Table Mountain beyond, with the Nov 'tablecloth' cloud if the southeaster blows.",
+     "why": "Shows the working harbour and the mountain together, which few rooftop shots manage; the cloud makes it November-specific.",
+     "when": "Late afternoon 16:30-18:00 (rooftop closes around sunset, check). Sunset ~19:15.",
+     "medium": "digital: bright high-contrast scene, bracket for sky",
+     "vertical": true,
+     "avoid": "Overhead swimmer-in-pool stock shot."
+    },
+    {
+     "spot": "Zeitz MOCAA atrium via the hotel's private entrance",
+     "what": "A lone figure on the upper walkway looking down into the carved grain-tube cathedral, shot before public opening.",
+     "why": "An empty museum is rare access; a person for scale turns architecture into a story.",
+     "when": "Morning before opening (book a private tour via the hotel).",
+     "medium": "digital: low light, needs high ISO and clean shadows",
+     "vertical": true,
+     "avoid": "The symmetrical floor-level atrium wide that floods Instagram."
+    },
+    {
+     "spot": "V&A Hotel, Table Mountain-view room / Alfred Basin quay",
+     "what": "Timelapse of the southeaster tablecloth pouring over Table Mountain above the masts of the yacht basin.",
+     "why": "Nov is peak 'Cape Doctor' season; a pouring-cloud clip is hypnotic and gets replayed and shared.",
+     "when": "Afternoon when the wind rises; sunset ~19:15. Tripod, 2s interval.",
+     "medium": "digital: timelapse/video",
+     "vertical": true,
+     "avoid": "A static clear-sky Table Mountain postcard."
+    },
+    {
+     "spot": "Kalk Bay harbour",
+     "what": "Fishermen landing and selling snoek off the boats, wide enough to show the colourful hulls and the gulls.",
+     "why": "A real working Cape moment, with people and no tourist props; it reads as an insider find.",
+     "when": "Midday-early afternoon when boats return (ask locally); harsh light, shoot in shade.",
+     "medium": "film: portraits and colour of the boats",
+     "vertical": false,
+     "avoid": "Boulders Beach penguins, which everyone posts."
+    },
+    {
+     "spot": "Noordhoek Beach toward Chapman's Peak",
+     "what": "Horse riders silhouetted on the wet sand with Chapman's Peak's cliff road behind.",
+     "why": "Places the famous drive in context with motion and people, a wider story than the viewpoint selfie.",
+     "when": "Golden hour 18:15-19:15; long Nov evenings.",
+     "medium": "film: golden hour, highlight latitude",
+     "vertical": true,
+     "avoid": "The Chapman's Peak lay-by viewpoint photo."
+    },
+    {
+     "spot": "Bo-Kaap at dawn",
+     "what": "Neighbours opening shutters, a corner shop, the call to prayer at first light. Candid, with consent.",
+     "why": "Respectful daily life instead of posing; strong for a cultural caption and comments.",
+     "when": "Sunrise ~05:45-07:00, empty streets.",
+     "medium": "film: skin tones, pastel walls render beautifully",
+     "vertical": false,
+     "avoid": "Posing in front of the painted doorways mid-day."
+    },
+    {
+     "spot": "The Silo Hotel room details",
+     "what": "Flat lay of room-service breakfast on the bed, eclectic Liz Biden decor and crystal chandelier, window grid as backdrop.",
+     "why": "Interior detail carousels are the most-saved hotel posts; shows the design DNA.",
+     "when": "Morning window light, 08:00-09:30.",
+     "medium": "either: film for mood, digital for a clean carousel",
+     "vertical": true,
+     "avoid": "Wide empty-room brochure angle."
+    },
+    {
+     "spot": "Reel: The Silo window reveal",
+     "what": "9:16 clip: hand pulls curtain, camera pushes into the faceted window, mountain and harbour appear.",
+     "why": "A reveal hook in the first second drives Reel retention and shares.",
+     "when": "Sunrise or blue hour ~19:40.",
+     "medium": "digital: video",
+     "vertical": true,
+     "avoid": "Slow panning room tour with music only."
+    }
+   ],
+   "pieces": [
+    {
+     "format": "verdict",
+     "title": "The Verdict: The Silo Hotel, Cape Town",
+     "keyword": "silo hotel cape town",
+     "demand": "high (est.)",
+     "why": "Most-searched luxury hotel in Cape Town; no cocotran coverage; sells directly as an advisor booking (rates ~ZAR 28k+/night).",
+     "photos": 13,
+     "publish_by": "2026-12",
+     "needs": "Peak = Dec-Jan (summer stays + new-year planning). Needs: room, window bay, rooftop, Granary breakfast, MOCAA access, bathroom, staff, rate sheet."
+    },
+    {
+     "format": "primer",
+     "title": "The Primer: Cape Town",
+     "keyword": "best time to visit cape town",
+     "demand": "high (est.)",
+     "why": "Hub entry point for every South Africa itinerary; nothing on site.",
+     "photos": 6,
+     "publish_by": "2026-12",
+     "needs": "Peak = Jan-Feb planning. Needs: weather/wind notes, airport transfer, how many nights, Nov conditions (southeaster, long light)."
+    },
+    {
+     "format": "route",
+     "title": "The Route: Three Days in Cape Town",
+     "keyword": "3 days in cape town",
+     "demand": "high (est.)",
+     "why": "Exact length of her stay; high-volume itinerary query with weak luxury results.",
+     "photos": 5,
+     "publish_by": "2027-01",
+     "needs": "Peak = Jan-Mar. Needs: each day's stops shot, timings, Kalk Bay, Chapman's Peak, MOCAA, waterfront."
+    },
+    {
+     "format": "rolodex",
+     "title": "The Rolodex: Cape Town",
+     "keyword": "where to stay in cape town",
+     "demand": "high (est.)",
+     "why": "Hub guide; lets V&A Hotel (below $700 floor) and dining finds live somewhere.",
+     "photos": 10,
+     "publish_by": "2027-02",
+     "needs": "Peak = Jan-Mar. Needs: V&A Hotel, 3-4 restaurants, bars, wine-route day if possible."
+    },
+    {
+     "format": "postcard",
+     "title": "Postcard From the Tablecloth",
+     "keyword": "table mountain tablecloth",
+     "demand": "low (est.)",
+     "why": "Short, photo-led; a social-first piece that feeds the primer and verdict.",
+     "photos": 6,
+     "publish_by": "2026-12",
+     "needs": "Peak = Nov-Feb (southeaster season). Needs: the cloud timelapse + stills from Silo and V&A."
+    }
+   ],
+   "gm_questions": [
+    {
+     "hotel": "The Silo Hotel",
+     "questions": [
+      "Low/shoulder/peak rates for 2027 and minimum stays over Dec-Jan?",
+      "Which room number has the best window bay facing the mountain, not the harbour?",
+      "Is free Zeitz MOCAA entry and a private tour included for all guests?",
+      "What advisor/Virtuoso-type amenities do you offer (upgrade, credit, breakfast)?",
+      "What is new since 2025 (rooftop, Willaston bar, menus)?",
+      "What detail do most guests never discover?"
+     ]
+    },
+    {
+     "hotel": "Victoria & Alfred Hotel",
+     "questions": [
+      "2027 rates by season, and is the Table Mountain view a separate category?",
+      "Which rooms avoid the car-park outlook and lofts?",
+      "Any refurbishment planned or completed?",
+      "Trade/advisor rates and amenities?",
+      "Best value-add: Robben Island ferry access or harbour-front dining?"
+     ]
+    }
+   ]
+  },
+  {
+   "place": "Phinda",
+   "country": "South Africa",
+   "shots": [
+    {
+     "spot": "Phinda Mountain Lodge, suite deck & plunge pool",
+     "what": "You in a robe at the plunge pool edge, Lebombo Mountains layered in dawn mist below.",
+     "why": "A human in the frame sells the suite; mist layers are a green-season gift that few brochure shots have.",
+     "when": "Sunrise ~04:55; mist 05:00-06:00 before the drive.",
+     "medium": "film: soft dawn tones, skin",
+     "vertical": true,
+     "avoid": "Empty pool-and-view brochure shot."
+    },
+    {
+     "spot": "Main deck over the lodge waterhole",
+     "what": "Long lens on nyala or elephant at the waterhole with the lodge's deck rail as a soft foreground.",
+     "why": "Proves 'wildlife from the lodge', a top saved/shared angle for safari lodges.",
+     "when": "Dusk 17:30-18:15 (sunset ~18:13).",
+     "medium": "digital: long lens, fading light",
+     "vertical": false,
+     "avoid": "A tight animal portrait with no sense of place."
+    },
+    {
+     "spot": "Open grassland",
+     "what": "Cheetah on a termite mound, wide, with a building summer storm sky and fresh green grass.",
+     "why": "Phinda's signature cat in its environment; green + storm sky is November-only drama.",
+     "when": "Afternoon drive 16:00-18:00.",
+     "medium": "digital: long lens, fast shutter",
+     "vertical": false,
+     "avoid": "Frame-filling cheetah face crop."
+    },
+    {
+     "spot": "Phinda's Sand Forest",
+     "what": "Suni or red duiker in dappled light under the rare Sand Forest canopy.",
+     "why": "A rare ecosystem almost nobody photographs; educational and distinctive.",
+     "when": "Early morning 05:30-07:30.",
+     "medium": "digital: very low light under canopy",
+     "vertical": false,
+     "avoid": "Generic bush thicket with no subject."
+    },
+    {
+     "spot": "Conservation activity (rhino notching / collaring if scheduled)",
+     "what": "Vet's and guide's hands on a sedated rhino, documentary-style, faces with consent.",
+     "why": "Purpose-driven human story; strong shares and advisor credibility.",
+     "when": "Whenever scheduled; ask at check-in.",
+     "medium": "film: hands/portraits; carry digital for action",
+     "vertical": true,
+     "avoid": "Selfie with a sedated animal (don't)."
+    },
+    {
+     "spot": "Lodge interiors (Zulu beadwork-inspired redesign)",
+     "what": "Detail frames of beadwork patterns, the ocean-blue accents and the rim-flow pool.",
+     "why": "Design detail carousels are what people save for 'where to stay' boards.",
+     "when": "Midday shade or late afternoon.",
+     "medium": "film: colour and texture",
+     "vertical": false,
+     "avoid": "Wide lounge shot with no detail."
+    },
+    {
+     "spot": "Sodwana coast turtle tour (Nov-Jan season)",
+     "what": "Loggerhead or leatherback under red light only, guide kneeling beside her. No flash, no white light.",
+     "why": "Safari + sea turtles is a rare combo few clients know about; ethical framing invites saves.",
+     "when": "Night tour, typically 20:00-24:00; only if offered on your dates.",
+     "medium": "digital: extreme low light, high ISO",
+     "vertical": true,
+     "avoid": "Flash photos of nesting turtles."
+    },
+    {
+     "spot": "Reel: Waterhole from the bed",
+     "what": "9:16 slow push from the suite bed or deck to wildlife at the waterhole, natural sound.",
+     "why": "An 'I woke up to this' hook is the best-performing safari Reel format.",
+     "when": "Morning 06:00-08:00.",
+     "medium": "digital: video",
+     "vertical": true,
+     "avoid": "Music-only montage of drives."
+    }
+   ],
+   "pieces": [
+    {
+     "format": "verdict",
+     "title": "The Verdict: andBeyond Phinda Mountain Lodge, Phinda",
+     "keyword": "phinda mountain lodge",
+     "demand": "medium (est.)",
+     "why": "Branded query with mostly OTA/operator results; easy rank for a first-hand review. Rack ~ZAR 17,750 pp (above floor).",
+     "photos": 13,
+     "publish_by": "2027-01",
+     "needs": "Peak = Jan-Mar (SA winter-safari booking). Needs: suite, plunge pool, deck, waterhole, dining, interiors, guide, rate sheet."
+    },
+    {
+     "format": "primer",
+     "title": "The Primer: Phinda",
+     "keyword": "phinda private game reserve",
+     "demand": "medium (est.)",
+     "why": "Explains the seven ecosystems + beach combo; feeds the verdict.",
+     "photos": 6,
+     "publish_by": "2027-02",
+     "needs": "Peak = Jan-Mar. Needs: airstrip/transfer details, nights advised, Nov conditions, Sand Forest, coast options."
+    },
+    {
+     "format": "shortlist",
+     "title": "South Africa Safari Lodges: The Shortlist",
+     "keyword": "best safari lodges in south africa",
+     "demand": "high (est.)",
+     "why": "High-volume commercial query; anchors Phinda and Sandringham, add researched picks.",
+     "photos": 8,
+     "publish_by": "2027-01",
+     "needs": "Peak = Jan-Mar. Needs: hero frame of each lodge she stays at; lodge facts from GMs."
+    },
+    {
+     "format": "fieldnotes",
+     "title": "Field Notes From: A Turtle Beach in Zululand",
+     "keyword": "turtle nesting kwazulu natal",
+     "demand": "low (est.)",
+     "why": "Unique angle: safari plus turtle season; only if she does the tour.",
+     "photos": 6,
+     "publish_by": "2027-09",
+     "needs": "Peak = Oct-Nov (pre-season planning). Needs: red-light turtle frames, guide portrait, beach at dusk."
+    },
+    {
+     "format": "shortlist",
+     "title": "19 Best Eco Resorts in the world",
+     "update": true
+    }
+   ],
+   "gm_questions": [
+    {
+     "hotel": "andBeyond Phinda Mountain Lodge",
+     "questions": [
+      "2027 rates by season, and which offers (stay-pay, long-stay) apply to Nov?",
+      "Which suite numbers have the best waterhole and Lebombo view?",
+      "Which conservation experiences (rhino notching, collaring) can be pre-booked for clients?",
+      "What advisor perks/fam programmes does andBeyond run?",
+      "How does Mountain compare to Forest and Vlei lodges for different clients?",
+      "The one detail most guests miss here?"
+     ]
+    }
+   ]
+  },
+  {
+   "place": "Timbavati",
+   "country": "South Africa",
+   "shots": [
+    {
+     "spot": "Sandringham N'weti Camp, suite infinity pool",
+     "what": "Compressed long-lens frame: pool edge, Timbavati River, and the blue silhouette of the Drakensberg (N'weti means 'silhouette').",
+     "why": "Ties the frame to the camp's name; the story makes it save- and caption-worthy.",
+     "when": "Sunset ~18:14; 17:30-18:30 for layered haze.",
+     "medium": "film: golden layers, soft rolloff",
+     "vertical": true,
+     "avoid": "Wide pool shot with blown sky."
+    },
+    {
+     "spot": "N'weti indoor-outdoor bathroom",
+     "what": "Freestanding bath with the bush beyond, a bathrobe and a glass of wine on the edge.",
+     "why": "Bath-with-a-view is among the most-saved hotel shots; new camp, so no one else has it yet.",
+     "when": "Golden hour 17:00-18:00.",
+     "medium": "film: warm interiors",
+     "vertical": true,
+     "avoid": "Shot without any styling or person."
+    },
+    {
+     "spot": "Walking safari with a Tracker Academy-trained tracker",
+     "what": "Close on the tracker's hand reading a spoor, then a wider portrait in the bush. Ask consent.",
+     "why": "Human and conservation story (former hunting reserve, local trackers trained) that gets shared.",
+     "when": "Morning walk 05:30-08:00.",
+     "medium": "film: portraits, texture",
+     "vertical": true,
+     "avoid": "Back-of-vehicle shot of the group."
+    },
+    {
+     "spot": "Central lodge boma & wine tower",
+     "what": "Fire-lit boma dinner, the wine tower glowing, guests' hands in frame.",
+     "why": "Atmosphere shots sell the stay; the wine tower is a signature detail.",
+     "when": "After dark 19:00-21:00.",
+     "medium": "digital: very low light",
+     "vertical": false,
+     "avoid": "Flash photos at dinner."
+    },
+    {
+     "spot": "Riverbed predators",
+     "what": "Leopard or lions with the first impala lambs of the season (if lambing has started).",
+     "why": "November newborn + predator drama is seasonal and compelling.",
+     "when": "Morning and afternoon drives.",
+     "medium": "digital: long lens, motion",
+     "vertical": false,
+     "avoid": "Sleeping lion in shade."
+    },
+    {
+     "spot": "Deck at night",
+     "what": "Summer thunderstorm with lightning over the Timbavati, tripod on the suite deck.",
+     "why": "Big seasonal drama with a hotel frame; strong as a Reel cover.",
+     "when": "After 19:00 when storms build.",
+     "medium": "digital: long exposure",
+     "vertical": true,
+     "avoid": "Phone-shot night sky."
+    },
+    {
+     "spot": "Rewilding story",
+     "what": "Portrait of the reserve or conservation manager at a former hunting site now restored.",
+     "why": "Gives the 'hunting reserve to ecotourism' narrative a face.",
+     "when": "Late afternoon.",
+     "medium": "film: environmental portrait",
+     "vertical": false,
+     "avoid": "Generic landscape with no story."
+    },
+    {
+     "spot": "Reel: Walk-in-their-footsteps",
+     "what": "9:16 POV walking behind the tracker, cutting to the spoor, then the animal.",
+     "why": "Walking-safari POV is under-posted and strong for retention.",
+     "when": "Morning walk.",
+     "medium": "digital: video, stabilised",
+     "vertical": true,
+     "avoid": "Reel of drive footage only."
+    }
+   ],
+   "pieces": [
+    {
+     "format": "verdict",
+     "title": "The Verdict: Sandringham N'weti Camp, Greater Kruger",
+     "keyword": "sandringham private game reserve",
+     "demand": "medium (est.)",
+     "why": "Opened Aug 2026; almost no first-hand reviews yet, so first-mover rank. From ~ZAR 26,250 pp (above floor).",
+     "photos": 13,
+     "publish_by": "2026-12",
+     "needs": "Peak = Jan-Mar. Needs: suite, pool, bath, boma, wine tower, walking safari, staff, rate sheet."
+    },
+    {
+     "format": "primer",
+     "title": "The Primer: Greater Kruger",
+     "keyword": "kruger private game reserves",
+     "demand": "high (est.)",
+     "why": "'Timbavati' alone is swamped by a Wisconsin wildlife park; Greater Kruger is the right query.",
+     "photos": 6,
+     "publish_by": "2027-01",
+     "needs": "Peak = Jan-Mar. Needs: flight/transfer route (Hoedspruit), nights, reserve map, Nov conditions."
+    },
+    {
+     "format": "answer",
+     "title": "The Answer: Can You Still See White Lions in Timbavati?",
+     "keyword": "timbavati white lions",
+     "demand": "medium (est.)",
+     "why": "A wild white cub was born early 2026; a sincere answer captures curiosity traffic.",
+     "photos": 4,
+     "publish_by": "2026-12",
+     "needs": "Peak = evergreen. Needs: guide quotes on current sightings; any ethical sighting photos."
+    },
+    {
+     "format": "comparison",
+     "title": "The Comparison: Phinda vs Greater Kruger",
+     "keyword": "phinda vs kruger",
+     "demand": "low (est.)",
+     "why": "Advisor decision piece using both of her SA stays; good for clients picking one.",
+     "photos": 10,
+     "publish_by": "2027-02",
+     "needs": "Peak = Jan-Mar. Needs: matched frames (suite, drive, dining) from both lodges."
+    },
+    {
+     "format": "postcard",
+     "title": "Postcard From a Former Hunting Reserve",
+     "keyword": "sandringham sabi sabi",
+     "demand": "low (est.)",
+     "why": "Story-led social piece on rewilding; supports the verdict.",
+     "photos": 6,
+     "publish_by": "2027-01",
+     "needs": "Needs: rewilding portrait, tracker walk, landscape."
+    }
+   ],
+   "gm_questions": [
+    {
+     "hotel": "Sandringham N'weti Camp",
+     "questions": [
+      "2027 rates by season; is N'weti adults-only and what is excluded (Champagne, cellar wines)?",
+      "Is Sandringham fenced off from Timbavati/Kruger, or open traversing? Which species are established?",
+      "Which of the six suites has the best Drakensberg silhouette?",
+      "Opening offers or advisor perks for early bookings?",
+      "How do N'weti, Shisaka and Sandringham House differ for clients?",
+      "What do most guests miss in the first season?"
+     ]
+    }
+   ]
+  },
+  {
+   "place": "Savuti & Chobe",
+   "country": "Botswana",
+   "shots": [
+    {
+     "spot": "Savute Elephant Lodge, the waterhole hide",
+     "what": "Ultra-wide from the hide's ground-level slot: elephant trunks and feet drinking inches away.",
+     "why": "Signature Belmond feature; eye-level elephants are a top-saved safari image.",
+     "when": "Midday heat 11:00-15:00 when bulls drink most.",
+     "medium": "digital: fast, wide, close action",
+     "vertical": true,
+     "avoid": "Distant elephant herd from the vehicle."
+    },
+    {
+     "spot": "Tented room deck over the Savute Channel",
+     "what": "You on the deck, four-poster and nets behind, channel in front.",
+     "why": "Hotel-specific frame showing the 2018 Luxury Frontiers redesign.",
+     "when": "Sunrise ~05:40.",
+     "medium": "film: soft tones of canvas and wood",
+     "vertical": true,
+     "avoid": "Empty bed shot."
+    },
+    {
+     "spot": "Savuti Marsh dead trees",
+     "what": "Dead camelthorn silhouettes at dawn with dust in the air.",
+     "why": "Moody and graphic; rarer than sunset-acacia shots.",
+     "when": "Sunrise ~05:40, 05:15-06:30.",
+     "medium": "film: silhouettes and grain",
+     "vertical": false,
+     "avoid": "HDR-processed sunset with a tree."
+    },
+    {
+     "spot": "Lion pride",
+     "what": "Savuti's large lions in golden dust, or interacting with elephant bulls near water.",
+     "why": "Savuti is known for big prides that tackle elephants; drama shares well.",
+     "when": "Early morning and 17:00-18:30 (sunset ~18:36).",
+     "medium": "digital: long lens, low light",
+     "vertical": false,
+     "avoid": "Sleeping lion cub portrait."
+    },
+    {
+     "spot": "Gubatsa Hills San rock paintings",
+     "what": "Guide pointing to the ancient paintings, portrait in profile.",
+     "why": "Human history in a wildlife place: an unexpected carousel.",
+     "when": "Morning light.",
+     "medium": "film: texture, skin tones",
+     "vertical": false,
+     "avoid": "Rock art macro with no context."
+    },
+    {
+     "spot": "First storm of the season",
+     "what": "Dark storm sky against sunlit grass and elephants.",
+     "why": "Late-dry-season drama unique to November.",
+     "when": "Afternoon.",
+     "medium": "digital: dynamic range",
+     "vertical": true,
+     "avoid": "Flat grey cloudy sky."
+    },
+    {
+     "spot": "Chobe River from a boat (if Kasane time allows)",
+     "what": "Water-level telephoto of elephants crossing or swimming.",
+     "why": "Water-level is a different perspective from game-drive angles.",
+     "when": "Late afternoon 16:30-18:30.",
+     "medium": "digital: long lens, moving boat",
+     "vertical": true,
+     "avoid": "Elephant-at-sunset silhouette from the shore."
+    },
+    {
+     "spot": "Fire pit, evening",
+     "what": "Staff or guide portrait in firelight, telling stories.",
+     "why": "People moment that shows Belmond hospitality.",
+     "when": "After 19:00.",
+     "medium": "digital: low light",
+     "vertical": false,
+     "avoid": "Group selfie around the fire."
+    },
+    {
+     "spot": "Reel: Hide with sound",
+     "what": "9:16 elephant drinking at the hide, with rumbles and splashing sound.",
+     "why": "Sound-on clips outperform music-only on safari Reels.",
+     "when": "Midday.",
+     "medium": "digital: video",
+     "vertical": true,
+     "avoid": "Music-only drive montage."
+    }
+   ],
+   "pieces": [
+    {
+     "format": "verdict",
+     "title": "The Verdict: Savute Elephant Lodge, A Belmond Safari, Botswana",
+     "keyword": "savute elephant lodge",
+     "demand": "medium (est.)",
+     "why": "Branded query with thin first-hand reviews; Belmond fits her existing Belmond verdicts. ~$1,700-2,900 pp.",
+     "photos": 13,
+     "publish_by": "2027-01",
+     "needs": "Peak = Jan-Mar (Botswana books 9-12 months out). Needs: hide, tent, deck, dining, spa, guide, rate sheet."
+    },
+    {
+     "format": "primer",
+     "title": "The Primer: Botswana",
+     "keyword": "botswana safari best time",
+     "demand": "high (est.)",
+     "why": "Hub for the whole country; nothing on site.",
+     "photos": 6,
+     "publish_by": "2026-12",
+     "needs": "Peak = Jan-Mar. Needs: flight routing via Kasane/Maun, nights, seasons, park fees."
+    },
+    {
+     "format": "comparison",
+     "title": "The Comparison: Botswana vs South Africa",
+     "keyword": "botswana or south africa for safari",
+     "demand": "medium (est.)",
+     "why": "Autocomplete-confirmed question; she has both on one trip.",
+     "photos": 10,
+     "publish_by": "2027-01",
+     "needs": "Peak = Jan-Mar. Needs: matched frames (tents, drives, wildlife) from both countries."
+    },
+    {
+     "format": "answer",
+     "title": "The Answer: Is November a Good Time for a Botswana Safari?",
+     "keyword": "botswana safari november",
+     "demand": "medium (est.)",
+     "why": "Shoulder/green-season value question; Belmond green rates start 15 Nov.",
+     "photos": 4,
+     "publish_by": "2027-08",
+     "needs": "Peak = Sep-Oct. Needs: weather notes, sightings log, storm frames."
+    },
+    {
+     "format": "postcard",
+     "title": "Postcard From the Savute Hide",
+     "keyword": "savute elephant hide",
+     "demand": "low (est.)",
+     "why": "Photo-led social piece; drives the verdict.",
+     "photos": 6,
+     "publish_by": "2026-12",
+     "needs": "Needs: hide stills and clip."
+    }
+   ],
+   "gm_questions": [
+    {
+     "hotel": "Savute Elephant Lodge, A Belmond Safari",
+     "questions": [
+      "2027 rates: green (from 15 Nov) vs shoulder vs high, and the Kasane flight supplement?",
+      "Which tents are closest to the channel and the hide?",
+      "Is there a 2025-26 refresh or new experiences planned?",
+      "Belmond Bellini Club/advisor amenities for Botswana?",
+      "How do clients best combine Savute with Khwai/Eagle Island?",
+      "What most guests miss (e.g., hide timing)?"
+     ]
+    }
+   ]
+  },
+  {
+   "place": "Victoria Falls",
+   "country": "Zimbabwe / Zambia",
+   "shots": [
+    {
+     "spot": "Zimbabwe side, Main Falls viewpoints",
+     "what": "Mid-morning rainbow in the spray over the Main Falls.",
+     "why": "Low-water season = less mist and clearer views of the gorge.",
+     "when": "09:30-11:30 for rainbow; sunrise ~05:35.",
+     "medium": "digital: contrast and spray",
+     "vertical": true,
+     "avoid": "Bungee-from-the-bridge shot."
+    },
+    {
+     "spot": "Dry Zambian wall",
+     "what": "Bare basalt rock wall with thin water ribbons.",
+     "why": "'The side of the falls you never see': surprising and shareable.",
+     "when": "Morning from the Zimbabwe side looking across.",
+     "medium": "film: texture, honest documentary",
+     "vertical": false,
+     "avoid": "Over-saturated full-flow shot."
+    },
+    {
+     "spot": "Flight of Angels (helicopter)",
+     "what": "Aerial zigzag of the Batoka Gorge.",
+     "why": "Low water exposes the gorge geology; graphic aerial frame.",
+     "when": "Morning, before haze builds.",
+     "medium": "digital: fast shutter, vibration",
+     "vertical": true,
+     "avoid": "Blurry window-reflection photo."
+    },
+    {
+     "spot": "Victoria Falls Hotel, Stanley's Terrace",
+     "what": "High tea table in the foreground, the 1905 Falls Bridge and gorge spray framed through the terrace arch.",
+     "why": "Edwardian-colonial detail with a view; a calmer, saveable alternative to adrenaline shots.",
+     "when": "Afternoon 15:00-17:00, before the 18:00 flight.",
+     "medium": "film: warm tones, nostalgic subject",
+     "vertical": true,
+     "avoid": "Bridge bungee jumper shot."
+    },
+    {
+     "spot": "Rainforest path",
+     "what": "Guide at Danger Point telling the story, wide with spray.",
+     "why": "People moment in a classic place.",
+     "when": "Late morning.",
+     "medium": "film: portrait",
+     "vertical": false,
+     "avoid": "Raincoat selfies."
+    },
+    {
+     "spot": "Reel: Low-water reveal",
+     "what": "9:16 walk from the dry rocks to the roaring Main Falls.",
+     "why": "Contrast reveal hook.",
+     "when": "Late morning.",
+     "medium": "digital: video",
+     "vertical": true,
+     "avoid": "Static panorama."
+    }
+   ],
+   "pieces": [
+    {
+     "format": "answer",
+     "title": "The Answer: Is Victoria Falls Worth Visiting in November?",
+     "keyword": "victoria falls in november",
+     "demand": "medium (est.)",
+     "why": "Autocomplete shows early/late-Nov variants; honest low-water answer wins clicks.",
+     "photos": 4,
+     "publish_by": "2027-08",
+     "needs": "Peak = Sep-Oct. Needs: Zim and Zambia-side frames at low water, crossing notes."
+    },
+    {
+     "format": "primer",
+     "title": "The Primer: Victoria Falls",
+     "keyword": "victoria falls zimbabwe or zambia side",
+     "demand": "high (est.)",
+     "why": "Common add-on to Botswana trips; she can answer the side-choice question.",
+     "photos": 6,
+     "publish_by": "2027-01",
+     "needs": "Peak = Jan-Mar. Needs: border crossing, KQ flight route, half-day vs overnight."
+    },
+    {
+     "format": "postcard",
+     "title": "Postcard From the Dry Side of Victoria Falls",
+     "keyword": "victoria falls dry season",
+     "demand": "low (est.)",
+     "why": "Social-first unexpected angle.",
+     "photos": 6,
+     "publish_by": "2027-08",
+     "needs": "Needs: dry wall and Main Falls contrast frames."
+    }
+   ],
+   "gm_questions": [],
+   "note": "Realistic only as a half-day on 15 Nov: Savute-Kasane flight, road to Vic Falls (~1.5h + border), KQ793 VFA-NBO ~18:00 (3x weekly, confirm days). Falls near annual low (~mid-Nov)."
+  },
+  {
+   "place": "Amboseli",
+   "country": "Kenya",
+   "shots": [
+    {
+     "spot": "Plains below Kilimanjaro",
+     "what": "Low, wide frame of an elephant family walking across green-season grass, Kili just clearing.",
+     "why": "The shot everyone wants; a low angle with swamp/egret foreground makes yours distinct.",
+     "when": "Sunrise ~06:10; Kili often clears 06:00-07:30 and again near 17:30.",
+     "medium": "digital: long lens and wide; contrast",
+     "vertical": true,
+     "avoid": "Centred 'elephants under Kili' from the standard spot."
+    },
+    {
+     "spot": "Angama Amboseli, round infinity pool and trench",
+     "what": "Pool edge with an elephant drinking from the trench below it, Kilimanjaro beyond.",
+     "why": "Signature Angama frame; wildlife at the pool is a top save.",
+     "when": "Late afternoon 16:00-18:00 (sunset ~18:23).",
+     "medium": "digital: varied light, wildlife",
+     "vertical": true,
+     "avoid": "Empty pool shot."
+    },
+    {
+     "spot": "Angama suite",
+     "what": "Shower with a Kilimanjaro view, robe hung, misty morning.",
+     "why": "'Bedroom to shower' Kili views are the property's pitch.",
+     "when": "Morning after sunrise.",
+     "medium": "film: soft interiors",
+     "vertical": true,
+     "avoid": "Wide bedroom brochure shot."
+    },
+    {
+     "spot": "Tolstoy story",
+     "what": "Ex-Big Life ranger Salash Johnson at Tolstoy's resting place, and the replica tusks at the entrance.",
+     "why": "Emotional super-tusker story that gets shares.",
+     "when": "Late afternoon.",
+     "medium": "film: portrait",
+     "vertical": false,
+     "avoid": "Replica tusks shot alone."
+    },
+    {
+     "spot": "Kitirua Plains Lodge, suite & woven-rush details",
+     "what": "Suite facing Kili at first light, with Maasai-inspired woven detailing.",
+     "why": "New lodge (June 2026); few images exist; first-mover content.",
+     "when": "First light ~06:00.",
+     "medium": "film: textures and dawn",
+     "vertical": true,
+     "avoid": "Drone/hero render angle."
+    },
+    {
+     "spot": "Kitirua boma at night",
+     "what": "Boma fire with Kili silhouette under stars.",
+     "why": "Atmosphere + stars; new lodge.",
+     "when": "After 19:30; clouds permitting.",
+     "medium": "digital: astro",
+     "vertical": false,
+     "avoid": "Phone night shot."
+    },
+    {
+     "spot": "Balloon (offered by Kitirua)",
+     "what": "From the basket, the shadow of the balloon over herds with Kili.",
+     "why": "Rare in Amboseli; novel angle.",
+     "when": "Sunrise.",
+     "medium": "digital: dynamic",
+     "vertical": true,
+     "avoid": "Basket selfie."
+    },
+    {
+     "spot": "Maasai community visit",
+     "what": "Portrait with consent in daily life.",
+     "why": "Respectful human moment.",
+     "when": "Morning.",
+     "medium": "film: skin tones",
+     "vertical": false,
+     "avoid": "Staged jumping dance."
+    },
+    {
+     "spot": "Reel: Elephants at the trench",
+     "what": "9:16 elephants drinking below the pool with sound.",
+     "why": "Lodge + wildlife hook.",
+     "when": "Afternoon.",
+     "medium": "digital: video",
+     "vertical": true,
+     "avoid": "Music-only clip."
+    }
+   ],
+   "pieces": [
+    {
+     "format": "comparison",
+     "title": "The Comparison: Angama Amboseli vs Kitirua Plains Lodge",
+     "keyword": "angama amboseli vs kitirua plains",
+     "demand": "medium (est.)",
+     "why": "Two new luxury lodges, she stays at both; no head-to-head exists. Big gap.",
+     "photos": 10,
+     "publish_by": "2026-12",
+     "needs": "Peak = Jan-Mar. Needs: matched frames from both lodges, rates, location."
+    },
+    {
+     "format": "verdict",
+     "title": "The Verdict: Kitirua Plains Lodge, Amboseli",
+     "keyword": "kitirua plains lodge",
+     "demand": "medium (est.)",
+     "why": "Opened June 2026; first-mover first-hand review.",
+     "photos": 13,
+     "publish_by": "2026-12",
+     "needs": "Peak = Jan-Mar. Needs: suites, pool, spa, boma, balloon, staff, rate sheet."
+    },
+    {
+     "format": "verdict",
+     "title": "The Verdict: Angama Amboseli, Amboseli",
+     "keyword": "angama amboseli",
+     "demand": "medium (est.)",
+     "why": "Autocomplete shows prices/reviews/photos interest; from $1,650 pp.",
+     "photos": 13,
+     "publish_by": "2027-01",
+     "needs": "Peak = Jan-Mar. Needs: suite, pool/trench, gallery, studio, Tolstoy story, rate sheet."
+    },
+    {
+     "format": "primer",
+     "title": "The Primer: Amboseli",
+     "keyword": "amboseli best time to visit",
+     "demand": "medium (est.)",
+     "why": "Hub entry point for Kenya circuits.",
+     "photos": 6,
+     "publish_by": "2027-01",
+     "needs": "Peak = Jan-Mar. Needs: flights, nights, seasons, Kili visibility tips."
+    },
+    {
+     "format": "postcard",
+     "title": "Postcard From Kilimanjaro's Clear Hour",
+     "keyword": "kilimanjaro view amboseli",
+     "demand": "low (est.)",
+     "why": "Short photo-led piece.",
+     "photos": 6,
+     "publish_by": "2026-12",
+     "needs": "Needs: dawn Kili frames."
+    }
+   ],
+   "gm_questions": [
+    {
+     "hotel": "Angama Amboseli",
+     "questions": [
+      "2027 rates by season and Nov green-season offers?",
+      "Which suites have the best Kili view from bed and shower?",
+      "Is the new park gate open and drive time now?",
+      "Advisor perks and booking incentives?",
+      "Photo studio services for guests?",
+      "What most guests miss?"
+     ]
+    },
+    {
+     "hotel": "Kitirua Plains Lodge",
+     "questions": [
+      "2027 rates and opening offers?",
+      "Which suites face Kili best, and the 2-bedroom units?",
+      "How close to the park gate and Ol Tukai airstrip?",
+      "Balloon schedule and cost?",
+      "Advisor perks from A&K?",
+      "What is still being finished in the first season?"
+     ]
+    }
+   ]
+  },
+  {
+   "place": "Masai Mara",
+   "country": "Kenya",
+   "shots": [
+    {
+     "spot": "Ritz-Carlton Masai Mara, treetop suite deck & pool",
+     "what": "You on the day bed with the Sand River below in morning mist.",
+     "why": "Signature frame of the new camp; person in it shows scale.",
+     "when": "Sunrise ~06:20.",
+     "medium": "film: soft dawn, skin",
+     "vertical": true,
+     "avoid": "Hero render/drone angle."
+    },
+    {
+     "spot": "Sand River",
+     "what": "Wildebeest or zebra stragglers near the river crossing point close to the Tanzania border.",
+     "why": "Honest end-of-migration tail; rare November image.",
+     "when": "Morning drives.",
+     "medium": "digital: long lens, action",
+     "vertical": false,
+     "avoid": "Overdone Mara River crossing chaos."
+    },
+    {
+     "spot": "Whispering Tree Spa",
+     "what": "Treatment room in the canopy.",
+     "why": "Spa in the trees is a distinctive feature.",
+     "when": "Midday.",
+     "medium": "film: soft interiors",
+     "vertical": false,
+     "avoid": "Generic spa bed shot."
+    },
+    {
+     "spot": "Encholiek butler",
+     "what": "Portrait of your Maasai butler with consent.",
+     "why": "Human story ('one who walks with you').",
+     "when": "Late afternoon.",
+     "medium": "film: portrait",
+     "vertical": false,
+     "avoid": "Staged posed portrait."
+    },
+    {
+     "spot": "Green-season storm",
+     "what": "Lions under a storm sky with green grass.",
+     "why": "Dramatic, November-only.",
+     "when": "Afternoon.",
+     "medium": "digital: dynamic range",
+     "vertical": true,
+     "avoid": "Flat sky lion portrait."
+    },
+    {
+     "spot": "Balloon at dawn",
+     "what": "Balloons rising over the plains, shot from the ground.",
+     "why": "Unusual ground-up angle.",
+     "when": "Sunrise.",
+     "medium": "digital: dynamic",
+     "vertical": true,
+     "avoid": "Basket selfie."
+    },
+    {
+     "spot": "Termite mound topi",
+     "what": "Topi on a termite mound with migratory birds.",
+     "why": "Mara icon plus Nov birds.",
+     "when": "Morning.",
+     "medium": "digital: long lens",
+     "vertical": false,
+     "avoid": "Distant mound with no subject."
+    },
+    {
+     "spot": "Reel: Treetop morning",
+     "what": "9:16 from bed to deck to Sand River view.",
+     "why": "Lodge reveal hook.",
+     "when": "Sunrise.",
+     "medium": "digital: video",
+     "vertical": true,
+     "avoid": "Music-only montage."
+    }
+   ],
+   "pieces": [
+    {
+     "format": "verdict",
+     "title": "The Verdict: The Ritz-Carlton Masai Mara Safari Camp, Masai Mara",
+     "keyword": "ritz carlton masai mara review",
+     "demand": "high (est.)",
+     "why": "High search interest including controversy queries; first-hand honest verdict.",
+     "photos": 13,
+     "publish_by": "2026-12",
+     "needs": "Peak = Jan-Mar. Needs: suite, pool, spa, dining, butler, controversy context, rates."
+    },
+    {
+     "format": "answer",
+     "title": "The Answer: Is the Masai Mara Worth It in November?",
+     "keyword": "is masai mara worth it in november",
+     "demand": "medium (est.)",
+     "why": "Autocomplete-confirmed; honest answer about migration timing.",
+     "photos": 4,
+     "publish_by": "2027-07",
+     "needs": "Peak = Aug-Oct. Needs: sightings log, weather, honest migration note."
+    },
+    {
+     "format": "primer",
+     "title": "The Primer: Masai Mara",
+     "keyword": "best time to visit masai mara",
+     "demand": "high (est.)",
+     "why": "Hub for Kenya; nothing on site.",
+     "photos": 6,
+     "publish_by": "2027-01",
+     "needs": "Peak = Jan-Jun. Needs: flights, conservancy vs reserve, nights, seasons."
+    },
+    {
+     "format": "route",
+     "title": "The Route: Six Days in Kenya",
+     "keyword": "kenya safari itinerary",
+     "demand": "high (est.)",
+     "why": "Her exact Kenya leg; high-volume itinerary query.",
+     "photos": 10,
+     "publish_by": "2027-01",
+     "needs": "Peak = Jan-Mar. Needs: each day's frames, flights, timing."
+    },
+    {
+     "format": "comparison",
+     "title": "The Comparison: Kenya vs South Africa",
+     "keyword": "kenya vs south africa safari",
+     "demand": "high (est.)",
+     "why": "Autocomplete-confirmed; she covers both on one trip.",
+     "photos": 10,
+     "publish_by": "2027-02",
+     "needs": "Peak = Jan-Mar. Needs: matched frames from both countries."
+    }
+   ],
+   "gm_questions": [
+    {
+     "hotel": "The Ritz-Carlton Masai Mara Safari Camp",
+     "questions": [
+      "2027 rates by season and inclusions?",
+      "Which suites have the best Sand River view?",
+      "What is the current status of the legal challenges?",
+      "Advisor perks (STARS/Marriott Luxury)?",
+      "Which conservancy partnerships exist?",
+      "What do most guests miss?"
+     ]
+    }
+   ],
+   "note": "Honest migration: by mid/late Nov most herds are back in the Serengeti; expect stragglers near the Sand River at best, plus strong resident cats, green grass, storms and migratory birds."
+  }
+ ],
+ "trip_top": [
+  {
+   "place": "Masai Mara",
+   "title": "The Verdict: The Ritz-Carlton Masai Mara Safari Camp, Masai Mara"
+  },
+  {
+   "place": "Amboseli",
+   "title": "The Comparison: Angama Amboseli vs Kitirua Plains Lodge"
+  },
+  {
+   "place": "Cape Town",
+   "title": "The Verdict: The Silo Hotel, Cape Town"
+  },
+  {
+   "place": "Timbavati",
+   "title": "The Verdict: Sandringham N'weti Camp, Greater Kruger"
+  },
+  {
+   "place": "Amboseli",
+   "title": "The Verdict: Kitirua Plains Lodge, Amboseli"
+  },
+  {
+   "place": "Masai Mara",
+   "title": "The Primer: Masai Mara"
+  },
+  {
+   "place": "Masai Mara",
+   "title": "The Comparison: Kenya vs South Africa"
+  },
+  {
+   "place": "Savuti & Chobe",
+   "title": "The Verdict: Savute Elephant Lodge, A Belmond Safari, Botswana"
+  }
+ ],
+ "video": {
+  "title": "19 Days, 3 Countries, 6 Safaris: Africa in Green Season (Honest Review)",
+  "hook": "Everyone says go to the Mara in August. I went in November, when the herds had left. Here's what I actually saw, and which lodges are worth it.",
+  "outline": [
+   "Cold open: elephant at the Savute hide, sound on, then 'is November a mistake?'",
+   "Cape Town: Silo window reveal, tablecloth cloud, MOCAA before opening",
+   "Phinda: Mountain Lodge waterhole, cheetah under storm sky, conservation moment",
+   "Timbavati: brand-new Sandringham N'weti, walking with a tracker, rewilding story",
+   "Savuti: the hide, lions, first storm; Belmond tent tour",
+   "Vic Falls at low water (if done): the dry Zambian wall vs the Main Falls",
+   "Amboseli: Angama vs Kitirua side by side, Kilimanjaro's clear hour, Tolstoy story",
+   "Masai Mara: Ritz-Carlton treetop camp, honest migration verdict, the controversy in one line",
+   "Scorecard: best lodge for whom, costs, what to book for November",
+   "CTA: how to plan it with an advisor; link to cocotran.com pieces"
+  ],
+  "shorts": [
+   "'Would you shower with this view?' Angama suite to Kilimanjaro, 15s",
+   "Elephants drinking inches from the Savute hide, sound on",
+   "'The Mara in November: herds gone?' 30s honest answer with green-season storm footage"
+  ]
+ },
+ "sources": [
+  "https://cocotran.com/wp-json/wp/v2/search?search=africa&per_page=20",
+  "https://www.ritzcarlton.com/en/hotels/nbomr-the-ritz-carlton-masai-mara-safari-camp/rooms/signature-suites/",
+  "https://forbestravelguide.com/hotels/masai-mara-kenya/the-ritz-carlton-masai-mara-safari-camp",
+  "https://www.aspiretravelclub.co.uk/news/the-ritz-carlton-to-open-its-first-luxury-safari-camp",
+  "https://malaymail.com/news/life/2025/08/13/tourism-or-conservation-ritz-carltons-new-us3500-a-night-safari-lodge-sparks-maasai-mara-lawsuit-over-wildebeest-migration/187388",
+  "https://www.the-star.co.ke/news/2026-02-26-case-against-ritz-cartlton-camp-dismissed",
+  "https://nation.africa/kenya/news/rights-coalitions-sue-to-stop-high-end-maasai-mara-camp-expansion-5515796",
+  "https://www.afar.com/hotels/angama-amboseli-kenya-review",
+  "https://www.tourismupdate.com/article/angama-amboseli-opens-in-kenyas-kimana-sanctuary",
+  "https://www.luxurytravelmag.com.au/news/kitirua-plains-lodge-ak-sanctuary-amboseli-2026/",
+  "https://www.tourismupdate.com/article/welcome-to-kitirua-plains-lodge-an-ak-sanctuary",
+  "https://www.euronews.com/travel/2026/08/07/former-south-african-hunting-reserve-reopens-as-luxury-safari-retreat",
+  "https://www.safari.com/nweti-camp",
+  "https://www.discoverafrica.com/blog/white-lions-of-timbavati-new-cub-born",
+  "https://www.luxurytraveladvisor.com/hotels/after-a-renovation-belmond-savute-elephant-lodge-reopens-botswana",
+  "https://pdfs.belmond.com/saf/SAF-Grand-Tour-Bots-2026.pdf",
+  "https://www.safari.co.za/Botswana_Safari_Guide-travel/botswana-safari-guide-savuti.html",
+  "https://www.andbeyond.com/our-lodges/africa/south-africa/kwazulu-natal/andbeyond-phinda-private-game-reserve/andbeyond-phinda-mountain-lodge/",
+  "https://www.hospitalitynet.org/announcement/41003547/andbeyond-phinda-mountain-lodge.html",
+  "https://www.andbeyond.com/experiences/africa/south-africa/kwazulu-natal/phinda-private-game-reserve/turtle-nesting-adventure/",
+  "https://thepointsguy.com/reviews/the-silo-cape-town",
+  "https://www.audleytravel.com/south-africa/accommodation/the-silo",
+  "https://www.go2africa.com/accommodation/victoria-and-alfred-hotel",
+  "https://yellowzebrasafaris.com/great-migration/the-serengeti-great-migration-part-4-return-to-the-short-grass-plains/",
+  "https://travel.africageographic.com/destinations/zimbabwe/victoria-falls/when-to-visit-victoria-falls",
+  "https://www.tourismupdate.com/article/kenya-airways-launches-direct-flights-to-vic-falls",
+  "https://www.directflights.com/VFA-NBO"
+ ]
+}

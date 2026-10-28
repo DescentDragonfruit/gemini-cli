@@ -1,0 +1,280 @@
+[
+  {
+    "key": "group_ct_content_system",
+    "title": "Content system",
+    "fields": [
+      {
+        "key": "field_ct_content_category",
+        "label": "Content category",
+        "name": "content_category",
+        "aria-label": "",
+        "type": "select",
+        "instructions": "Which job this piece does in the library.",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "50",
+          "class": "",
+          "id": ""
+        },
+        "choices": {
+          "Commercial": "Commercial",
+          "Decision-support": "Decision-support",
+          "Informational": "Informational",
+          "Specialist intel": "Specialist intel",
+          "Authority": "Authority"
+        },
+        "default_value": "",
+        "return_format": "value",
+        "multiple": 0,
+        "allow_null": 1,
+        "allow_in_bindings": 0,
+        "ui": 0,
+        "ajax": 0,
+        "placeholder": "",
+        "create_options": 0,
+        "save_options": 0
+      },
+      {
+        "key": "field_ct_health",
+        "label": "Health",
+        "name": "health",
+        "aria-label": "",
+        "type": "select",
+        "instructions": "Set by the editorial desk / worker on each review pass.",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "50",
+          "class": "",
+          "id": ""
+        },
+        "choices": {
+          "ok": "ok",
+          "decaying": "decaying",
+          "stale": "stale",
+          "thin": "thin",
+          "duplicate": "duplicate"
+        },
+        "default_value": "ok",
+        "return_format": "value",
+        "multiple": 0,
+        "allow_null": 1,
+        "allow_in_bindings": 0,
+        "ui": 0,
+        "ajax": 0,
+        "placeholder": "",
+        "create_options": 0,
+        "save_options": 0
+      },
+      {
+        "key": "field_ct_content_goal",
+        "label": "Content goal",
+        "name": "content_goal",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "One line: what this piece should make a reader do or decide.",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "Get a couple to book Caruso through Coco Tran Travel",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_primary_keyword",
+        "label": "Primary keyword",
+        "name": "primary_keyword",
+        "aria-label": "",
+        "type": "text",
+        "instructions": "One phrase. Rank Math reads it as the focus keyword (optional filter, see INSTALL.md).",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "50",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "maxlength": "",
+        "allow_in_bindings": 0,
+        "placeholder": "caruso ravello review",
+        "prepend": "",
+        "append": ""
+      },
+      {
+        "key": "field_ct_secondary_keywords",
+        "label": "Secondary keywords",
+        "name": "secondary_keywords",
+        "aria-label": "",
+        "type": "textarea",
+        "instructions": "One per line.",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "allow_in_bindings": 0,
+        "maxlength": "",
+        "rows": 3,
+        "placeholder": "",
+        "new_lines": ""
+      },
+      {
+        "key": "field_ct_ai_questions",
+        "label": "AI questions this answers",
+        "name": "ai_questions",
+        "aria-label": "",
+        "type": "textarea",
+        "instructions": "One question per line — the questions in 05-editorial-system/ai-faq-question-bank.md this piece should be cited for.",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "",
+          "class": "",
+          "id": ""
+        },
+        "default_value": "",
+        "allow_in_bindings": 0,
+        "maxlength": "",
+        "rows": 4,
+        "placeholder": "",
+        "new_lines": ""
+      },
+      {
+        "key": "field_ct_last_fact_check",
+        "label": "Last fact check",
+        "name": "last_fact_check",
+        "aria-label": "",
+        "type": "date_picker",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "50",
+          "class": "",
+          "id": ""
+        },
+        "display_format": "j M Y",
+        "return_format": "j M Y",
+        "first_day": 1,
+        "allow_in_bindings": 0
+      },
+      {
+        "key": "field_ct_social_kit_made",
+        "label": "Social kit made",
+        "name": "social_kit_made",
+        "aria-label": "",
+        "type": "true_false",
+        "instructions": "",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "50",
+          "class": "",
+          "id": ""
+        },
+        "message": "A social kit exists for this piece",
+        "default_value": 0,
+        "allow_in_bindings": 0,
+        "ui": 1,
+        "ui_on_text": "",
+        "ui_off_text": ""
+      },
+      {
+        "key": "field_ct_hub",
+        "label": "Destination hub",
+        "name": "hub",
+        "aria-label": "",
+        "type": "post_object",
+        "instructions": "The /destinations/[place]/ hub page this piece rolls up into.",
+        "required": 0,
+        "conditional_logic": 0,
+        "wrapper": {
+          "width": "",
+          "class": "",
+          "id": ""
+        },
+        "post_type": [
+          "page"
+        ],
+        "post_status": [
+          "publish",
+          "draft",
+          "private"
+        ],
+        "taxonomy": [],
+        "return_format": "id",
+        "multiple": 0,
+        "allow_null": 1,
+        "allow_in_bindings": 0,
+        "bidirectional": 0,
+        "ui": 1,
+        "bidirectional_target": []
+      }
+    ],
+    "location": [
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "property"
+        }
+      ],
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "guide"
+        }
+      ],
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "brief"
+        }
+      ],
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "dispatch"
+        }
+      ],
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "shortlist"
+        }
+      ],
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "post"
+        }
+      ]
+    ],
+    "menu_order": 10,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Library metadata that lives in WordPress, not only in the editorial desk. Written by the worker, readable over REST. See 05-editorial-system/pillar-structure-proposals.md §2.",
+    "show_in_rest": 1
+  }
+]

@@ -1,0 +1,229 @@
+status url redirect_target
+200 https://cocotran.com/travel-to-santorini-greece-santorini-travel-guide/ 
+200 https://cocotran.com/sequoia-national-park-tunnel-log/ 
+200 https://cocotran.com/where-to-stay-in-mexico-city/ 
+301 https://cocotran.com/belmond-hotel-caruso-review/ https://cocotran.com/property/caruso-ravello/
+200 https://cocotran.com/non-touristy-things-to-do-in-new-york-city/ 
+200 https://cocotran.com/best-hikes-in-sequoia-national-park/ 
+200 https://cocotran.com/frida-kahlo-house-museum-casa-azul/ 
+200 https://cocotran.com/eze-france/ 
+200 https://cocotran.com/things-to-do-in-nice-france/ 
+200 https://cocotran.com/visiting-oishi-park-japan/ 
+200 https://cocotran.com/cenote-dos-ojos/ 
+200 https://cocotran.com/coba-ruins-tulum-mexico/ 
+301 https://cocotran.com/cala-deia/ https://cocotran.com/guide/deia-tramuntana-guide/
+301 https://cocotran.com/things-to-do-in-hanoi/ https://cocotran.com/guide/things-to-do-in-hanoi/
+200 https://cocotran.com/tulum-ruins-mexico/ 
+200 https://cocotran.com/best-place-to-see-mount-fuji-views/ 
+200 https://cocotran.com/mexico-city-5-day-itinerary/ 
+200 https://cocotran.com/mexico-city-travel-guide-things-to-do-in-mexico-city/ 
+200 https://cocotran.com/barcelona-restaurants-with-michelin-stars/ 
+301 https://cocotran.com/renting-a-car-in-mallorca/ https://cocotran.com/guide/mallorca-guide/
+301 https://cocotran.com/how-to-visit-halong-bay/ https://cocotran.com/guide/halong-bay-lan-ha-bay/
+301 https://cocotran.com/grutas-tolantongo-hot-springs-mexico/ https://cocotran.com/dispatch/grutas-tolantongo/
+301 https://cocotran.com/best-cafes-hanoi/ https://cocotran.com/shortlist/best-cafes-hanoi/
+200 https://cocotran.com/check-suica-card-balance/ 
+301 https://cocotran.com/villa-del-balbianello-lake-como/ https://cocotran.com/guide/lake-como-guide/
+301 https://cocotran.com/parque-quetzalcoatl-mexico-city/ https://cocotran.com/dispatch/parque-quetzalcoatl/
+200 https://cocotran.com/osaka-street-food-guide/ 
+301 https://cocotran.com/3-day-mexico-city-itinerary/ https://cocotran.com/brief/three-days-in-mexico-city/
+301 https://cocotran.com/hot-air-balloon-teotihuacan/ https://cocotran.com/dispatch/teotihuacan-hot-air-balloon/
+200 https://cocotran.com/san-sebastian-restaurant-michelin/ 
+200 https://cocotran.com/point-reyes-trails/ 
+200 https://cocotran.com/kimpton-sawyer-hotel-sacramento/ 
+301 https://cocotran.com/best-restaurants-in-mexico-city/ https://cocotran.com/guide/best-restaurants-mexico-city/
+200 https://cocotran.com/point-reyes-day-trip/ 
+301 https://cocotran.com/boutique-hotels-cdmx/ https://cocotran.com/guide/mexico-city-hotels/
+301 https://cocotran.com/santanyi-market-in-mallorca-spain/ https://cocotran.com/guide/mallorca-guide/
+301 https://cocotran.com/where-to-stay-in-takayama/ https://cocotran.com/guide/takayama-guide/
+301 https://cocotran.com/where-to-stay-in-lake-como/ https://cocotran.com/guide/lake-como-guide/
+301 https://cocotran.com/deia-mallorca-spain/ https://cocotran.com/guide/deia-tramuntana-guide/
+301 https://cocotran.com/guide-to-visiting-old-town-takayama/ https://cocotran.com/guide/takayama-guide/
+301 https://cocotran.com/visiting-hot-springs-tuscany-saturnia-italy/ https://cocotran.com/guide/tuscany-guide/
+301 https://cocotran.com/fornalutx-mallorca-travel-guide/ https://cocotran.com/guide/deia-tramuntana-guide/
+200 https://cocotran.com/tokyo-to-mount-fuji-day-trip-guide/ 
+301 https://cocotran.com/best-kyoto-coffee-shops/ https://cocotran.com/guide/kyoto-guide/
+200 https://cocotran.com/le-bora-bora-by-pearl-resorts-hotel-review/ 
+301 https://cocotran.com/hida-folk-village-takayama/ https://cocotran.com/brief/two-days-in-takayama/
+200 https://cocotran.com/ryokans-near-mt-fuji/ 
+301 https://cocotran.com/luggage-delivery-in-japan/ https://cocotran.com/guide/japan-primer/
+301 https://cocotran.com/luggage-delivery-in-japan-2/ https://cocotran.com/guide/japan-primer/
+200 https://cocotran.com/lake-tahoe-hiking-trails/ 
+301 https://cocotran.com/lake-como-versus-lake-garda/ https://cocotran.com/brief/lake-como-the-dossier/
+200 https://cocotran.com/visiting-bodega-bay-best-things-to-do/ 
+200 https://cocotran.com/lake-tahoe-itinerary/ 
+200 https://cocotran.com/peyto-lake/ 
+301 https://cocotran.com/the-ultimate-3-day-tokyo-itinerary/ https://cocotran.com/brief/four-days-in-tokyo/
+301 https://cocotran.com/kyoto-restaurants/ https://cocotran.com/guide/kyoto-guide/
+301 https://cocotran.com/how-many-days-in-tokyo-tokyo-itinerary-guide/ https://cocotran.com/brief/four-days-in-tokyo/
+301 https://cocotran.com/5-day-tokyo-itinerary-the-ultimate-tokyo-first-timers-travel-guide/ https://cocotran.com/brief/four-days-in-tokyo/
+200 https://cocotran.com/bora-bora-vs-maldives/ 
+200 https://cocotran.com/oaxaca-dia-de-los-muertos/ 
+301 https://cocotran.com/how-to-get-cash-in-japan/ https://cocotran.com/guide/japan-primer/
+301 https://cocotran.com/kyoto-2-day-itinerary-kyoto-3-day-itinerary/ https://cocotran.com/brief/three-days-in-kyoto/
+301 https://cocotran.com/kanazawa-2-day-itinerary/ https://cocotran.com/brief/two-days-in-kanazawa/
+200 https://cocotran.com/new-york-city-itinerary/ 
+301 https://cocotran.com/best-area-to-stay-in-tokyo/ https://cocotran.com/guide/tokyo-guide/
+301 https://cocotran.com/best-place-to-stay-in-santorini/ https://cocotran.com/guide/santorini-guide/
+301 https://cocotran.com/small-towns-in-japan/ https://cocotran.com/guide/japan-guide/
+200 https://cocotran.com/where-to-stay-in-san-sebastian/ 
+200 https://cocotran.com/san-sebastian-tapas-best-pintxos-in-san-sebastian/ 
+200 https://cocotran.com/where-to-stay-in-nice-france/ 
+200 https://cocotran.com/day-trip-from-nice-to-monaco/ 
+200 https://cocotran.com/salinas-de-anana/ 
+301 https://cocotran.com/regions-of-italy/ https://cocotran.com/guide/regions-of-italy/
+301 https://cocotran.com/lake-como-1-day-itinerary/ https://cocotran.com/guide/lake-como-guide/
+200 https://cocotran.com/vitoria-gasteiz/ 
+301 https://cocotran.com/northern-italy-vs-southern-italy/ https://cocotran.com/guide/regions-of-italy/
+301 https://cocotran.com/the-most-scenic-drives-in-tuscany/ https://cocotran.com/guide/tuscany-guide/
+301 https://cocotran.com/best-places-to-visit-in-northern-italy/ https://cocotran.com/guide/regions-of-italy/
+301 https://cocotran.com/biblioteca-vasconcelos-cdmx/ https://cocotran.com/dispatch/biblioteca-vasconcelos-cdmx/
+301 https://cocotran.com/greek-island-of-zakynthos/ https://cocotran.com/guide/santorini-guide/
+500 https://cocotran.com/calo-des-moro-mallorca/ 
+301 https://cocotran.com/rome-in-a-day/ https://cocotran.com/guide/rome-guide/
+301 https://cocotran.com/mexico-city-art-galleries-museums/ https://cocotran.com/guide/mexico-city-museums-galleries/
+500 https://cocotran.com/can-costa-valldemossa/ 
+301 https://cocotran.com/riomaggiore-cinque-terre-italy/ https://cocotran.com/guide/cinque-terre-guide/
+301 https://cocotran.com/vernazza-cinque-terre/ https://cocotran.com/guide/cinque-terre-guide/
+200 https://cocotran.com/best-time-to-visit-sequoia-national-park/ 
+301 https://cocotran.com/paloma-beach-in-saint-jean-cap-ferrat-france/ https://cocotran.com/guide/villefranche-cap-ferrat-guide/
+301 https://cocotran.com/villefranche-sur-mer-cote-dazur/ https://cocotran.com/guide/villefranche-cap-ferrat-guide/
+301 https://cocotran.com/cala-llombards/ https://cocotran.com/shortlist/mallorca-calos-beaches/
+200 https://cocotran.com/paradise-ranch-mirror-house-sequoia-national-park-glamping/ 
+301 https://cocotran.com/port-de-soller-port-of-soller/ https://cocotran.com/guide/deia-tramuntana-guide/
+301 https://cocotran.com/cas-patro-march/ https://cocotran.com/dispatch/cas-patro-march-deia/
+301 https://cocotran.com/cala-salmonia/ https://cocotran.com/shortlist/mallorca-calos-beaches/
+301 https://cocotran.com/rosetta-mexico-city/ https://cocotran.com/dispatch/rosetta-mexico-city/
+500 https://cocotran.com/da-nang-vietnam-travel-guide/ 
+301 https://cocotran.com/deia-la-residencia/ https://cocotran.com/property/la-residencia-deia/
+301 https://cocotran.com/best-places-to-visit-in-mallorca-spain/ https://cocotran.com/guide/mallorca-guide/
+301 https://cocotran.com/mallorca-travel-guide/ https://cocotran.com/guide/mallorca-guide/
+301 https://cocotran.com/menton-france/ https://cocotran.com/guide/menton-france/
+301 https://cocotran.com/hanoi-vietnam-travel-guide/ https://cocotran.com/brief/hanoi-the-dossier/
+301 https://cocotran.com/lan-ha-bay-the-ultimate-insiders-guide/ https://cocotran.com/guide/halong-bay-lan-ha-bay/
+301 https://cocotran.com/travel-tips-for-vietnam/ https://cocotran.com/brief/vietnam-the-dossier/
+200 https://cocotran.com/ninh-van-bay-an-lam-retreat-review-vietnam/ 
+301 https://cocotran.com/what-to-do-in-ha-long-bay/ https://cocotran.com/guide/halong-bay-lan-ha-bay/
+200 https://cocotran.com/sapa-vietnam-travel-guide/ 
+301 https://cocotran.com/hanoi-where-to-stay-best-area-to-stay-in-hanoi/ https://cocotran.com/brief/hanoi-the-dossier/
+200 https://cocotran.com/ana-mandara-nha-trang-cam-ranh-review/ 
+301 https://cocotran.com/best-vietnam-travel-itinerary-guide/ https://cocotran.com/brief/two-weeks-in-vietnam/
+200 https://cocotran.com/best-ryokan-in-hakone-with-private-onsen/ 
+200 https://cocotran.com/aman-hotels-booking-with-a-travel-advisor/ 
+301 https://cocotran.com/hoi-an-ancient-town-travel-guide/ https://cocotran.com/guide/hoi-an-ancient-town/
+301 https://cocotran.com/tam-vi-hanoi-restaurant-review/ https://cocotran.com/dispatch/tam-vi-hanoi/
+301 https://cocotran.com/hanoi-best-restaurants/ https://cocotran.com/shortlist/best-restaurants-hanoi/
+301 https://cocotran.com/best-restaurants-in-hoi-an-guide/ https://cocotran.com/shortlist/best-restaurants-hoi-an/
+200 https://cocotran.com/day-trips-from-mexico-city/ 
+200 https://cocotran.com/vitoria-gasteiz-attractions/ 
+301 https://cocotran.com/ultimate-ninh-binh-travel-guide-hanoi-to-ninh-binh/ https://cocotran.com/guide/ninh-binh-guide/
+200 https://cocotran.com/day-tours-from-bilbao/ 
+301 https://cocotran.com/visiting-cat-ba-vietnam/ https://cocotran.com/guide/halong-bay-lan-ha-bay/
+200 https://cocotran.com/san-sebastian-itinerary/ 
+301 https://cocotran.com/visiting-golden-hands-bridge-in-ba-na-hills-what-you-need-to-know-is-it-worth-it/ https://cocotran.com/dispatch/golden-bridge-ba-na-hills/
+301 https://cocotran.com/amalfi-coast-beach-clubs/ https://cocotran.com/guide/amalfi-coast-guide/
+301 https://cocotran.com/best-amalfi-coast-hotels-italy/ https://cocotran.com/guide/amalfi-coast-guide/
+200 https://cocotran.com/la-to-sequoia-national-park/ 
+200 https://cocotran.com/moro-rock-sequoia-national-park/ 
+301 https://cocotran.com/unique-tokyo-streets-you-need-to-see/ https://cocotran.com/guide/tokyo-guide/
+200 https://cocotran.com/entrance-to-sequoia-national-park/ 
+500 https://cocotran.com/hanoi-old-quarter/ 
+301 https://cocotran.com/coolest-hotels-in-mexico-city/ https://cocotran.com/guide/mexico-city-hotels/
+301 https://cocotran.com/manarola-cinque-terre/ https://cocotran.com/guide/cinque-terre-guide/
+301 https://cocotran.com/towns-of-cinque-terre/ https://cocotran.com/guide/cinque-terre-guide/
+301 https://cocotran.com/tam-coc-vietnam-travel-guide/ https://cocotran.com/guide/ninh-binh-guide/
+200 https://cocotran.com/best-esim-for-europe/ 
+301 https://cocotran.com/4-star-hotels-in-mallorca-spain/ https://cocotran.com/guide/mallorca-guide/
+200 https://cocotran.com/2-day-hakone-itinerary/ 
+200 https://cocotran.com/where-is-sequoia-national-park/ 
+301 https://cocotran.com/places-to-see-in-vietnam/ https://cocotran.com/brief/vietnam-the-dossier/
+301 https://cocotran.com/best-time-to-visit-vietnam/ https://cocotran.com/brief/vietnam-the-dossier/
+200 https://cocotran.com/best-time-to-see-sequoia-national-park/ 
+200 https://cocotran.com/yosemite-to-sequoia-national-park/ 
+200 https://cocotran.com/things-to-do-in-sequoia-national-park/ 
+200 https://cocotran.com/best-tours-to-sequoia-national/ 
+200 https://cocotran.com/hotels-in-lake-tahoe-with-lake-view/ 
+301 https://cocotran.com/valldemossa-restaurants/ https://cocotran.com/guide/valldemossa-guide/
+500 https://cocotran.com/sushi-tokyo-ten/ 
+200 https://cocotran.com/1-day-in-bilbao/ 
+301 https://cocotran.com/10-day-japan-itinerary/ https://cocotran.com/brief/two-weeks-in-japan/
+200 https://cocotran.com/fuji-day-trip-from-tokyo/ 
+301 https://cocotran.com/hotels-hotels-in-deia-mallorca/ https://cocotran.com/guide/deia-tramuntana-guide/
+301 https://cocotran.com/hotels-in-port-de-soller-mallorca-spain/ https://cocotran.com/guide/deia-tramuntana-guide/
+301 https://cocotran.com/best-beaches-on-mallorca-spain/ https://cocotran.com/guide/mallorca-guide/
+301 https://cocotran.com/things-to-do-in-valldemossa-mallorca/ https://cocotran.com/guide/valldemossa-guide/
+200 https://cocotran.com/locorotondo-puglia-italy/ 
+301 https://cocotran.com/things-to-do-in-mallorca-spain/ https://cocotran.com/guide/mallorca-guide/
+301 https://cocotran.com/deia-restaurants/ https://cocotran.com/guide/deia-tramuntana-guide/
+301 https://cocotran.com/best-place-to-stay-in-mallorca-spain/ https://cocotran.com/guide/mallorca-guide/
+301 https://cocotran.com/cala-figuera-mallorca/ https://cocotran.com/shortlist/mallorca-calos-beaches/
+200 https://cocotran.com/nice-france-french-riviera/ 
+200 https://cocotran.com/things-to-do-in-san-sebastian/ 
+200 https://cocotran.com/nice-public-transportation/ 
+301 https://cocotran.com/1-day-in-palma-de-mallorca-one-day-in-mallorca/ https://cocotran.com/brief/one-day-in-palma/
+301 https://cocotran.com/guide-to-visiting-valldemossa-mallorca-spain/ https://cocotran.com/guide/valldemossa-guide/
+200 https://cocotran.com/saint-paul-de-vence-from-nice/ 
+200 https://cocotran.com/things-to-do-in-antibes-france/ 
+200 https://cocotran.com/best-time-to-visit-nice-france/ 
+200 https://cocotran.com/2-days-in-bilbao/ 
+200 https://cocotran.com/izamal-yucatan-mexico-yellow-city/ 
+200 https://cocotran.com/best-area-to-stay-in-tulum/ 
+200 https://cocotran.com/tulum-all-inclusive-adults-only-resorts/ 
+301 https://cocotran.com/arashiyama-itinerary-kyoto/ https://cocotran.com/brief/three-days-in-kyoto/
+200 https://cocotran.com/luxury-hotels-in-tulum/ 
+200 https://cocotran.com/best-eco-resort-in-the-world/ 
+200 https://cocotran.com/tulum-travel-guide/ 
+200 https://cocotran.com/day-trips-from-nice/ 
+301 https://cocotran.com/2-weeks-japan-itinerary-first-time-in-japan/ https://cocotran.com/brief/two-weeks-in-japan/
+200 https://cocotran.com/nara-1-day-itinerary/ 
+301 https://cocotran.com/best-cinque-terre-town/ https://cocotran.com/guide/cinque-terre-guide/
+200 https://cocotran.com/best-time-to-visit-antelope-canyon/ 
+200 https://cocotran.com/tulum-hotels/ 
+200 https://cocotran.com/restaurants-in-tulum/ 
+200 https://cocotran.com/beaches-in-portofino-italy/ 
+301 https://cocotran.com/milan-to-bellagio-lake-como/ https://cocotran.com/guide/lake-como-guide/
+200 https://cocotran.com/teamlab-planets-review/ 
+200 https://cocotran.com/best-places-to-visit-in-arizona/ 
+200 https://cocotran.com/tulum-cenotes/ 
+200 https://cocotran.com/things-to-do-in-hakone-japan/ 
+200 https://cocotran.com/suica-vs-pasmo/ 
+200 https://cocotran.com/kobe-day-trip-from-osaka/ 
+200 https://cocotran.com/how-to-get-to-chureito-pagoda/ 
+200 https://cocotran.com/must-haves-when-traveling/ 
+200 https://cocotran.com/visiting-kamikochi-japan/ 
+200 https://cocotran.com/where-to-stay-in-fukuoka/ 
+200 https://cocotran.com/parking-at-lake-louise/ 
+200 https://cocotran.com/3-days-osaka-itinerary/ 
+301 https://cocotran.com/golden-temple-kyoto-kinkakuji/ https://cocotran.com/guide/kyoto-guide/
+200 https://cocotran.com/barcelona-boat-tours/ 
+301 https://cocotran.com/where-to-stay-in-kyoto/ https://cocotran.com/guide/kyoto-guide/
+200 https://cocotran.com/sand-harbor-lake-tahoe/ 
+301 https://cocotran.com/top-things-to-do-in-lake-como/ https://cocotran.com/guide/lake-como-guide/
+200 https://cocotran.com/one-day-milan-itinerary/ 
+301 https://cocotran.com/most-instagrammable-places-in-tuscany/ https://cocotran.com/guide/tuscany-guide/
+200 https://cocotran.com/all-inclusive-resorts-in-bora-bora/ 
+301 https://cocotran.com/best-towns-to-stay-in-the-dolomites/ https://cocotran.com/guide/dolomites-guide/
+200 https://cocotran.com/a-guide-to-what-to-do-in-bora-bora/ 
+301 https://cocotran.com/things-to-do-in-shibuya/ https://cocotran.com/dispatch/postcard-shibuya-crossing/
+200 https://cocotran.com/best-overwater-bungalows-bora-bora/ 
+301 https://cocotran.com/takayama-itinerary-and-takayama-travel-guide/ https://cocotran.com/brief/two-days-in-takayama/
+200 https://cocotran.com/the-ultimate-guide-to-begur-spain-costa-brava/ 
+301 https://cocotran.com/2-weeks-japan-itinerary-a-slow-travel-guide/ https://cocotran.com/brief/two-weeks-in-japan/
+301 https://cocotran.com/ultimate-guide-to-restaurants-in-takayama/ https://cocotran.com/guide/takayama-guide/
+200 https://cocotran.com/2-day-osaka-itinerary/ 
+200 https://cocotran.com/suica-iphone-how-to-add-suica-card-to-your-apple-wallet-iphone/ 
+301 https://cocotran.com/best-place-to-go-in-greece-for-couples/ https://cocotran.com/guide/santorini-guide/
+200 https://cocotran.com/kawagoe-day-trip/ 
+301 https://cocotran.com/santanyi-mallorca-spain/ https://cocotran.com/guide/mallorca-guide/
+301 https://cocotran.com/best-beaches-in-palma-de-mallorca/ https://cocotran.com/shortlist/mallorca-calos-beaches/
+301 https://cocotran.com/best-hotels-kyoto/ https://cocotran.com/guide/kyoto-guide/
+301 https://cocotran.com/fushimi-inari-taisha/ https://cocotran.com/dispatch/postcard-fushimi-inari/
+301 https://cocotran.com/best-things-to-do-in-varenna-como-lake/ https://cocotran.com/guide/lake-como-guide/
+301 https://cocotran.com/the-ultimate-3-week-japan-itinerary/ https://cocotran.com/brief/two-weeks-in-japan/
+301 https://cocotran.com/a-guide-to-visiting-cala-santayi-mallorca-spain/ https://cocotran.com/shortlist/mallorca-calos-beaches/
+301 https://cocotran.com/mallorca-itinerary/ https://cocotran.com/brief/one-week-in-mallorca/
+301 https://cocotran.com/latte-art-tokyo/ https://cocotran.com/guide/tokyo-guide/
+301 https://cocotran.com/hotels-in-tokyo-with-onsen/ https://cocotran.com/guide/tokyo-guide/
+301 https://cocotran.com/things-to-do-asakusa-tokyo/ https://cocotran.com/brief/four-days-in-tokyo/
+301 https://cocotran.com/things-to-do-in-rome/ https://cocotran.com/guide/rome-guide/
+200 https://cocotran.com/where-to-stay-in-barcelona-first-time-visitor/ 
