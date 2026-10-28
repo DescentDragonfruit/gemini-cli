@@ -413,6 +413,22 @@ Agency Studio (https://claude.ai/artifact/7VMcx1iKdmvdtq6KT6cgix) and the desk d
 - When the Agency trip later changes (dates, cities, hotels), update the `source: "agency"` Passport entry it created. Never edit Passport trips Coco entered herself, except to add `agencyId`.
 - Never copy booking references, confirmation numbers, traveller or guest names, phone numbers or prices into Passport.
 
+**Passport trip → Agency Studio trip (automatic; Coco's no-itinerary path)**
+- With no PDF, link or itinerary, Coco adds the trip in the Passport only. Every run, give these Passport trips an Agency Studio famtrip:
+  - trips that are upcoming or in progress;
+  - trips that ended within the last 60 days;
+  - any Passport trip created on or after 28 Oct 2026.
+- Skip a trip that is already linked (`agencyId`, a famtrip with its `passportId`, or a match in `settings/agency_link`). Skip "Earlier trips" and undated placeholders.
+- Older backlog trips stay opt-in: the desk's "Send to Agency Studio" (`agency_promote`) or Agency Studio's own Passport list.
+- Build the famtrip exactly as `agency_promote` does, same shape as Agency Studio's "Write from this trip":
+  - for upcoming trips, `past: false`, `purpose: "Upcoming trip — content research and property visits"`, and the first day dated with the start date;
+  - for past trips, `past: true`, `purpose: "Past trip — content research"`.
+- Then do the rest:
+  - merge `agencyId` into the Passport trip (with `if_version`);
+  - mirror the famtrip into desk `trips/<id>` and add the link;
+  - write its `tripplans/<id>` from the desk's pieces, or from the desk's `plan-<travel id>` job when one exists, keeping its `gm_questions`, `shots`, `reels` and `youtube`.
+- Done 28 Oct 2026 for China December Trip (`jawjz2htcdg`) and Zambia & Zimbabwe (`aygtjnfr2nb`).
+
 **Agency Studio → desk (mirror)**
 - Follow §6a. Mirror every famtrip that has days (Passport-derived ones too, from `fieldrecords/<id>`) into `trips/<id>`. Mirror every review into `inspections/<id>`. Skip the empty "Untitled trip" placeholder.
 - Scrub all mirrored text before writing:
