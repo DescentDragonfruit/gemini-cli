@@ -401,6 +401,18 @@ Agency Studio (https://claude.ai/artifact/7VMcx1iKdmvdtq6KT6cgix) and the desk d
 - A piece's `trip_id` can be either id. The desk treats both as the same trip, so never rewrite `trip_id`s just to tidy up.
 - If a famtrip's dates span more than 45 days and its Passport copy says otherwise, it's a typo in Agency Studio. Report it once; don't edit Agency's data.
 
+**Agency trip → Passport entry (automatic; Coco doesn't type it twice)**
+- Coco may add a trip only in Agency Studio, from a PDF, a pasted itinerary, a link or Notion. Every run (Agency Studio fires one about 90 seconds after a change, at most every 30 minutes), check each famtrip that has dates and days.
+- It needs a Passport entry when none is linked: no `passportId`, no Passport trip with `agencyId` = its id, and no Passport trip with overlapping dates and a matching name or country. Create one in the Passport's database (https://claude.ai/artifact/TecDEdRmvTRrcU4vysqRJ2), collection `trips`, doc `a<agency id>`:
+  `{id: "a<agency id>", agencyId, name (short, no tour codes), start, end, source: "agency", createdAt, notionUrls: [], stops[{city, iso, lat, lng, verdict: "stay"}], hotels[{city, iso, kind: "stay", name, nights}]}`.
+  - Cities come from the day places, in order, deduplicated. Leave out "in transit" and "→ home".
+  - Hotels come from hotel items, with "— check-in…" stripped and nights taken from "(N nts)". Leave out placeholders such as "<city> hotel" or "assigned at check-in".
+  - Add the trip's inspected hotels as `kind: "inspected"` with their `rating`.
+- Then mirror it in two places: Agency Studio `passport/a<id>` as `{title, updated, data: <JSON string>}`, and desk `travel/pp-a<id>` (Travel history fields only). Add the link to `settings/agency_link`.
+- An existing Passport trip that matches only by dates and name gets `agencyId` merged in (with `if_version`). Never create a second entry for it.
+- When the Agency trip later changes (dates, cities, hotels), update the `source: "agency"` Passport entry it created. Never edit Passport trips Coco entered herself, except to add `agencyId`.
+- Never copy booking references, confirmation numbers, traveller or guest names, phone numbers or prices into Passport.
+
 **Agency Studio → desk (mirror)**
 - Follow §6a. Mirror every famtrip that has days (Passport-derived ones too, from `fieldrecords/<id>`) into `trips/<id>`. Mirror every review into `inspections/<id>`. Skip the empty "Untitled trip" placeholder.
 - Scrub all mirrored text before writing:
