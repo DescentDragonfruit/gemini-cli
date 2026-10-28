@@ -814,6 +814,7 @@ body.focus-on{overflow:hidden}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ev.article{background:#2E2617;color:#E3C58F}}
 :root[data-theme="dark"] .ev.article{background:#2E2617;color:#E3C58F}
 @media (max-width:700px){.calchip{padding:6px 9px;font-size:12px}.calfilters{gap:8px}}
+.aglink .aglist{display:grid;gap:6px;margin-top:8px}.aglink details summary{cursor:pointer;margin-top:8px}.aglinks a{font-size:13px}
 </style>
 
 <header class="topbar">
@@ -2830,7 +2831,7 @@ let trips=[], inspections=[];
 function daysTo(d){return Math.ceil((new Date(d+"T12:00:00").getTime()-Date.now())/864e5)}
 function renderTrips(){const el=$("#t-trips");if(!el)return;const td=today();
  const up=trips.filter(t=>t.startDate&&t.endDate>=td).sort((a,b)=>a.startDate.localeCompare(b.startDate)); const past=trips.filter(t=>t.endDate&&t.endDate<td).sort((a,b)=>b.endDate.localeCompare(a.endDate));
- const insFor=t=>inspections.filter(i=>i.fromTrip===t.id||(t.hotels||[]).some(h=>i.name&&h&&(i.name.toLowerCase().includes(h.toLowerCase().split(" ")[0])&&h.toLowerCase().includes(i.name.toLowerCase().split(" ")[0]))));
+ const insFor=t=>inspections.filter(i=>ppTripHas(t,i.fromTrip)||(t.hotels||[]).some(h=>i.name&&h&&(i.name.toLowerCase().includes(h.toLowerCase().split(" ")[0])&&h.toLowerCase().includes(i.name.toLowerCase().split(" ")[0]))));
  const hasPiece=n=>lib.some(r=>(r.title||"").toLowerCase().includes((n||"").toLowerCase().replace(/\s*[—–-].*$/,"").split(" ").slice(0,2).join(" ")));
  el.innerHTML=(up.map(t=>{const d=daysTo(t.startDate);return `<div style="margin:6px 0 10px"><b>${esc(t.name)}</b> <span class="pill ${d<=14?"warn":""}">${d<=0?"on now":"in "+d+" days"}</span><div class="note">${esc(t.startDate)} → ${esc(t.endDate)} · ${(t.hotels||[]).length} properties</div><div class="note" style="margin-top:4px">${(t.hotels||[]).slice(0,8).map(h=>esc(h)).join(" · ")}</div><div class="row" style="margin-top:6px"><button class="copy" data-prep="${esc(t.id)}">Prep list</button></div></div>`}).join("")+(past.slice(0,2).map(t=>`<div style="margin:6px 0 10px"><b>${esc(t.name)}</b> <span class="pill">ended ${esc(t.endDate)}</span><div class="note">${insFor(t).length} inspections on file</div>${insFor(t).map(i=>`<div class="row" style="margin-top:4px;gap:6px"><span style="font-size:13px">${esc(i.name)}${i.answers_count?` <span class="note">${i.answers_count} notes</span>`:""}</span>${hasPiece(i.name)?'<span class="pill ok">piece exists</span>':`<button class="copy" data-verdict="${esc(i.id)}">Write the Verdict</button>`}</div>`).join("")}</div>`).join("")))||`<div class="note">No trips synced yet — the worker mirrors Agency Studio's FAM trips and inspections.</div>`;
  el.querySelectorAll("[data-verdict]").forEach(b=>b.onclick=()=>{const i=inspections.find(x=>x.id===b.dataset.verdict);if(!i)return;$("#n-mode").value="new";syncMode();$("#n-format").value="verdict";$("#n-subject").value=i.name.replace(/\s*[—–-]\s*check-in.*$/i,"");$("#n-basis").value=`Visited ${i.visitStart||""}${i.visitEnd?"–"+i.visitEnd:""} · ${i.purpose||"site inspection"}`;$("#n-disclosure").value="Hosted stay";$("#n-notes").value=`SITE INSPECTION NOTES (Agency Studio, ${i.status||""}${i.rating?", rating "+i.rating:""}):\n${i.free||""}\n\n${i.answers_text||""}`;["n-subject","n-basis","n-notes"].forEach(k=>ls.set(k,$("#"+k).value));renderGoalChips();show("new");window.scrollTo({top:0,behavior:"smooth"})});
@@ -3416,7 +3417,7 @@ function ppSlots(j){if(Array.isArray(j.slots)&&j.slots.length)return j.slots.map
  if(j.format==="route"){const n=+(String(j.title||"").match(/(\d+)\s*(?:days|nights)/i)||[])[1]||4;s=["hero"].concat(Array.from({length:Math.min(n,10)},(_,i)=>"day "+(i+1)),["on the road"])}
  const want=+j.photos_target||0; if(want&&want<s.length)s=s.slice(0,want); return s}
 function ppTripsAll(){const out=[];const seen=new Set();
- trips.forEach(t=>{seen.add("pp-a"+t.id);seen.add("pp-"+t.id);out.push({key:"a:"+t.id,id:t.id,src:"agency",name:String(t.name||"Trip").trim(),start:t.startDate||"",end:t.endDate||"",status:t.status||ppStatus(t.startDate,t.endDate),places:t.places||ppPlaces(t),hotels:t.hotels||[],days:t.days||[],itin:t.itin||null,kind:"fam"})});
+ trips.forEach(t=>{seen.add("pp-a"+t.id);seen.add("pp-"+t.id);const tv=ppTravelOf(t);if(tv)seen.add(tv.id);out.push(agMerge({key:"a:"+t.id,id:t.id,src:"agency",name:String(t.name||"Trip").trim(),start:t.startDate||"",end:t.endDate||"",status:t.status||ppStatus(t.startDate,t.endDate),places:t.places||ppPlaces(t),hotels:t.hotels||[],days:t.days||[],itin:t.itin||null,kind:"fam",countries:t.countries||[]},tv))});
  travelCache.forEach(t=>{if(seen.has(t.id))return;out.push({key:"p:"+t.id,id:t.id,src:"passport",name:String(t.name||"Trip").trim(),start:t.start||"",end:t.end||"",status:t.status||ppStatus(t.start,t.end),places:t.places||[],hotels:(t.hotels||[]).map(h=>typeof h==="string"?h:h.name),days:[],itin:null,kind:t.kind||"personal"})});
  // Trips that live only on Coco's photo list (not in the Passport or Agency Studio), e.g. "Riviera Maya 2026".
  const own={};(typeof photoStash!=="undefined"?photoStash:[]).forEach(x=>{const o=x.own_trip;if(!o||!o.id)return;const m=String(o.month||x.month||"");const g=own[o.id]||(own[o.id]={key:"s:"+o.id,id:o.id,src:"stash",name:o.name||"Trip",start:/^\d{4}$/.test(m)?m+"-01-01":(/^\d{4}-\d{2}$/.test(m)?m+"-01":m),end:"",status:"past",places:[],hotels:[],days:[],itin:null,kind:"personal",undated:!/^\d{4}-\d{2}/.test(m)});(x.places||[]).forEach(pl=>{if(!g.places.includes(pl))g.places.push(pl)});(x.hotels||[]).forEach(h=>{if(!g.hotels.includes(h))g.hotels.push(h)})});
@@ -3424,7 +3425,7 @@ function ppTripsAll(){const out=[];const seen=new Set();
  return out}
 function ppStatus(s,e){const td=today();if(!s)return "past";if(s>td)return "upcoming";if(e&&e<td)return "past";return "live"}
 function ppPlaces(t){const set=[];(t.days||[]).forEach(d=>{const p=String(d.place||"").split(",")[0].trim();if(p&&!set.includes(p))set.push(p)});if(!set.length&&t.destination)String(t.destination).split(/[·,()]/).map(x=>x.trim()).filter(Boolean).forEach(p=>{if(!set.includes(p))set.push(p)});return set.slice(0,12)}
-function ppPieces(trip){return pipeJobs.filter(j=>j.trip_id===trip.id||j.trip_id===("pp-a"+trip.id)).filter(j=>ppPrio("job:"+j.id)!=="archive")}
+function ppPieces(trip){return pipeJobs.filter(j=>ppTripHas(trip,j.trip_id)).filter(j=>ppPrio("job:"+j.id)!=="archive")}
 function ppLive(j){if(["published","done","live"].includes(j.status)||!!j.live_url)return true;const d=j.draft_job&&typeof jobsCache!=="undefined"?jobsCache.find(x=>x.id===j.draft_job):null;return !!(d&&(["published","done","live"].includes(d.status)||d.live_url))}
 function ppPrio(k){return (boardPrio[k]&&boardPrio[k].priority)||""}
 function ppSocialDone(j){if(j.social_kit_made)return true;const r=lib.find(x=>(j.live_url&&x.url===j.live_url)||(j.seo_slug&&x.id===j.seo_slug)||(j.draft&&j.draft.seo&&x.id===j.draft.seo.slug));return !!(r&&r.social_kit_made)}
@@ -3491,13 +3492,13 @@ function ppRenderList(){const rows=[];ppTripsAll().forEach(t=>ppPieces(t).forEac
  $("#pp-list").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>ppDo("trip",b.dataset.open));ppWirePrio($("#pp-list"))}
 function ppRenderTrip(){const all=ppTripsAll();let t=all.find(x=>x.key===ppTrip);if(!t){const up=all.filter(x=>x.status!=="past").sort((a,b)=>(a.start||"").localeCompare(b.start||""));t=up[0]||all.find(x=>x.src==="agency")||all[0]}
  if(!t){$("#pp-trip").innerHTML='<div class="note">No trips yet.</div>';return}
- const r=research[t.id];const ps=ppPieces(t);const notes=tripNotes.filter(n=>n.trip_id===t.id);const ins=inspections.filter(i=>(i.fromTrip&&(i.fromTrip.id===t.id||i.fromTrip===t.id)));
+ const r=research[t.id];const ps=ppPieces(t);const notes=tripNotes.filter(n=>ppTripHas(t,n.trip_id));const ins=inspections.filter(i=>(i.fromTrip&&(ppTripHas(t,i.fromTrip.id)||ppTripHas(t,i.fromTrip))));
  const reflect=(t.days||[]).filter(d=>d.reflect&&Object.values(d.reflect).some(v=>String(v||"").trim())).length;
  const opts=all.slice().sort((a,b)=>(b.start||"").localeCompare(a.start||"")).map(x=>`<option value="${esc(x.key)}"${x.key===t.key?" selected":""}>${esc(x.name)} · ${esc(x.start||"")}</option>`).join("");
  const pieceRow=j=>{const st=ppStage(j,t);const c=culls[j.id]||{};const v=videos[j.id];const n=ppSlots(j).length;return `<div class="prow"><div><div class="meta"><span class="pstage">${esc(st)}</span> ${esc((FORMATS[j.format]||{}).label||j.format||"")} · ${n} photos${c.approved?` · ${(c.slots||[]).filter(s=>s.pick).length} picked`:""}${j.demand?" · "+esc(j.demand)+" demand":""}${j.publish_by?" · by "+esc(j.publish_by):""}</div><b>${esc(j.title||j.subject)}</b><div class="note">${esc(j.primary_keyword||"")}${j.why?" — "+esc(j.why):""}</div>${ppLive(j)?ppShareChips(j):""}</div><div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-end">${ppPrioSel("job:"+j.id)}<button class="copy" data-ppact="cull" data-trip="${esc(t.key)}" data-job="${esc(j.id)}">${c.approved?"re-cull":"cull"}</button>${c.approved&&!c.edited?`<button class="copy" data-ppact="edited" data-trip="${esc(t.key)}" data-job="${esc(j.id)}">edited ✓</button>`:""}${j.status==="planned"?`<button class="copy" data-ppact="write" data-trip="${esc(t.key)}" data-job="${esc(j.id)}">write it</button>`:`<span class="pill">${esc(j.status||"")}</span>`}<button class="copy" data-ppact="video" data-trip="${esc(t.key)}" data-job="${esc(j.id)}">${v?"clip list":"video"}</button></div></div>`};
  const shots=(r&&r.places||[]).map(p=>`<details><summary><b>${esc(p.place)}</b> <span class="note">${(p.shots||[]).length} shots · ${(p.pieces||[]).length} pieces</span></summary><ol class="shotl">${(p.shots||[]).map(s=>`<li><b>${esc(s.spot||"")}</b>: ${esc(s.what||"")} <span class="note">· ${esc(s.when||"")} · ${esc(s.medium||"")}${s.vertical?" · also 9:16":""}</span>${s.why?`<div class="note">${esc(s.why)}</div>`:""}${s.avoid?`<div class="note">Skip: ${esc(s.avoid)}</div>`:""}</li>`).join("")}</ol>${(p.gm_questions||[]).map(g=>`<div class="note" style="margin:6px 0 0"><b>Ask at ${esc(g.hotel)}:</b> ${(g.questions||[]).map(esc).join(" · ")}</div>`).join("")}${(p.pieces||[]).filter(pc=>!pipeJobs.some(j=>j.title===pc.title)).length?`<div class="note" style="margin:8px 0 0"><b>More pieces from the research:</b></div>${(p.pieces||[]).filter(pc=>!pipeJobs.some(j=>j.title===pc.title)).map(pc=>`<div class="row" style="gap:6px;margin:4px 0"><span style="font-size:13px">${esc(pc.title)} <span class="note">${esc(String(pc.demand||"").split(" ")[0])} demand${pc.publish_by?" · by "+esc(pc.publish_by):""}</span></span><button class="copy" data-addpc="${esc(p.place)}|${esc(pc.title)}">add</button></div>`).join("")}`:""}</details>`).join("");
  const itin=t.itin&&Array.isArray(t.itin.days)?t.itin.days:[];
- $("#pp-trip").innerHTML=`<div class="row" style="gap:10px;flex-wrap:wrap;margin-bottom:10px"><select id="pp-tsel" aria-label="Trip">${opts}</select>${ppPrioSel("trip:"+t.key)}<span class="note">${esc(t.start||"")} → ${esc(t.end||"")} · ${esc(t.status)} · ${t.src==="agency"?"Agency Studio":"Passport"}</span></div>
+ $("#pp-trip").innerHTML=`<div class="row" style="gap:10px;flex-wrap:wrap;margin-bottom:10px"><select id="pp-tsel" aria-label="Trip">${opts}</select>${ppPrioSel("trip:"+t.key)}<span class="note">${esc(t.start||"")} → ${esc(t.end||"")} · ${esc(t.status)} · ${agSrcLabel(t)}</span></div>${agTripLinks(t)}
 ${ppTripPathCard(t)}${ppTripAreaCard(t)}
  <div class="card"><div class="fsh" style="margin:0 0 6px"><span class="num">1</span><span class="fst">Pieces</span>${ps.some(j=>!(culls[j.id]&&culls[j.id].approved))&&t.status==="past"?`<button class="copy" data-ppact="culltrip" data-trip="${esc(t.key)}" data-job="" style="margin-left:auto">Cull the whole trip</button>`:""}<button class="copy" id="pp-find" style="margin-left:${ps.some(j=>!(culls[j.id]&&culls[j.id].approved))&&t.status==="past"?"8px":"auto"}">${ps.length?"refresh the pieces":"Find the pieces"}</button></div>${ps.length?ps.sort((a,b)=>ppScore(b,t).s-ppScore(a,t).s).map(pieceRow).join(""):`<p class="note" style="margin:0">No pieces yet. "Find the pieces" asks the worker for the keyword research: which pillars this trip can fill, by search demand and timing, and how many photos each one needs.</p>`}<div class="note" id="pp-find-note"></div></div>
  ${ppShotPlanCard(t)}<div class="card" style="margin-top:12px"><div class="fsh" style="margin:0 0 6px"><span class="num">2b</span><span class="fst">Shot ideas from research</span><span class="note" style="margin-left:auto">${r?"in your Agency Studio shot list too":""}</span></div>${shots||`<p class="note" style="margin:0">No shot research yet. It comes with "Find the pieces": the unique frames, best light, film or digital, and the clichés to skip.</p>`}${r&&r.video?`<details style="margin-top:8px"><summary><b>YouTube idea:</b> ${esc(r.video.title||"")}</summary><div class="note">${esc(r.video.hook||"")}</div><ol class="shotl">${(r.video.outline||[]).map(x=>`<li>${esc(typeof x==="string"?x:JSON.stringify(x))}</li>`).join("")}</ol></details>`:""}</div>
@@ -3506,7 +3507,7 @@ ${ppTripPathCard(t)}${ppTripAreaCard(t)}
  $("#pp-trip").querySelectorAll("[data-addpc]").forEach(b=>b.onclick=async()=>{if(!canWrite)return;const [pl,ti]=b.dataset.addpc.split("|");const P=(r.places||[]).find(x=>x.place===pl);const pc=P&&(P.pieces||[]).find(x=>x.title===ti);if(!pc)return;b.disabled=true;
   const id=("pp-"+String(t.id).slice(0,6)+"-"+ti.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-")).slice(0,80).replace(/-$/,"");
   try{await db.doc("jobs/"+id).set({id,pipeline:true,trip_id:t.id,type:"new",mode:pc.update?"update":"new",format:pc.format,title:pc.title,subject:pc.format==="verdict"?ti.replace(/^The Verdict:\s*/,"").replace(/,[^,]*$/,""):ti.replace(/^The [A-Z][a-z]+:\s*/,""),place:pl,primary_keyword:pc.keyword||"",demand:(String(pc.demand||"").match(/high|medium|low/i)||["low"])[0].toLowerCase(),why:pc.why||"",publish_by:pc.publish_by||"",photos_target:+pc.photos||0,needs:pc.needs||"",status:"planned",priority:0,trust:{},needs_coco:[],notes:"PIPELINE PIECE added from the trip research. Same rules as the other pipeline pieces: Coco's inspections, trip_notes and trips/"+t.id+" reflections for first-hand facts; photos from culls/"+id+".",idea:{q:pc.keyword||"",src:["trip-research"],questions:[],secondary:[]},createdAt:Date.now(),updatedAt:Date.now()})}catch(e){b.disabled=false}});
- $("#pp-find").onclick=()=>t.status==="past"&&t.src==="passport"?ppQueueIdeas([t],$("#pp-find")):ppResearch(t,$("#pp-find"));$("#pp-granola").onclick=()=>ppGranola(t);ppWireActs($("#pp-trip"));ppWirePrio($("#pp-trip"))}
+ $("#pp-find").onclick=()=>t.status==="past"&&(t.src==="passport"||t.alias)?ppQueueIdeas([t],$("#pp-find")):ppResearch(t,$("#pp-find"));$("#pp-granola").onclick=()=>ppGranola(t);ppWireActs($("#pp-trip"));ppWirePrio($("#pp-trip"));agWire($("#pp-trip"))}
 async function ppResearch(t,btn){if(!t)return;const note=$("#pp-find-note")||$("#pp-note");if(!canWrite){note.textContent="The store is read-only in this view.";return}
  if(btn)btn.disabled=true;const id="research-"+String(t.id).replace(/[^a-z0-9-]/gi,"").slice(0,60);
  try{await db.doc("jobs/"+id).set({id,type:"research",mode:"trip-research",status:"queued",title:"Find the pieces · "+t.name,subject:t.name,trip_id:t.id,trip:{key:t.key,src:t.src,name:t.name,start:t.start,end:t.end,status:t.status,places:t.places,hotels:t.hotels},priority:Math.max(0,...jobsCache.map(x=>x.priority||0))+1,worker_instructions:"SKILL.md 'Trip research'. Keyword research for each place: the pieces this trip can fill per pillar (house title, primary keyword, demand, publish_by, photo slots); shot research for upcoming trips; write research/<trip id> and one pipeline job per piece (status planned).",createdAt:Date.now(),updatedAt:Date.now()});
@@ -3514,7 +3515,7 @@ async function ppResearch(t,btn){if(!t)return;const note=$("#pp-find-note")||$("
 async function ppGranola(t){const note=$("#pp-gnote");if(!mcp){note.textContent="Connectors aren't available in this view.";return}if(!t.start){note.textContent="This trip has no dates.";return}
  const shift=(d,n)=>{const x=new Date(d+"T12:00:00");x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};note.textContent="Looking in Granola…";
  try{const r=await mcp.callTool("Granola","search_meetings",{from_date:shift(t.start,-1),to_date:shift(t.end||t.start,1),limit:60,max_participants:2},{cache:false});const ms=Array.isArray(r.payload?.meetings)?r.payload.meetings:[];
-  if(!ms.length){note.textContent="No Granola notes in those dates.";return}const have=new Set(tripNotes.filter(n=>n.trip_id===t.id).map(n=>n.meeting_id));const todo=ms.filter(m=>!have.has(m.id));let n=0;
+  if(!ms.length){note.textContent="No Granola notes in those dates.";return}const have=new Set(tripNotes.filter(n=>ppTripHas(t,n.trip_id)).map(n=>n.meeting_id));const todo=ms.filter(m=>!have.has(m.id));let n=0;
   for(let i=0;i<todo.length;i+=10){const g=await mcp.callTool("Granola","get_meetings",{meeting_ids:todo.slice(i,i+10).map(m=>m.id),max_participants:3},{cache:false});const arr=Array.isArray(g.payload?.meetings)?g.payload.meetings:[];
    for(const m of arr){const text=[m.summary,m.notes,m.private_notes,m.ai_summary,m.content].filter(Boolean).map(v=>typeof v==="string"?v:JSON.stringify(v)).join("\n\n").slice(0,12000);const mid=m.id||m.meeting_id;if(!mid||!canWrite)continue;
     await db.doc("trip_notes/"+(String(t.id)+"__"+mid).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,120)).set({trip_id:t.id,meeting_id:mid,title:m.title||"Meeting",date:String(m.meeting_at||m.created_at||"").slice(0,10),notes:text,pulled_at:Date.now()});n++}}
@@ -3562,7 +3563,7 @@ SEARCH SIGNALS: peak ${(sg.peak_months||[]).join(",")||"?"} · best window ${sg.
 KEYWORDS: ${(sg.keywords||[]).map(k=>k.q+" ("+k.demand+")").join("; ")}
 QUESTIONS PEOPLE ASK: ${(sg.paa||[]).map(p=>typeof p==="string"?p:p.q).join(" | ")}
 PIECES (title · format · stage · score · publish by): ${ps.map(x=>`${x.j.title} · ${x.j.format} · ${ppStage(x.j,t)} · ${x.sc.total} · ${x.j.publish_by||"-"}`).join(" || ")}
-HER MATERIAL: ${ppNotesFor({subject:t.name}).length} inspections with notes, ${tripNotes.filter(n=>n.trip_id===t.id).length} Granola notes, ${ppStashFor(t).length} photo-list entries: ${ppStashFor(t).map(s=>s.text).join(" · ").slice(0,800)}
+HER MATERIAL: ${ppNotesFor({subject:t.name}).length} inspections with notes, ${tripNotes.filter(n=>ppTripHas(t,n.trip_id)).length} Granola notes, ${ppStashFor(t).length} photo-list entries: ${ppStashFor(t).map(s=>s.text).join(" · ").slice(0,800)}
 Return JSON {"headline":"one sentence: why this trip, why now","order":[{"title":"piece title from the list","why":"one line","by":"YYYY-MM"}] (the first 3–5, in order),"photos":["the 3–5 photo jobs first, e.g. cull the hotel set for X"],"answer_these":["3–5 questions from the list the pieces must answer"],"social":["2–3 post ideas from this trip"],"youtube":"one video idea","skip":"what can wait and why"}.`,{cache:false})}
   else{const ideas=ppOpenIdeas().sort((a,b)=>b.sc.total-a.sc.total).slice(0,10);const ph=ideas.filter(x=>!(culls[x.j.id]||{}).approved).slice(0,5);const wk=weekPlans[ppWeekKey()];const wa=ppWindowAlerts().slice(0,8);
    r=await sample.json(`You are the editor of Coco Tran's luxury travel magazine (cocotran.com) and her studio manager. Today is ${today()}. She gets overwhelmed by long lists, so write a SHORT weekly brief. Pace: ${planPace.articles} articles and ${planPace.social} social posts a week.
@@ -3607,7 +3608,7 @@ function ovF(){const o={};OVF.forEach(k=>o[k]=ls.get("ov-"+k));o.sort=o.sort||"n
 function ovCountryName(iso){try{return new Intl.DisplayNames(["en"],{type:"region"}).of(String(iso).toUpperCase())||iso}catch(e){return iso}}
 function ovAm(){try{if(!amCache.length&&lib.length)amCache=amPlan()}catch(e){}return amCache||[]}
 function ovHKey(name){let w=ppNorm(String(name||"").replace(/\(.*?\)/g," ").replace(/[,–—-].*$/,"")).split(" ").filter(Boolean);const stop=["the","hotel","belmond","a","an","and","resort","mgallery","lodge"];while(w.length>1&&stop.includes(w[0]))w.shift();w=w.filter((x,i)=>i<1||!stop.includes(x));return w.slice(0,2).join(" ")}
-function ovHotels(t){const tv=(travelCache.find(x=>x.id===t.id||x.id==="pp-a"+t.id)||{});const out=[];const add=(name,city,kind)=>{name=String(name||"").replace(/\s+[—-]\s+check-in.*$/i,"").trim();if(!name)return;const n=ovHKey(name);const e=out.find(h=>ovHKey(h.name)===n);if(e){e.city=e.city||city||"";e.kind=e.kind||kind||"";return}out.push({name,city:city||"",kind:kind||""})};
+function ovHotels(t){const tv=(ppTravelOf(t)||{});const out=[];const add=(name,city,kind)=>{name=String(name||"").replace(/\s+[—-]\s+check-in.*$/i,"").trim();if(!name)return;const n=ovHKey(name);const e=out.find(h=>ovHKey(h.name)===n);if(e){e.city=e.city||city||"";e.kind=e.kind||kind||"";return}out.push({name,city:city||"",kind:kind||""})};
  (tv.hotels||[]).forEach(h=>typeof h==="string"?add(h):add(h.name,h.city,h.kind));(t.hotels||[]).forEach(h=>typeof h==="string"?add(h):add(h&&h.name,h&&h.city,h&&h.kind));ppAccomsFor(t).forEach(a=>add(a.name,a.city,a.kind));
  return out.map(h=>{const n=ppNorm(h.name).replace(/^(the|hotel|belmond) /,"");const key=n.split(" ").slice(0,2).join(" ");const acc=accoms.find(a=>ppNorm(a.name)===ppNorm(h.name)||(a.aliases||[]).some(x=>ppNorm(x)===ppNorm(h.name)));
   const vj=pipeJobs.concat(jobsCache||[]).find(j=>j.format==="verdict"&&key&&ppNorm(j.title||j.subject).includes(key));const vl=lib.find(r=>key&&ppNorm(r.title).includes(key)&&(r.format==="verdict"||/verdict/i.test(r.title||"")));
@@ -3619,7 +3620,7 @@ function ovCity(t,city,hotels){const n=ppNorm(city);const am=ovAm();const x=am.f
  const rows=x?x.cov.rows:AM_CITY.map(([k,label])=>({k,label,missing:true,have:[]}));
  return {city,x,country,rows,have:rows.filter(r=>!r.missing).length,tot:rows.length,missing:rows.filter(r=>r.missing).map(r=>r.k),live:x?x.p.pieces.length:0,
   pieces,culled:pieces.filter(j=>(culls[j.id]||{}).approved).length,edited:pieces.filter(j=>(culls[j.id]||{}).edited).length,written:pieces.filter(ppLive).length,hotels:hs}}
-function ovTrip(t){const ps=ppPieces(t);const hotels=ovHotels(t);const tv=(travelCache.find(x=>x.id===t.id||x.id==="pp-a"+t.id)||{});
+function ovTrip(t){const ps=ppPieces(t);const hotels=ovHotels(t);const tv=(ppTravelOf(t)||{});
  const cities=(t.places||[]).filter(Boolean).map(c=>ovCity(t,c,hotels));const isos=(tv.countries||[]).filter(Boolean);
  cities.forEach(c=>{if(!c.country&&isos.length===1)c.country=ovCountryName(isos[0])});
  const loose=hotels.filter(h=>!cities.some(c=>c.hotels.includes(h)));
@@ -3692,8 +3693,8 @@ async function ovImportRun(btn){const note=$("#ov-imp-note");if(!db||!canWrite){
 function ppRenderOverview(){const host=$("#pp-overview");if(!host)return;const all=ovAll();const rows=ovSort(ovFilter(all));const v=ls.get("ov-view")||"map";
  const vsw=`<div class="views bkview" id="ov-views">${[["map","Map"],["table","Table"],["country","By country"]].map(([k,n])=>`<button data-ov="${k}" aria-selected="${k===v}">${n}</button>`).join("")}</div>`;
  const body=!rows.length?'<div class="card"><div class="note">No trips match.</div></div>':v==="table"?ovTable(rows):v==="country"?ovCountries(rows):rows.map(ovTripCard).join("");
- host.innerHTML=`${ovSummary(rows)}${ovNeedleCard()}<div class="fs"><div class="fsh"><span class="num">Map</span><span class="fst">${rows.length} of ${all.length} trips · trip › country › city › hotels</span><span style="margin-left:auto">${vsw}</span></div>${ovToolbar(all)}</div>${body}${ovImportCard()}`;
- host.querySelectorAll("[data-ov]").forEach(b=>b.onclick=()=>{ls.set("ov-view",b.dataset.ov);ppRenderOverview()});
+ host.innerHTML=`${ovSummary(rows)}${ovNeedleCard()}<div class="fs"><div class="fsh"><span class="num">Map</span><span class="fst">${rows.length} of ${all.length} trips · trip › country › city › hotels</span><span style="margin-left:auto">${vsw}</span></div>${ovToolbar(all)}</div>${body}${agCard()}${ovImportCard()}`;
+ agWire(host);host.querySelectorAll("[data-ov]").forEach(b=>b.onclick=()=>{ls.set("ov-view",b.dataset.ov);ppRenderOverview()});
  host.querySelectorAll("[data-ovf]").forEach(el=>{const k=el.dataset.ovf;el[k==="q"?"oninput":"onchange"]=()=>{ls.set("ov-"+k,el.value);clearTimeout(ppRenderOverview.t);ppRenderOverview.t=setTimeout(()=>{ppRenderOverview();if(k==="q"){const q=host.querySelector('[data-ovf="q"]');if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}},k==="q"?250:0)}});
  const cl=host.querySelector("[data-ovclear]");if(cl)cl.onclick=()=>{OVF.forEach(k=>ls.set("ov-"+k,""));ppRenderOverview()};
  host.querySelectorAll("details[data-fold]").forEach(d=>{d._i=d.open;d.ontoggle=()=>{if(d.open!==d._i){d._i=d.open;ls.set(d.dataset.fold,d.open?"1":"0")}}});
@@ -3816,7 +3817,7 @@ function ppWeekDays(){const x=new Date();x.setHours(12,0,0,0);const mon=new Date
 function ppWeekProposal(skip){const acts=ppAllActions().filter(a=>a.j);const trips=[...new Set(acts.map(a=>a.trip.key))];const tk=trips[(skip||0)%Math.max(1,trips.length)];
  const inTrip=acts.filter(a=>a.trip.key===tk);const pick=inTrip.slice(0,3).concat(acts.filter(a=>a.trip.key!==tk)).slice(0,3);return {trip:tk,trip_name:(pick[0]&&pick[0].trip.name)||"",items:pick.map(a=>({job:a.j.id,text:a.text,st:a.st,title:a.j.title,publish_by:a.j.publish_by||""}))}}
 function ppRenderWeek(){const wk=ppWeekKey();const doc=weekPlans[wk];const el=document.createElement("div");
- if(doc&&doc.accepted_at){const left=(doc.items||[]).filter(it=>{const j=pipeJobs.find(x=>x.id===it.job);if(!j)return false;const t=ppTripsAll().find(x=>x.id===j.trip_id||("pp-a"+x.id)===j.trip_id);return ppStage(j,t)===it.st});
+ if(doc&&doc.accepted_at){const left=(doc.items||[]).filter(it=>{const j=pipeJobs.find(x=>x.id===it.job);if(!j)return false;const t=ppTripsAll().find(x=>ppTripHas(x,j.trip_id));return ppStage(j,t)===it.st});
   el.innerHTML=`<div class="card" style="margin-bottom:12px"><div class="meta">This week · ${esc(wk)}</div><b>${esc(doc.trip_name||"")}</b><ol class="shotl">${(doc.items||[]).map(it=>`<li>${left.includes(it)?"":"✓ "}${esc(it.text)}</li>`).join("")}</ol><div class="note">${(doc.items||[]).length-left.length} of ${(doc.items||[]).length} done. It's on your calendar.</div></div>`;return el}
  const skip=+($("#pp-next").dataset.skip||0);const p=ppWeekProposal(skip);if(!p.items.length)return el;
  el.innerHTML=`<div class="card" style="margin-bottom:12px"><div class="meta">${new Date().getDay()===1?"Monday plan":"Plan for this week"} · ${esc(wk)}</div><b>One trip this week: ${esc(p.trip_name)}</b> <span class="note">· ${p.items.map(it=>esc(String(it.title||"").replace(/^The [A-Z][a-z]+:\s*/,""))).join(" · ")}</span><div class="row"><button class="btn" id="wk-ok">Put it on my calendar</button><button class="copy" id="wk-swap">another trip</button><span class="note" id="wk-note"></span></div></div>`;
@@ -3846,7 +3847,7 @@ async function ppDebrief(t,i){const d=(t.days||[]).filter(x=>x.date)[i];if(!d)re
  const form=r=>`<h4>Debrief · ${esc(d.date)} · ${esc(d.title||"")}</h4><p class="note" style="margin:0 0 8px">Your words from that day, sorted into your reflection. Edit anything, then approve; the worker copies it into Agency Studio (it never overwrites what you wrote there).</p>${["did","saw","smelled","ate","felt"].map(k=>`<label for="db-${k}">${k}</label><textarea id="db-${k}" style="min-height:54px">${esc((r&&r[k])||"")}</textarea>`).join("")}<div class="row" style="margin-top:8px"><button class="btn" id="db-ok">Approve</button><button class="copy" id="db-redo">pull again</button><span class="note" id="db-note">${esc(ex&&ex.sources?"From: "+ex.sources.join(", "):"")}</span></div>`;
  const wire=()=>{$("#db-ok").onclick=async()=>{if(!canWrite)return;const reflect={};["did","saw","smelled","ate","felt"].forEach(k=>{const v=$("#db-"+k).value.trim();if(v)reflect[k]=v});try{await db.doc("debriefs/"+key.replace(/[^a-zA-Z0-9_-]/g,"")).set({...(debriefs[key]||{}),trip_id:t.id,date:d.date,day_title:d.title||"",reflect,status:"approved",approved_at:Date.now(),updatedAt:Date.now()});closePanel()}catch(e){$("#db-note").textContent="Couldn't save."}};$("#db-redo").onclick=()=>run()};
  const run=async()=>{$("#db-note").textContent="Reading that day's notes…";if(!sample){$("#db-note").textContent="Claude isn't available in this view.";return}
-  let notes=tripNotes.filter(n=>n.trip_id===t.id&&n.date===d.date).map(n=>n.title+": "+n.notes);const srcs=tripNotes.filter(n=>n.trip_id===t.id&&n.date===d.date).map(n=>n.title);
+  let notes=tripNotes.filter(n=>ppTripHas(t,n.trip_id)&&n.date===d.date).map(n=>n.title+": "+n.notes);const srcs=tripNotes.filter(n=>ppTripHas(t,n.trip_id)&&n.date===d.date).map(n=>n.title);
   if(!notes.length&&mcp){try{const r=await mcp.callTool("Granola","search_meetings",{from_date:d.date,to_date:d.date,limit:20,max_participants:2},{cache:false});const ms=Array.isArray(r.payload?.meetings)?r.payload.meetings:[];if(ms.length){const g=await mcp.callTool("Granola","get_meetings",{meeting_ids:ms.slice(0,10).map(m=>m.id),max_participants:2},{cache:false});(Array.isArray(g.payload?.meetings)?g.payload.meetings:[]).forEach(m=>{notes.push((m.title||"")+": "+[m.summary,m.notes,m.private_notes].filter(Boolean).map(v=>typeof v==="string"?v:JSON.stringify(v)).join("\n").slice(0,6000));srcs.push(m.title||"Granola")})}}catch(e){}}
   (d.items||[]).forEach(it=>{if(it.notes)notes.push(it.name+": "+it.notes)});
   if(!notes.length){$("#db-note").textContent="No notes for that day in Granola or Agency Studio yet.";return}
@@ -3862,15 +3863,15 @@ Return JSON {"did":"","saw":"","smelled":"","ate":"","felt":""}.`,{cache:false})
 // ---------- Accommodations (Agency Studio's Notion Accommodation Master List) and the photo list ----------
 let accoms=[], photoStash=[];
 const STASH_REGIONS=["North America","Central America & Caribbean","South America","Europe","Africa","Middle East","Asia","Oceania & Pacific"];
-function ppAccomsFor(t){const ids=[t.id,"pp-a"+t.id];return accoms.filter(a=>a.status!=="merged"&&(a.trips||[]).some(x=>ids.includes(x)||(t.src==="agency"&&x==="pp-a"+t.id)))}
-function ppStashFor(t){return photoStash.filter(s=>s.trip_key===t.key||s.trip_id===t.id)}
+function ppAccomsFor(t){const ids=[t.id,"pp-a"+t.id,t.alias].filter(Boolean);return accoms.filter(a=>a.status!=="merged"&&(a.trips||[]).some(x=>ids.includes(x)||(t.src==="agency"&&x==="pp-a"+t.id)))}
+function ppStashFor(t){return photoStash.filter(s=>(t.keys||[t.key]).includes(s.trip_key)||ppTripHas(t,s.trip_id))}
 // ---------- Hotels ⇄ Accommodation Master List: add a trip's hotel to the list, link it, attach a list record to a trip, add a hotel by hand ----------
 let masterIdx=[], masterMeta=null, hxPend=[], hxFireT=null;
 function hxSlug(s){return ppNorm(s).replace(/ /g,"-").slice(0,60)||"hotel"}
 function hxTid(t){return t.id}
 function hxCountry(iso){try{return iso?new Intl.DisplayNames(["en"],{type:"region"}).of(String(iso).toUpperCase()):""}catch(e){return iso||""}}
 function hxAccFor(name){const n=ppNorm(name);return accoms.find(a=>a.status!=="merged"&&(ppNorm(a.name)===n||(a.aliases||[]).some(x=>ppNorm(x)===n)))||null}
-function hxTripHotels(t){const tv=(travelCache.find(x=>x.id===t.id||x.id==="pp-a"+t.id)||{});const out=[];
+function hxTripHotels(t){const tv=(ppTravelOf(t)||{});const out=[];
  const add=(name,city,kind,iso,acc)=>{name=String(name||"").replace(/\s+[—-]\s+check-in.*$/i,"").trim();if(!name)return;const n=ppNorm(name);const e=out.find(h=>ppNorm(h.name)===n||(h.acc&&acc&&h.acc.id===acc.id));if(e){e.city=e.city||city||"";e.kind=e.kind||kind||"";e.iso=e.iso||iso||"";e.acc=e.acc||acc||null;return}out.push({name,city:city||"",kind:kind||"",iso:iso||"",acc:acc||null})};
  ppAccomsFor(t).filter(a=>a.status!=="merged").forEach(a=>add(a.name,a.city,(a.stays||{})[hxTid(t)]||"",a.iso,a));
  (tv.hotels||[]).forEach(h=>typeof h==="string"?add(h):add(h.name,h.city,h.kind,h.iso));(t.hotels||[]).forEach(h=>typeof h==="string"?add(h):add(h&&h.name,h&&h.city,h&&h.kind));
@@ -3960,7 +3961,7 @@ const ISO_REGION={US:"North America",CA:"North America",MX:"Central America & Ca
  IT:"Europe",FR:"Europe",ES:"Europe",GR:"Europe",PT:"Europe",NO:"Europe",CH:"Europe",DE:"Europe",NL:"Europe",GB:"Europe",IS:"Europe",HR:"Europe",MC:"Europe",AT:"Europe",TR:"Middle East",EG:"Middle East",JO:"Middle East",AE:"Middle East",QA:"Middle East",OM:"Middle East",MA:"Africa",ZA:"Africa",BW:"Africa",KE:"Africa",TZ:"Africa",NA:"Africa",ZM:"Africa",ZW:"Africa",RW:"Africa",SC:"Africa",MU:"Africa",
  JP:"Asia",VN:"Asia",TH:"Asia",IN:"Asia",CN:"Asia",TW:"Asia",ID:"Asia",SG:"Asia",MY:"Asia",KH:"Asia",LA:"Asia",KR:"Asia",LK:"Asia",MV:"Asia",PF:"Oceania & Pacific",AU:"Oceania & Pacific",NZ:"Oceania & Pacific",FJ:"Oceania & Pacific"};
 const PLACE_REGION=[[/hawaii|oahu|waikiki|maui|bora|tahiti|fiji/,"Oceania & Pacific"],[/cancun|canc[uú]n|riviera maya|tulum|cabo|mexico|cuba|havana|nicaragua|anguilla|caribbean|dominican/,"Central America & Caribbean"],[/utah|yosemite|napa|healdsburg|new york|banff|calgary|denver|vegas|zion|arches|bryce|california|arizona/,"North America"],[/rio|brazil|peru|cusco|lima|iguaz|argentina|chile/,"South America"],[/morocco|marrakesh|marrakech|fes|cape town|botswana|okavango|kenya|namibia|zambia|zimbabwe|victoria falls|seychelles|africa/,"Africa"],[/egypt|cairo|jordan|petra|turkey|istanbul|cappadocia|dubai/,"Middle East"],[/japan|tokyo|kyoto|vietnam|hanoi|india|delhi|jaipur|china|taipei|taiwan|okinawa|thailand|bali/,"Asia"],[/italy|amalfi|puglia|positano|capri|venice|greece|santorini|mykonos|athens|spain|mallorca|france|nice|paris|norway|oslo|bergen|portugal|switzerland|germany|amsterdam/,"Europe"]];
-function ppTripRegion(t){const tv=(travelCache.find(x=>x.id===t.id||x.id==="pp-a"+t.id)||{});const iso=(tv.countries||[])[0];if(iso&&ISO_REGION[iso])return ISO_REGION[iso];const st=ppStashFor(t).find(s=>s.region);if(st)return st.region;const n=ppNorm(t.name+" "+(t.places||[]).join(" "));const m=PLACE_REGION.find(([re])=>re.test(n));return m?m[1]:"Other"}
+function ppTripRegion(t){const tv=(ppTravelOf(t)||{});const iso=(tv.countries||[])[0];if(iso&&ISO_REGION[iso])return ISO_REGION[iso];const st=ppStashFor(t).find(s=>s.region);if(st)return st.region;const n=ppNorm(t.name+" "+(t.places||[]).join(" "));const m=PLACE_REGION.find(([re])=>re.test(n));return m?m[1]:"Other"}
 function ppTripType(t){if(ppStashFor(t).some(s=>s.kind==="tour"))return "tour";if(t.src==="stash")return t.kind==="fam"?"fam":"photo list";return t.kind==="fam"?"fam":"personal"}
 // Signals: the research the ideas agent pulled (research/<trip>.signals = {paa[], keywords[], peak_months[], best_window, summary}) plus the desk's own data.
 function ppSignals(t){const r=research[t.id]||{};const sg=r.signals||{};const ps=ppPieces(t);const places=(t.places||[]).map(ppNorm).filter(p=>p.length>=3);const hit=q=>{const n=ppNorm(q);return places.some(p=>n.includes(p))};
@@ -3968,7 +3969,7 @@ function ppSignals(t){const r=research[t.id]||{};const sg=r.signals||{};const ps
  const gsc=((insightsLatest&&insightsLatest.content_gaps)||[]).filter(g=>hit(g.query));const gscImp=gsc.reduce((a,g)=>a+(g.impressions||0),0)+bankFor(t).fresh.concat(bankFor(t).old).reduce((a,x)=>a+ppRank(x).impr,0);
  const dem={high:3,medium:2,low:1};const demand=ps.reduce((a,j)=>a+(dem[String(j.demand||"").toLowerCase()]||0),0)+(sg.keywords||[]).reduce((a,k)=>a+(dem[String(k.demand||"").toLowerCase()]||0),0);
  const wins=ps.map(ppWindow);const open=wins.filter(w=>w.state==="open").length,soon=wins.filter(w=>w.state==="soon").length;const next=wins.filter(w=>w.next).map(w=>w.next).sort()[0]||sg.best_window||"";
- const ready=bankFor(t).stays+ppStashFor(t).length+inspections.filter(i=>(i.fromTrip&&(i.fromTrip.id===t.id))&&(i.answers_count||0)>0).length+tripNotes.filter(n=>n.trip_id===t.id).length;
+ const ready=bankFor(t).stays+ppStashFor(t).length+inspections.filter(i=>(i.fromTrip&&(ppTripHas(t,i.fromTrip.id)))&&(i.answers_count||0)>0).length+tripNotes.filter(n=>ppTripHas(t,n.trip_id)).length;
  const topKw=ps.slice().sort((a,b)=>(dem[String(b.demand).toLowerCase()]||0)-(dem[String(a.demand).toLowerCase()]||0)).map(j=>j.primary_keyword).filter(Boolean).slice(0,3);
  return {paa,gscImp,demand,open,soon,next,ready,topKw,peak:sg.peak_months||[],summary:sg.summary||"",has:!!r.signals}}
 function ppTripScore(t){const s=ppSignals(t);const score=s.demand*1.5+Math.min(15,s.paa.length)*0.8+Math.min(10,s.gscImp/500)+s.open*3+s.soon+Math.min(10,s.ready)*0.6+(ppPrio("trip:"+t.key)==="now"?100:ppPrio("trip:"+t.key)==="later"?-20:0);return {score:Math.round(score*10)/10,s}}
@@ -4008,14 +4009,14 @@ function ppWireBankTools(root){["q","region","year","type","only","sort"].forEac
 let planPace={articles:2,social:3,auto:false}, npFromPipeline=null;
 const ROI_FMT={verdict:5,shortlist:5,comparison:4,tradeoff:4,roundup:3,rolodex:3,route:3,dossier:2,primer:2,answer:2,fieldnotes:2,postcard:1,take:1};
 const EASY_FMT={answer:2,postcard:2,take:2,fieldnotes:1,comparison:0,verdict:0,shortlist:0,primer:0,route:-1,rolodex:-1,dossier:-1,roundup:0,tradeoff:0};
-function ppTripOf(j){return ppTripsAll().find(t=>t.id===j.trip_id||("pp-a"+t.id)===j.trip_id)||null}
+function ppTripOf(j){return ppTripsAll().find(t=>ppTripHas(t,j.trip_id))||null}
 function ppDraftJob(j){return j.draft_job?jobsCache.find(x=>x.id===j.draft_job)||null:null}
-function ppIdeaScore(j,t){const why=[];const dem={high:3,medium:2,low:1}[String(j.demand||"").toLowerCase()]||1;const sg=(research[j.trip_id]||{}).signals||{};
+function ppIdeaScore(j,t){const why=[];const dem={high:3,medium:2,low:1}[String(j.demand||"").toLowerCase()]||1;const sg=(research[ppCanon(j.trip_id)]||research[j.trip_id]||{}).signals||{};
  const kw=ppNorm(j.primary_keyword||"");const kwHit=(sg.keywords||[]).find(k=>kw&&(ppNorm(k.q).includes(kw)||kw.includes(ppNorm(k.q))));const paaHit=(sg.paa||[]).filter(p=>{const q=ppNorm(typeof p==="string"?p:p.q);return kw&&kw.split(" ").filter(w=>w.length>3).some(w=>q.includes(w))}).length;
  const seo=dem*2+(kwHit?({high:3,medium:2,low:1}[String(kwHit.demand).toLowerCase()]||0):0)+Math.min(3,paaHit);if(dem>=3)why.push("high search demand");if(paaHit)why.push(paaHit+" questions people ask");
  const w=ppWindow(j);const season=w.state==="open"?4:w.state==="soon"?2:0;if(season)why.push(w.state==="open"?"in season now (by "+w.next+")":"season opens soon ("+w.next+")");
  const roi=(ROI_FMT[j.format]||1)+((j.hotel||j.format==="verdict"||j.format==="shortlist"||j.format==="comparison")?1:0);if(roi>=5)why.push("books clients");
- const c=culls[j.id]||{};const notes=ppNotesFor(j).length>0||tripNotes.some(n=>n.trip_id===j.trip_id);const ease=(EASY_FMT[j.format]||0)+(c.approved?2:0)+(c.edited?2:0)+(notes?2:0)+((j.needs_coco||[]).length?-1:1);if(ease>=4)why.push("quick to do");
+ const c=culls[j.id]||{};const notes=ppNotesFor(j).length>0||tripNotes.some(n=>ppCanon(n.trip_id)===ppCanon(j.trip_id));const ease=(EASY_FMT[j.format]||0)+(c.approved?2:0)+(c.edited?2:0)+(notes?2:0)+((j.needs_coco||[]).length?-1:1);if(ease>=4)why.push("quick to do");
  const call=(tripPrioCall&&tripPrioCall.picks||[]).some(p=>t&&p.trip_key===t.key);const bp=ppPrio("job:"+j.id)||(t?ppPrio("trip:"+t.key):"");const prio=(call?3:0)+(bp==="now"?10:bp==="next"?3:bp==="later"?-5:0);if(call)why.push("the desk's pick");
  const total=Math.round((seo*1.2+season*1.5+roi*1.1+ease+prio)*10)/10;return {seo,season,roi,ease,prio,total,why,w}}
 function ppOpenIdeas(){return pipeJobs.filter(j=>!ppLive(j)&&ppPrio("job:"+j.id)!=="archive").map(j=>{const t=ppTripOf(j);return {j,t,sc:ppIdeaScore(j,t)}}).filter(x=>!x.t||x.t.status!=="upcoming")}
@@ -4029,7 +4030,7 @@ function idCountry(x){if(x._c!==undefined)return x._c;let c="";const t=x.t;
  try{const am=(typeof amCache!=="undefined"&&amCache.length)?amCache:[];const txt=" "+ppNorm([x.j.title,x.j.subject,x.j.dest].join(" "))+" ";const places=((t&&t.places)||[]).map(ppNorm);
   const hit=am.slice().sort((a,b)=>(b.p.depth||0)-(a.p.depth||0)).find(y=>{const n=ppNorm(y.p.name);return n.length>=3&&(txt.includes(" "+n+" ")||places.includes(n))});
   if(hit&&hit.p.chain&&hit.p.chain.length)c=hit.p.depth>=3&&hit.p.chain[1]?hit.p.chain[1].name:hit.p.chain[hit.p.chain.length-1].name}catch(e){}
- if(!c&&t){const tv=(typeof travelCache!=="undefined"?travelCache:[]).find(v=>v.id===t.id||v.id==="pp-a"+t.id)||{};const iso=(tv.countries||[])[0];if(iso){try{c=new Intl.DisplayNames(["en"],{type:"region"}).of(String(iso).toUpperCase())}catch(e){c=String(iso)}}}
+ if(!c&&t){const tv=(ppTravelOf(t)||{});const iso=(tv.countries||[])[0];if(iso){try{c=new Intl.DisplayNames(["en"],{type:"region"}).of(String(iso).toUpperCase())}catch(e){c=String(iso)}}}
  if(!c&&t){try{c=ppTripRegion(t)}catch(e){}}return x._c=c||"Other"}
 function idPrio(x){return ppPrio("job:"+x.j.id)||(x.t?ppPrio("trip:"+x.t.key):"")||"auto"}
 function idSeason(x){const w=x.sc&&x.sc.w?x.sc.w:ppWindow(x.j);return w.state||"none"}
@@ -4133,7 +4134,7 @@ function pbPath(j){const c=culls[j.id]||{};const slots=ppSlots(j);const picked=(
  if(!c.approved)return {step:"cull",n:slots.length,picked,title:`Step 1 · Cull ${slots.length} photos`,sub:picked?`${picked} of ${slots.length} picked so far. Finish the cull, then write.`:`The piece needs ${slots.length} photos. Pick them first: the outline is built around them.`,btn:"Cull the photos",next:"Step 2 · Edit them · Step 3 · Write"};
  if(!c.edited)return {step:"edit",n:picked,picked,title:`Step 1 · Edit your ${picked} picks`,sub:"The cull is done. Edit those frames (digital now, film when the scans land), then write.",btn:"Open your eye",next:"Step 2 · Write"};
  return {step:"write",n:picked,picked,title:"Ready to write",sub:`Photos are culled and edited (${picked}). Fill the form from the brief and draft.`,btn:"",next:""}}
-function pbSources(j){const t=ppTripOf(j);const sg=(research[j.trip_id]||{}).signals||{};const c=culls[j.id]||{};const ins=ppNotesFor(j);const tn=tripNotes.filter(n=>n.trip_id===j.trip_id).slice(0,6);const st=t?ppStashFor(t):[];const days=t?(t.days||[]).filter(d=>d.reflect&&Object.keys(d.reflect).length):[];
+function pbSources(j){const t=ppTripOf(j);const sg=(research[ppCanon(j.trip_id)]||research[j.trip_id]||{}).signals||{};const c=culls[j.id]||{};const ins=ppNotesFor(j);const tn=tripNotes.filter(n=>ppCanon(n.trip_id)===ppCanon(j.trip_id)).slice(0,6);const st=t?ppStashFor(t):[];const days=t?(t.days||[]).filter(d=>d.reflect&&Object.keys(d.reflect).length):[];
  return {t,sg,c,text:[`PIECE: ${j.title||j.subject} · format ${j.format||""} · primary keyword "${j.primary_keyword||""}"${j.publish_by?" · publish by "+j.publish_by:""}`,
   t?`TRIP: ${t.name} · ${t.start||"undated"} · ${ppTripType(t)} · places ${(t.places||[]).join(", ")}`:"",
   (sg.keywords||[]).length?"KEYWORDS: "+(sg.keywords||[]).slice(0,10).map(k=>k.q+" ("+k.demand+")").join("; "):"",
@@ -4182,7 +4183,7 @@ function ppWriteWithMe(j){const t=ppTripOf(j);const set=(id,v)=>{const e=$("#"+i
  const tr=j.trust||{};set("n-basis",tr.visit_basis||"");const v=String(tr.visited||"");set("n-visited",/^Stayed/.test(v)?"Stayed":/inspect/i.test(v)?"Site inspection":/^Visited/.test(v)?"Visited, did not stay":"");
  const mm=(v.match(/(\d{4})-(\d{2})/)||[]);if(mm[0])set("n-visitmonth",mm[0]);if(tr.disclosure&&$("#n-disclosure")&&[...$("#n-disclosure").options].some(o=>o.text===tr.disclosure))set("n-disclosure",tr.disclosure);
  set("n-goal",j.why||"");
- const sg=(research[j.trip_id]||{}).signals||{};const c=culls[j.id]||{};const ins=ppNotesFor(j);const tn=tripNotes.filter(n=>n.trip_id===j.trip_id).slice(0,6);const st=t?ppStashFor(t):[];const days=t?(t.days||[]).filter(d=>d.reflect&&Object.keys(d.reflect).length):[];
+ const sg=(research[ppCanon(j.trip_id)]||research[j.trip_id]||{}).signals||{};const c=culls[j.id]||{};const ins=ppNotesFor(j);const tn=tripNotes.filter(n=>ppCanon(n.trip_id)===ppCanon(j.trip_id)).slice(0,6);const st=t?ppStashFor(t):[];const days=t?(t.days||[]).filter(d=>d.reflect&&Object.keys(d.reflect).length):[];
  const notes=[`FROM THE TRIPS DESK · ${j.title}`,`Primary keyword: ${j.primary_keyword||""}${j.publish_by?" · publish by "+j.publish_by:""}`,
   (sg.paa||[]).length?"People also ask:\n- "+(sg.paa||[]).slice(0,8).map(p=>typeof p==="string"?p:p.q).join("\n- "):"",
   (j.needs_coco||[]).length?"Open questions for me: "+j.needs_coco.join(" | "):"",
@@ -4522,6 +4523,71 @@ function navBoot(){const tb=document.querySelector("header.topbar");if(tb&&!$("#
  const v=$("#pp-views");if(v){v.innerHTML=`<button data-pv="overview">Overview</button><button data-pv="bank">All trips</button><button data-pv="trip">One trip</button>`;v.querySelectorAll("button").forEach(b=>b.onclick=()=>{ppView=b.dataset.pv;ls.set("ppView",ppView);renderPipe()})}
  const g=$("#pp-gsc");if(g)g.hidden=true;
  navObserve();navRender(ls.get("desk")||"today");themeBoot();document.addEventListener("keydown",e=>{if(e.key==="Escape"){ppFocusClose();navSheet(false)}})}
+/* ===== Agency Studio ⇄ Studio Desk: one trip, both apps ===== */
+// Agency Studio trips (trips/<id>) and their Passport copies (travel/pp-*) are the same trip. settings/agency_link maps
+// agency id -> travel id; passportId and "pp-a<id>" link by themselves. The Agency trip wins, the Passport copy folds into it,
+// so its pieces, research, notes and photo list all show on one trip. The worker sends each trip's pieces back to Agency
+// Studio (tripplans/<id>, "What this trip can publish") on every run. SKILL: "Agency Studio link".
+const AGENCY_URL="https://claude.ai/artifact/7VMcx1iKdmvdtq6KT6cgix";
+let agencyLink=null,agencySync=null,AGX=null;
+function agMaps(){if(AGX&&AGX.t===trips&&AGX.v===travelCache&&AGX.l===agencyLink)return AGX;
+ const fwd={},rev={};const tv=new Set(travelCache.map(x=>x.id));const ids=new Set(trips.map(t=>t.id));
+ Object.entries((agencyLink&&agencyLink.links)||{}).forEach(([a,p])=>{if(ids.has(a)&&p){fwd[a]=p}});
+ trips.forEach(t=>{if(fwd[t.id])return;const c=[t.passportId?"pp-"+t.passportId:"","pp-a"+t.id,"pp-"+t.id].find(x=>x&&tv.has(x));if(c)fwd[t.id]=c});
+ Object.entries(fwd).forEach(([a,p])=>{rev[p]=a});
+ return AGX={t:trips,v:travelCache,l:agencyLink,fwd,rev,ids}}
+function ppCanon(id){id=String(id||"");if(!id)return id;const m=agMaps();if(m.ids.has(id))return id;if(m.rev[id])return m.rev[id];
+ if(id.startsWith("pp-a")&&m.ids.has(id.slice(4)))return id.slice(4);if(id.startsWith("pp-")&&m.ids.has(id.slice(3)))return id.slice(3);return id}
+function ppTripHas(t,id){return !!(t&&id)&&ppCanon(id)===ppCanon(t.id)}
+function ppTravelOf(t){if(!t)return null;const p=agMaps().fwd[t.id];return travelCache.find(x=>x.id===t.id||x.id===p||x.id==="pp-a"+t.id)||null}
+function agDays(a){return a?Math.round((new Date(a+"T12:00:00")-0)/864e5):null}
+// Merge one Agency trip with its Passport copy. Agency dates win unless they span far longer than the Passport's (a typo).
+function agMerge(o,tv){if(!tv)return o;const uniq=a=>[...new Set(a.filter(Boolean))];
+ o.alias=tv.id;o.keys=["a:"+o.id,"p:"+tv.id];o.ppName=String(tv.name||"").trim();o.countries=uniq([...(o.countries||[]),...(tv.countries||[])]);
+ o.places=uniq([...(o.places||[]),...(tv.places||[])]).slice(0,16);o.hotels=uniq([...(o.hotels||[]),...(tv.hotels||[]).map(h=>typeof h==="string"?h:h.name)]);
+ const span=o.start&&o.end?agDays(o.end)-agDays(o.start):null,pspan=tv.start&&tv.end?agDays(tv.end)-agDays(tv.start):null;
+ if(!o.start&&tv.start){o.start=tv.start;o.end=tv.end||"";o.dateNote="dates from your Passport"}
+ else if(span!=null&&pspan!=null&&span>45&&span>pspan+30){o.dateNote=`Agency Studio says ${o.start} → ${o.end}; using your Passport's ${tv.start} → ${tv.end}`;o.start=tv.start;o.end=tv.end}
+ o.status=ppStatus(o.start,o.end);if(o.kind!=="fam"&&tv.kind)o.kind=tv.kind;
+ // the Passport copy's research, ideas queue and board priority carry over when the Agency trip has none
+ const q=x=>String(x).replace(/[^a-zA-Z0-9_-]/g,"");try{if(!research[q(o.id)]&&research[q(tv.id)])research[q(o.id)]=research[q(tv.id)]}catch(e){}
+ try{if(!ideasQueue[q(o.id)]&&ideasQueue[q(tv.id)])ideasQueue[q(o.id)]=ideasQueue[q(tv.id)]}catch(e){}
+ try{if(!boardPrio["trip:"+o.key]&&boardPrio["trip:p:"+tv.id])boardPrio["trip:"+o.key]=boardPrio["trip:p:"+tv.id]}catch(e){}
+ return o}
+function agSrcLabel(t){if(!t)return "";if(t.src==="agency")return t.alias?"Agency Studio + Passport":"Agency Studio";return t.src==="passport"?"Passport only":t.src==="stash"?"Photo list":""}
+function agTripLinks(t){if(!t)return "";const parts=[];if(t.src==="agency")parts.push(`<a href="${AGENCY_URL}" target="_blank" rel="noopener">Open in Agency Studio ↗</a>`);
+ else if(t.src==="passport"&&t.status==="past"){const j=(jobsCache||[]).find(x=>x.type==="agency_promote"&&x.travel_id===t.id&&x.status!=="done");parts.push(j?`<span class="note">On its way to Agency Studio (${esc(j.status)})</span>`:`<button class="btn sm ghost" data-agsend="${esc(t.id)}">Send to Agency Studio</button>`)}
+ if(t.dateNote)parts.push(`<span class="note">${esc(t.dateNote)}</span>`);return parts.length?`<div class="row aglinks" style="gap:10px;flex-wrap:wrap;align-items:center;margin:-4px 0 10px">${parts.join("")}</div>`:""}
+// Overview card: what's linked, what's waiting, one button to sync now
+function agCard(){const all=ppTripsAll();const ag=all.filter(t=>t.src==="agency"),linked=ag.filter(t=>t.alias);
+ const ins=inspections.length,pieces=pipeJobs.filter(j=>ag.some(t=>ppTripHas(t,j.trip_id))).length;
+ const pp=all.filter(t=>t.src==="passport"&&t.status==="past"&&t.start&&t.start>="2023");const s=agencySync||{};const at=s.at||s.last_run_at;
+ const pend=s.status==="requested"||s.status==="running";
+ return `<div class="card aglink" id="ag-card"><div class="row" style="gap:10px;flex-wrap:wrap;align-items:center"><b>Agency Studio</b>
+  <span class="note">${ag.length} trips · ${linked.length} matched to your Passport · ${ins} inspections · ${pieces} pieces shared both ways${at?` · synced ${new Date(at).toLocaleDateString(undefined,{month:"short",day:"numeric"})}`:""}${pend?` · <b>${s.status==="running"?"syncing now":"sync queued"}</b>`:""}</span>
+  <span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap"><a class="btn sm ghost" href="${AGENCY_URL}" target="_blank" rel="noopener">Open ↗</a><button class="btn sm" id="ag-sync">Sync now</button></span></div>
+  <div class="note" style="margin-top:6px">Trips you add in Agency Studio show up here with their inspections and notes. Every piece the desk plans for a trip shows in Agency Studio under “What this trip can publish”. The worker keeps both in step on every run.</div>
+  ${pp.length?`<details class="agpp"${ls.get("ag-pp")==="1"?" open":""}><summary class="note">${pp.length} Passport trip${pp.length===1?"":"s"} not in Agency Studio yet</summary><div class="aglist">${pp.sort((a,b)=>(b.start||"").localeCompare(a.start||"")).map(t=>`<div class="row" style="gap:8px;align-items:center;flex-wrap:wrap"><span>${esc(t.name)}</span><span class="note">${esc((t.start||"").slice(0,7))} · ${ppPieces(t).length} pieces</span><span style="margin-left:auto">${agTripLinks(t).replace(/^<div[^>]*>|<\/div>$/g,"")}</span></div>`).join("")}</div></details>`:""}
+  <div class="note" id="ag-note">${esc(agNote.msg||"")}</div></div>`}
+async function agFire(text,note){if(!mcp){note.textContent="Queued. The scheduled worker picks it up "+((typeof nextWorkerRun==="function"?nextWorkerRun():{label:"on its next run"}).label)+".";return}
+ try{await mcp.callTool("Claude Code Remote","fire_trigger",{trigger_id:WORKER_TRIGGER,text},{cache:false});note.textContent="Started. It lands in both apps in a few minutes."}
+ catch(e){note.textContent="Queued. Couldn't start a worker right now ("+(e&&e.code||"error")+"); it runs on its schedule."}}
+const agNote={set textContent(v){agNote.msg=v;const n=$("#ag-note");if(n)n.textContent=v}};
+async function agSyncRun(btn){const note=agNote;if(!db||!canWrite){note.textContent="The shared store isn't writable in this view.";return}btn.disabled=true;const id="agency-sync-"+today()+"-"+Date.now().toString(36).slice(-4);
+ try{const max=Math.max(0,...(jobsCache||[]).map(x=>x.priority||0));await db.doc("jobs/"+id).set({id,type:"agency_sync",mode:"agency_sync",title:"Sync with Agency Studio",subject:"trips",status:"queued",priority:max+1,run_requested_at:Date.now(),createdAt:Date.now(),updatedAt:Date.now(),notes:"SKILL: Agency Studio link. Mirror famtrips, fieldrecords and reviews into trips/ and inspections/, refresh settings/agency_link, write every linked trip's pieces to Agency Studio tripplans/<id>, then write settings/agency_sync."});
+  await db.doc("settings/agency_sync").set({...(agencySync||{}),status:"requested",requested_at:Date.now(),request_job:id})}catch(e){note.textContent="Couldn't queue it: "+(e&&e.code||"error");btn.disabled=false;return}
+ await agFire(`PRIORITY RUN requested from the Studio Desk Trips overview at ${new Date().toISOString()}. Do job "${id}" (type agency_sync) FIRST: follow SKILL.md "Agency Studio link" — mirror Agency Studio trips and inspections into the desk, refresh settings/agency_link, and write each linked trip's pieces into Agency Studio tripplans/<trip id>. Then continue with the rest of the queue by priority.`,note);btn.disabled=false}
+async function agSend(id,btn){const t=ppTripsAll().find(x=>x.id===id);const note=$("#ag-note")?agNote:{set textContent(v){btn.title=v}};if(!t||!db||!canWrite){note.textContent="The shared store isn't writable in this view.";return}btn.disabled=true;
+ const jid="agency-promote-"+String(id).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,40);
+ try{const max=Math.max(0,...(jobsCache||[]).map(x=>x.priority||0));await db.doc("jobs/"+jid).set({id:jid,type:"agency_promote",mode:"agency_promote",title:"Send "+t.name+" to Agency Studio",subject:t.name,travel_id:t.id,status:"queued",priority:max+1,run_requested_at:Date.now(),createdAt:Date.now(),updatedAt:Date.now(),notes:"SKILL: Agency Studio link → Send a Passport trip to Agency Studio. Create the Agency Studio famtrip from its passport doc exactly as Agency Studio's own 'Write from this trip' does, link it, and write its tripplan."})}catch(e){note.textContent="Couldn't queue it: "+(e&&e.code||"error");btn.disabled=false;return}
+ btn.textContent="Queued";await agFire(`PRIORITY RUN requested from the Studio Desk at ${new Date().toISOString()}. Do job "${jid}" (type agency_promote) FIRST: follow SKILL.md "Agency Studio link" → "Send a Passport trip to Agency Studio" for travel/${t.id}. Then continue with the queue.`,note)}
+function agWire(root){if(!root)return;const b=root.querySelector("#ag-sync");if(b)b.onclick=()=>agSyncRun(b);
+ root.querySelectorAll("[data-agsend]").forEach(x=>x.onclick=()=>agSend(x.dataset.agsend,x));
+ const d=root.querySelector("details.agpp");if(d)d.ontoggle=()=>ls.set("ag-pp",d.open?"1":"")}
+(function agBoot(n){if(!db){if((n||0)<120)setTimeout(()=>agBoot((n||0)+1),500);return}
+ try{db.doc("settings/agency_link").onSnapshot(sn=>{agencyLink=sn.exists?sn.data():null;AGX=null;schedulePipe()},()=>{})}catch(e){}
+ try{db.doc("settings/agency_sync").onSnapshot(sn=>{agencySync=sn.exists?sn.data():null;const c=$("#ag-card");if(c){c.outerHTML=agCard();agWire($("#ag-card"))}},()=>{})}catch(e){}})();
+
 try{navBoot();const h0=(location.hash||"").slice(1);show(document.getElementById("desk-"+h0)?h0:(ls.get("desk")||"today"))}catch(e){console.warn("nav boot",e)}
 
 </script>

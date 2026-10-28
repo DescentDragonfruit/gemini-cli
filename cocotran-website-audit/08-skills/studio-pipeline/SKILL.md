@@ -387,6 +387,58 @@ Coco wants everything she publishes on cocotran.com to show on her Plan calendar
   - `settings/gcal_map` maps the ids of synced posts and articles to their Google event ids.
 - **The worker never creates or changes Google Calendar events.**
 
+## Agency Studio link (`type: agency_sync` · `agency_promote`; added 28 Oct 2026, desk v72)
+Agency Studio (https://claude.ai/artifact/7VMcx1iKdmvdtq6KT6cgix) and the desk describe the same trips, so keep them in step. Do this on every run, before the rest of the queue. Do it first when an `agency_sync` job is queued.
+
+**How a trip is linked**
+- One trip has one id: the Agency Studio famtrip id. Its Passport copy (`travel/pp-*`) folds into it in the desk.
+- `settings/agency_link` = `{links: {<agency id>: <travel id>}, unlinked: {<agency id>: why}, synced_at, by}`.
+- Link a trip automatically by, in order:
+  1. its `passportId` (`"pp-" + passportId`);
+  2. `pp-a<agency id>`;
+  3. a Passport trip whose dates overlap or start within 10 days and whose name or country matches.
+- Never change a link already in the map. Add new ones, and say why a trip stays unlinked.
+- A piece's `trip_id` can be either id. The desk treats both as the same trip, so never rewrite `trip_id`s just to tidy up.
+- If a famtrip's dates span more than 45 days and its Passport copy says otherwise, it's a typo in Agency Studio. Report it once; don't edit Agency's data.
+
+**Agency Studio → desk (mirror)**
+- Follow §6a. Mirror every famtrip that has days (Passport-derived ones too, from `fieldrecords/<id>`) into `trips/<id>`. Mirror every review into `inspections/<id>`. Skip the empty "Untitled trip" placeholder.
+- Scrub all mirrored text before writing:
+  - booking, confirmation and reference numbers, meaning a keyword followed by a code that contains a digit (write "ref on file");
+  - balances and amounts owed;
+  - phone numbers and emails;
+  - the names of consultants, reps, contacts and tour managers;
+  - btl data, guest names and traveller names: never copy these.
+- Keep Coco's own words and public trip codes.
+
+**Desk → Agency Studio (what each trip can publish)**
+- For every linked trip with pieces, write `tripplans/<agency id>` in Agency Studio's database as `{data: <JSON string>, updated: <epoch ms>, source: "studio-desk"}`.
+- The JSON is `{trip_id, written_at, source: "studio-desk", desk_url, rules[], pieces_total, places[{place, priority, why, hotels[], pillars_missing[], target_keywords[], pieces[{id, title, type, keyword, status, publish_by, photos, needs_coco[]}]}]}`.
+  - Group pieces by `place`, and rank places by search demand.
+  - On a country-level place, `hotels` stays empty; hotels go on their cities.
+  - `status` follows the desk: `planned` → `photos picked` (cull approved) → `edited` → `drafted` → `live`.
+- Keep every field already on a place that the desk doesn't write: `gm_questions`, `shots`, `reels`, `youtube`, `search_questions`, `site_has`. Also keep places that have no pieces yet.
+- Write with `if_version`.
+- Agency Studio's "Ask Studio Desk for the plan" fills the same document.
+
+**Agency suggestions → desk pieces**
+- A plan place's `pillars_missing`, and inspections that are `ready` or have evidence 2–3, become planned pipeline pieces under the usual Trips pipeline rules:
+  - photos first;
+  - the rate floor for Verdicts;
+  - no Verdict from a past Passport trip unless a stop has evidence 3;
+  - `trip_id` = the agency id.
+- Never duplicate an existing piece: the same format and place, or the same primary keyword, is a duplicate.
+
+**Send a Passport trip to Agency Studio (`agency_promote`)**
+- The desk's "Send to Agency Studio" button queues `{travel_id}`. Build the famtrip from Agency Studio's `passport/<travel id without "pp-">` doc, exactly as Agency Studio's own "Write from this trip" does:
+  - `{id: <new 11-char id>, name, destination: first three cities, startDate, endDate, purpose: "Past trip — content research", days: [one per city {id, title: city, place: city, description: "", date: "", items: [hotels on that city {id, type: "hotel", name, time: "", notes: "", photos: [], reviewId: null, nights}], reflect: {}, shots: [], outfit: [], memory: {}}], passportId, countries, past: true, importedFrom: "passport", createdAt}`.
+- Write it as `famtrips/<id>` `{title, updated, data: <JSON string>}`.
+- Then add the link, write its tripplan, and mark the job done.
+- Never copy traveller names, passport numbers or booking references.
+
+**Report**
+- Write `settings/agency_sync` = `{status: "done", at, last_result{trips_mirrored, inspections, links_added, plans_written, pieces_added, promoted, notes}}`, then mark the job done.
+
 ## Warmth rewrites (`type: warmth_rewrite`, added 27 Oct 2026)
 Coco found the recent articles too matter-of-fact. The voice was rewritten (`05-editorial-system/voice.md`, the desk's `const VOICE`), and recent pieces are being rewritten to match. Every rewrite keeps every fact, number, name, link, [VERIFY] and [Coco to fill] marker, and invents no experience she didn't report.
 - **The job carries the rewritten text.** It is `draft.voice_pass{at, note}`, with the old text kept in `draft_prev{short_answer, glance, fields}` and the new text in `draft`.
